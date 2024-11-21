@@ -3,6 +3,7 @@ package com.imstargg.client.brawlstars;
 import com.imstargg.client.brawlstars.request.PagingParam;
 import com.imstargg.client.brawlstars.response.BattleListResponse;
 import com.imstargg.client.brawlstars.response.ClubMemberListResponse;
+import com.imstargg.client.brawlstars.response.ClubRankingListResponse;
 import com.imstargg.client.brawlstars.response.ClubResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -55,4 +56,11 @@ public interface BrawlstarsApi {
     @GetMapping(value = "/v1/clubs/{clubTag}", consumes = MediaType.APPLICATION_JSON_VALUE)
     ClubResponse getClubInformation(@PathVariable String clubTag);
 
+    /**
+     * Get club rankings for a country or global rankings.
+     *
+     * @param countryCode Two letter country code, or 'global' for global rankings.
+     */
+    @GetMapping(value = "/v1/rankings/{countryCode}/clubs", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ClubRankingListResponse getClubRankingsForACountryOrGlobalRankings(@PathVariable String countryCode, @ModelAttribute PagingParam paging);
 }
