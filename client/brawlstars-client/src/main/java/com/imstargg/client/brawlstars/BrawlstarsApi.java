@@ -20,7 +20,7 @@ import java.util.List;
 
 @FeignClient(
         value = "brawlstars",
-        url = "${app.client.brawlstars.api.url}",
+        url = "${app.client.brawlstars.url}",
         configuration = BrawlstarsClientConfig.class
 )
 interface BrawlstarsApi {
@@ -81,7 +81,7 @@ interface BrawlstarsApi {
      */
     @GetMapping(value = "/v1/rankings/{countryCode}/brawlers/{brawlerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     ListResponse<PlayerRankingResponse> getBrawlerRankingsForACountryOrGlobalRankings(
-            @PathVariable String countryCode, @PathVariable String brawlerId, @ModelAttribute PagingParam paging);
+            @PathVariable String countryCode, @PathVariable long brawlerId, @ModelAttribute PagingParam paging);
 
     /**
      * Get player rankings for a country or global rankings.
@@ -92,12 +92,21 @@ interface BrawlstarsApi {
     ListResponse<PlayerRankingResponse> getPlayerRankingsForACountryOrGlobalRankings(
             @PathVariable String countryCode, @ModelAttribute PagingParam paging);
 
+    /**
+     * Get list of available brawlers.
+     */
     @GetMapping(value = "/v1/brawlers", consumes = MediaType.APPLICATION_JSON_VALUE)
     ListResponse<BrawlerResponse> getListOfAvailableBrawlers(@ModelAttribute PagingParam paging);
 
+    /**
+     * Get information about a brawler.
+     */
     @GetMapping(value = "/v1/brawlers/{brawlerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    BrawlerResponse getInformationAboutABrawler(@PathVariable String brawlerId);
+    BrawlerResponse getInformationAboutABrawler(@PathVariable long brawlerId);
 
+    /**
+     * Get event rotation for ongoing events.
+     */
     @GetMapping(value = "/v1/events/rotation", consumes = MediaType.APPLICATION_JSON_VALUE)
     List<ScheduledEventResponse> getEventRotation();
 }

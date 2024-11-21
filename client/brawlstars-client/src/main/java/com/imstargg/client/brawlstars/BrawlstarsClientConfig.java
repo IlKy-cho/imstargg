@@ -18,7 +18,7 @@ class BrawlstarsClientConfig {
     }
 
     @Bean
-    Retryer.Default retryer() {
+    public Retryer.Default retryer() {
         return new Retryer.Default();
     }
 }

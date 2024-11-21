@@ -21,4 +21,6 @@ public record PagingParam(
         @Nullable String after,
         @Nullable Integer limit
 ) {
+
+    public static final PagingParam DEFAULT = new PagingParam(null, null, null);
 }
