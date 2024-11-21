@@ -5,6 +5,7 @@ import com.imstargg.client.brawlstars.response.BattleListResponse;
 import com.imstargg.client.brawlstars.response.ClubMemberListResponse;
 import com.imstargg.client.brawlstars.response.ClubRankingListResponse;
 import com.imstargg.client.brawlstars.response.ClubResponse;
+import com.imstargg.client.brawlstars.response.PlayerRankingListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -62,5 +63,18 @@ public interface BrawlstarsApi {
      * @param countryCode Two letter country code, or 'global' for global rankings.
      */
     @GetMapping(value = "/v1/rankings/{countryCode}/clubs", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ClubRankingListResponse getClubRankingsForACountryOrGlobalRankings(@PathVariable String countryCode, @ModelAttribute PagingParam paging);
+    ClubRankingListResponse getClubRankingsForACountryOrGlobalRankings(
+            @PathVariable String countryCode, @ModelAttribute PagingParam paging);
+
+
+    /**
+     * Get brawler rankings for a country or global rankings.
+     * Brawler identifiers can be found by using the /v1/brawlers API endpoint.
+     *
+     * @param countryCode Two letter country code, or 'global' for global rankings.
+     * @param brawlerId Identifier of the brawler.
+     */
+    @GetMapping(value = "/v1/rankings/{countryCode}/brawlers/{brawlerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    PlayerRankingListResponse getBrawlerRankingsForACountryOrGlobalRankings(
+            @PathVariable String countryCode, @PathVariable String brawlerId, @ModelAttribute PagingParam paging);
 }
