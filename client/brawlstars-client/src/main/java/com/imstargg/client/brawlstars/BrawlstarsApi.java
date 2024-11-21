@@ -91,4 +91,7 @@ public interface BrawlstarsApi {
 
     @GetMapping(value = "/v1/brawlers", consumes = MediaType.APPLICATION_JSON_VALUE)
     ListResponse<BrawlerResponse> getListOfAvailableBrawlers(@ModelAttribute PagingParam paging);
+
+    @GetMapping(value = "/v1/brawlers/{brawlerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    BrawlerResponse getInformationAboutABrawler(@PathVariable String brawlerId);
 }
