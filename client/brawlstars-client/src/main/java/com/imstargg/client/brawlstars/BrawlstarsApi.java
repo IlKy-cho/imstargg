@@ -1,8 +1,9 @@
 package com.imstargg.client.brawlstars;
 
-import com.imstargg.client.brawlstars.request.PagingRequest;
+import com.imstargg.client.brawlstars.request.PagingParam;
 import com.imstargg.client.brawlstars.response.BattleListResponse;
 import com.imstargg.client.brawlstars.response.ClubMemberListResponse;
+import com.imstargg.client.brawlstars.response.ClubResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -41,5 +42,17 @@ public interface BrawlstarsApi {
      * @param clubTag Tag of the club.
      */
     @GetMapping(value = "/v1/clubs/{clubTag}/members", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ClubMemberListResponse getListClubMembers(@PathVariable String clubTag, @ModelAttribute PagingRequest paging);
+    ClubMemberListResponse getListClubMembers(@PathVariable String clubTag, @ModelAttribute PagingParam paging);
+
+    /**
+     * Get information about a single clan by club tag.
+     * Club tags can be found in game.
+     * Note that clan tags start with hash character '#' and that needs to be URL-encoded properly to work in URL,
+     * so for example clan tag '#2ABC' would become '%232ABC' in the URL.
+     *
+     * @param clubTag Tag of the club.
+     */
+    @GetMapping(value = "/v1/clubs/{clubTag}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ClubResponse getClubInformation(@PathVariable String clubTag);
+
 }

@@ -6,6 +6,6 @@ public record ClubMemberResponse(
         String nameColor,
         String role,
         int trophies,
-        ClubMemberIconResponse icon
+        PlayerIconResponse icon
 ) {
 }

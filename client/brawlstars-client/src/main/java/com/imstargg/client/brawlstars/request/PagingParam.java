@@ -16,7 +16,7 @@ import jakarta.annotation.Nullable;
  * @param limit
  * Limit the number of items returned in the response.
  */
-public record PagingRequest(
+public record PagingParam(
         @Nullable String before,
         @Nullable String after,
         @Nullable Integer limit
