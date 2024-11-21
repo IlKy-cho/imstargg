@@ -9,18 +9,21 @@ import com.imstargg.client.brawlstars.response.ClubResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
+import com.imstargg.client.brawlstars.response.ScheduledEventResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
+
 @FeignClient(
         value = "brawlstars",
         url = "${app.client.brawlstars.api.url}",
         configuration = BrawlstarsClientConfig.class
 )
-public interface BrawlstarsApi {
+interface BrawlstarsApi {
 
     /**
      * Get list of recent battle results for a player.
@@ -94,4 +97,7 @@ public interface BrawlstarsApi {
 
     @GetMapping(value = "/v1/brawlers/{brawlerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     BrawlerResponse getInformationAboutABrawler(@PathVariable String brawlerId);
+
+    @GetMapping(value = "/v1/events/rotation", consumes = MediaType.APPLICATION_JSON_VALUE)
+    List<ScheduledEventResponse> getEventRotation();
 }
