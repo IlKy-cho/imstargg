@@ -1,11 +1,13 @@
 package com.imstargg.client.brawlstars;
 
 import com.imstargg.client.brawlstars.request.PagingParam;
-import com.imstargg.client.brawlstars.response.BattleListResponse;
-import com.imstargg.client.brawlstars.response.ClubMemberListResponse;
-import com.imstargg.client.brawlstars.response.ClubRankingListResponse;
+import com.imstargg.client.brawlstars.response.BattleResponse;
+import com.imstargg.client.brawlstars.response.BrawlerResponse;
+import com.imstargg.client.brawlstars.response.ClubMemberResponse;
+import com.imstargg.client.brawlstars.response.ClubRankingResponse;
 import com.imstargg.client.brawlstars.response.ClubResponse;
-import com.imstargg.client.brawlstars.response.PlayerRankingListResponse;
+import com.imstargg.client.brawlstars.response.ListResponse;
+import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -27,7 +29,7 @@ public interface BrawlstarsApi {
      * @param playerTag Tag of the player.
      */
     @GetMapping(value = "/v1/players/{playerTag}/battlelog", consumes = MediaType.APPLICATION_JSON_VALUE)
-    BattleListResponse getLogOfRecentBattlesForAPlayer(@PathVariable String playerTag);
+    ListResponse<BattleResponse> getLogOfRecentBattlesForAPlayer(@PathVariable String playerTag);
 
     /**
      * Get information about a single player by player tag.
@@ -44,7 +46,7 @@ public interface BrawlstarsApi {
      * @param clubTag Tag of the club.
      */
     @GetMapping(value = "/v1/clubs/{clubTag}/members", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ClubMemberListResponse getListClubMembers(@PathVariable String clubTag, @ModelAttribute PagingParam paging);
+    ListResponse<ClubMemberResponse> getListClubMembers(@PathVariable String clubTag, @ModelAttribute PagingParam paging);
 
     /**
      * Get information about a single clan by club tag.
@@ -63,7 +65,7 @@ public interface BrawlstarsApi {
      * @param countryCode Two letter country code, or 'global' for global rankings.
      */
     @GetMapping(value = "/v1/rankings/{countryCode}/clubs", consumes = MediaType.APPLICATION_JSON_VALUE)
-    ClubRankingListResponse getClubRankingsForACountryOrGlobalRankings(
+    ListResponse<ClubRankingResponse> getClubRankingsForACountryOrGlobalRankings(
             @PathVariable String countryCode, @ModelAttribute PagingParam paging);
 
 
@@ -75,7 +77,7 @@ public interface BrawlstarsApi {
      * @param brawlerId Identifier of the brawler.
      */
     @GetMapping(value = "/v1/rankings/{countryCode}/brawlers/{brawlerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    PlayerRankingListResponse getBrawlerRankingsForACountryOrGlobalRankings(
+    ListResponse<PlayerRankingResponse> getBrawlerRankingsForACountryOrGlobalRankings(
             @PathVariable String countryCode, @PathVariable String brawlerId, @ModelAttribute PagingParam paging);
 
     /**
@@ -84,6 +86,9 @@ public interface BrawlstarsApi {
      * @param countryCode Two letter country code, or 'global' for global rankings.
      */
     @GetMapping(value = "/v1/rankings/{countryCode}/players", consumes = MediaType.APPLICATION_JSON_VALUE)
-    PlayerRankingListResponse getPlayerRankingsForACountryOrGlobalRankings(
+    ListResponse<PlayerRankingResponse> getPlayerRankingsForACountryOrGlobalRankings(
             @PathVariable String countryCode, @ModelAttribute PagingParam paging);
+
+    @GetMapping(value = "/v1/brawlers", consumes = MediaType.APPLICATION_JSON_VALUE)
+    ListResponse<BrawlerResponse> getListOfAvailableBrawlers(@ModelAttribute PagingParam paging);
 }
