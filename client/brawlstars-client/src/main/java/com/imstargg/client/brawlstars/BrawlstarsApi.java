@@ -1,6 +1,7 @@
 package com.imstargg.client.brawlstars;
 
 import com.imstargg.client.brawlstars.response.BattleListResponse;
+import com.imstargg.client.brawlstars.response.PlayerResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,5 +22,14 @@ public interface BrawlstarsApi {
      */
     @GetMapping(value = "/v1/players/{playerTag}/battlelog", consumes = MediaType.APPLICATION_JSON_VALUE)
     BattleListResponse getLogOfRecentBattlesForAPlayer(@PathVariable String playerTag);
+
+    /**
+     * Get information about a single player by player tag.
+     * Player tags can be found either in game or by from clan member list.
+     *
+     * @param playerTag Tag of the player.
+     */
+    @GetMapping(value = "/v1/players/{playerTag}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    PlayerResponse getPlayerInformation(@PathVariable String playerTag);
 
 }
