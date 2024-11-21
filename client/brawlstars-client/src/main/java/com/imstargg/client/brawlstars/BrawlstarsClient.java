@@ -1,5 +1,6 @@
 package com.imstargg.client.brawlstars;
 
+import com.imstargg.client.brawlstars.request.PagingParam;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
@@ -36,7 +37,7 @@ public class BrawlstarsClient {
     }
 
     public ListResponse<BrawlerResponse> getBrawlers() {
-        return brawlstarsApi.getListOfAvailableBrawlers(null);
+        return brawlstarsApi.getListOfAvailableBrawlers(PagingParam.DEFAULT);
     }
 
     public List<ScheduledEventResponse> getEventRotation() {
