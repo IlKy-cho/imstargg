@@ -1,0 +1,42 @@
+spring:
+  application.name: batch
+
+  profiles.active: local
+
+  config:
+    import:
+      - core-db.yml
+      - logging.yml
+
+  batch:
+    job:
+      enabled: true
+      name: ${job.name:healthCheckJob}
+    jdbc:
+      initialize-schema: never
+      isolation-level-for-create: default
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+

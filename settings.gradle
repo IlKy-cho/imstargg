@@ -1,0 +1,20 @@
+pluginManagement {
+    plugins {
+        id 'org.springframework.boot' version "${springBootVersion}"
+        id 'io.spring.dependency-management' version "${springDependencyManagementVersion}"
+        id 'org.asciidoctor.jvm.convert' version "${asciidoctorConvertVersion}"
+        id 'io.spring.javaformat' version "${springJavaFormatVersion}"
+    }
+}
+
+rootProject.name = 'imstargg'
+
+include("core:core-api")
+include("core:core-domain")
+include("core:core-enum")
+include("batch")
+include("storage:core-db")
+include("module:time-tracer")
+include("tests:java-test-util")
+include("support:monitoring")
+include("support:logging")

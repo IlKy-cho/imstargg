@@ -1,0 +1,9 @@
+dependencies {
+    api(project(":core:core-enum"))
+    implementation(project(":storage:core-db"))
+
+    implementation("org.springframework:spring-context")
+    implementation("org.springframework.boot:spring-boot-starter-logging")
+
+    testImplementation(testFixtures(project(":storage:core-db")))
+}
