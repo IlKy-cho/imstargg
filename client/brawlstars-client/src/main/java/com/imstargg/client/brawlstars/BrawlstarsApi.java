@@ -77,4 +77,13 @@ public interface BrawlstarsApi {
     @GetMapping(value = "/v1/rankings/{countryCode}/brawlers/{brawlerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     PlayerRankingListResponse getBrawlerRankingsForACountryOrGlobalRankings(
             @PathVariable String countryCode, @PathVariable String brawlerId, @ModelAttribute PagingParam paging);
+
+    /**
+     * Get player rankings for a country or global rankings.
+     *
+     * @param countryCode Two letter country code, or 'global' for global rankings.
+     */
+    @GetMapping(value = "/v1/rankings/{countryCode}/players", consumes = MediaType.APPLICATION_JSON_VALUE)
+    PlayerRankingListResponse getPlayerRankingsForACountryOrGlobalRankings(
+            @PathVariable String countryCode, @ModelAttribute PagingParam paging);
 }
