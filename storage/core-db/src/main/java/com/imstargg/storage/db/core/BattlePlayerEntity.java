@@ -28,9 +28,11 @@ public class BattlePlayerEntity extends BaseEntity {
     @Column(name = "power", updatable = false, nullable = false)
     private int power;
 
+    // 트로피전에서만 저장
     @Column(name = "trophies", updatable = false)
     private int trophies;
 
+    // 경쟁전에서만 저장
     @Column(name = "trophy_snapshot", updatable = false)
     private int trophySnapshot;
 
