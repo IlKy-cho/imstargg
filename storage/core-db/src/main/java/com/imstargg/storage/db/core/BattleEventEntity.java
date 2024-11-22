@@ -7,7 +7,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "battle_event")
-public class BattleEventEntity {
+public class BattleEventEntity extends BaseEntity {
 
     @Id
     @Column(name = "battle_event_id")

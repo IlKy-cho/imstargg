@@ -20,7 +20,7 @@ import jakarta.persistence.UniqueConstraint;
                 )
         }
 )
-public class GadgetEntity {
+public class GadgetEntity extends BaseEntity {
 
     @Id
     @Column(name = "gadget_id")

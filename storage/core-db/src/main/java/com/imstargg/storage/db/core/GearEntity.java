@@ -20,7 +20,7 @@ import jakarta.persistence.UniqueConstraint;
                 )
         }
 )
-public class GearEntity {
+public class GearEntity extends BattleEntity {
 
     @Id
     @Column(name = "gear_id")

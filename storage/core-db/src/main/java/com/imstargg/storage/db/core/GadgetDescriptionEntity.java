@@ -1,6 +1,6 @@
 package com.imstargg.storage.db.core;
 
 
-public class GadgetDescriptionEntity {
+public class GadgetDescriptionEntity extends BaseEntity {
     // TODO
 }

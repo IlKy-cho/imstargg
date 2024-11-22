@@ -24,7 +24,7 @@ import java.util.List;
                 )
         }
 )
-public class BrawlerEntity {
+public class BrawlerEntity extends BaseEntity {
 
     @Id
     @Column(name = "brawler_id")
