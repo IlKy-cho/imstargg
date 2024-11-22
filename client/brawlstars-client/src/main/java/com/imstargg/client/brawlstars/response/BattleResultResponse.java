@@ -1,5 +1,7 @@
 package com.imstargg.client.brawlstars.response;
 
+import jakarta.annotation.Nullable;
+
 import java.util.List;
 
 public record BattleResultResponse(
@@ -7,7 +9,7 @@ public record BattleResultResponse(
         String type,
         String result,
         int duration,
-        BattleResultPlayerResponse starPlayer,
+        @Nullable BattleResultPlayerResponse starPlayer,
         List<List<BattleResultPlayerResponse>> teams
 ) {
 }

@@ -12,11 +12,11 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class BrawlstarsClient {
+public class BrawlStarsClient {
 
-    private final BrawlstarsApi brawlstarsApi;
+    private final BrawlStarsApi brawlstarsApi;
 
-    BrawlstarsClient(BrawlstarsApi brawlstarsApi) {
+    BrawlStarsClient(BrawlStarsApi brawlstarsApi) {
         this.brawlstarsApi = brawlstarsApi;
     }
 
@@ -24,7 +24,7 @@ public class BrawlstarsClient {
         try {
             return brawlstarsApi.getLogOfRecentBattlesForAPlayer(playerTag);
         } catch (FeignException.NotFound ex) {
-            throw new BrawlstarsClientNotFoundException("playerTag=" + playerTag, ex);
+            throw new BrawlStarsClientNotFoundException("playerTag=" + playerTag, ex);
         }
     }
 
@@ -32,7 +32,7 @@ public class BrawlstarsClient {
         try {
             return brawlstarsApi.getPlayerInformation(playerTag);
         } catch (FeignException.NotFound ex) {
-            throw new BrawlstarsClientNotFoundException("playerTag=" + playerTag, ex);
+            throw new BrawlStarsClientNotFoundException("playerTag=" + playerTag, ex);
         }
     }
 
