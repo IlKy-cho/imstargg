@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "battle")
-public class BatchBattleEntity extends BaseEntity {
+public class BattleCollectionEntity extends BaseEntity {
 
     @Id
     @Column(name = "battle_id")
@@ -33,18 +33,18 @@ public class BatchBattleEntity extends BaseEntity {
 
     @Nullable
     @Column(name = "star_player_id", updatable = false)
-    private long starPlayerId;
+    private Long starPlayerId;
 
-    protected BatchBattleEntity() {
+    protected BattleCollectionEntity() {
     }
 
-    public BatchBattleEntity(
+    public BattleCollectionEntity(
             LocalDateTime battleTime,
             long eventId,
             String mode,
             String type,
             int duration,
-            long starPlayerId
+            @Nullable Long starPlayerId
     ) {
         this.battleTime = battleTime;
         this.eventId = eventId;
@@ -78,7 +78,8 @@ public class BatchBattleEntity extends BaseEntity {
         return duration;
     }
 
-    public long getStarPlayerId() {
+    @Nullable
+    public Long getStarPlayerId() {
         return starPlayerId;
     }
 }

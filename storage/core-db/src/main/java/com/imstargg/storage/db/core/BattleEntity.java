@@ -30,7 +30,7 @@ public class BattleEntity extends BaseEntity {
 
     @Nullable
     @Column(name = "star_player_id", updatable = false)
-    private long starPlayerId;
+    private Long starPlayerId;
 
     protected BattleEntity() {
     }
@@ -55,7 +55,8 @@ public class BattleEntity extends BaseEntity {
         return duration;
     }
 
-    public long getStarPlayerId() {
+    @Nullable
+    public Long getStarPlayerId() {
         return starPlayerId;
     }
 }

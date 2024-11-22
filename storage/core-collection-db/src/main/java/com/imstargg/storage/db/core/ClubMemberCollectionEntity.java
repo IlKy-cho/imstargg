@@ -4,16 +4,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(
-        name = "club_member",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_clubmember__clubtag_membertag", columnNames = {"club_tag", "member_tag"})
-        }
-)
-public class ClubMemberEntity extends BaseEntity {
+@Table(name = "club_member")
+public class ClubMemberCollectionEntity extends BaseEntity {
 
     @Id
     @Column(name = "club_member_id")
@@ -28,7 +22,13 @@ public class ClubMemberEntity extends BaseEntity {
     @Column(name = "role", length = 25, nullable = false)
     private String role;
 
-    protected ClubMemberEntity() {}
+    protected ClubMemberCollectionEntity() {}
+
+    public ClubMemberCollectionEntity(String clubTag, String memberTag, String role) {
+        this.clubTag = clubTag;
+        this.memberTag = memberTag;
+        this.role = role;
+    }
 
     public Long getId() {
         return id;

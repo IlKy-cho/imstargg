@@ -1,6 +1,7 @@
 package com.imstargg.storage.db.core;
 
 import com.imstargg.core.enums.PlayerStatus;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -51,30 +52,7 @@ public class PlayerEntity extends BaseEntity {
     @Column(name = "highest_trophies", nullable = false)
     private int highestTrophies;
 
-    @Column(name = "exp_level", nullable = false)
-    private int expLevel;
-
-    @Column(name = "exp_points", nullable = false)
-    private int expPoints;
-
-    @Column(name = "qualified_from_championship_challenge", nullable = false)
-    private boolean qualifiedFromChampionshipChallenge;
-
-    @Column(name = "victories_3vs3", nullable = false)
-    private int victories3vs3;
-
-    @Column(name = "solo_victories", nullable = false)
-    private int soloVictories;
-
-    @Column(name = "duo_victories", nullable = false)
-    private int duoVictories;
-
-    @Column(name = "best_robo_rumble_time", nullable = false)
-    private int bestRoboRumbleTime;
-
-    @Column(name = "best_time_as_big_brawler", nullable = false)
-    private int bestTimeAsBigBrawler;
-
+    @Nullable
     @Column(name = "club_tag", length = 45)
     private String clubTag;
 
@@ -113,38 +91,7 @@ public class PlayerEntity extends BaseEntity {
         return highestTrophies;
     }
 
-    public int getExpLevel() {
-        return expLevel;
-    }
-
-    public int getExpPoints() {
-        return expPoints;
-    }
-
-    public boolean isQualifiedFromChampionshipChallenge() {
-        return qualifiedFromChampionshipChallenge;
-    }
-
-    public int getVictories3vs3() {
-        return victories3vs3;
-    }
-
-    public int getSoloVictories() {
-        return soloVictories;
-    }
-
-    public int getDuoVictories() {
-        return duoVictories;
-    }
-
-    public int getBestRoboRumbleTime() {
-        return bestRoboRumbleTime;
-    }
-
-    public int getBestTimeAsBigBrawler() {
-        return bestTimeAsBigBrawler;
-    }
-
+    @Nullable
     public String getClubTag() {
         return clubTag;
     }

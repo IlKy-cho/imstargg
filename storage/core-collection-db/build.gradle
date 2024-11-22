@@ -1,0 +1,4 @@
+dependencies {
+    implementation(project(":core:core-enum"))
+    api(project(":storage:core-db"))
+}

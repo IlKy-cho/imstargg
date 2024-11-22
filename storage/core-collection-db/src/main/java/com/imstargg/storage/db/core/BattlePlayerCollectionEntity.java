@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "battle_player")
-public class BattlePlayerEntity extends BaseEntity {
+public class BattlePlayerCollectionEntity extends BaseEntity {
 
     @Id
     @Column(name = "battle_result_id")
@@ -29,11 +29,35 @@ public class BattlePlayerEntity extends BaseEntity {
     @Column(name = "power", updatable = false, nullable = false)
     private int power;
 
+    // 트로피전에서만 저장
     @Nullable
     @Column(name = "trophies", updatable = false)
     private Integer trophies;
 
-    protected BattlePlayerEntity() {
+    // 경쟁전에서만 저장
+    @Nullable
+    @Column(name = "trophy_snapshot", updatable = false)
+    private Integer trophySnapshot;
+
+    protected BattlePlayerCollectionEntity() {
+    }
+
+    public BattlePlayerCollectionEntity(
+            long battleId,
+            long playerId,
+            String result,
+            long brawlerId,
+            int power,
+            @Nullable Integer trophies,
+            @Nullable Integer trophySnapshot
+    ) {
+        this.battleId = battleId;
+        this.playerId = playerId;
+        this.result = result;
+        this.brawlerId = brawlerId;
+        this.power = power;
+        this.trophies = trophies;
+        this.trophySnapshot = trophySnapshot;
     }
 
     public Long getId() {
@@ -65,4 +89,8 @@ public class BattlePlayerEntity extends BaseEntity {
         return trophies;
     }
 
+    @Nullable
+    public Integer getTrophySnapshot() {
+        return trophySnapshot;
+    }
 }

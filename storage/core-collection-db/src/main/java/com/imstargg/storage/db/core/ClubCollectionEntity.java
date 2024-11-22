@@ -3,21 +3,11 @@ package com.imstargg.storage.db.core;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(
-        name = "club",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_club__brawlstarstag", columnNames = {"brawl_stars_tag"})
-        },
-        indexes = {
-                @Index(name = "ix_club__name", columnList = "name")
-        }
-)
-public class ClubEntity extends BaseEntity {
+@Table(name = "club")
+public class ClubCollectionEntity extends BaseEntity {
 
     @Id
     @Column(name = "club_id")
@@ -44,7 +34,25 @@ public class ClubEntity extends BaseEntity {
     @Column(name = "trophies", nullable = false)
     private int trophies;
 
-    protected ClubEntity() {
+    protected ClubCollectionEntity() {
+    }
+
+    public ClubCollectionEntity(
+            String brawlStarsTag,
+            String name,
+            String description,
+            String type,
+            long badgeId,
+            int requiredTrophies,
+            int trophies
+    ) {
+        this.brawlStarsTag = brawlStarsTag;
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.badgeId = badgeId;
+        this.requiredTrophies = requiredTrophies;
+        this.trophies = trophies;
     }
 
     public Long getId() {
