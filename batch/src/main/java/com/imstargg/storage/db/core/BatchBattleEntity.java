@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "battle")
-public class BattleEntity extends BaseEntity {
+public class BatchBattleEntity extends BaseEntity {
 
     @Id
     @Column(name = "battle_id")
@@ -22,6 +22,9 @@ public class BattleEntity extends BaseEntity {
     @Column(name = "event_id", updatable = false, nullable = false)
     private long eventId;
 
+    @Column(name = "mode", length = 65, updatable = false, nullable = false)
+    private String mode;
+
     @Column(name = "type", length = 65, updatable = false, nullable = false)
     private String type;
 
@@ -32,7 +35,23 @@ public class BattleEntity extends BaseEntity {
     @Column(name = "star_player_id", updatable = false)
     private long starPlayerId;
 
-    protected BattleEntity() {
+    protected BatchBattleEntity() {
+    }
+
+    public BatchBattleEntity(
+            LocalDateTime battleTime,
+            long eventId,
+            String mode,
+            String type,
+            int duration,
+            long starPlayerId
+    ) {
+        this.battleTime = battleTime;
+        this.eventId = eventId;
+        this.mode = mode;
+        this.type = type;
+        this.duration = duration;
+        this.starPlayerId = starPlayerId;
     }
 
     public Long getId() {
@@ -45,6 +64,10 @@ public class BattleEntity extends BaseEntity {
 
     public long getEventId() {
         return eventId;
+    }
+
+    public String getMode() {
+        return mode;
     }
 
     public String getType() {
