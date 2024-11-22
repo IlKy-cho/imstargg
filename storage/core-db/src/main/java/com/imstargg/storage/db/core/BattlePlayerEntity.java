@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "battle_result")
+@Table(name = "battle_player")
 public class BattlePlayerEntity extends BaseEntity {
 
     @Id

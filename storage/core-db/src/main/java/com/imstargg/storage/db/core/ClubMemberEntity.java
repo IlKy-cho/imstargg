@@ -10,7 +10,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(
         name = "club_member",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_club_member__clubtag_membertag", columnNames = {"club_tag", "member_tag"})
+                @UniqueConstraint(name = "uk_clubmember__clubtag_membertag", columnNames = {"club_tag", "member_tag"})
         }
 )
 public class ClubMemberEntity extends BaseEntity {
