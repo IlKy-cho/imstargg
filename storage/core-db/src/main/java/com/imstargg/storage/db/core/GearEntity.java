@@ -15,7 +15,7 @@ import jakarta.persistence.UniqueConstraint;
         name = "gear",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_gear__brawl_stars_id",
+                        name = "uk_gear__brawlstarsid",
                         columnNames = "brawl_stars_id"
                 )
         }
