@@ -4,9 +4,18 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "battle_event")
+@Table(
+        name = "battle_event",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_battleevent__brawlstarsid",
+                        columnNames = "brawlstars_id"
+                )
+        }
+)
 public class BattleEventEntity extends BaseEntity {
 
     @Id

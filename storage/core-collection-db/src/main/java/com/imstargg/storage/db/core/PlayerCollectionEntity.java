@@ -20,12 +20,12 @@ public class PlayerCollectionEntity {
     @Column(name = "player_id")
     private Long id;
 
+    @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
+    private String brawlStarsTag;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", columnDefinition = "varchar(45)", nullable = false)
     private PlayerStatus status;
-
-    @Column(name = "tag", length = 45, updatable = false, nullable = false)
-    private String tag;
 
     @Column(name = "name", length = 105, nullable = false)
     private String name;
@@ -67,15 +67,15 @@ public class PlayerCollectionEntity {
     private int bestTimeAsBigBrawler;
 
     @Nullable
-    @Column(name = "club_tag", length = 45)
-    private String clubTag;
+    @Column(name = "club_id")
+    private Long clubId;
 
     protected PlayerCollectionEntity() {
     }
 
     public PlayerCollectionEntity(
             PlayerStatus status,
-            String tag,
+            String brawlStarsTag,
             String name,
             String nameColor,
             long iconId,
@@ -89,10 +89,10 @@ public class PlayerCollectionEntity {
             int duoVictories,
             int bestRoboRumbleTime,
             int bestTimeAsBigBrawler,
-            @Nullable String clubTag
+            @Nullable Long clubId
     ) {
         this.status = status;
-        this.tag = tag;
+        this.brawlStarsTag = brawlStarsTag;
         this.name = name;
         this.nameColor = nameColor;
         this.iconId = iconId;
@@ -106,6 +106,75 @@ public class PlayerCollectionEntity {
         this.duoVictories = duoVictories;
         this.bestRoboRumbleTime = bestRoboRumbleTime;
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
-        this.clubTag = clubTag;
+        this.clubId = clubId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public PlayerStatus getStatus() {
+        return status;
+    }
+
+    public String getBrawlStarsTag() {
+        return brawlStarsTag;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNameColor() {
+        return nameColor;
+    }
+
+    public long getIconId() {
+        return iconId;
+    }
+
+    public int getTrophies() {
+        return trophies;
+    }
+
+    public int getHighestTrophies() {
+        return highestTrophies;
+    }
+
+    public int getExpLevel() {
+        return expLevel;
+    }
+
+    public int getExpPoints() {
+        return expPoints;
+    }
+
+    public boolean isQualifiedFromChampionshipChallenge() {
+        return qualifiedFromChampionshipChallenge;
+    }
+
+    public int getVictories3vs3() {
+        return victories3vs3;
+    }
+
+    public int getSoloVictories() {
+        return soloVictories;
+    }
+
+    public int getDuoVictories() {
+        return duoVictories;
+    }
+
+    public int getBestRoboRumbleTime() {
+        return bestRoboRumbleTime;
+    }
+
+    public int getBestTimeAsBigBrawler() {
+        return bestTimeAsBigBrawler;
+    }
+
+    @Nullable
+    public Long getClubId() {
+        return clubId;
     }
 }

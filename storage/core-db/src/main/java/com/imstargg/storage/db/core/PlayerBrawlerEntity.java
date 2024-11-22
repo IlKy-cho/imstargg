@@ -15,7 +15,7 @@ import java.util.List;
         name = "player_brawler",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_playerbrawler_playerid_brawlerid",
+                        name = "uk_playerbrawler__playerid_brawlerid",
                         columnNames = {"player_id", "brawler_id"}
                 )
         }
@@ -35,7 +35,7 @@ public class PlayerBrawlerEntity {
     @Column(name = "power", nullable = false)
     private int power;
 
-    @Column(name = "rank", nullable = false)
+    @Column(name = "trophy_rank", nullable = false)
     private int rank;
 
     @Column(name = "trophies", nullable = false)

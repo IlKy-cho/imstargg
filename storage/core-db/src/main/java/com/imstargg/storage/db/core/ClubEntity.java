@@ -11,7 +11,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(
         name = "club",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_club__brawlstarstag", columnNames = {"brawl_stars_tag"})
+                @UniqueConstraint(name = "uk_club__brawlstarstag", columnNames = {"brawlstars_tag"})
         },
         indexes = {
                 @Index(name = "ix_club__name", columnList = "name")
@@ -23,7 +23,7 @@ public class ClubEntity extends BaseEntity {
     @Column(name = "club_id")
     private Long id;
 
-    @Column(name = "brawl_stars_tag", length = 45, updatable = false, nullable = false)
+    @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
     private String brawlStarsTag;
 
     @Column(name = "name", length = 105, updatable = false, nullable = false)

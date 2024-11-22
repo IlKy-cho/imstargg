@@ -4,10 +4,18 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "battle_player")
+@Table(
+        name = "battle_player",
+        indexes = {
+                @Index(name = "ix_battleplayer__battleid", columnList = "battle_id"),
+                @Index(name = "ix_battleplayer__playerid", columnList = "player_id"),
+                @Index(name = "ix_battleplayer__brawlerid", columnList = "brawler_id")
+        }
+)
 public class BattlePlayerEntity extends BaseEntity {
 
     @Id

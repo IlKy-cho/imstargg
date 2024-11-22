@@ -14,7 +14,7 @@ public class StarPowerCollectionEntity {
     @Column(name = "star_power_id")
     private Long id;
 
-    @Column(name = "brawl_stars_id", updatable = false, nullable = false)
+    @Column(name = "brawlstars_id", updatable = false, nullable = false)
     private long brawlStarsId;
 
     @Column(name = "name", length = 105, updatable = false, nullable = false)

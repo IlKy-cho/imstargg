@@ -16,7 +16,7 @@ import jakarta.persistence.UniqueConstraint;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_gear__brawlstarsid",
-                        columnNames = "brawl_stars_id"
+                        columnNames = "brawlstars_id"
                 )
         }
 )
@@ -26,7 +26,7 @@ public class GearEntity extends BaseEntity {
     @Column(name = "gear_id")
     private Long id;
 
-    @Column(name = "brawl_stars_id", updatable = false, nullable = false)
+    @Column(name = "brawlstars_id", updatable = false, nullable = false)
     private long brawlStarsId;
 
     @Column(name = "name", length = 105, updatable = false, nullable = false)

@@ -22,10 +22,10 @@ public class BattleCollectionEntity extends BaseEntity {
     @Column(name = "event_id", updatable = false, nullable = false)
     private long eventId;
 
-    @Column(name = "mode", length = 65, updatable = false, nullable = false)
+    @Column(name = "mode", length = 105, updatable = false, nullable = false)
     private String mode;
 
-    @Column(name = "type", length = 65, updatable = false, nullable = false)
+    @Column(name = "type", length = 105, updatable = false, nullable = false)
     private String type;
 
     @Column(name = "duration", updatable = false, nullable = false)
