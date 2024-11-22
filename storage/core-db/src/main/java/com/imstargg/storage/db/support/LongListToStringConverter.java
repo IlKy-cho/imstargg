@@ -1,4 +1,4 @@
-package com.imstargg.storage.db.core;
+package com.imstargg.storage.db.support;
 
 public class LongListToStringConverter extends AbstractListToStringConverter<Long> {
 

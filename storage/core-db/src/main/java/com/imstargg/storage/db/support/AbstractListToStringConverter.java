@@ -1,4 +1,4 @@
-package com.imstargg.storage.db.core;
+package com.imstargg.storage.db.support;
 
 import jakarta.persistence.AttributeConverter;
 
