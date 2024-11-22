@@ -17,7 +17,7 @@ import jakarta.persistence.UniqueConstraint;
 @Table(
         name = "player",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_player__tag", columnNames = "tag")
+                @UniqueConstraint(name = "uk_player__brawlstarstag", columnNames = "brawlstars_tag")
         },
         indexes = {
                 @Index(name = "ix_player__name", columnList = "name")
@@ -30,7 +30,7 @@ public class PlayerEntity extends BaseEntity {
     @Column(name = "player_id")
     private Long id;
 
-    @Column(name = "brawl_stars_tag", length = 45, updatable = false, nullable = false)
+    @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
     private String brawlStarsTag;
 
     @Enumerated(EnumType.STRING)
@@ -53,8 +53,8 @@ public class PlayerEntity extends BaseEntity {
     private int highestTrophies;
 
     @Nullable
-    @Column(name = "club_tag", length = 45)
-    private String clubTag;
+    @Column(name = "club_id")
+    private Long clubId;
 
     protected PlayerEntity() {
     }
@@ -92,7 +92,7 @@ public class PlayerEntity extends BaseEntity {
     }
 
     @Nullable
-    public String getClubTag() {
-        return clubTag;
+    public Long getClubId() {
+        return clubId;
     }
 }

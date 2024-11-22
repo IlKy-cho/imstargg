@@ -3,7 +3,7 @@ bootJar.enabled = true
 dependencies {
 
     implementation(project(":core:core-enum"))
-    implementation(project(":storage:core-db"))
+    implementation(project(":storage:core-collection-db"))
     implementation(project(":support:logging"))
 
     // Spring

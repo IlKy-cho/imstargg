@@ -1,4 +1,4 @@
-package com.imstargg.storage.db.core;
+package com.imstargg;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;

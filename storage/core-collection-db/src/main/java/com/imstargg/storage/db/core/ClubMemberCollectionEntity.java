@@ -13,20 +13,20 @@ public class ClubMemberCollectionEntity extends BaseEntity {
     @Column(name = "club_member_id")
     private Long id;
 
-    @Column(name = "club_tag", length = 45, updatable = false, nullable = false)
-    private String clubTag;
+    @Column(name = "club_id", updatable = false, nullable = false)
+    private long clubId;
 
-    @Column(name = "member_tag", length = 45, updatable = false, nullable = false)
-    private String memberTag;
+    @Column(name = "member_id", updatable = false, nullable = false)
+    private long memberId;
 
     @Column(name = "role", length = 25, nullable = false)
     private String role;
 
     protected ClubMemberCollectionEntity() {}
 
-    public ClubMemberCollectionEntity(String clubTag, String memberTag, String role) {
-        this.clubTag = clubTag;
-        this.memberTag = memberTag;
+    public ClubMemberCollectionEntity(long clubId, long memberId, String role) {
+        this.clubId = clubId;
+        this.memberId = memberId;
         this.role = role;
     }
 
@@ -34,12 +34,12 @@ public class ClubMemberCollectionEntity extends BaseEntity {
         return id;
     }
 
-    public String getClubTag() {
-        return clubTag;
+    public long getClubId() {
+        return clubId;
     }
 
-    public String getMemberTag() {
-        return memberTag;
+    public long getMemberId() {
+        return memberId;
     }
 
     public String getRole() {

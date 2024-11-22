@@ -26,7 +26,7 @@ public class PlayerBrawlerCollectionEntity {
     @Column(name = "power", nullable = false)
     private int power;
 
-    @Column(name = "rank", nullable = false)
+    @Column(name = "trophy_rank", nullable = false)
     private int rank;
 
     @Column(name = "trophies", nullable = false)
