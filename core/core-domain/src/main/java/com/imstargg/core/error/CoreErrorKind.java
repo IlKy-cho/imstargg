@@ -1,4 +1,4 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.error;
 
 public enum CoreErrorKind {
 

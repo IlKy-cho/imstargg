@@ -1,9 +1,9 @@
 package com.imstargg.core.api.controller.error;
 
 
-import com.imstargg.core.domain.CoreErrorKind;
-import com.imstargg.core.domain.CoreErrorType;
-import com.imstargg.core.domain.CoreException;
+import com.imstargg.core.error.CoreErrorKind;
+import com.imstargg.core.error.CoreErrorType;
+import com.imstargg.core.error.CoreException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

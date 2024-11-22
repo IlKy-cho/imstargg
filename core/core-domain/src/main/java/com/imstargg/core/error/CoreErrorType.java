@@ -1,7 +1,7 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.error;
 
-import static com.imstargg.core.domain.CoreErrorKind.SERVER_ERROR;
-import static com.imstargg.core.domain.CoreErrorLevel.ERROR;
+import static com.imstargg.core.error.CoreErrorKind.SERVER_ERROR;
+import static com.imstargg.core.error.CoreErrorLevel.ERROR;
 
 public enum CoreErrorType {
 

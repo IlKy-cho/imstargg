@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.error;
 
 
-import com.imstargg.core.domain.CoreErrorType;
+import com.imstargg.core.error.CoreErrorType;
 
 public record ErrorResponse(
         CoreErrorType type,
