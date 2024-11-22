@@ -18,8 +18,8 @@ public abstract class BaseEntity {
     private LocalDateTime createdAt;
 
     @LastModifiedDate
-    @Column(name = "last_modified_at", nullable = false)
-    private LocalDateTime lastModifiedAt;
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
 
     @Column(name = "deleted", nullable = false)
     private boolean deleted = false;
@@ -28,8 +28,8 @@ public abstract class BaseEntity {
         return createdAt;
     }
 
-    public LocalDateTime getLastModifiedAt() {
-        return lastModifiedAt;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
     public boolean isDeleted() {

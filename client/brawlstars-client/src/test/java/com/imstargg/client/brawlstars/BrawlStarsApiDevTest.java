@@ -23,10 +23,10 @@ import java.util.List;
 @TestPropertySource(properties = {
         "app.client.brawlstars.key="
 })
-class BrawlstarsApiDevTest {
+class BrawlStarsApiDevTest {
 
     @Autowired
-    private BrawlstarsApi brawlstarsApi;
+    private BrawlStarsApi brawlstarsApi;
 
     private String playerTag = "";
     private String clubTag = "";

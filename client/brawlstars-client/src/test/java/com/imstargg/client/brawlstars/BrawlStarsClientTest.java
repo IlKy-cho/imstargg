@@ -13,13 +13,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
 @ExtendWith(MockitoExtension.class)
-class BrawlstarsClientTest {
+class BrawlStarsClientTest {
 
     @InjectMocks
-    private BrawlstarsClient brawlstarsClient;
+    private BrawlStarsClient brawlstarsClient;
 
     @Mock
-    private BrawlstarsApi brawlstarsApi;
+    private BrawlStarsApi brawlstarsApi;
 
     @Test
     void 플레이어_전적_조회시_없는_플레이어일_경우_예외를_발생시킨다() {
@@ -31,7 +31,7 @@ class BrawlstarsClientTest {
         // when
         // then
         assertThatThrownBy(() -> brawlstarsClient.getPlayerRecentBattles(playerTag))
-                .isInstanceOf(BrawlstarsClientNotFoundException.class);
+                .isInstanceOf(BrawlStarsClientNotFoundException.class);
     }
 
     @Test
@@ -44,7 +44,7 @@ class BrawlstarsClientTest {
         // when
         // then
         assertThatThrownBy(() -> brawlstarsClient.getPlayerInformation(playerTag))
-                .isInstanceOf(BrawlstarsClientNotFoundException.class);
+                .isInstanceOf(BrawlStarsClientNotFoundException.class);
     }
 
     @Test

@@ -21,9 +21,9 @@ import java.util.List;
 @FeignClient(
         value = "brawlstars",
         url = "${app.client.brawlstars.url}",
-        configuration = BrawlstarsClientConfig.class
+        configuration = BrawlStarsClientConfig.class
 )
-interface BrawlstarsApi {
+interface BrawlStarsApi {
 
     /**
      * Get list of recent battle results for a player.

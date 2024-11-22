@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableFeignClients
 @Configuration
-class BrawlstarsClientConfig {
+class BrawlStarsClientConfig {
 
     @Bean
     public AuthorizationKeyInterceptor authorizationKeyInterceptor(
