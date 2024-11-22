@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 public class BattlePlayerCollectionEntity extends BaseEntity {
 
     @Id
-    @Column(name = "battle_result_id")
+    @Column(name = "battle_player_id")
     private Long id;
 
     @Column(name = "battle_id", updatable = false, nullable = false)
