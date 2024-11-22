@@ -1,29 +1,26 @@
 package com.imstargg.storage.db.core;
 
-import com.imstargg.core.enums.GearRarity;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "gear",
+        name = "star_power",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_gear__brawl_stars_id",
+                        name = "uk_starpower__brawlstarsid",
                         columnNames = "brawl_stars_id"
                 )
         }
 )
-public class GearEntity extends BaseEntity {
+public class StarPowerEntity {
+
 
     @Id
-    @Column(name = "gear_id")
+    @Column(name = "star_power_id")
     private Long id;
 
     @Column(name = "brawl_stars_id", updatable = false, nullable = false)
@@ -32,12 +29,7 @@ public class GearEntity extends BaseEntity {
     @Column(name = "name", length = 105, updatable = false, nullable = false)
     private String name;
 
-    @Nullable
-    @Enumerated(EnumType.STRING)
-    @Column(name = "rarity", columnDefinition = "varchar(45)")
-    private GearRarity rarity;
-
-    protected GearEntity() {
+    protected StarPowerEntity() {
     }
 
     public Long getId() {
@@ -50,10 +42,5 @@ public class GearEntity extends BaseEntity {
 
     public String getName() {
         return name;
-    }
-
-    @Nullable
-    public GearRarity getRarity() {
-        return rarity;
     }
 }
