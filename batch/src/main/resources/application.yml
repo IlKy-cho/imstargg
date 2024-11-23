@@ -16,6 +16,15 @@ spring:
       initialize-schema: never
       isolation-level-for-create: default
 
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 30
+        batch_versioned_data: true
+        order_inserts: true
+        order_updates: true
+
 ---
 spring:
   config:
