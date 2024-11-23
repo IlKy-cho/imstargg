@@ -21,7 +21,7 @@ class LongListToStringConverterTest {
     }
 
     @Test
-    void attribute가_비어있을_경우_칼럼값_null을_반환한다() {
+    void attribute가_비어있을_경우_칼럼값_빈리스트를_반환한다() {
         // given
         LongListToStringConverter converter = new LongListToStringConverter();
 
@@ -29,7 +29,7 @@ class LongListToStringConverterTest {
         String result = converter.convertToDatabaseColumn(List.of());
 
         // then
-        assertThat(result).isNull();
+        assertThat(result).isEqualTo("[]");
     }
 
     @Test
@@ -45,7 +45,7 @@ class LongListToStringConverterTest {
     }
 
     @Test
-    void dbData가_null일_경우_빈_리스트를_반환한다() {
+    void dbData가_null일_경우_null을_반환한다() {
         // given
         LongListToStringConverter converter = new LongListToStringConverter();
 
@@ -53,7 +53,7 @@ class LongListToStringConverterTest {
         List<Long> result = converter.convertToEntityAttribute(null);
 
         // then
-        assertThat(result).isEmpty();
+        assertThat(result).isNull();
     }
 
     @Test
