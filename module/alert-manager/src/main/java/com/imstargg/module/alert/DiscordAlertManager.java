@@ -2,7 +2,6 @@ package com.imstargg.module.alert;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestClient;
 
 class DiscordAlertManager implements AlertManager {
@@ -24,7 +23,7 @@ class DiscordAlertManager implements AlertManager {
                     .uri(webhookUrl)
                     .body(DiscordWebhookRequest.from(alertCommand))
                     .retrieve();
-        } catch (HttpServerErrorException ex) {
+        } catch (Exception ex) {
             log.error("Discord 알람 전송 실패", ex);
         }
     }
