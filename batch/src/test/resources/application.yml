@@ -8,3 +8,7 @@ spring:
     jdbc:
       initialize-schema: embedded
       isolation-level-for-create: default
+
+app.client.brawlstars:
+  url: "https://example.brawlstars.com"
+  key: "test-key"
