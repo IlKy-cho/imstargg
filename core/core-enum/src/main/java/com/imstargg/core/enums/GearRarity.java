@@ -4,4 +4,5 @@ public enum GearRarity {
 
     SUPER_RARE,
     EPIC,
+    MYTHIC,
 }

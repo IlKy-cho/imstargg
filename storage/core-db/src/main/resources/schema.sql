@@ -129,7 +129,6 @@ create table gadget
     gadget_id     bigint       not null auto_increment,
     brawlstars_id bigint       not null,
     name          varchar(105) not null,
-    tier          varchar(45),
     created_at    timestamp(6) not null,
     updated_at    timestamp(6) not null,
     deleted       boolean      not null,
