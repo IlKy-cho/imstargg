@@ -6,10 +6,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
         name = "battle_player",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_battleplayer__battleid_playerid", columnNames = {"battle_id", "player_id"})
+        },
         indexes = {
                 @Index(name = "ix_battleplayer__battleid", columnList = "battle_id"),
                 @Index(name = "ix_battleplayer__playerid", columnList = "player_id"),
