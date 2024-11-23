@@ -145,6 +145,7 @@ create table gear
     gear_id       bigint       not null auto_increment,
     brawlstars_id bigint       not null,
     name          varchar(105) not null,
+    level         int,
     rarity        varchar(45),
     created_at    timestamp(6) not null,
     updated_at    timestamp(6) not null,
