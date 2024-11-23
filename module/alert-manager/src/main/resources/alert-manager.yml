@@ -1,0 +1,21 @@
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - local
+      - local-dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - dev
+      - prod
+
+app:
+  alert:
+    type: DISCORD
+    discord.webhook-url: ${DISCORD_WEBHOOK_URL}
