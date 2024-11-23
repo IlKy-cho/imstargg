@@ -26,8 +26,7 @@ public class GadgetBrawlStarsKeyRepositoryInMemoryCache extends AbstractInMemory
 
     @Override
     protected Optional<GadgetCollectionEntity> findData(Long key) {
-        return gadgetJpaRepository.findByBrawlStarsId(key)
-                .filter(GadgetCollectionEntity::isActive);
+        return gadgetJpaRepository.findByBrawlStarsId(key);
     }
 
     @Override

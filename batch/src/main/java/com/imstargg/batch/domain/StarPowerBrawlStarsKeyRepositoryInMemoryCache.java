@@ -28,8 +28,7 @@ public class StarPowerBrawlStarsKeyRepositoryInMemoryCache
 
     @Override
     protected Optional<StarPowerCollectionEntity> findData(Long key) {
-        return starPowerJpaRepository.findByBrawlStarsId(key)
-                .filter(StarPowerCollectionEntity::isActive);
+        return starPowerJpaRepository.findByBrawlStarsId(key);
     }
 
     @Override
