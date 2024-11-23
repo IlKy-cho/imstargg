@@ -6,6 +6,7 @@ spring:
   config:
     import:
       - core-db.yml
+      - brawlstars-client.yml
       - logging.yml
 
   batch:
