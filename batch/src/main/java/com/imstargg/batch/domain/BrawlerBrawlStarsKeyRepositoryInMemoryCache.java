@@ -3,12 +3,10 @@ package com.imstargg.batch.domain;
 import com.imstargg.batch.support.AbstractInMemoryCacheRepository;
 import com.imstargg.storage.db.core.BrawlerCollectionEntity;
 import com.imstargg.storage.db.core.BrawlerCollectionJpaRepository;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-@Lazy
 @Component
 public class BrawlerBrawlStarsKeyRepositoryInMemoryCache
         extends AbstractInMemoryCacheRepository<Long, BrawlerCollectionEntity> {
