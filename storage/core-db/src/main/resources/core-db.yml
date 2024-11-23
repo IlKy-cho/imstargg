@@ -50,10 +50,6 @@ spring:
     username: root
     password:
 
-  jpa:
-    hibernate:
-      ddl-auto: validate
-
 logging:
   level:
     org:
@@ -66,10 +62,6 @@ spring:
   config:
     activate:
       on-profile: local-dev
-
-  jpa:
-    hibernate:
-      ddl-auto: validate
 
 logging:
   level:
