@@ -52,6 +52,9 @@ create table battle_player
     primary key (battle_player_id)
 ) engine = innodb;
 
+alter table battle_player
+    add constraint uk_battleplayer__battleid_playerid unique (battle_id, player_id);
+
 create index ix_battleplayer__battleid
     on battle_player (battle_id);
 
