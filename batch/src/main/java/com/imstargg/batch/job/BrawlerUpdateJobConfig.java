@@ -3,8 +3,10 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.BrawlerBrawlStarsKeyRepositoryInMemoryCache;
 import com.imstargg.batch.domain.GadgetBrawlStarsKeyRepositoryInMemoryCache;
 import com.imstargg.batch.domain.StarPowerBrawlStarsKeyRepositoryInMemoryCache;
+import com.imstargg.batch.job.listener.ExceptionAlertJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
+import com.imstargg.module.alert.AlertManager;
 import com.imstargg.storage.db.core.BrawlerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
@@ -35,6 +37,7 @@ class BrawlerUpdateJobConfig {
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
 
+    private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
     private final BrawlerBrawlStarsKeyRepositoryInMemoryCache brawlerRepository;
     private final GadgetBrawlStarsKeyRepositoryInMemoryCache gadgetRepository;
@@ -45,6 +48,7 @@ class BrawlerUpdateJobConfig {
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
+            AlertManager alertManager,
             BrawlStarsClient brawlStarsClient,
             BrawlerBrawlStarsKeyRepositoryInMemoryCache brawlerRepository,
             GadgetBrawlStarsKeyRepositoryInMemoryCache gadgetRepository,
@@ -54,6 +58,7 @@ class BrawlerUpdateJobConfig {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
+        this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
         this.brawlerRepository = brawlerRepository;
         this.gadgetRepository = gadgetRepository;
@@ -66,6 +71,7 @@ class BrawlerUpdateJobConfig {
         return jobBuilder
                 .incrementer(new RunTimestampIncrementer(clock))
                 .start(step())
+                .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .build();
     }
 
