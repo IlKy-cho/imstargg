@@ -2,7 +2,7 @@ package com.imstargg.storage.db.core;
 
 import com.imstargg.core.enums.BrawlerRarity;
 import com.imstargg.core.enums.BrawlerRole;
-import com.imstargg.storage.db.support.LongListToStringConverter;
+import com.imstargg.storage.db.support.LongSetToStringConverter;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -42,15 +42,15 @@ public class BrawlerCollectionEntity extends BaseEntity {
     @Column(name = "role", columnDefinition = "varchar(45)", updatable = false)
     private BrawlerRole role;
 
-    @Convert(converter = LongListToStringConverter.class)
+    @Convert(converter = LongSetToStringConverter.class)
     @Column(name = "gear_ids", columnDefinition = "varchar(255)", nullable = false)
     private Set<Long> gearIds = new HashSet<>();
 
-    @Convert(converter = LongListToStringConverter.class)
+    @Convert(converter = LongSetToStringConverter.class)
     @Column(name = "star_power_ids", columnDefinition = "varchar(255)", nullable = false)
     private Set<Long> starPowerIds = new HashSet<>();
 
-    @Convert(converter = LongListToStringConverter.class)
+    @Convert(converter = LongSetToStringConverter.class)
     @Column(name = "gadget_ids", columnDefinition = "varchar(255)", nullable = false)
     private Set<Long> gadgetIds = new HashSet<>();
 
