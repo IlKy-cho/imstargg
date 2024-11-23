@@ -14,7 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "brwaler")
@@ -43,17 +44,39 @@ public class BrawlerCollectionEntity extends BaseEntity {
 
     @Convert(converter = LongListToStringConverter.class)
     @Column(name = "gear_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> gearIds;
+    private Set<Long> gearIds = new HashSet<>();
 
     @Convert(converter = LongListToStringConverter.class)
     @Column(name = "star_power_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> starPowerIds;
+    private Set<Long> starPowerIds = new HashSet<>();
 
     @Convert(converter = LongListToStringConverter.class)
     @Column(name = "gadget_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> gadgetIds;
+    private Set<Long> gadgetIds = new HashSet<>();
 
     protected BrawlerCollectionEntity() {
+    }
+
+    public BrawlerCollectionEntity(
+            long brawlStarsId,
+            String name
+    ) {
+        this.brawlStarsId = brawlStarsId;
+        this.name = name;
+        this.rarity = null;
+        this.role = null;
+    }
+
+    public boolean addGearId(long gearId) {
+        return gearIds.add(gearId);
+    }
+
+    public boolean addStarPowerId(long starPowerId) {
+        return starPowerIds.add(starPowerId);
+    }
+
+    public boolean addGadgetId(long gadgetId) {
+        return gadgetIds.add(gadgetId);
     }
 
     public Long getId() {
@@ -76,17 +99,5 @@ public class BrawlerCollectionEntity extends BaseEntity {
     @Nullable
     public BrawlerRole getRole() {
         return role;
-    }
-
-    public List<Long> getGearIds() {
-        return gearIds;
-    }
-
-    public List<Long> getStarPowerIds() {
-        return starPowerIds;
-    }
-
-    public List<Long> getGadgetIds() {
-        return gadgetIds;
     }
 }
