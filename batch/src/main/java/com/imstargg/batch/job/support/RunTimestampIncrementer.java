@@ -1,4 +1,4 @@
-package com.imstargg.batch.job;
+package com.imstargg.batch.job.support;
 
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
