@@ -1,6 +1,7 @@
 package com.imstargg.client.brawlstars;
 
 import com.imstargg.client.brawlstars.request.PagingParam;
+import com.imstargg.support.ratelimit.RateLimiter;
 import feign.FeignException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,9 @@ class BrawlStarsClientTest {
     @Mock
     private BrawlStarsApi brawlstarsApi;
 
+    @Mock
+    private RateLimiter rateLimiter;
+
     @Test
     void 플레이어_전적_조회시_없는_플레이어일_경우_예외를_발생시킨다() {
         // given
@@ -32,6 +36,18 @@ class BrawlStarsClientTest {
         // then
         assertThatThrownBy(() -> brawlstarsClient.getPlayerRecentBattles(playerTag))
                 .isInstanceOf(BrawlStarsClientNotFoundException.class);
+    }
+
+    @Test
+    void 플레이어_전적_조회시_호출_제한기를_사용한다() {
+        // given
+        String playerTag = "player-tag";
+
+        // when
+        brawlstarsClient.getPlayerRecentBattles(playerTag);
+
+        // then
+        then(rateLimiter).should().acquire();
     }
 
     @Test
@@ -48,6 +64,18 @@ class BrawlStarsClientTest {
     }
 
     @Test
+    void 플레이어_정보_조회시_호출_제한기를_사용한다() {
+        // given
+        String playerTag = "player-tag";
+
+        // when
+        brawlstarsClient.getPlayerInformation(playerTag);
+
+        // then
+        then(rateLimiter).should().acquire();
+    }
+
+    @Test
     void 브롤러_목록_조회시_기본_페이징_파라미터를_사용한다() {
         // given
         // when
@@ -56,4 +84,15 @@ class BrawlStarsClientTest {
         // then
         then(brawlstarsApi).should().getListOfAvailableBrawlers(PagingParam.DEFAULT);
     }
+
+    @Test
+    void 브롤러_목록_조회시_호출_제한기를_사용한다() {
+        // given
+        // when
+        brawlstarsClient.getBrawlers();
+
+        // then
+        then(rateLimiter).should().acquire();
+    }
+
 }
