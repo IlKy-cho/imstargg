@@ -67,8 +67,8 @@ public class PlayerCollectionEntity extends BaseEntity{
     private int bestTimeAsBigBrawler;
 
     @Nullable
-    @Column(name = "club_id")
-    private Long clubId;
+    @Column(name = "brawlstars_club_tag", length = 45, updatable = false, nullable = false)
+    private String brawlStarsClubTag;
 
     @Column(name = "update_weight", nullable = false)
     private long updateWeight;
@@ -92,7 +92,7 @@ public class PlayerCollectionEntity extends BaseEntity{
             int duoVictories,
             int bestRoboRumbleTime,
             int bestTimeAsBigBrawler,
-            @Nullable Long clubId
+            @Nullable String brawlStarsClubTag
     ) {
         this.status = status;
         this.brawlStarsTag = brawlStarsTag;
@@ -109,7 +109,7 @@ public class PlayerCollectionEntity extends BaseEntity{
         this.duoVictories = duoVictories;
         this.bestRoboRumbleTime = bestRoboRumbleTime;
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
-        this.clubId = clubId;
+        this.brawlStarsClubTag = brawlStarsClubTag;
     }
 
     public Long getId() {
@@ -177,7 +177,7 @@ public class PlayerCollectionEntity extends BaseEntity{
     }
 
     @Nullable
-    public Long getClubId() {
-        return clubId;
+    public String getBrawlStarsClubTag() {
+        return brawlStarsClubTag;
     }
 }
