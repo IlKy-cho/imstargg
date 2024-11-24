@@ -206,7 +206,7 @@ create table player
     duo_victories                         int          not null,
     best_robo_rumble_time                 int          not null,
     best_time_as_big_brawler              int          not null,
-    club_id                               bigint,
+    brawlstars_club_tag                   varchar(45)  not null,
     update_weight                         bigint       not null,
     created_at                            timestamp(6) not null,
     updated_at                            timestamp(6) not null,
