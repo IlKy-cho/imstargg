@@ -29,7 +29,7 @@ public class BattleCollectionEntityFixture {
     private Integer duration;
 
     @Nullable
-    private Long starPlayerId;
+    private String starPlayerBrawlStarsTag;
 
     @Nullable
     private Long playerId;
@@ -87,8 +87,8 @@ public class BattleCollectionEntityFixture {
         return this;
     }
 
-    public BattleCollectionEntityFixture starPlayerId(Long starPlayerId) {
-        this.starPlayerId = starPlayerId;
+    public BattleCollectionEntityFixture starPlayerBrawlStarsTag(String starPlayerBrawlStarsTag) {
+        this.starPlayerBrawlStarsTag = starPlayerBrawlStarsTag;
         return this;
     }
 
@@ -138,7 +138,7 @@ public class BattleCollectionEntityFixture {
                 type,
                 result,
                 duration,
-                starPlayerId,
+                starPlayerBrawlStarsTag,
                 new BattleCollectionEntityPlayerEmbeddable(
                         playerId,
                         brawlerId,
@@ -175,14 +175,14 @@ public class BattleCollectionEntityFixture {
         if (duration == null) {
             duration = 120;
         }
-        if (starPlayerId == null) {
-            starPlayerId = LongIncrementUtil.next();
+        if (starPlayerBrawlStarsTag == null) {
+            starPlayerBrawlStarsTag = "starPlayerBrawlStarsTag-" + fillKey;
         }
         if (playerId == null) {
-            playerId = LongIncrementUtil.next();
+            playerId = fillKey;
         }
         if (brawlerId == null) {
-            brawlerId = LongIncrementUtil.next();
+            brawlerId = fillKey;
         }
         if (power == null) {
             power = 10;

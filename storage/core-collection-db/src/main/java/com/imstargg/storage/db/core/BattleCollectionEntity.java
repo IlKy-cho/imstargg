@@ -42,8 +42,8 @@ public class BattleCollectionEntity extends BaseEntity {
     private int duration;
 
     @Nullable
-    @Column(name = "star_player_id", updatable = false)
-    private Long starPlayerId;
+    @Column(name = "star_player_brawlstars_tag", length = 45, updatable = false)
+    private String starPlayerBrawlStarsTag;
 
     @Embedded
     private BattleCollectionEntityPlayerEmbeddable player;
@@ -59,7 +59,7 @@ public class BattleCollectionEntity extends BaseEntity {
             String type,
             String result,
             int duration,
-            @Nullable Long starPlayerId,
+            @Nullable String starPlayerBrawlStarsTag,
             BattleCollectionEntityPlayerEmbeddable player
     ) {
         this.battleKey = battleKey;
@@ -69,7 +69,7 @@ public class BattleCollectionEntity extends BaseEntity {
         this.type = type;
         this.result = result;
         this.duration = duration;
-        this.starPlayerId = starPlayerId;
+        this.starPlayerBrawlStarsTag = starPlayerBrawlStarsTag;
         this.player = player;
     }
 }
