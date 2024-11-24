@@ -1,8 +1,8 @@
 package com.imstargg.batch.job.support;
 
 
-import com.imstargg.module.alert.AlertCommand;
-import com.imstargg.module.alert.AlertManager;
+import com.imstargg.support.alert.AlertCommand;
+import com.imstargg.support.alert.AlertManager;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 

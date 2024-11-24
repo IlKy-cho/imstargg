@@ -7,7 +7,7 @@ import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
-import com.imstargg.module.alert.AlertManager;
+import com.imstargg.support.alert.AlertManager;
 import com.imstargg.storage.db.core.BrawlerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
