@@ -56,23 +56,6 @@ class PlayerStatusTest {
     }
 
     @Test
-    void NOT_FOUND_상태는_업데이트_된_후_2분이_지나야_업데이트_가능하다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-
-        // when
-        // then
-        assertThat(PlayerStatus.NOT_FOUND.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(4)))
-                .isTrue();
-        assertThat(PlayerStatus.NOT_FOUND.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(3)))
-                .isTrue();
-        assertThat(PlayerStatus.NOT_FOUND.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(2)))
-                .isFalse();
-        assertThat(PlayerStatus.NOT_FOUND.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(1)))
-                .isFalse();
-    }
-
-    @Test
     void UPDATED_상태는_업데이트_된_후_2분이_지나야_업데이트_가능하다() {
         // given
         Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());

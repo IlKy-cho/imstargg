@@ -70,6 +70,9 @@ public class PlayerCollectionEntity extends BaseEntity{
     @Column(name = "club_id")
     private Long clubId;
 
+    @Column(name = "update_weight", nullable = false)
+    private long updateWeight;
+
     protected PlayerCollectionEntity() {
     }
 
