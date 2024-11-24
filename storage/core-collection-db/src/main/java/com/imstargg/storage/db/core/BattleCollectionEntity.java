@@ -72,4 +72,45 @@ public class BattleCollectionEntity extends BaseEntity {
         this.starPlayerBrawlStarsTag = starPlayerBrawlStarsTag;
         this.player = player;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getBattleKey() {
+        return battleKey;
+    }
+
+    public LocalDateTime getBattleTime() {
+        return battleTime;
+    }
+
+    public long getEventId() {
+        return eventId;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getResult() {
+        return result;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    @Nullable
+    public String getStarPlayerBrawlStarsTag() {
+        return starPlayerBrawlStarsTag;
+    }
+
+    public BattleCollectionEntityPlayerEmbeddable getPlayer() {
+        return player;
+    }
 }
