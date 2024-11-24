@@ -3,8 +3,6 @@ package com.imstargg.support.timetracer;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -14,8 +12,6 @@ import java.time.Clock;
 @Component
 @Order
 public class ExecutionTimeTraceAspect {
-
-    private static final Logger log = LoggerFactory.getLogger(ExecutionTimeTraceAspect.class);
 
     private final Clock clock;
     private final ExecutionTimeLogger executionTimeLogger;
