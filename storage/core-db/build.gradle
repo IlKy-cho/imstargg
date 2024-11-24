@@ -15,5 +15,6 @@ dependencies {
 
     // Test Fixtures
     testFixturesRuntimeOnly("com.h2database:h2")
+    testFixturesImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 

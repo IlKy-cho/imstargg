@@ -1,7 +1,6 @@
 package com.imstargg.storage.db.core.test;
 
 import jakarta.persistence.EntityManager;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Component
 public class EntityAppender {
 
     private final EntityManager em;
