@@ -5,7 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class BattlePlayerCollectionEmbeddable {
+public class BattleCollectionEntityPlayerEmbeddable {
 
     @Column(name = "player_id", updatable = false, nullable = false)
     private long playerId;
@@ -32,10 +32,10 @@ public class BattlePlayerCollectionEmbeddable {
     @Column(name = "brawler_trophy_snapshot", updatable = false)
     private Integer brawlerTrophySnapshot;
 
-    protected BattlePlayerCollectionEmbeddable() {
+    protected BattleCollectionEntityPlayerEmbeddable() {
     }
 
-    public BattlePlayerCollectionEmbeddable(
+    public BattleCollectionEntityPlayerEmbeddable(
             long playerId,
             long brawlerId,
             int power,
