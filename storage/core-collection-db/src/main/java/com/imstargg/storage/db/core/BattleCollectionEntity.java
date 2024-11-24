@@ -46,7 +46,7 @@ public class BattleCollectionEntity extends BaseEntity {
     private Long starPlayerId;
 
     @Embedded
-    private BattlePlayerCollectionEmbeddable player;
+    private BattleCollectionEntityPlayerEmbeddable player;
 
     protected BattleCollectionEntity() {
     }
@@ -60,7 +60,7 @@ public class BattleCollectionEntity extends BaseEntity {
             String result,
             int duration,
             @Nullable Long starPlayerId,
-            BattlePlayerCollectionEmbeddable player
+            BattleCollectionEntityPlayerEmbeddable player
     ) {
         this.battleKey = battleKey;
         this.battleTime = battleTime;
