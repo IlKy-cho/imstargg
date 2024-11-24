@@ -20,11 +20,8 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
     @Column(name = "battle_id", updatable = false, nullable = false)
     private long battleId;
 
-    @Column(name = "player_id", updatable = false, nullable = false)
-    private long playerId;
-
-    @Column(name = "result", length = 25, updatable = false, nullable = false)
-    private String result;
+    @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
+    private String brawlStarsTag;
 
     @Column(name = "brawler_id", updatable = false, nullable = false)
     private long brawlerId;
@@ -32,35 +29,35 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
     @Column(name = "power", updatable = false, nullable = false)
     private int power;
 
-    // 트로피전에서만 저장
     @Nullable
     @Column(name = "trophies", updatable = false)
     private Integer trophies;
 
-    // 경쟁전에서만 저장
-    @Nullable
-    @Column(name = "trophy_snapshot", updatable = false)
-    private Integer trophySnapshot;
+    @Column(name = "team_idx", updatable = false, nullable = false)
+    private int teamIdx;
+
+    @Column(name = "idx", updatable = false, nullable = false)
+    private int idx;
 
     protected BattlePlayerCollectionEntity() {
     }
 
     public BattlePlayerCollectionEntity(
             long battleId,
-            long playerId,
-            String result,
+            String brawlStarsTag,
             long brawlerId,
             int power,
             @Nullable Integer trophies,
-            @Nullable Integer trophySnapshot
+            int teamIdx,
+            int idx
     ) {
         this.battleId = battleId;
-        this.playerId = playerId;
-        this.result = result;
+        this.brawlStarsTag = brawlStarsTag;
         this.brawlerId = brawlerId;
         this.power = power;
         this.trophies = trophies;
-        this.trophySnapshot = trophySnapshot;
+        this.teamIdx = teamIdx;
+        this.idx = idx;
     }
 
     public Long getId() {
@@ -71,12 +68,8 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
         return battleId;
     }
 
-    public long getPlayerId() {
-        return playerId;
-    }
-
-    public String getResult() {
-        return result;
+    public String getBrawlStarsTag() {
+        return brawlStarsTag;
     }
 
     public long getBrawlerId() {
@@ -92,8 +85,11 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
         return trophies;
     }
 
-    @Nullable
-    public Integer getTrophySnapshot() {
-        return trophySnapshot;
+    public int getTeamIdx() {
+        return teamIdx;
+    }
+
+    public int getIdx() {
+        return idx;
     }
 }

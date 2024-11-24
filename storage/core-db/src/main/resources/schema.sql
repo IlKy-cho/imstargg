@@ -1,15 +1,24 @@
 create table battle
 (
-    battle_id      bigint       not null auto_increment,
-    battle_time    timestamp(6) not null,
-    event_id       bigint       not null,
-    mode           varchar(105) not null,
-    type           varchar(105) not null,
-    duration       int          not null,
-    star_player_id bigint,
-    created_at     timestamp(6) not null,
-    updated_at     timestamp(6) not null,
-    deleted        boolean      not null,
+    battle_id                 bigint       not null auto_increment,
+    battle_key                varchar(255) not null,
+    battle_time               timestamp(6) not null,
+    event_id                  bigint       not null,
+    mode                      varchar(105) not null,
+    type                      varchar(105) not null,
+    result                    varchar(25)  not null,
+    duration                  int          not null,
+    star_player_id            bigint,
+    player_id                 bigint       not null,
+    brawler_id                bigint       not null,
+    power                     int          not null,
+    brawler_trophies          int,
+    trophy_change             int,
+    trophies_snapshot         int,
+    brawler_trophies_snapshot int,
+    created_at                timestamp(6) not null,
+    updated_at                timestamp(6) not null,
+    deleted                   boolean      not null,
     primary key (battle_id)
 ) engine = innodb;
 
@@ -38,31 +47,19 @@ alter table battle_event
 
 create table battle_player
 (
-    battle_player_id  bigint       not null auto_increment,
-    battle_id         bigint       not null,
-    player_id         bigint       not null,
-    result            varchar(25)  not null,
-    brawler_id        bigint       not null,
-    power             int          not null,
-    trophies          int,
-    trophies_snapshot int,
-    created_at        timestamp(6) not null,
-    updated_at        timestamp(6) not null,
-    deleted           boolean      not null,
+    battle_player_id bigint       not null auto_increment,
+    battle_id        bigint       not null,
+    brawlstars_tag   varchar(45)  not null,
+    brawler_id       bigint       not null,
+    power            int          not null,
+    trophies         int,
+    team_idx         int          not null,
+    idx              int          not null,
+    created_at       timestamp(6) not null,
+    updated_at       timestamp(6) not null,
+    deleted          boolean      not null,
     primary key (battle_player_id)
 ) engine = innodb;
-
-alter table battle_player
-    add constraint uk_battleplayer__battleid_playerid unique (battle_id, player_id);
-
-create index ix_battleplayer__battleid
-    on battle_player (battle_id);
-
-create index ix_battleplayer__playerid
-    on battle_player (player_id);
-
-create index ix_battleplayer__brawlerid
-    on battle_player (brawler_id);
 
 
 create table brwaler
@@ -156,6 +153,19 @@ alter table star_power
     add constraint uk_gear__brawlstarsid unique (brawlstars_id);
 
 
+create table illegal_player
+(
+    illegal_player_id bigint       not null auto_increment,
+    brawlstars_tag    varchar(45)  not null,
+    count             int          not null,
+    available_at      timestamp(6) not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (illegal_player_id)
+) engine = innodb;
+
+
 create table player_brawler
 (
     player_brawler_id bigint       not null auto_increment,
@@ -197,6 +207,7 @@ create table player
     best_robo_rumble_time                 int          not null,
     best_time_as_big_brawler              int          not null,
     club_id                               bigint,
+    update_weight                         bigint       not null,
     created_at                            timestamp(6) not null,
     updated_at                            timestamp(6) not null,
     deleted                               boolean      not null,
