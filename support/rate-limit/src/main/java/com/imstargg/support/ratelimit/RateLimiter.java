@@ -31,12 +31,14 @@ public class RateLimiter {
         this.lastResetTime = clock.millis();
     }
 
-    public void acquire() throws InterruptedException {
+    public void acquire() {
         lock.lock();
         try {
             while (!tryAcquire()) {
                 Thread.sleep(100);
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } finally {
             lock.unlock();
         }
