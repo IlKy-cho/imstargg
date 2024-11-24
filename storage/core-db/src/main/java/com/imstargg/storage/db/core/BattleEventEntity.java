@@ -2,6 +2,8 @@ package com.imstargg.storage.db.core;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -19,6 +21,7 @@ import jakarta.persistence.UniqueConstraint;
 public class BattleEventEntity extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "battle_event_id")
     private Long id;
 
@@ -34,19 +37,4 @@ public class BattleEventEntity extends BaseEntity {
     protected BattleEventEntity() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public long getBrawlStarsId() {
-        return brawlStarsId;
-    }
-
-    public String getMode() {
-        return mode;
-    }
-
-    public String getMap() {
-        return map;
-    }
 }

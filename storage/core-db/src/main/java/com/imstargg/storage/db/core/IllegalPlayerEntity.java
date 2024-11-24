@@ -6,12 +6,21 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "illegal_player")
-public class IllegalPlayerCollectionEntity extends BaseEntity {
+@Table(
+        name = "illegal_player",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_illegalplayer__brawlstarstag",
+                        columnNames = "brawlstars_tag"
+                )
+        }
+)
+public class IllegalPlayerEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +36,7 @@ public class IllegalPlayerCollectionEntity extends BaseEntity {
     @Column(name = "available_at", updatable = false, nullable = false)
     private LocalDateTime availableAt;
 
-    protected IllegalPlayerCollectionEntity() {
-    }
-
-    public IllegalPlayerCollectionEntity(String brawlStarsTag, int count, LocalDateTime availableAt) {
-        this.brawlStarsTag = brawlStarsTag;
-        this.count = count;
-        this.availableAt = availableAt;
+    protected IllegalPlayerEntity() {
     }
 
     public Long getId() {
