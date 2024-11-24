@@ -2,7 +2,10 @@ package com.imstargg.storage.db.core;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
@@ -20,8 +23,12 @@ import java.time.LocalDateTime;
 public class BattleEntity extends BaseEntity {
 
     @Id
-    @Column(name = "battle_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "battle_id", nullable = false)
     private Long id;
+
+    @Column(name = "battle_key", updatable = false, nullable = false)
+    private String battleKey;
 
     @Column(name = "battle_time", updatable = false, nullable = false)
     private LocalDateTime battleTime;
@@ -29,41 +36,26 @@ public class BattleEntity extends BaseEntity {
     @Column(name = "event_id", updatable = false, nullable = false)
     private long eventId;
 
+    @Column(name = "mode", length = 105, updatable = false, nullable = false)
+    private String mode;
+
     @Column(name = "type", length = 105, updatable = false, nullable = false)
     private String type;
+
+    @Column(name = "result", length = 25, updatable = false, nullable = false)
+    private String result;
 
     @Column(name = "duration", updatable = false, nullable = false)
     private int duration;
 
     @Nullable
-    @Column(name = "star_player_id", updatable = false)
-    private Long starPlayerId;
+    @Column(name = "star_player_brawlstars_tag", length = 45, updatable = false)
+    private String starPlayerBrawlStarsTag;
+
+    @Embedded
+    private BattleEntityPlayerEmbeddable player;
 
     protected BattleEntity() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public LocalDateTime getBattleTime() {
-        return battleTime;
-    }
-
-    public long getEventId() {
-        return eventId;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    @Nullable
-    public Long getStarPlayerId() {
-        return starPlayerId;
-    }
 }

@@ -17,7 +17,7 @@ public class BattleCollectionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "battle_id")
+    @Column(name = "battle_id", nullable = false)
     private Long id;
 
     @Column(name = "battle_key", updatable = false, nullable = false)
