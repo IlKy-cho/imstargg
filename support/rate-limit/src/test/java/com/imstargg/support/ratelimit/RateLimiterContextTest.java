@@ -1,12 +1,13 @@
 package com.imstargg.support.ratelimit;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Tag("context")
 class RateLimiterContextTest {
@@ -29,29 +30,25 @@ class RateLimiterContextTest {
 
         // When: Try to make 15 requests immediately
         Thread thread = new Thread(() -> {
-            try {
-                for (int i = 0; i < 15; i++) {
-                    rateLimiter.acquire();
-                    acquiredCount.incrementAndGet();
-                }
-                latch.countDown();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
+            for (int i = 0; i < 15; i++) {
+                rateLimiter.acquire();
+                acquiredCount.incrementAndGet();
             }
+            latch.countDown();
         });
 
         thread.start();
         Thread.sleep(500); // Give some time for the requests to be processed
 
         // Then: Only 10 requests should be processed immediately
-        Assertions.assertThat(acquiredCount.get()).isEqualTo(10);
+        assertThat(acquiredCount.get()).isEqualTo(10);
 
         // When: Advance time by 1 second
         testClock.advanceMillis(1000);
         latch.await();
 
         // Then: All 15 requests should eventually be processed
-        Assertions.assertThat(acquiredCount.get()).isEqualTo(15);
+        assertThat(acquiredCount.get()).isEqualTo(15);
     }
 
 }
