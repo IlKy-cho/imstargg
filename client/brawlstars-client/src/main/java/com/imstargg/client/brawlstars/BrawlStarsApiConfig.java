@@ -16,12 +16,17 @@ class BrawlStarsApiConfig {
     }
 
     @Bean
-    public AuthorizationKeyInterceptor authorizationKeyInterceptor() {
+    public AuthorizationKeyInterceptor brawlStarsApiKeyInterceptor() {
         return new AuthorizationKeyInterceptor(brawlStarsClientProperties.key());
     }
 
     @Bean
-    public Retryer.Default retryer() {
+    public Retryer.Default brawlStarsApiRetryer() {
         return new Retryer.Default();
+    }
+
+    @Bean
+    public BrawlStarsApiErrorDecoder brawlStarsApiErrorDecoder() {
+        return new BrawlStarsApiErrorDecoder();
     }
 }

@@ -10,6 +10,7 @@ import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.ScheduledEventResponse;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +24,7 @@ import java.util.List;
         url = "${app.client.brawlstars.url}",
         configuration = BrawlStarsApiConfig.class
 )
+@RateLimiter(name = "brawlstars-api")
 interface BrawlStarsApi {
 
     /**
