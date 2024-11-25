@@ -6,7 +6,6 @@ import com.imstargg.client.brawlstars.response.BrawlerResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.ScheduledEventResponse;
-import com.imstargg.support.ratelimit.RateLimiter;
 import feign.FeignException;
 
 import java.util.List;
@@ -14,15 +13,12 @@ import java.util.List;
 public class BrawlStarsClient {
 
     private final BrawlStarsApi brawlstarsApi;
-    private final RateLimiter rateLimiter;
 
-    BrawlStarsClient(BrawlStarsApi brawlstarsApi, RateLimiter rateLimiter) {
+    BrawlStarsClient(BrawlStarsApi brawlstarsApi) {
         this.brawlstarsApi = brawlstarsApi;
-        this.rateLimiter = rateLimiter;
     }
 
     public ListResponse<BattleResponse> getPlayerRecentBattles(String playerTag) {
-        rateLimiter.acquire();
         try {
             return brawlstarsApi.getLogOfRecentBattlesForAPlayer(playerTag);
         } catch (FeignException.NotFound ex) {
@@ -31,7 +27,6 @@ public class BrawlStarsClient {
     }
 
     public PlayerResponse getPlayerInformation(String playerTag) {
-        rateLimiter.acquire();
         try {
             return brawlstarsApi.getPlayerInformation(playerTag);
         } catch (FeignException.NotFound ex) {
@@ -40,7 +35,6 @@ public class BrawlStarsClient {
     }
 
     public ListResponse<BrawlerResponse> getBrawlers() {
-        rateLimiter.acquire();
         return brawlstarsApi.getListOfAvailableBrawlers(PagingParam.DEFAULT);
     }
 

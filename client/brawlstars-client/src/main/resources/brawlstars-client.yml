@@ -12,6 +12,17 @@ spring.cloud.openfeign:
     max-connections: 2000
     max-connections-per-route: 500
 
+resilience4j:
+  ratelimiter:
+    metrics:
+      enabled: false
+    instances:
+      brawlstars-api:
+        limit-for-period: 1
+        limit-refresh-period: 1s
+        timeout-duration: 600s
+
+
 app.client.brawlstars:
   url: https://api.brawlstars.com
   key: ${BRAWL_STARS_API_KEY}

@@ -4,5 +4,5 @@ dependencies {
     implementation 'io.github.openfeign:feign-micrometer'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
-    implementation project(':support:rate-limit')
+    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 }
