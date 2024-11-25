@@ -45,8 +45,6 @@ class RateLimiterDevTest {
                                 .computeIfAbsent(currentWindow, k -> new AtomicInteger())
                                 .incrementAndGet();
                     }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
                 } finally {
                     latch.countDown();
                 }
