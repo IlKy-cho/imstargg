@@ -21,7 +21,7 @@ import java.util.List;
 @FeignClient(
         value = "brawlstars",
         url = "${app.client.brawlstars.url}",
-        configuration = BrawlStarsClientConfig.class
+        configuration = BrawlStarsApiConfig.class
 )
 interface BrawlStarsApi {
 

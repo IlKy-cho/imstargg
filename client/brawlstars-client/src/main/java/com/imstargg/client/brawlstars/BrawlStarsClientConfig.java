@@ -1,8 +1,6 @@
 package com.imstargg.client.brawlstars;
 
 import com.imstargg.support.ratelimit.RateLimiter;
-import feign.Retryer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
@@ -36,17 +34,5 @@ class BrawlStarsClientConfig {
                 brawlStarsClientProperties.rateLimit().timeWindow(),
                 BrawlStarsClient.class.getName()
         );
-    }
-
-    @Bean
-    public AuthorizationKeyInterceptor authorizationKeyInterceptor(
-            @Value("${app.client.brawlstars.key}") String key
-    ) {
-        return new AuthorizationKeyInterceptor(key);
-    }
-
-    @Bean
-    public Retryer.Default retryer() {
-        return new Retryer.Default();
     }
 }
