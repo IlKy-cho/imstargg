@@ -1,6 +1,7 @@
 spring:
   config.import:
     - core-db-test.yml
+    - brawlstars-client.yml
 
   batch:
     job:
