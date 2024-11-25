@@ -9,6 +9,7 @@ public record BattleResultResponse(
         String type,
         String result,
         int duration,
+        @Nullable Integer trophyChange,
         @Nullable BattleResultPlayerResponse starPlayer,
         List<List<BattleResultPlayerResponse>> teams
 ) {
