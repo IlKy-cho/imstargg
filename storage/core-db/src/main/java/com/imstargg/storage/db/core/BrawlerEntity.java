@@ -1,7 +1,7 @@
 package com.imstargg.storage.db.core;
 
-import com.imstargg.core.enums.BrawlerRarity;
 import com.imstargg.core.enums.BrawlerRole;
+import com.imstargg.core.enums.BrawlerRarity;
 import com.imstargg.storage.db.support.LongListToStringConverter;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
