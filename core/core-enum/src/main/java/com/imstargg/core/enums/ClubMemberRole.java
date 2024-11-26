@@ -2,9 +2,12 @@ package com.imstargg.core.enums;
 
 public enum ClubMemberRole {
 
-    PRESIDENT("president"),
-    VICE_PRESIDENT("vicePresident"),
+    NOT_MEMBER("notMember"),
     MEMBER("member"),
+    PRESIDENT("president"),
+    SENIOR("senior"),
+    VICE_PRESIDENT("vicePresident"),
+    UNKNOWN("unknown")
     ;
 
     private final String code;

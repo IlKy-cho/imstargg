@@ -11,7 +11,7 @@ public enum Brawler {
 
     // TODO 하이퍼차지, 이동속도, 사정거리, 재장전 속도, 공격력, 체력...
 
-    UNKNOWN(0, "UNKNOWN", null, null, null, null, null),
+    NOT_FOUND(0, "UNKNOWN", null, null, null, null, null),
 
     SHELLY(
             16000000, "SHELLY", BrawlerRarity.STARTING_BRAWLER, BrawlerRole.DAMAGE_DEALER,
@@ -534,7 +534,7 @@ public enum Brawler {
     ;
 
     private static final Map<Long, Brawler> ENUM_BY_ID = Arrays.stream(Brawler.values())
-            .filter(brawler -> brawler != UNKNOWN)
+            .filter(brawler -> brawler != NOT_FOUND)
             .collect(Collectors.toMap(Brawler::getBrawlStarsId, Function.identity()));
 
     public static boolean exists(long brawlStarsId) {
@@ -542,7 +542,7 @@ public enum Brawler {
     }
 
     public static Brawler find(long brawlStarsId) {
-        return ENUM_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
+        return ENUM_BY_ID.getOrDefault(brawlStarsId, NOT_FOUND);
     }
 
     private final long brawlStarsId;
