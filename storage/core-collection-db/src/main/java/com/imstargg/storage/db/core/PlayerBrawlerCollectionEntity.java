@@ -23,8 +23,8 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
     @Column(name = "player_id", updatable = false, nullable = false)
     private long playerId;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "power", nullable = false)
     private int power;
@@ -39,16 +39,16 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
     private int highestTrophies;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gear_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> gearIds;
+    @Column(name = "gear_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    private List<Long> gearBrawlStarsIds;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "star_power_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> starPowerIds;
+    @Column(name = "star_power_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    private List<Long> starPowerBrawlStarsIds;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gadget_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> gadgetIds;
+    @Column(name = "gadget_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    private List<Long> gadgetBrawlStarsIds;
 
     protected PlayerBrawlerCollectionEntity() {
     }
@@ -60,19 +60,19 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
             int rank,
             int trophies,
             int highestTrophies,
-            List<Long> gearIds,
-            List<Long> starPowerIds,
-            List<Long> gadgetIds
+            List<Long> gearBrawlStarsIds,
+            List<Long> starPowerBrawlStarsIds,
+            List<Long> gadgetBrawlStarsIds
     ) {
         this.playerId = playerId;
-        this.brawlerId = brawlerId;
+        this.brawlerBrawlStarsId = brawlerId;
         this.power = power;
         this.rank = rank;
         this.trophies = trophies;
         this.highestTrophies = highestTrophies;
-        this.gearIds = gearIds;
-        this.starPowerIds = starPowerIds;
-        this.gadgetIds = gadgetIds;
+        this.gearBrawlStarsIds = gearBrawlStarsIds;
+        this.starPowerBrawlStarsIds = starPowerBrawlStarsIds;
+        this.gadgetBrawlStarsIds = gadgetBrawlStarsIds;
     }
 
     public Long getId() {
@@ -83,8 +83,8 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         return playerId;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
     public int getPower() {
@@ -103,15 +103,15 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         return highestTrophies;
     }
 
-    public List<Long> getGearIds() {
-        return gearIds;
+    public List<Long> getGearBrawlStarsIds() {
+        return gearBrawlStarsIds;
     }
 
-    public List<Long> getStarPowerIds() {
-        return starPowerIds;
+    public List<Long> getStarPowerBrawlStarsIds() {
+        return starPowerBrawlStarsIds;
     }
 
-    public List<Long> getGadgetIds() {
-        return gadgetIds;
+    public List<Long> getGadgetBrawlStarsIds() {
+        return gadgetBrawlStarsIds;
     }
 }

@@ -3,14 +3,14 @@ create table battle
     battle_id                  bigint       not null auto_increment,
     battle_key                 varchar(255) not null,
     battle_time                timestamp(6) not null,
-    event_id                   bigint       not null,
+    event_brawlstars_id        bigint       not null,
     mode                       varchar(105) not null,
     type                       varchar(105) not null,
     result                     varchar(25)  not null,
     duration                   int          not null,
     star_player_brawlstars_tag varchar(45),
     player_id                  bigint       not null,
-    brawler_id                 bigint       not null,
+    brawler_brawlstars_id      bigint       not null,
     power                      int          not null,
     brawler_trophies           int,
     trophy_change              int,
@@ -22,64 +22,28 @@ create table battle
     primary key (battle_id)
 ) engine = innodb;
 
-create index ix_battle__eventid
-    on battle (event_id);
+create index ix_battle__eventbrawlstarsid
+    on battle (event_brawlstars_id);
 
 create index ix_battle__createdat
     on battle (created_at desc);
 
 
-create table battle_event
-(
-    battle_event_id bigint       not null auto_increment,
-    brawlstars_id   bigint       not null,
-    mode            varchar(105) not null,
-    map             varchar(105) not null,
-    created_at      timestamp(6) not null,
-    updated_at      timestamp(6) not null,
-    deleted         boolean      not null,
-    primary key (battle_event_id)
-) engine = innodb;
-
-alter table battle_event
-    add constraint uk_battleevent__brawlstarsid unique (brawlstars_id);
-
-
 create table battle_player
 (
-    battle_player_id bigint       not null auto_increment,
-    battle_id        bigint       not null,
-    brawlstars_tag   varchar(45)  not null,
-    brawler_id       bigint       not null,
-    power            int          not null,
-    trophies         int,
-    team_idx         int          not null,
-    idx              int          not null,
-    created_at       timestamp(6) not null,
-    updated_at       timestamp(6) not null,
-    deleted          boolean      not null,
+    battle_player_id      bigint       not null auto_increment,
+    brawler_id            bigint       not null,
+    brawlstars_tag        varchar(45)  not null,
+    brawler_brawlstars_id bigint       not null,
+    power                 int          not null,
+    trophies              int,
+    team_idx              int          not null,
+    idx                   int          not null,
+    created_at            timestamp(6) not null,
+    updated_at            timestamp(6) not null,
+    deleted               boolean      not null,
     primary key (battle_player_id)
 ) engine = innodb;
-
-
-create table brwaler
-(
-    brawler_id     bigint       not null auto_increment,
-    brawlstars_id  bigint       not null,
-    name           varchar(105) not null,
-    rarity         varchar(45),
-    role           varchar(45),
-    gear_ids       varchar(255) not null,
-    star_power_ids varchar(255) not null,
-    gadget_ids     varchar(255) not null,
-    created_at     timestamp(6) not null,
-    updated_at     timestamp(6) not null,
-    deleted        boolean      not null,
-    primary key (brawler_id)
-) engine = innodb;
-
-alter table brwaler
-    add constraint uk_brawler__brawlstarsid unique (brawlstars_id);
 
 
 create table club
@@ -121,38 +85,6 @@ alter table club_member
     add constraint uk_clubmember__clubid_memberid unique (club_id, member_id);
 
 
-create table gadget
-(
-    gadget_id     bigint       not null auto_increment,
-    brawlstars_id bigint       not null,
-    name          varchar(105) not null,
-    created_at    timestamp(6) not null,
-    updated_at    timestamp(6) not null,
-    deleted       boolean      not null,
-    primary key (gadget_id)
-) engine = innodb;
-
-alter table gadget
-    add constraint uk_gadget__brawlstarsid unique (brawlstars_id);
-
-
-create table gear
-(
-    gear_id       bigint       not null auto_increment,
-    brawlstars_id bigint       not null,
-    name          varchar(105) not null,
-    level         int,
-    rarity        varchar(45),
-    created_at    timestamp(6) not null,
-    updated_at    timestamp(6) not null,
-    deleted       boolean      not null,
-    primary key (gear_id)
-) engine = innodb;
-
-alter table star_power
-    add constraint uk_gear__brawlstarsid unique (brawlstars_id);
-
-
 create table illegal_player
 (
     illegal_player_id bigint       not null auto_increment,
@@ -168,24 +100,24 @@ create table illegal_player
 
 create table player_brawler
 (
-    player_brawler_id bigint       not null auto_increment,
-    player_id         bigint       not null,
-    brawler_id        bigint       not null,
-    power             int          not null,
-    trophy_rank       int          not null,
-    trophies          int          not null,
-    highest_trophies  int          not null,
-    gear_ids          varchar(255) not null,
-    star_power_ids    varchar(255) not null,
-    gadget_ids        varchar(255) not null,
-    created_at        timestamp(6) not null,
-    updated_at        timestamp(6) not null,
-    deleted           boolean      not null,
+    player_brawler_id         bigint       not null auto_increment,
+    player_id                 bigint       not null,
+    brawler_brawlstars_id                bigint       not null,
+    power                     int          not null,
+    trophy_rank               int          not null,
+    trophies                  int          not null,
+    highest_trophies          int          not null,
+    gear_brawlstars_ids       varchar(255) not null,
+    star_power_brawlstars_ids varchar(255) not null,
+    gadget_brawlstars_ids     varchar(255) not null,
+    created_at                timestamp(6) not null,
+    updated_at                timestamp(6) not null,
+    deleted                   boolean      not null,
     primary key (player_brawler_id)
 ) engine = innodb;
 
 alter table player_brawler
-    add constraint uk_playerbrawler_playerid_brawlerid unique (player_id, brawler_id);
+    add constraint uk_playerbrawler__playerid_brawlerbrawlstarsid unique (player_id, brawler_brawlstars_id);
 
 
 create table player
@@ -195,7 +127,7 @@ create table player
     status                                varchar(45)  not null,
     name                                  varchar(105) not null,
     name_color                            varchar(45)  not null,
-    icon_id                               bigint       not null,
+    icon_brawlstars_id                    bigint       not null,
     trophies                              int          not null,
     highest_trophies                      int          not null,
     exp_level                             int          not null,
@@ -220,17 +152,3 @@ alter table player
 create index ix_player__name
     on player (name);
 
-
-create table star_power
-(
-    star_power_id bigint       not null auto_increment,
-    brawlstars_id bigint       not null,
-    name          varchar(105) not null,
-    created_at    timestamp(6) not null,
-    updated_at    timestamp(6) not null,
-    deleted       boolean      not null,
-    primary key (star_power_id)
-) engine = innodb;
-
-alter table star_power
-    add constraint uk_starpower__brawlstarsid unique (brawlstars_id);

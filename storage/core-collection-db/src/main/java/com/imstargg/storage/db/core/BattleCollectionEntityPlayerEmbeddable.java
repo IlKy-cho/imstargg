@@ -10,8 +10,8 @@ public class BattleCollectionEntityPlayerEmbeddable {
     @Column(name = "player_id", updatable = false, nullable = false)
     private long playerId;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "power", updatable = false, nullable = false)
     private int power;
@@ -45,7 +45,7 @@ public class BattleCollectionEntityPlayerEmbeddable {
             @Nullable Integer brawlerTrophySnapshot
     ) {
         this.playerId = playerId;
-        this.brawlerId = brawlerId;
+        this.brawlerBrawlStarsId = brawlerId;
         this.power = power;
         this.brawlerTrophies = brawlerTrophies;
         this.trophyChange = trophyChange;
@@ -57,8 +57,8 @@ public class BattleCollectionEntityPlayerEmbeddable {
         return playerId;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
     public int getPower() {

@@ -17,8 +17,8 @@ import java.util.List;
         name = "player_brawler",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_playerbrawler__playerid_brawlerid",
-                        columnNames = {"player_id", "brawler_id"}
+                        name = "uk_playerbrawler__playerid_brawlerbrawlstarsid",
+                        columnNames = {"player_id", "brawler_brawlstars_id"}
                 )
         }
 )
@@ -32,8 +32,8 @@ public class PlayerBrawlerEntity {
     @Column(name = "player_id", updatable = false, nullable = false)
     private long playerId;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "power", nullable = false)
     private int power;
@@ -48,16 +48,16 @@ public class PlayerBrawlerEntity {
     private int highestTrophies;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gear_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> gearIds;
+    @Column(name = "gear_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    private List<Long> gearBrawlStarsIds;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "star_power_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> starPowerIds;
+    @Column(name = "star_power_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    private List<Long> starPowerBrawlStarsIds;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gadget_ids", columnDefinition = "varchar(255)", nullable = false)
-    private List<Long> gadgetIds;
+    @Column(name = "gadget_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    private List<Long> gadgetBrawlStarsIds;
 
     protected PlayerBrawlerEntity() {
     }
@@ -70,8 +70,8 @@ public class PlayerBrawlerEntity {
         return playerId;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
     public int getPower() {
@@ -90,15 +90,15 @@ public class PlayerBrawlerEntity {
         return highestTrophies;
     }
 
-    public List<Long> getGearIds() {
-        return gearIds;
+    public List<Long> getGearBrawlStarsIds() {
+        return gearBrawlStarsIds;
     }
 
-    public List<Long> getStarPowerIds() {
-        return starPowerIds;
+    public List<Long> getStarPowerBrawlStarsIds() {
+        return starPowerBrawlStarsIds;
     }
 
-    public List<Long> getGadgetIds() {
-        return gadgetIds;
+    public List<Long> getGadgetBrawlStarsIds() {
+        return gadgetBrawlStarsIds;
     }
 }
