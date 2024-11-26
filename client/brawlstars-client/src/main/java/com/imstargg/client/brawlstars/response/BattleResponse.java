@@ -1,7 +1,12 @@
 package com.imstargg.client.brawlstars.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+
+import java.time.LocalDateTime;
+
 public record BattleResponse(
-        String battleTime,
+        @JsonDeserialize(using = BrawlStarsLocalDateTimeSerializer.class)
+        LocalDateTime battleTime,
         EventResponse event,
         BattleResultResponse battle
 ) {
