@@ -183,16 +183,16 @@ public enum StarPower {
     NUMBING_NEEDLES(23000849, "NUMBING NEEDLES"),
     ;
 
-    private static final Map<Long, StarPower> STAR_POWERS_BY_ID = Arrays.stream(StarPower.values())
+    private static final Map<Long, StarPower> ENUM_BY_ID = Arrays.stream(StarPower.values())
             .filter(starPower -> starPower != UNKNOWN)
             .collect(Collectors.toMap(StarPower::getBrawlStarsId, Function.identity()));
 
     public static boolean exists(long brawlStarsId) {
-        return STAR_POWERS_BY_ID.containsKey(brawlStarsId);
+        return ENUM_BY_ID.containsKey(brawlStarsId);
     }
 
     public static StarPower find(long brawlStarsId) {
-        return STAR_POWERS_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
+        return ENUM_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
     }
 
     private final long brawlStarsId;

@@ -183,16 +183,16 @@ public enum Gadget {
     ELEMENTALIST(23000851, "ELEMENTALIST");
     ;
 
-    private static final Map<Long, Gadget> GADGETS_BY_ID = Arrays.stream(Gadget.values())
+    private static final Map<Long, Gadget> ENUM_BY_ID = Arrays.stream(Gadget.values())
             .filter(starPower -> starPower != UNKNOWN)
             .collect(Collectors.toMap(Gadget::getBrawlStarsId, Function.identity()));
 
     public static boolean exists(long brawlStarsId) {
-        return GADGETS_BY_ID.containsKey(brawlStarsId);
+        return ENUM_BY_ID.containsKey(brawlStarsId);
     }
 
     public static Gadget find(long brawlStarsId) {
-        return GADGETS_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
+        return ENUM_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
     }
 
     private final long brawlStarsId;
