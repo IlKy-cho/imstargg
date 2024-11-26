@@ -3,10 +3,10 @@ package com.imstargg.core.enums;
 public enum BrawlerRarity {
 
     STARTING_BRAWLER,
-    RARE,
-    SUPER_RARE,
-    EPIC,
-    MYTHIC,
-    LEGENDARY,
+    RARE,               // 희귀
+    SUPER_RARE,         // 초희귀
+    EPIC,               // 영웅
+    MYTHIC,             // 신화
+    LEGENDARY,          // 전설
     ;
 }
