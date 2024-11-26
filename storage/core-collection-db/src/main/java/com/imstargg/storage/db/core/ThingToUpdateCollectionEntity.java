@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "thing_to_update")
-public class ThingToUpdateCollectionEntity {
+public class ThingToUpdateCollectionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,14 +23,18 @@ public class ThingToUpdateCollectionEntity {
     @Column(name = "type", columnDefinition = "varchar(25)", updatable = false, nullable = false)
     private UpdateType type;
 
+    @Column(name = "brawlstars_id", updatable = false, nullable = false)
+    private long brawlStarsId;
+
     @Column(name = "data", length = 4000, nullable = false)
     private String data;
 
     protected ThingToUpdateCollectionEntity() {
     }
 
-    public ThingToUpdateCollectionEntity(UpdateType type, String data) {
+    public ThingToUpdateCollectionEntity(UpdateType type, long brawlStarsId, String data) {
         this.type = type;
+        this.brawlStarsId = brawlStarsId;
         this.data = data;
     }
 
@@ -40,6 +44,10 @@ public class ThingToUpdateCollectionEntity {
 
     public UpdateType getType() {
         return type;
+    }
+
+    public long getBrawlStarsId() {
+        return brawlStarsId;
     }
 
     public String getData() {
