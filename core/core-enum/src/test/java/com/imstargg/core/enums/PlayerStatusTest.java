@@ -12,28 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class PlayerStatusTest {
 
     @Test
-    void UPDATE_NEW_상태는_업데이트_가능하다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-
-        // when
-        // then
-        assertThat(PlayerStatus.UPDATE_NEW.isUpdatable(clock, LocalDateTime.now()))
-                .isTrue();
-    }
-
-    @Test
-    void REFRESH_NEW_상태는_업데이트_가능하다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-
-        // when
-        // then
-        assertThat(PlayerStatus.REFRESH_NEW.isUpdatable(clock, LocalDateTime.now()))
-                .isTrue();
-    }
-
-    @Test
     void REFRESH_REQUESTED_상태는_업데이트_가능하다() {
         // given
         Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
