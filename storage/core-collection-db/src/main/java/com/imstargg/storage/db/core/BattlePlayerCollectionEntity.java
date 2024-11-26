@@ -23,8 +23,8 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
     @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
     private String brawlStarsTag;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "power", updatable = false, nullable = false)
     private int power;
@@ -53,7 +53,7 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
     ) {
         this.battleId = battleId;
         this.brawlStarsTag = brawlStarsTag;
-        this.brawlerId = brawlerId;
+        this.brawlerBrawlStarsId = brawlerId;
         this.power = power;
         this.trophies = trophies;
         this.teamIdx = teamIdx;
@@ -72,8 +72,8 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
         return brawlStarsTag;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
     public int getPower() {

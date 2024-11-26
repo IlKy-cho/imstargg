@@ -33,8 +33,8 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Column(name = "name_color", length = 45, nullable = false)
     private String nameColor;
 
-    @Column(name = "icon_id", nullable = false)
-    private long iconId;
+    @Column(name = "icon_brawlstars_id", nullable = false)
+    private long iconBrawlStarsId;
 
     @Column(name = "trophies", nullable = false)
     private int trophies;
@@ -81,7 +81,7 @@ public class PlayerCollectionEntity extends BaseEntity {
             String brawlStarsTag,
             String name,
             String nameColor,
-            long iconId,
+            long iconBrawlStarsId,
             int trophies,
             int highestTrophies,
             int expLevel,
@@ -98,7 +98,7 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.brawlStarsTag = brawlStarsTag;
         this.name = name;
         this.nameColor = nameColor;
-        this.iconId = iconId;
+        this.iconBrawlStarsId = iconBrawlStarsId;
         this.trophies = trophies;
         this.highestTrophies = highestTrophies;
         this.expLevel = expLevel;
@@ -132,8 +132,8 @@ public class PlayerCollectionEntity extends BaseEntity {
         return nameColor;
     }
 
-    public long getIconId() {
-        return iconId;
+    public long getIconBrawlStarsId() {
+        return iconBrawlStarsId;
     }
 
     public int getTrophies() {

@@ -43,8 +43,8 @@ public class PlayerEntity extends BaseEntity {
     @Column(name = "name_color", length = 45, nullable = false)
     private String nameColor;
 
-    @Column(name = "icon_id", nullable = false)
-    private long iconId;
+    @Column(name = "icon_brawlstars_id", nullable = false)
+    private long iconBrawlStarsId;
 
     @Column(name = "trophies", nullable = false)
     private int trophies;

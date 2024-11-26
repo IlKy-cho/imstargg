@@ -10,8 +10,8 @@ public class BattleEntityPlayerEmbeddable {
     @Column(name = "player_id", updatable = false, nullable = false)
     private long playerId;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "power", updatable = false, nullable = false)
     private int power;

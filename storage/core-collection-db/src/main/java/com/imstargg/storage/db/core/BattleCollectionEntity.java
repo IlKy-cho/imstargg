@@ -26,8 +26,8 @@ public class BattleCollectionEntity extends BaseEntity {
     @Column(name = "battle_time", updatable = false, nullable = false)
     private LocalDateTime battleTime;
 
-    @Column(name = "event_id", updatable = false, nullable = false)
-    private long eventId;
+    @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
+    private long eventBrawlStarsId;
 
     @Column(name = "mode", length = 105, updatable = false, nullable = false)
     private String mode;
@@ -54,7 +54,7 @@ public class BattleCollectionEntity extends BaseEntity {
     public BattleCollectionEntity(
             String battleKey,
             LocalDateTime battleTime,
-            long eventId,
+            long eventBrawlStarsId,
             String mode,
             String type,
             String result,
@@ -64,7 +64,7 @@ public class BattleCollectionEntity extends BaseEntity {
     ) {
         this.battleKey = battleKey;
         this.battleTime = battleTime;
-        this.eventId = eventId;
+        this.eventBrawlStarsId = eventBrawlStarsId;
         this.mode = mode;
         this.type = type;
         this.result = result;
@@ -85,8 +85,8 @@ public class BattleCollectionEntity extends BaseEntity {
         return battleTime;
     }
 
-    public long getEventId() {
-        return eventId;
+    public long getEventBrawlStarsId() {
+        return eventBrawlStarsId;
     }
 
     public String getMode() {
