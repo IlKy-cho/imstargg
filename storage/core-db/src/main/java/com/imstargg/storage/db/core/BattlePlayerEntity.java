@@ -29,6 +29,9 @@ public class BattlePlayerEntity extends BaseEntity {
     @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
     private String brawlStarsTag;
 
+    @Column(name = "name", length = 105, nullable = false)
+    private String name;
+
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 

@@ -128,56 +128,63 @@ public class PlayerCollectionEntity extends BaseEntity {
         return name;
     }
 
-    public String getNameColor() {
-        return nameColor;
+    public void setStatus(PlayerStatus status) {
+        this.status = status;
     }
 
-    public long getIconBrawlStarsId() {
-        return iconBrawlStarsId;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getTrophies() {
-        return trophies;
+    public void setNameColor(String nameColor) {
+        this.nameColor = nameColor;
     }
 
-    public int getHighestTrophies() {
-        return highestTrophies;
+    public void setIconBrawlStarsId(long iconBrawlStarsId) {
+        this.iconBrawlStarsId = iconBrawlStarsId;
     }
 
-    public int getExpLevel() {
-        return expLevel;
+    public void setTrophies(int trophies) {
+        this.trophies = trophies;
     }
 
-    public int getExpPoints() {
-        return expPoints;
+    public void setHighestTrophies(int highestTrophies) {
+        this.highestTrophies = highestTrophies;
     }
 
-    public boolean isQualifiedFromChampionshipChallenge() {
-        return qualifiedFromChampionshipChallenge;
+    public void setExpLevel(int expLevel) {
+        this.expLevel = expLevel;
     }
 
-    public int getVictories3vs3() {
-        return victories3vs3;
+    public void setExpPoints(int expPoints) {
+        this.expPoints = expPoints;
     }
 
-    public int getSoloVictories() {
-        return soloVictories;
+    public void setQualifiedFromChampionshipChallenge(boolean qualifiedFromChampionshipChallenge) {
+        this.qualifiedFromChampionshipChallenge = qualifiedFromChampionshipChallenge;
     }
 
-    public int getDuoVictories() {
-        return duoVictories;
+    public void setVictories3vs3(int victories3vs3) {
+        this.victories3vs3 = victories3vs3;
     }
 
-    public int getBestRoboRumbleTime() {
-        return bestRoboRumbleTime;
+    public void setSoloVictories(int soloVictories) {
+        this.soloVictories = soloVictories;
     }
 
-    public int getBestTimeAsBigBrawler() {
-        return bestTimeAsBigBrawler;
+    public void setDuoVictories(int duoVictories) {
+        this.duoVictories = duoVictories;
     }
 
-    @Nullable
-    public String getBrawlStarsClubTag() {
-        return brawlStarsClubTag;
+    public void setBestRoboRumbleTime(int bestRoboRumbleTime) {
+        this.bestRoboRumbleTime = bestRoboRumbleTime;
+    }
+
+    public void setBestTimeAsBigBrawler(int bestTimeAsBigBrawler) {
+        this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
+    }
+
+    public void setBrawlStarsClubTag(@Nullable String brawlStarsClubTag) {
+        this.brawlStarsClubTag = brawlStarsClubTag;
     }
 }

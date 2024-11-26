@@ -152,3 +152,17 @@ alter table player
 create index ix_player__name
     on player (name);
 
+
+create table unknown_player
+(
+    unknown_player_id bigint       not null auto_increment,
+    brawlstars_tag    varchar(45)  not null,
+    status            varchar(45)  not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (unknown_player_id)
+) engine = innodb;
+
+alter table unknown_player
+    add constraint uk_unknownplayer__brawlstarstag unique (brawlstars_tag);

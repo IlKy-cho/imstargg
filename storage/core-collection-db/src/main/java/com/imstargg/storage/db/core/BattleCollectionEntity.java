@@ -7,9 +7,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "battle")
@@ -47,6 +49,9 @@ public class BattleCollectionEntity extends BaseEntity {
 
     @Embedded
     private BattleCollectionEntityPlayerEmbeddable player;
+
+    @OneToMany(mappedBy = "battle")
+    private List<BattlePlayerCollectionEntity> players;
 
     protected BattleCollectionEntity() {
     }
