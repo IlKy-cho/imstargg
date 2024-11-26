@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public enum Gadget {
 
-    UNKNOWN(0, "UNKNOWN"),
+    NOT_FOUND(0, "UNKNOWN"),
 
     FAST_FORWARD(23000255, "FAST FORWARD"),
     CLAY_PIGEONS(23000288, "CLAY PIGEONS"),
@@ -184,7 +184,7 @@ public enum Gadget {
     ;
 
     private static final Map<Long, Gadget> ENUM_BY_ID = Arrays.stream(Gadget.values())
-            .filter(starPower -> starPower != UNKNOWN)
+            .filter(starPower -> starPower != NOT_FOUND)
             .collect(Collectors.toMap(Gadget::getBrawlStarsId, Function.identity()));
 
     public static boolean exists(long brawlStarsId) {
@@ -192,7 +192,7 @@ public enum Gadget {
     }
 
     public static Gadget find(long brawlStarsId) {
-        return ENUM_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
+        return ENUM_BY_ID.getOrDefault(brawlStarsId, NOT_FOUND);
     }
 
     private final long brawlStarsId;

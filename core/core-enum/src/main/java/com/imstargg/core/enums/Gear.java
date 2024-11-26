@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public enum Gear {
 
-    UNKNOWN(0, "UNKNOWN", null, null),
+    NOT_FOUND(0, "UNKNOWN", null, null),
 
     SPEED(62000000, "SPEED", GearRarity.SUPER_RARE, 3),
     HEALTH(62000001, "HEALTH", GearRarity.SUPER_RARE, 3),
@@ -34,7 +34,7 @@ public enum Gear {
     ;
 
     private static final Map<Long, Gear> ENUM_BY_ID = Arrays.stream(Gear.values())
-            .filter(starPower -> starPower != UNKNOWN)
+            .filter(starPower -> starPower != NOT_FOUND)
             .collect(Collectors.toMap(Gear::getBrawlStarsId, Function.identity()));
 
     public static boolean exists(long brawlStarsId) {
@@ -42,7 +42,7 @@ public enum Gear {
     }
 
     public static Gear find(long brawlStarsId) {
-        return ENUM_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
+        return ENUM_BY_ID.getOrDefault(brawlStarsId, NOT_FOUND);
     }
 
     public static List<Gear> gearListWith(Gear... gears) {

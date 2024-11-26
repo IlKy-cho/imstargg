@@ -4,6 +4,8 @@ public enum ClubType {
 
     OPEN("open"),
     INVITE_ONLY("inviteOnly"),
+    CLOSED("closed"),
+    UNKNOWN("unknown"),
     ;
 
     private final String code;

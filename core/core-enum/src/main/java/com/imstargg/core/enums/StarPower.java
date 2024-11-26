@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public enum StarPower {
 
-    UNKNOWN(0, "UNKNOWN"),
+    NOT_FOUND(0, "UNKNOWN"),
 
     SHELL_SHOCK(23000076, "SHELL SHOCK"),
     BAND_AID(23000135, "BAND-AID"),
@@ -184,7 +184,7 @@ public enum StarPower {
     ;
 
     private static final Map<Long, StarPower> ENUM_BY_ID = Arrays.stream(StarPower.values())
-            .filter(starPower -> starPower != UNKNOWN)
+            .filter(starPower -> starPower != NOT_FOUND)
             .collect(Collectors.toMap(StarPower::getBrawlStarsId, Function.identity()));
 
     public static boolean exists(long brawlStarsId) {
@@ -192,7 +192,7 @@ public enum StarPower {
     }
 
     public static StarPower find(long brawlStarsId) {
-        return ENUM_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
+        return ENUM_BY_ID.getOrDefault(brawlStarsId, NOT_FOUND);
     }
 
     private final long brawlStarsId;
