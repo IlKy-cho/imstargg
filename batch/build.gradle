@@ -10,6 +10,10 @@ dependencies {
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.retry:spring-retry")
+
+    // Jackson
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
 
     // Test
     testImplementation(testFixtures(project(":storage:core-db")))
