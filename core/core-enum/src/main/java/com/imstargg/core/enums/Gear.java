@@ -1,13 +1,15 @@
 package com.imstargg.core.enums;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum Gear {
 
-    // TODO LEVEL, NAME
     UNKNOWN(0, "UNKNOWN", null, null),
 
     SPEED(62000000, "SPEED", GearRarity.SUPER_RARE, 3),
@@ -29,7 +31,6 @@ public enum Gear {
     SUPER_TURRET(62000016, "SUPER TURRET", GearRarity.MYTHIC, 3),
     GADGET_CHARGE(62000017, "GADGET CHARGE", GearRarity.SUPER_RARE, 3),
     BAT_STORM(62000018, "BAT STORM", GearRarity.MYTHIC, 3),
-
     ;
 
     private static final Map<Long, Gear> ENUM_BY_ID = Arrays.stream(Gear.values())
@@ -42,6 +43,17 @@ public enum Gear {
 
     public static Gear find(long brawlStarsId) {
         return ENUM_BY_ID.getOrDefault(brawlStarsId, UNKNOWN);
+    }
+
+    public static List<Gear> gearListWith(Gear... gears) {
+        List<Gear> gearList = new ArrayList<>(Arrays.asList(SPEED, VISION, HEALTH, SHIELD, DAMAGE, GADGET_CHARGE));
+        for (Gear gear : gears) {
+            if (gearList.contains(gear)) {
+                throw new IllegalArgumentException("Duplicate gear: " + gear);
+            }
+            gearList.add(gear);
+        }
+        return Collections.unmodifiableList(gearList);
     }
 
     private final long brawlStarsId;
