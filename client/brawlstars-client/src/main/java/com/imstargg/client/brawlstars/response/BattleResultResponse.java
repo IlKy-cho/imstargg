@@ -11,6 +11,7 @@ public record BattleResultResponse(
         int duration,
         @Nullable Integer trophyChange,
         @Nullable BattleResultPlayerResponse starPlayer,
-        List<List<BattleResultPlayerResponse>> teams
+        @Nullable List<List<BattleResultPlayerResponse>> teams,
+        @Nullable List<BattleResultPlayerResponse> players
 ) {
 }
