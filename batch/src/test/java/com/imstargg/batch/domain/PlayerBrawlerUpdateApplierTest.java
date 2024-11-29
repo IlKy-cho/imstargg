@@ -12,13 +12,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PlayerBrawlerUpdaterTest {
+class PlayerBrawlerUpdateApplierTest {
 
-    private PlayerBrawlerUpdater playerBrawlerUpdater;
+    private PlayerBrawlerUpdateApplier playerBrawlerUpdateApplier;
 
     @BeforeEach
     void setUp() {
-        playerBrawlerUpdater = new PlayerBrawlerUpdater();
+        playerBrawlerUpdateApplier = new PlayerBrawlerUpdateApplier();
     }
 
     @Test
@@ -80,7 +80,7 @@ class PlayerBrawlerUpdaterTest {
         );
 
         // when
-        List<PlayerBrawlerCollectionEntity> updatedEntities = playerBrawlerUpdater
+        List<PlayerBrawlerCollectionEntity> updatedEntities = playerBrawlerUpdateApplier
                 .update(playerId, playerBrawlerEntities, brawlerResponseList);
 
         // then
