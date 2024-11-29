@@ -55,7 +55,7 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
 
     public PlayerBrawlerCollectionEntity(
             long playerId,
-            long brawlerId,
+            long brawlerBrawlStarsId,
             int power,
             int rank,
             int trophies,
@@ -65,7 +65,7 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
             List<Long> gadgetBrawlStarsIds
     ) {
         this.playerId = playerId;
-        this.brawlerBrawlStarsId = brawlerId;
+        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.power = power;
         this.rank = rank;
         this.trophies = trophies;
@@ -85,6 +85,34 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
 
     public long getBrawlerBrawlStarsId() {
         return brawlerBrawlStarsId;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public int getRank() {
+        return rank;
+    }
+
+    public int getTrophies() {
+        return trophies;
+    }
+
+    public int getHighestTrophies() {
+        return highestTrophies;
+    }
+
+    public List<Long> getGearBrawlStarsIds() {
+        return gearBrawlStarsIds;
+    }
+
+    public List<Long> getStarPowerBrawlStarsIds() {
+        return starPowerBrawlStarsIds;
+    }
+
+    public List<Long> getGadgetBrawlStarsIds() {
+        return gadgetBrawlStarsIds;
     }
 
     public void setPower(int power) {

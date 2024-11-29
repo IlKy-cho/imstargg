@@ -11,7 +11,7 @@ public enum Brawler {
 
     // TODO 하이퍼차지, 이동속도, 사정거리, 재장전 속도, 공격력, 체력...
 
-    NOT_FOUND(0, "UNKNOWN", null, null, null, null, null),
+    NOT_FOUND(0, "UNKNOWN", null, null, List.of(), List.of(), List.of()),
 
     SHELLY(
             16000000, "SHELLY", BrawlerRarity.STARTING_BRAWLER, BrawlerRole.DAMAGE_DEALER,
