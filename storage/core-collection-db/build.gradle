@@ -13,5 +13,6 @@ dependencies {
 
     // Test Fixtures
     testFixturesImplementation(testFixtures(project(":storage:core-db")))
+    testFixturesImplementation(project(":core:core-enum"))
     testFixturesImplementation(project(":tests:java-test-util"))
 }
