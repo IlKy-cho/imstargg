@@ -11,12 +11,14 @@ import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.BattlePlayerCollectionEntityBrawler;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.annotation.Nullable;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 public class BattleUpdateApplier {
 
     public List<BattleUpdateResult> update(

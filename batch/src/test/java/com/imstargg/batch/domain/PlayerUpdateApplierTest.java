@@ -3,7 +3,6 @@ package com.imstargg.batch.domain;
 import com.imstargg.client.brawlstars.response.PlayerClubResponse;
 import com.imstargg.client.brawlstars.response.PlayerIconResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntityFixture;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,7 +52,6 @@ class PlayerUpdateApplierTest {
         PlayerCollectionEntity updatedPlayerEntity = playerUpdateApplier.update(playerEntity, playerResponse);
 
         // then
-        assertThat(updatedPlayerEntity.getStatus()).isEqualTo(PlayerStatus.UPDATED);
         assertThat(updatedPlayerEntity.getName()).isEqualTo(playerResponse.name());
         assertThat(updatedPlayerEntity.getNameColor()).isEqualTo(playerResponse.nameColor());
         assertThat(updatedPlayerEntity.getIconBrawlStarsId()).isEqualTo(playerResponse.icon().id());

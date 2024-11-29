@@ -19,6 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,9 +72,11 @@ class PlayerUpdateEntityRepositoryTest {
         assertThat(playerToUpdateEntities.get(0).playerEntity().getId()).isEqualTo(1L);
         assertThat(playerToUpdateEntities.get(0).playerBrawlerEntities()).hasSize(2);
         assertThat(playerToUpdateEntities.get(0).lastBattleEntity()).isPresent();
+        then(player1).should().setStatus(PlayerStatus.UPDATING);
 
         assertThat(playerToUpdateEntities.get(1).playerEntity().getId()).isEqualTo(2L);
         assertThat(playerToUpdateEntities.get(1).playerBrawlerEntities()).isEmpty();
         assertThat(playerToUpdateEntities.get(1).lastBattleEntity()).isEmpty();
+        then(player2).should().setStatus(PlayerStatus.UPDATING);
     }
 }

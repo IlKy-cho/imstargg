@@ -129,6 +129,10 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.updateWeight = now.plusMinutes(30);
     }
 
+    public boolean isNextUpdateCooldownOver(LocalDateTime now) {
+        return status.isNextUpdateCooldownOver(now, getUpdatedAt());
+    }
+
     public void nextUpdateWeight(LocalDateTime now, List<LocalDateTime> updatedBattleTimes) {
         Optional<LocalDateTime> recentBattleOpt = updatedBattleTimes.stream()
                 .min(Comparator.naturalOrder());

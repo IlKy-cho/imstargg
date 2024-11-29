@@ -2,51 +2,25 @@ package com.imstargg.core.enums;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PlayerStatusTest {
 
     @Test
-    void REFRESH_REQUESTED_상태는_업데이트_가능하다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-
-        // when
-        // then
-        assertThat(PlayerStatus.REFRESH_REQUESTED.isUpdatable(clock, LocalDateTime.now()))
-                .isTrue();
+    void 업데이트_가능_기간이_지나야_업데이트_가능하다() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime updatedAt = now.minusSeconds(121);
+        assertTrue(PlayerStatus.UPDATED.isNextUpdateCooldownOver(now, updatedAt));
     }
 
     @Test
-    void DELETED_상태는_업데이트_불가능하다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-
-        // when
-        // then
-        assertThat(PlayerStatus.DELETED.isUpdatable(clock, LocalDateTime.now()))
-                .isFalse();
+    void 업데이트_가능_기간이_지나기_전에는_업데이트_불가능하다() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime updatedAt = now.minusSeconds(119);
+        assertFalse(PlayerStatus.UPDATED.isNextUpdateCooldownOver(now, updatedAt));
     }
 
-    @Test
-    void UPDATED_상태는_업데이트_된_후_2분이_지나야_업데이트_가능하다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-
-        // when
-        // then
-        assertThat(PlayerStatus.UPDATED.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(4)))
-                .isTrue();
-        assertThat(PlayerStatus.UPDATED.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(3)))
-                .isTrue();
-        assertThat(PlayerStatus.UPDATED.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(2)))
-                .isFalse();
-        assertThat(PlayerStatus.UPDATED.isUpdatable(clock, LocalDateTime.now(clock).minusMinutes(1)))
-                .isFalse();
-    }
 }
