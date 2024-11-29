@@ -1,11 +1,16 @@
 package com.imstargg.storage.db.core;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,8 +22,9 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
     @Column(name = "battle_player_id")
     private Long id;
 
-    @Column(name = "battle_id", updatable = false, nullable = false)
-    private long battleId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "battle_id", updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private BattleCollectionEntity battle;
 
     @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
     private String brawlStarsTag;
@@ -26,51 +32,40 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
     @Column(name = "name", length = 105, nullable = false)
     private String name;
 
-    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
-    private long brawlerBrawlStarsId;
-
-    @Column(name = "power", updatable = false, nullable = false)
-    private int power;
-
-    @Nullable
-    @Column(name = "trophies", updatable = false)
-    private Integer trophies;
-
     @Column(name = "team_idx", updatable = false, nullable = false)
     private int teamIdx;
 
-    @Column(name = "idx", updatable = false, nullable = false)
-    private int idx;
+    @Column(name = "player_idx", updatable = false, nullable = false)
+    private int playerIdx;
+
+    @Embedded
+    private BattlePlayerCollectionEntityBrawler brawler;
 
     protected BattlePlayerCollectionEntity() {
     }
 
     public BattlePlayerCollectionEntity(
-            long battleId,
+            BattleCollectionEntity battle,
             String brawlStarsTag,
             String name,
-            long brawlerId,
-            int power,
-            @Nullable Integer trophies,
             int teamIdx,
-            int idx
+            int playerIdx,
+            BattlePlayerCollectionEntityBrawler brawler
     ) {
-        this.battleId = battleId;
+        this.battle = battle;
         this.brawlStarsTag = brawlStarsTag;
         this.name = name;
-        this.brawlerBrawlStarsId = brawlerId;
-        this.power = power;
-        this.trophies = trophies;
         this.teamIdx = teamIdx;
-        this.idx = idx;
+        this.playerIdx = playerIdx;
+        this.brawler = brawler;
     }
 
     public Long getId() {
         return id;
     }
 
-    public long getBattleId() {
-        return battleId;
+    public BattleCollectionEntity getBattle() {
+        return battle;
     }
 
     public String getBrawlStarsTag() {
@@ -81,24 +76,15 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
         return name;
     }
 
-    public long getBrawlerBrawlStarsId() {
-        return brawlerBrawlStarsId;
-    }
-
-    public int getPower() {
-        return power;
-    }
-
-    @Nullable
-    public Integer getTrophies() {
-        return trophies;
-    }
-
     public int getTeamIdx() {
         return teamIdx;
     }
 
-    public int getIdx() {
-        return idx;
+    public int getPlayerIdx() {
+        return playerIdx;
+    }
+
+    public BattlePlayerCollectionEntityBrawler getBrawler() {
+        return brawler;
     }
 }

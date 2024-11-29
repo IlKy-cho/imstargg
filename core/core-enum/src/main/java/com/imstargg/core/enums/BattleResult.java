@@ -6,13 +6,13 @@ public enum BattleResult {
     VICTORY("victory"),
     ;
 
-    private final String code;
+    private final String name;
 
-    BattleResult(String code) {
-        this.code = code;
+    BattleResult(String name) {
+        this.name = name;
     }
 
-    public String getCode() {
-        return code;
+    public String getName() {
+        return name;
     }
 }

@@ -7,8 +7,9 @@ import java.util.List;
 public record BattleResultResponse(
         String mode,
         String type,
-        String result,
-        int duration,
+        @Nullable String result,
+        @Nullable Integer duration,
+        @Nullable Integer rank,
         @Nullable Integer trophyChange,
         @Nullable BattleResultPlayerResponse starPlayer,
         @Nullable List<List<BattleResultPlayerResponse>> teams,

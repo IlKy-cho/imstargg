@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.core.enums.BattleEvent;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
@@ -24,6 +25,9 @@ public class BattleCollectionEntityFixture {
 
     @Nullable
     private String result;
+
+    @Nullable
+    private Integer rank;
 
     @Nullable
     private Integer duration;
@@ -74,6 +78,11 @@ public class BattleCollectionEntityFixture {
 
     public BattleCollectionEntityFixture type(String type) {
         this.type = type;
+        return this;
+    }
+
+    public BattleCollectionEntityFixture rank(Integer rank) {
+        this.rank = rank;
         return this;
     }
 
@@ -133,20 +142,21 @@ public class BattleCollectionEntityFixture {
         return new BattleCollectionEntity(
                 battleKey,
                 battleTime,
-                eventId,
+                new BattleCollectionEntityEvent(
+                        BattleEvent.KNOCKOUT_FLARING_PHOENIX.getBrawlStarsId(),
+                        BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMode().getName(),
+                        BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMap().getName()
+                ),
                 mode,
                 type,
                 result,
                 duration,
                 starPlayerBrawlStarsTag,
-                new BattleCollectionEntityPlayerEmbeddable(
+                new BattleCollectionEntityPlayer(
                         playerId,
-                        brawlerId,
-                        power,
-                        brawlerTrophies,
+                        rank,
                         trophyChange,
-                        trophySnapshot,
-                        brawlerTrophySnapshot
+                        trophySnapshot
                 )
         );
     }
