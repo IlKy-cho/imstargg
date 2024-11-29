@@ -25,13 +25,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class BattleUpdaterTest {
+class BattleUpdateApplierTest {
 
-    private BattleUpdater battleUpdater;
+    private BattleUpdateApplier battleUpdateApplier;
 
     @BeforeEach
     void setUp() {
-        battleUpdater = new BattleUpdater();
+        battleUpdateApplier = new BattleUpdateApplier();
     }
 
     @Test
@@ -337,7 +337,7 @@ class BattleUpdaterTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdater.update(
+        List<BattleUpdateResult> results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), lastBattleEntity);
 
         // then
@@ -455,7 +455,7 @@ class BattleUpdaterTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdater.update(
+        List<BattleUpdateResult> results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
@@ -631,7 +631,7 @@ class BattleUpdaterTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdater.update(
+        List<BattleUpdateResult> results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
@@ -796,7 +796,7 @@ class BattleUpdaterTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdater.update(
+        List<BattleUpdateResult> results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
@@ -897,7 +897,7 @@ class BattleUpdaterTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdater.update(
+        List<BattleUpdateResult> results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
@@ -1095,7 +1095,7 @@ class BattleUpdaterTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdater.update(
+        List<BattleUpdateResult> results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
@@ -1276,7 +1276,7 @@ class BattleUpdaterTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdater.update(
+        List<BattleUpdateResult> results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then

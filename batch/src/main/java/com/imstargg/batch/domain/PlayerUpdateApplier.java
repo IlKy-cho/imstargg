@@ -6,7 +6,7 @@ import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PlayerUpdater {
+public class PlayerUpdateApplier {
 
     public PlayerCollectionEntity update(
             PlayerCollectionEntity playerEntity, PlayerResponse playerResponse) {

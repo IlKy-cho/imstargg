@@ -13,13 +13,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class PlayerUpdaterTest {
+class PlayerUpdateApplierTest {
 
-    private PlayerUpdater playerUpdater;
+    private PlayerUpdateApplier playerUpdateApplier;
 
     @BeforeEach
     void setUp() {
-        playerUpdater = new PlayerUpdater();
+        playerUpdateApplier = new PlayerUpdateApplier();
     }
 
     @Test
@@ -50,7 +50,7 @@ class PlayerUpdaterTest {
         );
 
         // when
-        PlayerCollectionEntity updatedPlayerEntity = playerUpdater.update(playerEntity, playerResponse);
+        PlayerCollectionEntity updatedPlayerEntity = playerUpdateApplier.update(playerEntity, playerResponse);
 
         // then
         assertThat(updatedPlayerEntity.getStatus()).isEqualTo(PlayerStatus.UPDATED);

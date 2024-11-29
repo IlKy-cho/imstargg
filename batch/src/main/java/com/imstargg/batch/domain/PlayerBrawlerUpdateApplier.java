@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-public class PlayerBrawlerUpdater {
+public class PlayerBrawlerUpdateApplier {
 
     public List<PlayerBrawlerCollectionEntity> update(
             long playerId,
