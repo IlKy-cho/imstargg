@@ -1,7 +1,7 @@
 package com.imstargg.storage.db.core;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,23 +32,43 @@ public class BattlePlayerEntity extends BaseEntity {
     @Column(name = "name", length = 105, nullable = false)
     private String name;
 
-    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
-    private long brawlerBrawlStarsId;
-
-    @Column(name = "power", updatable = false, nullable = false)
-    private int power;
-
-    @Nullable
-    @Column(name = "trophies", updatable = false)
-    private Integer trophies;
-
     @Column(name = "team_idx", updatable = false, nullable = false)
     private int teamIdx;
 
     @Column(name = "idx", updatable = false, nullable = false)
     private int idx;
 
+    @Embedded
+    private BattlePlayerEntityBrawler brawler;
+
     protected BattlePlayerEntity() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public long getBattleId() {
+        return battleId;
+    }
+
+    public String getBrawlStarsTag() {
+        return brawlStarsTag;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getTeamIdx() {
+        return teamIdx;
+    }
+
+    public int getIdx() {
+        return idx;
+    }
+
+    public BattlePlayerEntityBrawler getBrawler() {
+        return brawler;
+    }
 }

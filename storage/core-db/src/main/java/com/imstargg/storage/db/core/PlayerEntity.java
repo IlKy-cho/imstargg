@@ -12,6 +12,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Table(
@@ -80,10 +83,84 @@ public class PlayerEntity extends BaseEntity {
     @Column(name = "brawlstars_club_tag", length = 45, updatable = false, nullable = false)
     private String brawlStarsClubTag;
 
+    @Column(name = "not_updated_count", nullable = false)
+    private int notUpdatedCount;
+
     @Column(name = "update_weight", nullable = false)
-    private long updateWeight;
+    private LocalDateTime updateWeight;
+
+    @Version
+    private Integer version;
 
     protected PlayerEntity() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getBrawlStarsTag() {
+        return brawlStarsTag;
+    }
+
+    public PlayerStatus getStatus() {
+        return status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getNameColor() {
+        return nameColor;
+    }
+
+    public long getIconBrawlStarsId() {
+        return iconBrawlStarsId;
+    }
+
+    public int getTrophies() {
+        return trophies;
+    }
+
+    public int getHighestTrophies() {
+        return highestTrophies;
+    }
+
+    public int getExpLevel() {
+        return expLevel;
+    }
+
+    public int getExpPoints() {
+        return expPoints;
+    }
+
+    public boolean isQualifiedFromChampionshipChallenge() {
+        return qualifiedFromChampionshipChallenge;
+    }
+
+    public int getVictories3vs3() {
+        return victories3vs3;
+    }
+
+    public int getSoloVictories() {
+        return soloVictories;
+    }
+
+    public int getDuoVictories() {
+        return duoVictories;
+    }
+
+    public int getBestRoboRumbleTime() {
+        return bestRoboRumbleTime;
+    }
+
+    public int getBestTimeAsBigBrawler() {
+        return bestTimeAsBigBrawler;
+    }
+
+    @Nullable
+    public String getBrawlStarsClubTag() {
+        return brawlStarsClubTag;
+    }
 }

@@ -35,9 +35,11 @@ public class BattleCollectionEntity extends BaseEntity {
     @Column(name = "type", length = 105, updatable = false, nullable = false)
     private String type;
 
+    @Nullable
     @Column(name = "result", length = 25, updatable = false)
     private String result;
 
+    @Nullable
     @Column(name = "duration", updatable = false)
     private Integer duration;
 

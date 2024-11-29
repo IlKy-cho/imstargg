@@ -5,20 +5,14 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class BattleEntityPlayerEmbeddable {
+public class BattleEntityPlayer {
 
     @Column(name = "player_id", updatable = false, nullable = false)
     private long playerId;
 
-    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
-    private long brawlerBrawlStarsId;
-
-    @Column(name = "power", updatable = false, nullable = false)
-    private int power;
-
     @Nullable
-    @Column(name = "brawler_trophies", updatable = false)
-    private Integer brawlerTrophies;
+    @Column(name = "battle_rank", updatable = false)
+    private Integer rank;
 
     @Nullable
     @Column(name = "trophy_change", updatable = false)
@@ -28,11 +22,25 @@ public class BattleEntityPlayerEmbeddable {
     @Column(name = "trophy_snapshot", updatable = false)
     private Integer trophySnapshot;
 
-    @Nullable
-    @Column(name = "brawler_trophy_snapshot", updatable = false)
-    private Integer brawlerTrophySnapshot;
-
-    protected BattleEntityPlayerEmbeddable() {
+    protected BattleEntityPlayer() {
     }
 
+    public long getPlayerId() {
+        return playerId;
+    }
+
+    @Nullable
+    public Integer getRank() {
+        return rank;
+    }
+
+    @Nullable
+    public Integer getTrophyChange() {
+        return trophyChange;
+    }
+
+    @Nullable
+    public Integer getTrophySnapshot() {
+        return trophySnapshot;
+    }
 }

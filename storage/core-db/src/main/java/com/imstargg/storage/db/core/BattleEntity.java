@@ -33,8 +33,8 @@ public class BattleEntity extends BaseEntity {
     @Column(name = "battle_time", updatable = false, nullable = false)
     private LocalDateTime battleTime;
 
-    @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
-    private long eventBrawlStarsId;
+    @Embedded
+    private BattleEntityEvent event;
 
     @Column(name = "mode", length = 105, updatable = false, nullable = false)
     private String mode;
@@ -42,20 +42,64 @@ public class BattleEntity extends BaseEntity {
     @Column(name = "type", length = 105, updatable = false, nullable = false)
     private String type;
 
-    @Column(name = "result", length = 25, updatable = false, nullable = false)
+    @Nullable
+    @Column(name = "result", length = 25, updatable = false)
     private String result;
 
-    @Column(name = "duration", updatable = false, nullable = false)
-    private int duration;
+    @Nullable
+    @Column(name = "duration", updatable = false)
+    private Integer duration;
 
     @Nullable
     @Column(name = "star_player_brawlstars_tag", length = 45, updatable = false)
     private String starPlayerBrawlStarsTag;
 
     @Embedded
-    private BattleEntityPlayerEmbeddable player;
+    private BattleEntityPlayer player;
 
     protected BattleEntity() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getBattleKey() {
+        return battleKey;
+    }
+
+    public LocalDateTime getBattleTime() {
+        return battleTime;
+    }
+
+    public BattleEntityEvent getEvent() {
+        return event;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    @Nullable
+    public String getResult() {
+        return result;
+    }
+
+    @Nullable
+    public Integer getDuration() {
+        return duration;
+    }
+
+    @Nullable
+    public String getStarPlayerBrawlStarsTag() {
+        return starPlayerBrawlStarsTag;
+    }
+
+    public BattleEntityPlayer getPlayer() {
+        return player;
+    }
 }
