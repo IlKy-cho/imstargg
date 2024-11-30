@@ -4,6 +4,7 @@ public enum BattleResult {
 
     DEFEAT("defeat"),
     VICTORY("victory"),
+    DRAW("draw"),
     ;
 
     private final String name;
