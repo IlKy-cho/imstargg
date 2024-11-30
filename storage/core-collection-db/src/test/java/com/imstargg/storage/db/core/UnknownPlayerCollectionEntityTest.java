@@ -28,4 +28,21 @@ class UnknownPlayerCollectionEntityTest {
         assertThat(unknownPlayer.getNotFoundCount()).isZero();
         assertThat(unknownPlayer.getUpdateAvailableAt()).isEqualTo(LocalDateTime.now(clock));
     }
+
+    @Test
+    void 업데이트_신규_플레이어_생성() {
+        // given
+        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+
+        // when
+        UnknownPlayerCollectionEntity unknownPlayer = UnknownPlayerCollectionEntity
+                .updateNew("1234567890", clock);
+
+        // then
+        assertThat(unknownPlayer.getId()).isNull();
+        assertThat(unknownPlayer.getBrawlStarsTag()).isEqualTo("1234567890");
+        assertThat(unknownPlayer.getStatus()).isEqualTo(UnknownPlayerStatus.UPDATE_NEW);
+        assertThat(unknownPlayer.getNotFoundCount()).isZero();
+        assertThat(unknownPlayer.getUpdateAvailableAt()).isEqualTo(LocalDateTime.now(clock));
+    }
 }
