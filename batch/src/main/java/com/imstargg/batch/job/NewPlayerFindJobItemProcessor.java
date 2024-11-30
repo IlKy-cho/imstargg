@@ -24,6 +24,6 @@ public class NewPlayerFindJobItemProcessor implements ItemProcessor<BattlePlayer
             return null;
         }
 
-        return UnknownPlayerCollectionEntity.adminNew(item.getBrawlStarsTag(), clock);
+        return UnknownPlayerCollectionEntity.updateNew(item.getBrawlStarsTag(), clock);
     }
 }

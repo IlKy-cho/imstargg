@@ -3,13 +3,14 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.PlayerTagFinderWithLocalCache;
 import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -18,14 +19,18 @@ import static org.mockito.Mockito.mock;
 @ExtendWith(MockitoExtension.class)
 class NewPlayerFindJobItemProcessorTest {
 
-    @InjectMocks
     private NewPlayerFindJobItemProcessor newPlayerFindJobItemProcessor;
 
-    @Mock
     private Clock clock;
 
-    @Mock
     private PlayerTagFinderWithLocalCache playerTagFinder;
+
+    @BeforeEach
+    void setUp() {
+        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+        playerTagFinder = mock(PlayerTagFinderWithLocalCache.class);
+        newPlayerFindJobItemProcessor = new NewPlayerFindJobItemProcessor(clock, playerTagFinder);
+    }
 
     @Test
     void 태그가_존재하면_null을_반환한다() throws Exception {
