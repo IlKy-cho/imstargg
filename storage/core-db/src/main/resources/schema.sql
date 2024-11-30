@@ -146,14 +146,14 @@ create index ix_player__name
 
 create table unknown_player
 (
-    unknown_player_id bigint       not null auto_increment,
-    brawlstars_tag    varchar(45)  not null,
-    status            varchar(45)  not null,
-    not_found_count             int          not null,
-    update_available_at      timestamp(6) not null,
-    created_at        timestamp(6) not null,
-    updated_at        timestamp(6) not null,
-    deleted           boolean      not null,
+    unknown_player_id   bigint       not null auto_increment,
+    brawlstars_tag      varchar(45)  not null,
+    status              varchar(45)  not null,
+    not_found_count     int          not null,
+    update_available_at timestamp(6) not null,
+    created_at          timestamp(6) not null,
+    updated_at          timestamp(6) not null,
+    deleted             boolean      not null,
     primary key (unknown_player_id)
 ) engine = innodb;
 

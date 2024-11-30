@@ -61,4 +61,24 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
                 LocalDateTime.now(clock)
         );
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getBrawlStarsTag() {
+        return brawlStarsTag;
+    }
+
+    public UnknownPlayerStatus getStatus() {
+        return status;
+    }
+
+    public int getNotFoundCount() {
+        return notFoundCount;
+    }
+
+    public LocalDateTime getUpdateAvailableAt() {
+        return updateAvailableAt;
+    }
 }
