@@ -14,4 +14,6 @@ public interface PlayerCollectionJpaRepository extends JpaRepository<PlayerColle
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     List<PlayerCollectionEntity> findAllWithOptimisticLockByDeletedFalseAndStatusInOrderByUpdateWeight(
             Collection<PlayerStatus> statuses, Limit limit);
+
+    boolean existsByBrawlStarsTag(String brawlStarsTag);
 }
