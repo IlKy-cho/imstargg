@@ -8,6 +8,8 @@ spring:
   profiles:
     active: local
 
+  web.resources.add-mappings: false
+  mvc.problemdetails.enabled: true
 ---
 spring:
   config.activate.on-profile: local
