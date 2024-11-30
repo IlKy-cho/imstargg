@@ -62,6 +62,18 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         );
     }
 
+    public static UnknownPlayerCollectionEntity updateNew(
+            String brawlStarsTag,
+            Clock clock
+    ) {
+        return new UnknownPlayerCollectionEntity(
+                brawlStarsTag,
+                UnknownPlayerStatus.UPDATE_NEW,
+                0,
+                LocalDateTime.now(clock)
+        );
+    }
+
     public Long getId() {
         return id;
     }
