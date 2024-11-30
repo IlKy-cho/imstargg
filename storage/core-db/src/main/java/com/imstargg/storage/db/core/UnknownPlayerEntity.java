@@ -11,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(
         name = "unknown_player",
@@ -35,12 +37,13 @@ public class UnknownPlayerEntity extends BaseEntity {
     @Column(name = "status", columnDefinition = "varchar(45)", nullable = false)
     private UnknownPlayerStatus status;
 
-    protected UnknownPlayerEntity() {
-    }
+    @Column(name = "not_found_count", nullable = false)
+    private int notFoundCount;
 
-    public UnknownPlayerEntity(String brawlStarsTag, UnknownPlayerStatus status) {
-        this.brawlStarsTag = brawlStarsTag;
-        this.status = status;
+    @Column(name = "update_available_at", updatable = false, nullable = false)
+    private LocalDateTime updatedAvailableAt;
+
+    protected UnknownPlayerEntity() {
     }
 
 }

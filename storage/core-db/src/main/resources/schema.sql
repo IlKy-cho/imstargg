@@ -87,19 +87,6 @@ alter table club_member
     add constraint uk_clubmember__clubid_memberid unique (club_id, member_id);
 
 
-create table illegal_player
-(
-    illegal_player_id bigint       not null auto_increment,
-    brawlstars_tag    varchar(45)  not null,
-    count             int          not null,
-    available_at      timestamp(6) not null,
-    created_at        timestamp(6) not null,
-    updated_at        timestamp(6) not null,
-    deleted           boolean      not null,
-    primary key (illegal_player_id)
-) engine = innodb;
-
-
 create table player_brawler
 (
     player_brawler_id         bigint       not null auto_increment,
@@ -162,6 +149,8 @@ create table unknown_player
     unknown_player_id bigint       not null auto_increment,
     brawlstars_tag    varchar(45)  not null,
     status            varchar(45)  not null,
+    not_found_count             int          not null,
+    update_available_at      timestamp(6) not null,
     created_at        timestamp(6) not null,
     updated_at        timestamp(6) not null,
     deleted           boolean      not null,
