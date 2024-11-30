@@ -10,6 +10,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "unknown_player")
 public class UnknownPlayerCollectionEntity extends BaseEntity {
@@ -26,8 +29,36 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
     @Column(name = "status", columnDefinition = "varchar(45)", nullable = false)
     private UnknownPlayerStatus status;
 
+    @Column(name = "not_found_count", nullable = false)
+    private int notFoundCount;
+
+    @Column(name = "update_available_at", updatable = false, nullable = false)
+    private LocalDateTime updateAvailableAt;
+
     protected UnknownPlayerCollectionEntity() {
     }
 
+    private UnknownPlayerCollectionEntity(
+            String brawlStarsTag,
+            UnknownPlayerStatus status,
+            int notFoundCount,
+            LocalDateTime updateAvailableAt
+    ) {
+        this.brawlStarsTag = brawlStarsTag;
+        this.status = status;
+        this.notFoundCount = notFoundCount;
+        this.updateAvailableAt = updateAvailableAt;
+    }
 
+    public static UnknownPlayerCollectionEntity adminNew(
+            String brawlStarsTag,
+            Clock clock
+    ) {
+        return new UnknownPlayerCollectionEntity(
+                brawlStarsTag,
+                UnknownPlayerStatus.ADMIN_NEW,
+                0,
+                LocalDateTime.now(clock)
+        );
+    }
 }
