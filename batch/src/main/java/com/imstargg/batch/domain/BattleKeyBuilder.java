@@ -1,5 +1,6 @@
 package com.imstargg.batch.domain;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -32,11 +33,14 @@ public class BattleKeyBuilder {
     }
 
     private byte[] createKeySeed(LocalDateTime battleTime, List<String> playerTags) {
-        return (battleTime.toEpochSecond(ZoneOffset.UTC)
-                + playerTags.stream()
+        byte[] joinedPlayerTagBytes = (playerTags.stream()
                 .sorted()
                 .collect(Collectors.joining()))
                 .getBytes(StandardCharsets.UTF_8);
+        ByteBuffer buffer = ByteBuffer.allocate(8 + joinedPlayerTagBytes.length);
+        buffer.putLong(battleTime.toEpochSecond(ZoneOffset.UTC));
+        buffer.put(joinedPlayerTagBytes);
+        return buffer.array();
     }
 
     private MessageDigest createMessageDigest() {
