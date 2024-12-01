@@ -12,4 +12,9 @@ public record PlayerToUpdateEntity(
         List<PlayerBrawlerCollectionEntity> playerBrawlerEntities,
         Optional<BattleCollectionEntity> lastBattleEntity
 ) {
+
+    public PlayerToUpdateEntity(
+            PlayerCollectionEntity playerEntity, List<PlayerBrawlerCollectionEntity> playerBrawlerEntities) {
+        this(playerEntity, playerBrawlerEntities, Optional.empty());
+    }
 }
