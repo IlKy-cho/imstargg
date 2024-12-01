@@ -6,14 +6,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
         name = "battle_player",
-        uniqueConstraints = {
-                @UniqueConstraint(name = "uk_battleplayer__battleid_brawlstarstag", columnNames = {"battle_id", "brawlstars_tag"})
+        indexes = {
+                @Index(name = "ix_battleplayer__battleid", columnList = "battle_id"),
         }
 )
 public class BattlePlayerEntity extends BaseEntity {
