@@ -74,6 +74,10 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         );
     }
 
+    public void setStatus(UnknownPlayerStatus status) {
+        this.status = status;
+    }
+
     public Long getId() {
         return id;
     }
