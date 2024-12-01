@@ -9,12 +9,16 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
         name = "battle",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_battle__playerid_battletime", columnNames = {"player_id", "battle_time"})
+        },
         indexes = {
                 @Index(name = "ix_battle__eventbrawlstarsid", columnList = "event_brawlstars_id"),
                 @Index(name = "ix_battle__createdat", columnList = "created_at desc"),
