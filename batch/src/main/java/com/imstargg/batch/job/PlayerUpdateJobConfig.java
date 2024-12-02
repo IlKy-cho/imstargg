@@ -105,7 +105,7 @@ public class PlayerUpdateJobConfig {
         return new PagingItemReaderAdapter<>((page, size) -> playerUpdateEntityRepository.find(size));
     }
 
-    @Bean(STEP_NAME + "ItemReader")
+    @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     PlayerUpdateJobItemProcessor processor() {
         return new PlayerUpdateJobItemProcessor(clock, brawlStarsClient, playerUpdater, playerDeleter);
