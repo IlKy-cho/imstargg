@@ -2,13 +2,19 @@ package com.imstargg.storage.db.core;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Embeddable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class BattleCollectionEntityPlayer {
 
-    @Column(name = "player_id", updatable = false, nullable = false)
-    private long playerId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "player_id", updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PlayerCollectionEntity player;
 
     @Nullable
     @Column(name = "rank", updatable = false)
@@ -26,19 +32,19 @@ public class BattleCollectionEntityPlayer {
     }
 
     public BattleCollectionEntityPlayer(
-            long playerId,
+            PlayerCollectionEntity player,
             @Nullable Integer rank,
             @Nullable Integer trophyChange,
             @Nullable Integer trophySnapshot
     ) {
-        this.playerId = playerId;
+        this.player = player;
         this.rank = rank;
         this.trophyChange = trophyChange;
         this.trophySnapshot = trophySnapshot;
     }
 
-    public long getPlayerId() {
-        return playerId;
+    public PlayerCollectionEntity getPlayer() {
+        return player;
     }
 
     @Nullable

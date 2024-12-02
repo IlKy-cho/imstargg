@@ -50,15 +50,15 @@ class PlayerUpdateEntityRepositoryTest {
 
         PlayerBrawlerCollectionEntity player1Brawler1 = mock(PlayerBrawlerCollectionEntity.class);
         PlayerBrawlerCollectionEntity player1Brawler2 = mock(PlayerBrawlerCollectionEntity.class);
-        given(player1Brawler1.getPlayerId()).willReturn(1L);
-        given(player1Brawler2.getPlayerId()).willReturn(1L);
+        given(player1Brawler1.getPlayer()).willReturn(player1);
+        given(player1Brawler2.getPlayer()).willReturn(player1);
         given(playerBrawlerCollectionJpaRepository.findAllByPlayerIdIn(List.of(1L, 2L))).willReturn(List.of(
                 player1Brawler1, player1Brawler2
         ));
 
         BattleCollectionEntity battle1 = mock(BattleCollectionEntity.class);
         BattleCollectionEntityPlayer battle1Player1 = mock(BattleCollectionEntityPlayer.class);
-        given(battle1Player1.getPlayerId()).willReturn(1L);
+        given(battle1Player1.getPlayer()).willReturn(player1);
         given(battle1.getPlayer()).willReturn(battle1Player1);
         given(battleCollectionJpaRepository.findAllLastBattleByPlayerIdIn(List.of(1L, 2L))).willReturn(List.of(
                 battle1

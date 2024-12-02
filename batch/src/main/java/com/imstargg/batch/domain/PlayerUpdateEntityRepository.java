@@ -68,13 +68,13 @@ public class PlayerUpdateEntityRepository {
         return playerBrawlerCollectionJpaRepository
                 .findAllByPlayerIdIn(playerIds)
                 .stream()
-                .collect(Collectors.groupingBy(PlayerBrawlerCollectionEntity::getPlayerId));
+                .collect(Collectors.groupingBy(brawler -> brawler.getPlayer().getId()));
     }
 
     private Map<Long, BattleCollectionEntity> getPlayerIdToBattle(List<Long> playerIds) {
         return battleCollectionJpaRepository
                 .findAllLastBattleByPlayerIdIn(playerIds)
                 .stream()
-                .collect(Collectors.toMap(battle -> battle.getPlayer().getPlayerId(), battle -> battle));
+                .collect(Collectors.toMap(battle -> battle.getPlayer().getPlayer().getId(), battle -> battle));
     }
 }

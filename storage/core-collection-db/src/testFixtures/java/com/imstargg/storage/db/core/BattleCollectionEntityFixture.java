@@ -36,7 +36,7 @@ public class BattleCollectionEntityFixture {
     private String starPlayerBrawlStarsTag;
 
     @Nullable
-    private Long playerId;
+    private PlayerCollectionEntity player;
 
     @Nullable
     private Long brawlerId;
@@ -101,8 +101,8 @@ public class BattleCollectionEntityFixture {
         return this;
     }
 
-    public BattleCollectionEntityFixture playerId(Long playerId) {
-        this.playerId = playerId;
+    public BattleCollectionEntityFixture player(PlayerCollectionEntity player) {
+        this.player = player;
         return this;
     }
 
@@ -153,7 +153,7 @@ public class BattleCollectionEntityFixture {
                 duration,
                 starPlayerBrawlStarsTag,
                 new BattleCollectionEntityPlayer(
-                        playerId,
+                        player,
                         rank,
                         trophyChange,
                         trophySnapshot
@@ -188,8 +188,8 @@ public class BattleCollectionEntityFixture {
         if (starPlayerBrawlStarsTag == null) {
             starPlayerBrawlStarsTag = "starPlayerBrawlStarsTag-" + fillKey;
         }
-        if (playerId == null) {
-            playerId = fillKey;
+        if (player == null) {
+            player = new PlayerCollectionEntityFixture().build();
         }
         if (brawlerId == null) {
             brawlerId = fillKey;

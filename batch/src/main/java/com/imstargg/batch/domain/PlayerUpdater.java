@@ -38,7 +38,7 @@ public class PlayerUpdater {
     ) {
         PlayerCollectionEntity updatedPlayer = playerUpdateApplier.update(playerToUpdateEntity.playerEntity(), playerResponse);
         List<PlayerBrawlerCollectionEntity> updatedBrawlers = playerBrawlerUpdateApplier.update(
-                updatedPlayer.getId(), playerToUpdateEntity.playerBrawlerEntities(), playerResponse.brawlers());
+                updatedPlayer, playerToUpdateEntity.playerBrawlerEntities(), playerResponse.brawlers());
         List<BattleUpdateResult> updatedBattleResults = battleUpdateApplier.update(
                 updatedPlayer, battleListResponse, playerToUpdateEntity.lastBattleEntity().orElse(null));
         List<LocalDateTime> updatedBattleTimes = updatedBattleResults.stream()

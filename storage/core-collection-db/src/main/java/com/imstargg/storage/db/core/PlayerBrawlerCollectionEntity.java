@@ -2,11 +2,16 @@ package com.imstargg.storage.db.core;
 
 import com.imstargg.storage.db.support.LongListToStringConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.ConstraintMode;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ForeignKey;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 import java.util.List;
@@ -20,8 +25,9 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
     @Column(name = "player_brawler_id")
     private Long id;
 
-    @Column(name = "player_id", updatable = false, nullable = false)
-    private long playerId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "player_id", updatable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    private PlayerCollectionEntity player;
 
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
@@ -54,7 +60,7 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
     }
 
     public PlayerBrawlerCollectionEntity(
-            long playerId,
+            PlayerCollectionEntity player,
             long brawlerBrawlStarsId,
             int power,
             int rank,
@@ -64,7 +70,7 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
             List<Long> starPowerBrawlStarsIds,
             List<Long> gadgetBrawlStarsIds
     ) {
-        this.playerId = playerId;
+        this.player = player;
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.power = power;
         this.rank = rank;
@@ -79,8 +85,8 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         return id;
     }
 
-    public long getPlayerId() {
-        return playerId;
+    public PlayerCollectionEntity getPlayer() {
+        return player;
     }
 
     public long getBrawlerBrawlStarsId() {
