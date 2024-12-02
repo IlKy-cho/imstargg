@@ -1,5 +1,6 @@
 package com.imstargg.batch.job;
 
+import com.imstargg.batch.domain.PlayerDeleter;
 import com.imstargg.batch.domain.PlayerToUpdateEntity;
 import com.imstargg.batch.domain.PlayerUpdatedEntity;
 import com.imstargg.batch.domain.PlayerUpdater;
@@ -8,34 +9,38 @@ import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
-import com.imstargg.core.enums.PlayerStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.List;
 
-public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerToUpdateEntity, List<Object>> {
+public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerToUpdateEntity, PlayerUpdatedEntity> {
+
+    private static final Logger log = LoggerFactory.getLogger(PlayerUpdateJobItemProcessor.class);
 
     private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
     private final PlayerUpdater playerUpdater;
+    private final PlayerDeleter playerDeleter;
 
     public PlayerUpdateJobItemProcessor(
             Clock clock,
             BrawlStarsClient brawlStarsClient,
-            PlayerUpdater playerUpdater
+            PlayerUpdater playerUpdater,
+            PlayerDeleter playerDeleter
     ) {
         this.clock = clock;
         this.brawlStarsClient = brawlStarsClient;
         this.playerUpdater = playerUpdater;
+        this.playerDeleter = playerDeleter;
     }
 
     @Override
-    public List<Object> process(PlayerToUpdateEntity item) throws Exception {
+    public PlayerUpdatedEntity process(PlayerToUpdateEntity item) throws Exception {
         if (!item.playerEntity().isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
-            item.playerEntity().setStatus(PlayerStatus.UPDATED);
-            return List.of(item.playerEntity());
+            return null;
         }
 
         try {
@@ -43,12 +48,11 @@ public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerToUpdat
             ListResponse<BattleResponse> battleListResponse = brawlStarsClient
                     .getPlayerRecentBattles(item.playerEntity().getBrawlStarsTag());
 
-            PlayerUpdatedEntity updatedEntity = playerUpdater.update(item, playerResponse, battleListResponse);
-
-            return updatedEntity.toList();
+            return playerUpdater.update(item, playerResponse, battleListResponse);
         } catch (BrawlStarsClientNotFoundException ex) {
-            item.playerEntity().setStatus(PlayerStatus.DELETED);
-            return List.of(item.playerEntity());
+            log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.playerEntity().getBrawlStarsTag());
+            playerDeleter.delete(item.playerEntity());
+            return null;
         }
     }
 

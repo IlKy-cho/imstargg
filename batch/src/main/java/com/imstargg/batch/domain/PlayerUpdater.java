@@ -54,4 +54,27 @@ public class PlayerUpdater {
                 updatedBattleResults
         );
     }
+
+    public PlayerUpdatedEntity create(
+            PlayerResponse playerResponse,
+            ListResponse<BattleResponse> battleListResponse
+    ) {
+        PlayerCollectionEntity updatedPlayer = playerUpdateApplier.create(playerResponse);
+        List<PlayerBrawlerCollectionEntity> updatedBrawlers = playerBrawlerUpdateApplier.update(
+                updatedPlayer, List.of(), playerResponse.brawlers());
+        List<BattleUpdateResult> updatedBattleResults = battleUpdateApplier.update(
+                updatedPlayer, battleListResponse, null);
+        List<LocalDateTime> updatedBattleTimes = updatedBattleResults.stream()
+                .map(battle -> battle.battleEntity().getBattleTime())
+                .toList();
+
+        updatedPlayer.setStatus(PlayerStatus.UPDATED);
+        updatedPlayer.nextUpdateWeight(LocalDateTime.now(clock), updatedBattleTimes);
+
+        return new PlayerUpdatedEntity(
+                updatedPlayer,
+                updatedBrawlers,
+                updatedBattleResults
+        );
+    }
 }

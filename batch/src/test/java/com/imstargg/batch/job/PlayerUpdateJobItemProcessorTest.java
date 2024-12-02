@@ -1,6 +1,6 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BattleUpdateResult;
+import com.imstargg.batch.domain.PlayerDeleter;
 import com.imstargg.batch.domain.PlayerToUpdateEntity;
 import com.imstargg.batch.domain.PlayerUpdatedEntity;
 import com.imstargg.batch.domain.PlayerUpdater;
@@ -9,9 +9,6 @@ import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
-import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,16 +39,20 @@ class PlayerUpdateJobItemProcessorTest {
 
     private PlayerUpdater playerUpdater;
 
+    private PlayerDeleter playerDeleter;
+
     @BeforeEach
     void setUp() {
         clock = Clock.fixed(Instant.now(), ZoneOffset.systemDefault());
         brawlStarsClient = mock(BrawlStarsClient.class);
         playerUpdater = mock(PlayerUpdater.class);
+        playerDeleter = mock(PlayerDeleter.class);
 
         playerUpdateJobItemProcessor = new PlayerUpdateJobItemProcessor(
                 clock,
                 brawlStarsClient,
-                playerUpdater
+                playerUpdater,
+                playerDeleter
         );
     }
 
@@ -78,42 +79,15 @@ class PlayerUpdateJobItemProcessorTest {
         given(brawlStarsClient.getPlayerRecentBattles("testTag"))
                 .willReturn(battleResponseList);
 
-        PlayerCollectionEntity updatedPlayer = mock(PlayerCollectionEntity.class);
-        PlayerBrawlerCollectionEntity updatedPlayerBrawler1 = mock(PlayerBrawlerCollectionEntity.class);
-        PlayerBrawlerCollectionEntity updatedPlayerBrawler2 = mock(PlayerBrawlerCollectionEntity.class);
-        BattleCollectionEntity updatedBattle1 = mock(BattleCollectionEntity.class);
-        BattleCollectionEntity updatedBattle2 = mock(BattleCollectionEntity.class);
-        BattlePlayerCollectionEntity updatedBattle1Player1 = mock(BattlePlayerCollectionEntity.class);
-        BattlePlayerCollectionEntity updatedBattle1Player2 = mock(BattlePlayerCollectionEntity.class);
-        BattlePlayerCollectionEntity updatedBattle2Player1 = mock(BattlePlayerCollectionEntity.class);
-        BattlePlayerCollectionEntity updatedBattle2Player2 = mock(BattlePlayerCollectionEntity.class);
-        PlayerUpdatedEntity playerUpdatedEntity = new PlayerUpdatedEntity(
-                updatedPlayer,
-                List.of(updatedPlayerBrawler1, updatedPlayerBrawler2),
-                List.of(
-                        new BattleUpdateResult(updatedBattle1, List.of(updatedBattle1Player1, updatedBattle1Player2)),
-                        new BattleUpdateResult(updatedBattle2, List.of(updatedBattle2Player1, updatedBattle2Player2))
-                )
-        );
+        PlayerUpdatedEntity playerUpdatedEntity = mock(PlayerUpdatedEntity.class);
 
         given(playerUpdater.update(playerToUpdateEntity, playerResponse, battleResponseList))
                 .willReturn(playerUpdatedEntity);
 
         // when
-        List<Object> results = playerUpdateJobItemProcessor.process(playerToUpdateEntity);
-        assertThat(results)
-                .hasSize(9)
-                .containsExactlyInAnyOrder(
-                        updatedPlayer,
-                        updatedPlayerBrawler1,
-                        updatedPlayerBrawler2,
-                        updatedBattle1,
-                        updatedBattle1Player1,
-                        updatedBattle1Player2,
-                        updatedBattle2,
-                        updatedBattle2Player1,
-                        updatedBattle2Player2
-                );
+        // then
+        assertThat(playerUpdateJobItemProcessor.process(playerToUpdateEntity))
+                .isEqualTo(playerUpdatedEntity);
     }
 
     @Test
@@ -128,13 +102,10 @@ class PlayerUpdateJobItemProcessorTest {
         );
 
         // when
-        List<Object> results = playerUpdateJobItemProcessor.process(playerToUpdateEntity);
+        var result = playerUpdateJobItemProcessor.process(playerToUpdateEntity);
 
         // then
-        assertThat(results)
-                .hasSize(1)
-                .containsExactly(playerEntity);
-        then(playerEntity).should().setStatus(PlayerStatus.UPDATED);
+        assertThat(result).isNull();
     }
 
     @Test
@@ -154,12 +125,9 @@ class PlayerUpdateJobItemProcessorTest {
                 .willThrow(notFoundException);
 
         // when
-        List<Object> results = playerUpdateJobItemProcessor.process(playerToUpdateEntity);
+        playerUpdateJobItemProcessor.process(playerToUpdateEntity);
 
         // then
-        assertThat(results)
-                .hasSize(1)
-                .containsExactly(playerEntity);
-        then(playerEntity).should().setStatus(PlayerStatus.DELETED);
+        then(playerDeleter).should().delete(playerEntity);
     }
 }

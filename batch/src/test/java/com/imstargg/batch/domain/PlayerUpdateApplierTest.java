@@ -8,6 +8,8 @@ import com.imstargg.storage.db.core.PlayerCollectionEntityFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.Clock;
+import java.time.Instant;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,7 +20,8 @@ class PlayerUpdateApplierTest {
 
     @BeforeEach
     void setUp() {
-        playerUpdateApplier = new PlayerUpdateApplier();
+        Clock clock = Clock.fixed(Instant.now(), Clock.systemDefaultZone().getZone());
+        playerUpdateApplier = new PlayerUpdateApplier(clock);
     }
 
     @Test
