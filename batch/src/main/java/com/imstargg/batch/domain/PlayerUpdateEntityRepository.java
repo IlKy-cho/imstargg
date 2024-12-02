@@ -38,11 +38,10 @@ public class PlayerUpdateEntityRepository {
     @Retryable(retryFor = OptimisticLockingFailureException.class)
     public List<PlayerToUpdateEntity> find(int size) {
         List<PlayerCollectionEntity> players = playerCollectionJpaRepository
-                .findAllWithOptimisticLockByDeletedFalseAndStatusInOrderByUpdateWeight(
+                .findAllByDeletedFalseAndStatusInOrderByUpdateWeight(
                         List.of(PlayerStatus.UPDATED, PlayerStatus.UPDATING),
                         Limit.of(size)
                 );
-        players.forEach(player -> player.setStatus(PlayerStatus.UPDATING));
         List<Long> playerIds = getPlayerIds(players);
         Map<Long, List<PlayerBrawlerCollectionEntity>> playerIdToBrawlers = getPlayerIdToBrawlers(playerIds);
         Map<Long, BattleCollectionEntity> playerIdToBattle = getPlayerIdToBattle(playerIds);
