@@ -1,7 +1,6 @@
 package com.imstargg.batch.domain;
 
 import com.imstargg.client.brawlstars.response.PlayerResponse;
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,6 @@ public class PlayerUpdateApplier {
 
     public PlayerCollectionEntity create(PlayerResponse playerResponse) {
         return new PlayerCollectionEntity(
-                PlayerStatus.UPDATED,
                 playerResponse.tag(),
                 playerResponse.name(),
                 playerResponse.nameColor(),

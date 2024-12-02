@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 public enum PlayerStatus {
 
+    NEW,
+    PLAYER_UPDATED,
     REFRESH_REQUESTED,
     UPDATING,
     UPDATED,

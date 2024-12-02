@@ -1,14 +1,14 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.NewPlayerRepository;
+import com.imstargg.batch.domain.NewPlayer;
 import com.imstargg.batch.domain.PlayerDeleter;
-import com.imstargg.batch.domain.PlayerUpdatedEntity;
-import com.imstargg.batch.domain.PlayerUpdater;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.job.support.PagingItemReaderAdapter;
+import com.imstargg.batch.job.support.QuerydslPagingItemReader;
+import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -19,13 +19,14 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
+
+import static com.imstargg.storage.db.core.QUnknownPlayerCollectionEntity.unknownPlayerCollectionEntity;
 
 @Configuration
 public class NewPlayerUpdateJobConfig {
@@ -40,8 +41,6 @@ public class NewPlayerUpdateJobConfig {
 
     private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
-    private final NewPlayerRepository newPlayerRepository;
-    private final PlayerUpdater playerUpdater;
     private final PlayerDeleter playerDeleter;
 
     NewPlayerUpdateJobConfig(
@@ -51,8 +50,6 @@ public class NewPlayerUpdateJobConfig {
             EntityManagerFactory emf,
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient,
-            NewPlayerRepository newPlayerRepository,
-            PlayerUpdater playerUpdater,
             PlayerDeleter playerDeleter
     ) {
         this.clock = clock;
@@ -61,8 +58,6 @@ public class NewPlayerUpdateJobConfig {
         this.emf = emf;
         this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
-        this.newPlayerRepository = newPlayerRepository;
-        this.playerUpdater = playerUpdater;
         this.playerDeleter = playerDeleter;
     }
 
@@ -87,33 +82,42 @@ public class NewPlayerUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<UnknownPlayerCollectionEntity, PlayerUpdatedEntity>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<UnknownPlayerCollectionEntity, NewPlayer>chunk(chunkSizeJobParameter().getSize(), txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
 
                 .faultTolerant()
                 .skip(DataIntegrityViolationException.class)
-                .listener(new PlayerUpdateWriteSkipListener())
+                .listener(new NewPlayerUpdateJobSkipListener())
 
                 .build();
     }
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    ItemReader<UnknownPlayerCollectionEntity> reader() {
-        return new PagingItemReaderAdapter<>((page, size) -> newPlayerRepository.find(size));
+    QuerydslPagingItemReader<UnknownPlayerCollectionEntity> reader() {
+        QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(
+                emf, chunkSizeJobParameter().getSize(), queryFactory ->
+                queryFactory
+                        .selectFrom(unknownPlayerCollectionEntity)
+                        .where(unknownPlayerCollectionEntity.status.in(
+                                UnknownPlayerStatus.UPDATE_NEW, UnknownPlayerStatus.ADMIN_NEW
+                        ))
+        );
+        reader.setTransacted(false);
+        return reader;
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerUpdateJobItemProcessor processor() {
-        return new NewPlayerUpdateJobItemProcessor(brawlStarsClient, playerUpdater, playerDeleter);
+        return new NewPlayerUpdateJobItemProcessor(clock, brawlStarsClient, playerDeleter);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    PlayerUpdatedItemWriter writer() {
-        return new PlayerUpdatedItemWriter(emf);
+    NewPlayerUpdateJobItemWriter writer() {
+        return new NewPlayerUpdateJobItemWriter(emf);
     }
 }

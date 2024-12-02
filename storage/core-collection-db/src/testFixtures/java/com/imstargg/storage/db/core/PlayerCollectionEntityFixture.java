@@ -1,6 +1,5 @@
 package com.imstargg.storage.db.core;
 
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
@@ -10,9 +9,6 @@ public class PlayerCollectionEntityFixture {
 
     @Nullable
     private String brawlStarsTag;
-
-    @Nullable
-    private PlayerStatus status;
 
     @Nullable
     private String name;
@@ -51,11 +47,6 @@ public class PlayerCollectionEntityFixture {
 
     public PlayerCollectionEntityFixture brawlStarsTag(String brawlStarsTag) {
         this.brawlStarsTag = brawlStarsTag;
-        return this;
-    }
-
-    public PlayerCollectionEntityFixture status(PlayerStatus status) {
-        this.status = status;
         return this;
     }
 
@@ -142,7 +133,6 @@ public class PlayerCollectionEntityFixture {
     public PlayerCollectionEntity build() {
         fillRequiredFields();
         return new PlayerCollectionEntity(
-            status,
             brawlStarsTag,
             name,
             nameColor,
@@ -163,9 +153,6 @@ public class PlayerCollectionEntityFixture {
     }
 
     private void fillRequiredFields() {
-        if (status == null) {
-            status = PlayerStatus.UPDATING;
-        }
         if (brawlStarsTag == null) {
             brawlStarsTag = "brawlStarsTag-" + LongIncrementUtil.next();
         }
