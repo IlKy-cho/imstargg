@@ -2,6 +2,7 @@ package com.imstargg.storage.db.core;
 
 import com.imstargg.core.enums.PlayerStatus;
 import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,15 +10,21 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "player")
@@ -84,14 +91,19 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Column(name = "update_weight", nullable = false)
     private LocalDateTime updateWeight;
 
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    private List<PlayerBrawlerCollectionEntity> brawlers = new ArrayList<>();
+
     @Version
     private Integer version;
+
+    @Transient
+    private Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToBrawler;
 
     protected PlayerCollectionEntity() {
     }
 
     public PlayerCollectionEntity(
-            PlayerStatus status,
             String brawlStarsTag,
             String name,
             String nameColor,
@@ -109,7 +121,7 @@ public class PlayerCollectionEntity extends BaseEntity {
             @Nullable String brawlStarsClubTag,
             LocalDateTime now
     ) {
-        this.status = status;
+        this.status = PlayerStatus.NEW;
         this.brawlStarsTag = brawlStarsTag;
         this.name = name;
         this.nameColor = nameColor;
@@ -126,7 +138,53 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
         this.brawlStarsClubTag = brawlStarsClubTag;
         this.notUpdatedCount = 0;
-        this.updateWeight = now.plusMinutes(30);
+        this.updateWeight = now;
+    }
+
+    public void updateBrawler(
+            long brawlerBrawlStarsId,
+            int power,
+            int rank,
+            int trophies,
+            int highestTrophies,
+            List<Long> gearBrawlStarsIds,
+            List<Long> starPowerBrawlStarsIds,
+            List<Long> gadgetBrawlStarsIds
+    ) {
+        if (brawlStarsIdToBrawler == null) {
+            createBrawlerMap();
+        }
+
+        if (brawlStarsIdToBrawler.containsKey(brawlerBrawlStarsId)) {
+            brawlStarsIdToBrawler.get(brawlerBrawlStarsId).update(
+                    power,
+                    rank,
+                    trophies,
+                    highestTrophies,
+                    gearBrawlStarsIds,
+                    starPowerBrawlStarsIds,
+                    gadgetBrawlStarsIds
+            );
+        } else {
+            PlayerBrawlerCollectionEntity brawler = new PlayerBrawlerCollectionEntity(
+                    this,
+                    brawlerBrawlStarsId,
+                    power,
+                    rank,
+                    trophies,
+                    highestTrophies,
+                    gearBrawlStarsIds,
+                    starPowerBrawlStarsIds,
+                    gadgetBrawlStarsIds
+            );
+            brawlers.add(brawler);
+            brawlStarsIdToBrawler.put(brawlerBrawlStarsId, brawler);
+        }
+    }
+
+    private void createBrawlerMap() {
+        brawlStarsIdToBrawler = brawlers.stream()
+                .collect(Collectors.toMap(PlayerBrawlerCollectionEntity::getBrawlerBrawlStarsId, Function.identity()));
     }
 
     public boolean isNextUpdateCooldownOver(LocalDateTime now) {
@@ -252,6 +310,10 @@ public class PlayerCollectionEntity extends BaseEntity {
 
     public LocalDateTime getUpdateWeight() {
         return updateWeight;
+    }
+
+    public List<PlayerBrawlerCollectionEntity> getBrawlers() {
+        return brawlers;
     }
 
     public void setStatus(PlayerStatus status) {
