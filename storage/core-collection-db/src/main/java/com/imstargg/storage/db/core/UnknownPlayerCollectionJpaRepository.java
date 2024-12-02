@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface UnknownPlayerCollectionJpaRepository extends JpaRepository<UnknownPlayerCollectionEntity, Long> {
 
@@ -13,4 +14,6 @@ public interface UnknownPlayerCollectionJpaRepository extends JpaRepository<Unkn
 
     List<UnknownPlayerCollectionEntity> findAllByStatusInAndDeletedFalseOrderByCreatedAtAsc(
             Collection<UnknownPlayerStatus> statuses, Limit limit);
+
+    Optional<UnknownPlayerCollectionEntity> findByBrawlStarsTag(String brawlStarsTag);
 }
