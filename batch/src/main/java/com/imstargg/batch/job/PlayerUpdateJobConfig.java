@@ -3,6 +3,7 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.PlayerToUpdateEntity;
 import com.imstargg.batch.domain.PlayerUpdateEntityRepository;
 import com.imstargg.batch.domain.PlayerUpdater;
+import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.PagingItemReaderAdapter;
@@ -32,7 +33,6 @@ public class PlayerUpdateJobConfig {
 
     private static final String JOB_NAME = "playerUpdateJob";
     private static final String STEP_NAME = "playerUpdateStep";
-    private static final int CHUNK_SIZE = 10;
 
     private final Clock clock;
     private final JobRepository jobRepository;
@@ -74,12 +74,18 @@ public class PlayerUpdateJobConfig {
                 .build();
     }
 
+    @Bean(JOB_NAME + "ChunkSizeJobParameter")
+    @JobScope
+    ChunkSizeJobParameter chunkSizeJobParameter() {
+        return new ChunkSizeJobParameter(10);
+    }
+
     @Bean(STEP_NAME)
     @JobScope
-    public Step step() {
+    Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerToUpdateEntity, List<Object>>chunk(CHUNK_SIZE, txManager)
+                .<PlayerToUpdateEntity, List<Object>>chunk(chunkSizeJobParameter().getSize(), txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
