@@ -1,6 +1,5 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BattleUpdateResult;
 import com.imstargg.batch.domain.PlayerToUpdateEntity;
 import com.imstargg.batch.domain.PlayerUpdatedEntity;
 import com.imstargg.batch.domain.PlayerUpdater;
@@ -14,7 +13,6 @@ import org.springframework.batch.item.ItemProcessor;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerToUpdateEntity, List<Object>> {
@@ -47,18 +45,7 @@ public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerToUpdat
 
             PlayerUpdatedEntity updatedEntity = playerUpdater.update(item, playerResponse, battleListResponse);
 
-            List<Object> results = new ArrayList<>();
-            results.add(updatedEntity.playerEntity());
-            results.addAll(updatedEntity.playerBrawlerEntities());
-            results.addAll(updatedEntity.battleUpdateResults().stream()
-                    .map(BattleUpdateResult::battleEntity).toList()
-            );
-            results.addAll(
-                    updatedEntity.battleUpdateResults().stream()
-                            .flatMap(battleResult -> battleResult.battlePlayerEntities().stream())
-                            .toList()
-            );
-            return results;
+            return updatedEntity.toList();
         } catch (BrawlStarsClientNotFoundException ex) {
             item.playerEntity().setStatus(PlayerStatus.DELETED);
             return List.of(item.playerEntity());
