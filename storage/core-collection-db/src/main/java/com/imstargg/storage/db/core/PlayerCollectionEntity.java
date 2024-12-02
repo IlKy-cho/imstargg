@@ -235,6 +235,39 @@ public class PlayerCollectionEntity extends BaseEntity {
         return 1 / (1 + Math.exp(expLevel / 100D)) + 1;
     }
 
+    public void update(
+            String name,
+            String nameColor,
+            long iconBrawlStarsId,
+            int trophies,
+            int highestTrophies,
+            int expLevel,
+            int expPoints,
+            boolean qualifiedFromChampionshipChallenge,
+            int victories3vs3,
+            int soloVictories,
+            int duoVictories,
+            int bestRoboRumbleTime,
+            int bestTimeAsBigBrawler,
+            @Nullable String brawlStarsClubTag
+    ) {
+        this.status = PlayerStatus.PLAYER_UPDATED;
+        this.name = name;
+        this.nameColor = nameColor;
+        this.iconBrawlStarsId = iconBrawlStarsId;
+        this.trophies = trophies;
+        this.highestTrophies = highestTrophies;
+        this.expLevel = expLevel;
+        this.expPoints = expPoints;
+        this.qualifiedFromChampionshipChallenge = qualifiedFromChampionshipChallenge;
+        this.victories3vs3 = victories3vs3;
+        this.soloVictories = soloVictories;
+        this.duoVictories = duoVictories;
+        this.bestRoboRumbleTime = bestRoboRumbleTime;
+        this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
+        this.brawlStarsClubTag = brawlStarsClubTag;
+    }
+
     public Long getId() {
         return id;
     }
