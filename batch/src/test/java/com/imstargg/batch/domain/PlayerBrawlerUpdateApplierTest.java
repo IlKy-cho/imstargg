@@ -5,12 +5,15 @@ import com.imstargg.client.brawlstars.response.GearStatResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
 import com.imstargg.core.enums.Brawler;
 import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
+import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
 class PlayerBrawlerUpdateApplierTest {
 
@@ -25,9 +28,11 @@ class PlayerBrawlerUpdateApplierTest {
     void 브롤러를_업데이트한다() {
         // given
         long playerId = 123;
+        PlayerCollectionEntity playerEntity = mock(PlayerCollectionEntity.class);
+        given(playerEntity.getId()).willReturn(playerId);
         List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = List.of(
                 new PlayerBrawlerCollectionEntity(
-                        playerId,
+                        playerEntity,
                         16000000,
                         8,
                         23,
@@ -81,7 +86,7 @@ class PlayerBrawlerUpdateApplierTest {
 
         // when
         List<PlayerBrawlerCollectionEntity> updatedEntities = playerBrawlerUpdateApplier
-                .update(playerId, playerBrawlerEntities, brawlerResponseList);
+                .update(playerEntity, playerBrawlerEntities, brawlerResponseList);
 
         // then
         assertThat(updatedEntities)
@@ -113,7 +118,7 @@ class PlayerBrawlerUpdateApplierTest {
         assertThat(updatedEntities.get(1).getId())
                 .describedAs("추가된 브롤러는 생성되어야 한다.")
                 .isNull();
-        assertThat(updatedEntities.get(1).getPlayerId())
+        assertThat(updatedEntities.get(1).getPlayer().getId())
                 .describedAs("브롤러가 추가될 때는 인자로 넘겨준 playerId를 그대로 사용해야 한다.")
                 .isEqualTo(playerId);
         assertThat(updatedEntities.get(1).getBrawlerBrawlStarsId()).isEqualTo(Brawler.NITA.getBrawlStarsId());

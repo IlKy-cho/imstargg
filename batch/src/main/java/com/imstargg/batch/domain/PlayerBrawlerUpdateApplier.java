@@ -5,6 +5,7 @@ import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
 import com.imstargg.client.brawlstars.response.GearStatResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
 import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
+import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
 public class PlayerBrawlerUpdateApplier {
 
     public List<PlayerBrawlerCollectionEntity> update(
-            long playerId,
+            PlayerCollectionEntity playerEntity,
             List<PlayerBrawlerCollectionEntity> playerBrawlerEntities,
             List<BrawlerStatResponse> brawlerResponseList
     ) {
@@ -26,7 +27,7 @@ public class PlayerBrawlerUpdateApplier {
         for (BrawlerStatResponse brawlerResponse : brawlerResponseList) {
             PlayerBrawlerCollectionEntity brawler = idToBrawler.computeIfAbsent(brawlerResponse.id(), id ->
                     new PlayerBrawlerCollectionEntity(
-                            playerId,
+                            playerEntity,
                             brawlerResponse.id(),
                             brawlerResponse.power(),
                             brawlerResponse.rank(),

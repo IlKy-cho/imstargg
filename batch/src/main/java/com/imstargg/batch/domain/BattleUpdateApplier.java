@@ -50,7 +50,7 @@ public class BattleUpdateApplier {
                     Optional.ofNullable(battleResponse.battle().starPlayer())
                             .map(BattleResultPlayerResponse::tag).orElse(null),
                     new BattleCollectionEntityPlayer(
-                            playerEntity.getId(),
+                            playerEntity,
                             battleResponse.battle().rank(),
                             battleResponse.battle().trophyChange(),
                             playerEntity.getTrophies()

@@ -82,7 +82,7 @@ class PlayerUpdaterTest {
         List<PlayerBrawlerCollectionEntity> updatedPlayerBrawlerList = List.of(
                 updatedPlayerBrawler1, updatedPlayerBrawler2, updatedPlayerBrawler3);
 
-        given(playerBrawlerUpdateApplier.update(1L, playerBrawlerList, playerBrawlerResponseList))
+        given(playerBrawlerUpdateApplier.update(updatedPlayer, playerBrawlerList, playerBrawlerResponseList))
                 .willReturn(updatedPlayerBrawlerList);
 
         BattleCollectionEntity updatedBattle1 = mock(BattleCollectionEntity.class);
