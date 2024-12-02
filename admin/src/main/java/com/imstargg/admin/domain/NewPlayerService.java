@@ -1,8 +1,10 @@
 package com.imstargg.admin.domain;
 
+import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 
@@ -20,9 +22,16 @@ public class NewPlayerService {
         this.unknownPlayerRepository = unknownPlayerRepository;
     }
 
+    @Transactional
     public void create(String brawlStarsTag) {
-        unknownPlayerRepository.save(
-                UnknownPlayerCollectionEntity.adminNew(brawlStarsTag, clock)
+        unknownPlayerRepository.findByBrawlStarsTag(brawlStarsTag).ifPresentOrElse(
+                player -> {
+                    player.restore();
+                    player.setStatus(UnknownPlayerStatus.ADMIN_NEW);
+                },
+                () -> unknownPlayerRepository.save(
+                        UnknownPlayerCollectionEntity.adminNew(brawlStarsTag, clock)
+                )
         );
     }
 }
