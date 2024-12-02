@@ -11,7 +11,10 @@ public class ChunkSizeJobParameter {
     }
 
     @Value("#{jobParameters['chunk.size']}")
-    public void setSize(int size) {
+    public void setSize(Integer size) {
+        if (size == null) {
+            return;
+        }
         this.size = size;
     }
 
