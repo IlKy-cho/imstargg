@@ -1,11 +1,12 @@
 package com.imstargg.batch.job;
 
+import com.imstargg.batch.domain.PlayerDeleter;
 import com.imstargg.batch.domain.PlayerToUpdateEntity;
 import com.imstargg.batch.domain.PlayerUpdateEntityRepository;
+import com.imstargg.batch.domain.PlayerUpdatedEntity;
 import com.imstargg.batch.domain.PlayerUpdater;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.PagingItemReaderAdapter;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
@@ -19,14 +20,12 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
-import java.util.List;
 
 @Configuration
 public class PlayerUpdateJobConfig {
@@ -43,6 +42,7 @@ public class PlayerUpdateJobConfig {
     private final BrawlStarsClient brawlStarsClient;
     private final PlayerUpdateEntityRepository playerUpdateEntityRepository;
     private final PlayerUpdater playerUpdater;
+    private final PlayerDeleter playerDeleter;
 
     PlayerUpdateJobConfig(
             Clock clock,
@@ -52,7 +52,8 @@ public class PlayerUpdateJobConfig {
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient,
             PlayerUpdateEntityRepository playerUpdateEntityRepository,
-            PlayerUpdater playerUpdater
+            PlayerUpdater playerUpdater,
+            PlayerDeleter playerDeleter
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
@@ -62,6 +63,7 @@ public class PlayerUpdateJobConfig {
         this.brawlStarsClient = brawlStarsClient;
         this.playerUpdateEntityRepository = playerUpdateEntityRepository;
         this.playerUpdater = playerUpdater;
+        this.playerDeleter = playerDeleter;
     }
 
     @Bean(JOB_NAME)
@@ -85,10 +87,15 @@ public class PlayerUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerToUpdateEntity, List<Object>>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<PlayerToUpdateEntity, PlayerUpdatedEntity>chunk(chunkSizeJobParameter().getSize(), txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
+
+                .faultTolerant()
+                .skip(DataIntegrityViolationException.class)
+                .listener(new PlayerUpdateWriteSkipListener())
+
                 .build();
     }
 
@@ -101,16 +108,12 @@ public class PlayerUpdateJobConfig {
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
     PlayerUpdateJobItemProcessor processor() {
-        return new PlayerUpdateJobItemProcessor(clock, brawlStarsClient, playerUpdater);
+        return new PlayerUpdateJobItemProcessor(clock, brawlStarsClient, playerUpdater, playerDeleter);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    JpaItemListWriter<Object> writer() {
-        JpaItemWriter<Object> jpaItemWriter = new JpaItemWriterBuilder<Object>()
-                .entityManagerFactory(emf)
-                .usePersist(false)
-                .build();
-        return new JpaItemListWriter<>(jpaItemWriter);
+    PlayerUpdatedItemWriter writer() {
+        return new PlayerUpdatedItemWriter(emf);
     }
 }

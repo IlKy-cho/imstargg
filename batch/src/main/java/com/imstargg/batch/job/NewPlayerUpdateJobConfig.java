@@ -1,11 +1,11 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.NewPlayerAppender;
 import com.imstargg.batch.domain.NewPlayerRepository;
+import com.imstargg.batch.domain.PlayerDeleter;
+import com.imstargg.batch.domain.PlayerUpdatedEntity;
 import com.imstargg.batch.domain.PlayerUpdater;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.PagingItemReaderAdapter;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
@@ -20,14 +20,12 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
-import java.util.List;
 
 @Configuration
 public class NewPlayerUpdateJobConfig {
@@ -43,8 +41,8 @@ public class NewPlayerUpdateJobConfig {
     private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
     private final NewPlayerRepository newPlayerRepository;
-    private final NewPlayerAppender newPlayerAppender;
     private final PlayerUpdater playerUpdater;
+    private final PlayerDeleter playerDeleter;
 
     NewPlayerUpdateJobConfig(
             Clock clock,
@@ -54,8 +52,8 @@ public class NewPlayerUpdateJobConfig {
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient,
             NewPlayerRepository newPlayerRepository,
-            NewPlayerAppender newPlayerAppender,
-            PlayerUpdater playerUpdater
+            PlayerUpdater playerUpdater,
+            PlayerDeleter playerDeleter
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
@@ -64,8 +62,8 @@ public class NewPlayerUpdateJobConfig {
         this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
         this.newPlayerRepository = newPlayerRepository;
-        this.newPlayerAppender = newPlayerAppender;
         this.playerUpdater = playerUpdater;
+        this.playerDeleter = playerDeleter;
     }
 
     @Bean(JOB_NAME)
@@ -89,10 +87,15 @@ public class NewPlayerUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<UnknownPlayerCollectionEntity, List<Object>>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<UnknownPlayerCollectionEntity, PlayerUpdatedEntity>chunk(chunkSizeJobParameter().getSize(), txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
+
+                .faultTolerant()
+                .skip(DataIntegrityViolationException.class)
+                .listener(new PlayerUpdateWriteSkipListener())
+
                 .build();
     }
 
@@ -105,16 +108,12 @@ public class NewPlayerUpdateJobConfig {
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
     NewPlayerUpdateJobItemProcessor processor() {
-        return new NewPlayerUpdateJobItemProcessor(brawlStarsClient, newPlayerAppender, playerUpdater);
+        return new NewPlayerUpdateJobItemProcessor(brawlStarsClient, playerUpdater, playerDeleter);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    JpaItemListWriter<Object> writer() {
-        JpaItemWriter<Object> jpaItemWriter = new JpaItemWriterBuilder<>()
-                .entityManagerFactory(emf)
-                .usePersist(false)
-                .build();
-        return new JpaItemListWriter<>(jpaItemWriter);
+    PlayerUpdatedItemWriter writer() {
+        return new PlayerUpdatedItemWriter(emf);
     }
 }

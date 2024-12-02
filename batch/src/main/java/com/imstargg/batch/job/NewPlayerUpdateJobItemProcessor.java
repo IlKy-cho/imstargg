@@ -1,7 +1,6 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.NewPlayerAppender;
-import com.imstargg.batch.domain.PlayerToUpdateEntity;
+import com.imstargg.batch.domain.PlayerDeleter;
 import com.imstargg.batch.domain.PlayerUpdatedEntity;
 import com.imstargg.batch.domain.PlayerUpdater;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
@@ -9,45 +8,44 @@ import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import java.util.List;
+public class NewPlayerUpdateJobItemProcessor
+        implements ItemProcessor<UnknownPlayerCollectionEntity, PlayerUpdatedEntity> {
 
-public class NewPlayerUpdateJobItemProcessor implements ItemProcessor<UnknownPlayerCollectionEntity, List<Object>> {
+    private static final Logger log = LoggerFactory.getLogger(NewPlayerUpdateJobItemProcessor.class);
 
     private final BrawlStarsClient brawlStarsClient;
-    private final NewPlayerAppender newPlayerAppender;
     private final PlayerUpdater playerUpdater;
+    private final PlayerDeleter playerDeleter;
 
     public NewPlayerUpdateJobItemProcessor(
             BrawlStarsClient brawlStarsClient,
-            NewPlayerAppender newPlayerAppender,
-            PlayerUpdater playerUpdater
+            PlayerUpdater playerUpdater,
+            PlayerDeleter playerDeleter
     ) {
         this.brawlStarsClient = brawlStarsClient;
-        this.newPlayerAppender = newPlayerAppender;
         this.playerUpdater = playerUpdater;
+        this.playerDeleter = playerDeleter;
     }
 
     @Override
-    public List<Object> process(UnknownPlayerCollectionEntity item) throws Exception {
+    public PlayerUpdatedEntity process(UnknownPlayerCollectionEntity item) throws Exception {
         try {
+            item.setStatus(UnknownPlayerStatus.UPDATED);
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(item.getBrawlStarsTag());
             ListResponse<BattleResponse> battleListResponse = brawlStarsClient
                     .getPlayerRecentBattles(item.getBrawlStarsTag());
 
-            PlayerCollectionEntity playerEntity = newPlayerAppender.append(playerResponse);
-
-            PlayerUpdatedEntity updatedEntity = playerUpdater.update(
-                    new PlayerToUpdateEntity(playerEntity, List.of())
-                    , playerResponse, battleListResponse);
-
-            return updatedEntity.toList();
+            return playerUpdater.create(playerResponse, battleListResponse);
         } catch (BrawlStarsClientNotFoundException ex) {
-            item.delete();
-            return List.of(item);
+            log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.getBrawlStarsTag());
+            playerDeleter.delete(item);
+            return null;
         }
     }
 
