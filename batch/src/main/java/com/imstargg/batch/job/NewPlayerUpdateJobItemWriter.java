@@ -1,8 +1,6 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.NewPlayer;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
@@ -15,24 +13,17 @@ import java.util.List;
 
 public class NewPlayerUpdateJobItemWriter implements ItemWriter<NewPlayer>, InitializingBean {
 
-    private final JpaItemWriter<PlayerCollectionEntity> playerWriter;
-    private final JpaItemWriter<UnknownPlayerCollectionEntity> unknownPlayerWriter;
+    private final JpaItemWriter<Object> jpaItemWriter;
 
     public NewPlayerUpdateJobItemWriter(
-            JpaItemWriter<PlayerCollectionEntity> playerWriter,
-            JpaItemWriter<UnknownPlayerCollectionEntity> unknownPlayerWriter
+            JpaItemWriter<Object> jpaItemWriter
     ) {
-        this.playerWriter = playerWriter;
-        this.unknownPlayerWriter = unknownPlayerWriter;
+        this.jpaItemWriter = jpaItemWriter;
     }
 
     public NewPlayerUpdateJobItemWriter(EntityManagerFactory emf) {
         this(
-                new JpaItemWriterBuilder<PlayerCollectionEntity>()
-                        .entityManagerFactory(emf)
-                        .usePersist(true)
-                        .build(),
-                new JpaItemWriterBuilder<UnknownPlayerCollectionEntity>()
+                new JpaItemWriterBuilder<>()
                         .entityManagerFactory(emf)
                         .usePersist(false)
                         .build()
@@ -40,21 +31,19 @@ public class NewPlayerUpdateJobItemWriter implements ItemWriter<NewPlayer>, Init
     }
 
     @Override
-    public void write(Chunk<? extends NewPlayer> chunk) throws Exception {
-        List<PlayerCollectionEntity> players = new ArrayList<>();
-        List<UnknownPlayerCollectionEntity> unknownPlayers = new ArrayList<>();
+    public void write(Chunk<? extends NewPlayer> items) throws Exception {
+        List<Object> totalList = new ArrayList<>();
 
-        for (NewPlayer item : chunk) {
-            players.add(item.playerEntity());
-            unknownPlayers.add(item.unknownPlayerEntity());
+        for (NewPlayer item : items) {
+            totalList.add(item.playerEntity());
+            totalList.add(item.unknownPlayerEntity());
         }
 
-        playerWriter.write(new Chunk<>(players));
-        unknownPlayerWriter.write(new Chunk<>(unknownPlayers));
+        jpaItemWriter.write(new Chunk<>(totalList));
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        playerWriter.afterPropertiesSet();
+        jpaItemWriter.afterPropertiesSet();
     }
 }

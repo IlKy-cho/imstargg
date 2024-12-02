@@ -4,7 +4,11 @@ import com.imstargg.batch.domain.NewPlayer;
 import com.imstargg.batch.domain.PlayerDeleter;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
+import com.imstargg.client.brawlstars.response.AccessoryResponse;
+import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
+import com.imstargg.client.brawlstars.response.GearStatResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
+import com.imstargg.client.brawlstars.response.StarPowerResponse;
 import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
@@ -57,6 +61,18 @@ public class NewPlayerUpdateJobItemProcessor
                     playerResponse.club().tag(),
                     LocalDateTime.now(clock)
             );
+            for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
+                playerEntity.updateBrawler(
+                        brawlerResponse.id(),
+                        brawlerResponse.trophies(),
+                        brawlerResponse.highestTrophies(),
+                        brawlerResponse.power(),
+                        brawlerResponse.rank(),
+                        brawlerResponse.gears().stream().map(GearStatResponse::id).toList(),
+                        brawlerResponse.starPowers().stream().map(StarPowerResponse::id).toList(),
+                        brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
+                );
+            }
             return new NewPlayer(item, playerEntity);
         }
         catch (BrawlStarsClientNotFoundException ex) {
