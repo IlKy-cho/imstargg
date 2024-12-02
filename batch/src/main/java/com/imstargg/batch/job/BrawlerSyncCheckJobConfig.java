@@ -1,14 +1,13 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.ThingToUpdateAppender;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
-import com.imstargg.client.brawlstars.response.AccessoryResponse;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
 import com.imstargg.core.enums.Brawler;
 import com.imstargg.core.enums.Gadget;
 import com.imstargg.core.enums.StarPower;
-import com.imstargg.core.enums.UpdateType;
+import com.imstargg.support.alert.AlertCommand;
+import com.imstargg.support.alert.AlertManager;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -35,20 +34,20 @@ public class BrawlerSyncCheckJobConfig {
     private final PlatformTransactionManager txManager;
 
     private final BrawlStarsClient brawlStarsClient;
-    private final ThingToUpdateAppender thingToUpdateAppender;
+    private final AlertManager alertManager;
 
     public BrawlerSyncCheckJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             BrawlStarsClient brawlStarsClient,
-            ThingToUpdateAppender thingToUpdateAppender
+            AlertManager alertManager
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.brawlStarsClient = brawlStarsClient;
-        this.thingToUpdateAppender = thingToUpdateAppender;
+        this.alertManager = alertManager;
     }
 
     @Bean(JOB_NAME)
@@ -68,37 +67,33 @@ public class BrawlerSyncCheckJobConfig {
         return taskletStepBuilder
                 .tasklet((contribution, chunkContext) -> {
                     List<BrawlerResponse> brawlers = brawlStarsClient.getBrawlers().items();
-                    checkGadgets(brawlers);
-                    checkStarPowers(brawlers);
-                    checkBrawlers(brawlers);
+                    for (BrawlerResponse brawler : brawlers) {
+                        if (check(brawler)) {
+                            continue;
+                        }
+                        alertManager.alert(AlertCommand.builder()
+                                .title("브롤러 업데이트 필요")
+                                .content("BrawlerResponse: " + brawler)
+                                .build());
+                    }
                     return RepeatStatus.FINISHED;
                 }, txManager)
                 .build();
     }
 
-    private void checkGadgets(List<BrawlerResponse> brawlers) {
-        brawlers.stream()
-                .flatMap(brawler -> brawler.gadgets().stream())
-                .filter(gadget -> !Gadget.exists(gadget.id()))
-                .forEach(gadget -> thingToUpdateAppender.append(gadget.id(), UpdateType.GADGET, gadget));
+    private boolean check(BrawlerResponse brawler) {
+        return checkBrawler(brawler) && checkGadget(brawler) && checkStarPower(brawler);
     }
 
-    private void checkStarPowers(List<BrawlerResponse> brawlers) {
-        brawlers.stream()
-                .flatMap(brawler -> brawler.starPowers().stream())
-                .filter(starPower -> !StarPower.exists(starPower.id()))
-                .forEach(starPower -> thingToUpdateAppender.append(starPower.id(), UpdateType.STAR_POWER, starPower));
+    private boolean checkBrawler(BrawlerResponse brawler) {
+        return Brawler.exists(brawler.id());
     }
 
-    private void checkBrawlers(List<BrawlerResponse> brawlers) {
-        brawlers.stream()
-                .filter(brawler -> !Brawler.exists(brawler.id()))
-                .forEach(brawler -> thingToUpdateAppender.append(brawler.id(), UpdateType.BRAWLER, brawler));
-        brawlers.stream()
-                .filter(brawler -> Brawler.exists(brawler.id()))
-                .filter(brawler ->
-                        !brawler.gadgets().stream().map(AccessoryResponse::id).equals(
-                                Brawler.find(brawler.id()).getGadgets().stream().map(Gadget::getBrawlStarsId))
-                ).forEach(brawler -> thingToUpdateAppender.append(brawler.id(), UpdateType.BRAWLER, brawler));
+    private boolean checkGadget(BrawlerResponse brawler) {
+        return brawler.gadgets().stream().allMatch(gadget -> Gadget.exists(gadget.id()));
+    }
+
+    private boolean checkStarPower(BrawlerResponse brawler) {
+        return brawler.starPowers().stream().allMatch(starPower -> StarPower.exists(starPower.id()));
     }
 }
