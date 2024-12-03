@@ -15,6 +15,7 @@ create table battle
     battle_rank                int,
     trophy_change              int,
     trophies_snapshot          int,
+    latest                     boolean      not null,
     created_at                 timestamp(6) not null,
     updated_at                 timestamp(6) not null,
     deleted                    boolean      not null,
@@ -34,7 +35,7 @@ create index ix_battle__createdat
 create table battle_player
 (
     battle_player_id      bigint       not null auto_increment,
-    battle_id            bigint       not null,
+    battle_id             bigint       not null,
     brawlstars_tag        varchar(45)  not null,
     name                  varchar(105) not null,
     team_idx              int          not null,

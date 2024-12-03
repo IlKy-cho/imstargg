@@ -25,7 +25,7 @@ class BattleCollectionJpaRepositoryCustomImpl implements BattleCollectionJpaRepo
                 .fetch();
     }
 
-    private static JPQLQuery<Long> selectLastBattleIds(List<Long> playerIds) {
+    private JPQLQuery<Long> selectLastBattleIds(List<Long> playerIds) {
         return JPAExpressions.select(battleCollectionEntity.id.max())
                 .from(battleCollectionEntity)
                 .where(battleCollectionEntity.player.player.id.in(playerIds))

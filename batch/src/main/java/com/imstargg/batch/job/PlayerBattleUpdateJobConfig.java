@@ -8,10 +8,8 @@ import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.PlayerLastBattleProjection;
-import com.imstargg.storage.db.core.QPlayerLastBattleProjection;
+import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
-import com.querydsl.jpa.JPAExpressions;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -28,13 +26,12 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.time.Clock;
 
 import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
-import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
 
 @Configuration
-public class BattleUpdateJobConfig {
+public class PlayerBattleUpdateJobConfig {
 
-    private static final String JOB_NAME = "battleUpdateJob";
-    private static final String STEP_NAME = "battleUpdateStep";
+    private static final String JOB_NAME = "playerBattleUpdateJob";
+    private static final String STEP_NAME = "playerBattleUpdateStep";
 
     private final Clock clock;
     private final JobRepository jobRepository;
@@ -45,7 +42,7 @@ public class BattleUpdateJobConfig {
     private final BrawlStarsClient brawlStarsClient;
     private final BattleUpdateApplier battleUpdateApplier;
 
-    public BattleUpdateJobConfig(
+    public PlayerBattleUpdateJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
@@ -84,7 +81,7 @@ public class BattleUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerLastBattleProjection, PlayerBattleUpdateResult>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<BattleCollectionEntity, PlayerBattleUpdateResult>chunk(chunkSizeJobParameter().getSize(), txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -98,31 +95,21 @@ public class BattleUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    QuerydslZeroPagingItemReader<PlayerLastBattleProjection> reader() {
+    QuerydslZeroPagingItemReader<BattleCollectionEntity> reader() {
         return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory -> queryFactory
-                .select(
-                        new QPlayerLastBattleProjection(
-                                playerCollectionEntity,
-                                JPAExpressions
-                                        .selectFrom(battleCollectionEntity)
-                                        .where(battleCollectionEntity.player.player.id.eq(playerCollectionEntity.id))
-                                        .orderBy(battleCollectionEntity.battleTime.desc())
-                                        .limit(1)
-                        )
-                )
-                .from(playerCollectionEntity)
+                .selectFrom(battleCollectionEntity)
+                .join(battleCollectionEntity.player.player).fetchJoin()
                 .where(
-                        playerCollectionEntity.status.in(PlayerStatus.PLAYER_UPDATED, PlayerStatus.NEW)
+                        battleCollectionEntity.player.player.status.eq(PlayerStatus.PLAYER_UPDATED),
+                        battleCollectionEntity.latest.isTrue()
                 )
-                .groupBy(playerCollectionEntity.id)
-                .orderBy(playerCollectionEntity.id.asc())
         );
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
-    BattleUpdateJobItemProcessor processor() {
-        return new BattleUpdateJobItemProcessor(clock, brawlStarsClient, battleUpdateApplier);
+    PlayerBattleUpdateJobItemProcessor processor() {
+        return new PlayerBattleUpdateJobItemProcessor(clock, brawlStarsClient, battleUpdateApplier);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
