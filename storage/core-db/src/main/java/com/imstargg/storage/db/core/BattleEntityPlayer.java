@@ -19,7 +19,7 @@ public class BattleEntityPlayer {
     private Integer trophyChange;
 
     @Nullable
-    @Column(name = "trophy_snapshot", updatable = false)
+    @Column(name = "trophies_snapshot", updatable = false)
     private Integer trophySnapshot;
 
     protected BattleEntityPlayer() {

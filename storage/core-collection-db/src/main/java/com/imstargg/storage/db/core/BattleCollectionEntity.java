@@ -1,15 +1,19 @@
 package com.imstargg.storage.db.core;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "battle")
@@ -50,6 +54,9 @@ public class BattleCollectionEntity extends BaseEntity {
     @Embedded
     private BattleCollectionEntityPlayer player;
 
+    @OneToMany(mappedBy = "battle", cascade = CascadeType.ALL)
+    private List<BattlePlayerCollectionEntity> battlePlayers = new ArrayList<>();
+
     protected BattleCollectionEntity() {
     }
 
@@ -73,6 +80,16 @@ public class BattleCollectionEntity extends BaseEntity {
         this.duration = duration;
         this.starPlayerBrawlStarsTag = starPlayerBrawlStarsTag;
         this.player = player;
+    }
+
+    public void addPlayer(
+            String brawlStarsTag,
+            String name,
+            int teamIdx,
+            int playerIdx,
+            BattlePlayerCollectionEntityBrawler brawler
+    ) {
+        battlePlayers.add(new BattlePlayerCollectionEntity(this, brawlStarsTag, name, teamIdx, playerIdx, brawler));
     }
 
     public Long getId() {
@@ -114,5 +131,9 @@ public class BattleCollectionEntity extends BaseEntity {
 
     public BattleCollectionEntityPlayer getPlayer() {
         return player;
+    }
+
+    public List<BattlePlayerCollectionEntity> getBattlePlayers() {
+        return battlePlayers;
     }
 }

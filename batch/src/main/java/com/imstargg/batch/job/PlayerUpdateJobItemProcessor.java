@@ -33,6 +33,7 @@ public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerCollect
     @Override
     public PlayerCollectionEntity process(PlayerCollectionEntity item) throws Exception {
         if (!item.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
+            log.warn("Player 업데이트 쿨타임이 지나지 않아 스킵. playerTag={}", item.getBrawlStarsTag());
             return null;
         }
 
