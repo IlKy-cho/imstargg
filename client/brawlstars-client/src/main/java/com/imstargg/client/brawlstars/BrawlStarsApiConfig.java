@@ -5,6 +5,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 @Configuration
 @EnableConfigurationProperties(BrawlStarsClientProperties.class)
 class BrawlStarsApiConfig {
@@ -22,7 +24,7 @@ class BrawlStarsApiConfig {
 
     @Bean
     public Retryer.Default brawlStarsApiRetryer() {
-        return new Retryer.Default();
+        return new Retryer.Default(1000, SECONDS.toMillis(10), 5);
     }
 
     @Bean

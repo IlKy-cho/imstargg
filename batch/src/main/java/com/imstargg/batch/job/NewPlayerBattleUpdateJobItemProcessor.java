@@ -41,8 +41,7 @@ public class NewPlayerBattleUpdateJobItemProcessor implements ItemProcessor<Play
             ListResponse<BattleResponse> battleListResponse = brawlStarsClient
                     .getPlayerRecentBattles(item.getBrawlStarsTag());
             if (battleListResponse.items().isEmpty()) {
-                log.debug("Player 가 최근 전투 기록이 없어 스킵. playerTag={}", item.getBrawlStarsTag());
-                return null;
+                throw new IllegalStateException("BattleResponse 가 비어있습니다. playerTag=" + item.getBrawlStarsTag());
             }
 
             List<BattleCollectionEntity> updatedBattleEntities = battleUpdateApplier.update(item, battleListResponse);

@@ -12,6 +12,7 @@ import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Brawler;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionEntityFixture;
 import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,15 +36,16 @@ class BattleUpdateApplierTest {
     }
 
     @Test
-    void 최근_전적_보다_이전_배틀은_필터링한다() {
+    void 최근_전적_보다_이전_배틀은_필터링되고_가장_최신_전적만_latest상태로_표시한다() {
         // given
         PlayerCollectionEntity playerEntity = mock(PlayerCollectionEntity.class);
         given(playerEntity.getId()).willReturn(123L);
         given(playerEntity.getTrophies()).willReturn(500);
 
-        BattleCollectionEntity lastBattleEntity = mock(BattleCollectionEntity.class);
-        given(lastBattleEntity.getBattleTime())
-                .willReturn(LocalDateTime.of(2024, 12, 1, 0, 0, 0));
+        BattleCollectionEntity lastBattleEntity = new BattleCollectionEntityFixture()
+                .battleTime(LocalDateTime.of(2024, 12, 1, 0, 0, 0))
+                .build();
+        lastBattleEntity.latest();
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
@@ -341,10 +343,15 @@ class BattleUpdateApplierTest {
                 playerEntity, new ListResponse<>(battleResponseList, null), lastBattleEntity);
 
         // then
-        assertThat(results).hasSize(1);
+        assertThat(results).hasSize(2);
 
-        var battleEntity = results.get(0);
+        var oldLatestBattleEntity = results.get(0);
+        assertThat(oldLatestBattleEntity).isEqualTo(lastBattleEntity);
+        assertThat(oldLatestBattleEntity.isLatest()).isFalse();
+
+        var battleEntity = results.get(1);
         assertThat(battleEntity.getBattleTime()).isEqualTo(LocalDateTime.of(2024, 12, 29, 0, 0, 0));
+        assertThat(battleEntity.isLatest()).isTrue();
     }
 
     @Test

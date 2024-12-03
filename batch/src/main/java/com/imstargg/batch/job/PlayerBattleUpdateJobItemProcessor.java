@@ -8,7 +8,7 @@ import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.PlayerLastBattleProjection;
+import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -17,15 +17,15 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerLastBattleProjection, PlayerBattleUpdateResult> {
+public class PlayerBattleUpdateJobItemProcessor implements ItemProcessor<BattleCollectionEntity, PlayerBattleUpdateResult> {
 
-    private static final Logger log = LoggerFactory.getLogger(BattleUpdateJobItemProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(PlayerBattleUpdateJobItemProcessor.class);
 
     private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
     private final BattleUpdateApplier battleUpdateApplier;
 
-    public BattleUpdateJobItemProcessor(
+    public PlayerBattleUpdateJobItemProcessor(
             Clock clock,
             BrawlStarsClient brawlStarsClient,
             BattleUpdateApplier battleUpdateApplier
@@ -36,23 +36,26 @@ public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerLastBat
     }
 
     @Override
-    public PlayerBattleUpdateResult process(PlayerLastBattleProjection item) throws Exception {
+    public PlayerBattleUpdateResult process(BattleCollectionEntity item) throws Exception {
+        PlayerCollectionEntity playerEntity = item.getPlayer().getPlayer();
         try {
             ListResponse<BattleResponse> battleListResponse = brawlStarsClient
-                    .getPlayerRecentBattles(item.getPlayer().getBrawlStarsTag());
+                    .getPlayerRecentBattles(playerEntity.getBrawlStarsTag());
             List<BattleCollectionEntity> updatedBattleEntities = battleUpdateApplier
-                    .update(item.getPlayer(), battleListResponse, item.getLastBattle());
+                    .update(playerEntity, battleListResponse, item);
             List<LocalDateTime> updatedBattleTimes = updatedBattleEntities.stream()
                     .map(BattleCollectionEntity::getBattleTime)
                     .toList();
-            item.getPlayer().nextUpdateWeight(LocalDateTime.now(clock), updatedBattleTimes);
-            item.getPlayer().setStatus(PlayerStatus.BATTLE_UPDATED);
+            
+            playerEntity.nextUpdateWeight(LocalDateTime.now(clock), updatedBattleTimes);
+            playerEntity.setStatus(PlayerStatus.BATTLE_UPDATED);
 
-            return new PlayerBattleUpdateResult(item.getPlayer(), updatedBattleEntities);
+            return new PlayerBattleUpdateResult(playerEntity, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
-            log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.getPlayer().getBrawlStarsTag());
-            item.getPlayer().delete();
-            return new PlayerBattleUpdateResult(item.getPlayer(), List.of());
+            log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}",
+                    playerEntity.getBrawlStarsTag());
+            playerEntity.delete();
+            return new PlayerBattleUpdateResult(playerEntity, List.of());
         }
     }
 }

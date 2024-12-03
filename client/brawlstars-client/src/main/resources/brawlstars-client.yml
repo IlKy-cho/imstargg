@@ -4,7 +4,7 @@ spring.cloud.openfeign:
       brawlstars:
         connectTimeout: 2100
         readTimeout: 5000
-        loggerLevel: full
+        loggerLevel: basic
   compression:
     response:
       enabled: false

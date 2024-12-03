@@ -7,6 +7,7 @@ import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -29,10 +30,22 @@ public class BattleUpdateApplier {
         List<BattleResponse> battleResponseListToUpdate = getBattleResponseListToUpdate(
                 battleListResponse, lastBattleEntity);
 
-        return battleResponseListToUpdate.stream()
-                .map(battleResponse ->
-                        new BattleCollectionEntityBuilder(playerEntity, battleResponse).build()
-                ).toList();
+        List<BattleCollectionEntity> battleEntities = new ArrayList<>();
+        if (lastBattleEntity != null) {
+            lastBattleEntity.notLatest();
+            battleEntities.add(lastBattleEntity);
+        }
+
+        battleResponseListToUpdate.forEach(battleResponse ->
+                battleEntities.add(new BattleCollectionEntityBuilder(playerEntity, battleResponse).build())
+        );
+
+        battleEntities.sort(Comparator.comparing(BattleCollectionEntity::getBattleTime));
+
+        if (!battleEntities.isEmpty()) {
+            battleEntities.getLast().latest();
+        }
+        return battleEntities;
     }
 
     private List<BattleResponse> getBattleResponseListToUpdate(
@@ -41,9 +54,6 @@ public class BattleUpdateApplier {
                 .map(battle -> battleListResponse.items().stream()
                         .filter(battleResponse -> battleResponse.battleTime().isAfter(battle.getBattleTime()))
                         .toList())
-                .orElse(battleListResponse.items())
-                .stream()
-                .sorted(Comparator.comparing(BattleResponse::battleTime))
-                .toList();
+                .orElse(battleListResponse.items());
     }
 }

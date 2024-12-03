@@ -61,6 +61,9 @@ public class BattleEntity extends BaseEntity {
     @Embedded
     private BattleEntityPlayer player;
 
+    @Column(name = "latest", nullable = false)
+    private boolean latest = false;
+
     protected BattleEntity() {
     }
 

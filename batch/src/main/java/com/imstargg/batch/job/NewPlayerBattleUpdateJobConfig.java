@@ -30,8 +30,8 @@ import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollect
 @Configuration
 public class NewPlayerBattleUpdateJobConfig {
 
-    private static final String JOB_NAME = "battleUpdateJob";
-    private static final String STEP_NAME = "battleUpdateStep";
+    private static final String JOB_NAME = "newPlayerBattleUpdateJob";
+    private static final String STEP_NAME = "newPlayerBattleUpdateStep";
 
     private final Clock clock;
     private final JobRepository jobRepository;
