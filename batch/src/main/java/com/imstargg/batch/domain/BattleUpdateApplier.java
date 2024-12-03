@@ -16,6 +16,13 @@ public class BattleUpdateApplier {
 
     public List<BattleCollectionEntity> update(
             PlayerCollectionEntity playerEntity,
+            ListResponse<BattleResponse> battleListResponse
+    ) {
+        return update(playerEntity, battleListResponse, null);
+    }
+
+    public List<BattleCollectionEntity> update(
+            PlayerCollectionEntity playerEntity,
             ListResponse<BattleResponse> battleListResponse,
             @Nullable BattleCollectionEntity lastBattleEntity
     ) {

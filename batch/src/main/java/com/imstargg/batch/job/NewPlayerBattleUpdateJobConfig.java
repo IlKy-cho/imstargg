@@ -8,10 +8,8 @@ import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.PlayerLastBattleProjection;
-import com.imstargg.storage.db.core.QPlayerLastBattleProjection;
+import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
-import com.querydsl.jpa.JPAExpressions;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -27,11 +25,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
 
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
 
 @Configuration
-public class BattleUpdateJobConfig {
+public class NewPlayerBattleUpdateJobConfig {
 
     private static final String JOB_NAME = "battleUpdateJob";
     private static final String STEP_NAME = "battleUpdateStep";
@@ -45,7 +42,7 @@ public class BattleUpdateJobConfig {
     private final BrawlStarsClient brawlStarsClient;
     private final BattleUpdateApplier battleUpdateApplier;
 
-    public BattleUpdateJobConfig(
+    public NewPlayerBattleUpdateJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
@@ -84,7 +81,7 @@ public class BattleUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerLastBattleProjection, PlayerBattleUpdateResult>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<PlayerCollectionEntity, PlayerBattleUpdateResult>chunk(chunkSizeJobParameter().getSize(), txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -98,31 +95,19 @@ public class BattleUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    QuerydslZeroPagingItemReader<PlayerLastBattleProjection> reader() {
+    QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
         return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory -> queryFactory
-                .select(
-                        new QPlayerLastBattleProjection(
-                                playerCollectionEntity,
-                                JPAExpressions
-                                        .selectFrom(battleCollectionEntity)
-                                        .where(battleCollectionEntity.player.player.id.eq(playerCollectionEntity.id))
-                                        .orderBy(battleCollectionEntity.battleTime.desc())
-                                        .limit(1)
-                        )
-                )
-                .from(playerCollectionEntity)
+                .selectFrom(playerCollectionEntity)
                 .where(
-                        playerCollectionEntity.status.in(PlayerStatus.PLAYER_UPDATED, PlayerStatus.NEW)
+                        playerCollectionEntity.status.eq(PlayerStatus.NEW)
                 )
-                .groupBy(playerCollectionEntity.id)
-                .orderBy(playerCollectionEntity.id.asc())
         );
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
-    BattleUpdateJobItemProcessor processor() {
-        return new BattleUpdateJobItemProcessor(clock, brawlStarsClient, battleUpdateApplier);
+    NewPlayerBattleUpdateJobItemProcessor processor() {
+        return new NewPlayerBattleUpdateJobItemProcessor(clock, brawlStarsClient, battleUpdateApplier);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
