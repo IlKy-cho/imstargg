@@ -98,7 +98,7 @@ public class PlayerUpdateJobConfig {
     private List<PlayerCollectionEntity> read() {
         return playerRepository
                 .findAllByDeletedFalseAndStatusInOrderByUpdateWeight(
-                        List.of(PlayerStatus.UPDATED),
+                        List.of(PlayerStatus.BATTLE_UPDATED),
                         Limit.of(chunkSizeJobParameter().getSize())
                 );
     }

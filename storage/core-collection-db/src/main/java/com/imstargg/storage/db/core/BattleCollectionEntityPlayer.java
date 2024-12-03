@@ -17,7 +17,7 @@ public class BattleCollectionEntityPlayer {
     private PlayerCollectionEntity player;
 
     @Nullable
-    @Column(name = "rank", updatable = false)
+    @Column(name = "battle_rank", updatable = false)
     private Integer rank;
 
     @Nullable
@@ -25,7 +25,7 @@ public class BattleCollectionEntityPlayer {
     private Integer trophyChange;
 
     @Nullable
-    @Column(name = "trophy_snapshot", updatable = false)
+    @Column(name = "trophies_snapshot", updatable = false)
     private Integer trophySnapshot;
 
     protected BattleCollectionEntityPlayer() {

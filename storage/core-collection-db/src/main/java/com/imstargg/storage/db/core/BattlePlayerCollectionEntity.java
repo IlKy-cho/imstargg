@@ -44,7 +44,7 @@ public class BattlePlayerCollectionEntity extends BaseEntity {
     protected BattlePlayerCollectionEntity() {
     }
 
-    public BattlePlayerCollectionEntity(
+    BattlePlayerCollectionEntity(
             BattleCollectionEntity battle,
             String brawlStarsTag,
             String name,

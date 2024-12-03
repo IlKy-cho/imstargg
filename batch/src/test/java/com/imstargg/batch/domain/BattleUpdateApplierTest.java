@@ -337,14 +337,13 @@ class BattleUpdateApplierTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdateApplier.update(
+        var results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), lastBattleEntity);
 
         // then
         assertThat(results).hasSize(1);
 
-        BattleUpdateResult result = results.get(0);
-        BattleCollectionEntity battleEntity = result.battleEntity();
+        var battleEntity = results.get(0);
         assertThat(battleEntity.getBattleTime()).isEqualTo(LocalDateTime.of(2024, 12, 29, 0, 0, 0));
     }
 
@@ -455,18 +454,17 @@ class BattleUpdateApplierTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdateApplier.update(
+        var results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
         assertThat(results).hasSize(1);
 
-        BattleUpdateResult result = results.get(0);
-        BattleCollectionEntity battleEntity = result.battleEntity();
+        BattleCollectionEntity battleEntity = results.get(0);
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = result.battlePlayerEntities();
+        var battlePlayerEntities = battleEntity.getBattlePlayers();
         assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
     }
 
@@ -631,18 +629,17 @@ class BattleUpdateApplierTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdateApplier.update(
+        var results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
         assertThat(results).hasSize(1);
 
-        BattleUpdateResult result = results.get(0);
-        BattleCollectionEntity battleEntity = result.battleEntity();
+        BattleCollectionEntity battleEntity = results.get(0);
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = result.battlePlayerEntities();
+        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
         assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
     }
 
@@ -796,18 +793,17 @@ class BattleUpdateApplierTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdateApplier.update(
+        var results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
         assertThat(results).hasSize(1);
 
-        BattleUpdateResult result = results.get(0);
-        BattleCollectionEntity battleEntity = result.battleEntity();
+        BattleCollectionEntity battleEntity = results.get(0);
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = result.battlePlayerEntities();
+        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
         assertBattlePlayers(battlePlayerEntities, battleResponse.battle().players(), battleEntity);
     }
 
@@ -897,18 +893,17 @@ class BattleUpdateApplierTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdateApplier.update(
+        var results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
         assertThat(results).hasSize(1);
 
-        BattleUpdateResult result = results.get(0);
-        BattleCollectionEntity battleEntity = result.battleEntity();
+        BattleCollectionEntity battleEntity = results.get(0);
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = result.battlePlayerEntities();
+        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
         assertBattlePlayers(battlePlayerEntities, battleResponse.battle().players(), battleEntity);
     }
 
@@ -1095,18 +1090,17 @@ class BattleUpdateApplierTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdateApplier.update(
+        var results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
         assertThat(results).hasSize(1);
 
-        BattleUpdateResult result = results.get(0);
-        BattleCollectionEntity battleEntity = result.battleEntity();
+        BattleCollectionEntity battleEntity = results.get(0);
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = result.battlePlayerEntities();
+        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
         assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
     }
 
@@ -1276,18 +1270,17 @@ class BattleUpdateApplierTest {
         );
 
         // when
-        List<BattleUpdateResult> results = battleUpdateApplier.update(
+        var results = battleUpdateApplier.update(
                 playerEntity, new ListResponse<>(battleResponseList, null), null);
 
         // then
         assertThat(results).hasSize(1);
 
-        BattleUpdateResult result = results.get(0);
-        BattleCollectionEntity battleEntity = result.battleEntity();
+        BattleCollectionEntity battleEntity = results.get(0);
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = result.battlePlayerEntities();
+        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
         assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
     }
 

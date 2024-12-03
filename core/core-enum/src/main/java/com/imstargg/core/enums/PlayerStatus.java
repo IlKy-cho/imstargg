@@ -5,8 +5,9 @@ import java.time.LocalDateTime;
 
 public enum PlayerStatus {
 
-    NEW,
+    NEW,    // 새로 생성된 상태. 전적이 저장되어있지 않음.
     PLAYER_UPDATED,
+    BATTLE_UPDATED,
     REFRESH_REQUESTED,
     UPDATING,
     UPDATED,
