@@ -4,6 +4,7 @@ import com.imstargg.batch.domain.PlayerTagFinderWithLocalCache;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
 import com.imstargg.batch.job.support.QuerydslPagingItemReader;
+import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
@@ -61,6 +62,7 @@ public class NewPlayerFindJobConfig {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
                 .start(step())
+                .incrementer(new RunTimestampIncrementer(clock))
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .build();
     }
@@ -89,11 +91,12 @@ public class NewPlayerFindJobConfig {
     QuerydslPagingItemReader<BattlePlayerCollectionEntity> reader() {
         return new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
                 .selectFrom(battlePlayerCollectionEntity)
+                .join(battlePlayerCollectionEntity.battle)
                 .where(
-                        battlePlayerCollectionEntity.createdAt.goe(periodDateTimeJobParameter().getFrom()),
-                        battlePlayerCollectionEntity.createdAt.lt(periodDateTimeJobParameter().getTo())
+                        battlePlayerCollectionEntity.battle.battleTime.goe(periodDateTimeJobParameter().getFrom()),
+                        battlePlayerCollectionEntity.battle.battleTime.lt(periodDateTimeJobParameter().getTo())
                 )
-                .orderBy(battlePlayerCollectionEntity.createdAt.asc())
+                .orderBy(battlePlayerCollectionEntity.battle.battleTime.asc())
         );
     }
 
