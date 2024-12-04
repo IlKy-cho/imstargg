@@ -22,8 +22,8 @@ create table battle
     primary key (battle_id)
 ) engine = innodb;
 
-alter table battle
-    add constraint uk_battle__playerid_battletime unique (player_id, battle_time desc);
+create index ix_battle__playerid_battletime
+    on battle (player_id, battle_time desc);
 
 create index ix_battle__eventbrawlstarsid
     on battle (event_brawlstars_id);
