@@ -2,11 +2,12 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
+import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
+import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -14,16 +15,16 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.core.step.builder.TaskletStepBuilder;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.domain.Limit;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
-import java.util.ArrayList;
-import java.util.List;
+
+import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
 
 @Configuration
 public class PlayerUpdateJobConfig {
@@ -35,22 +36,22 @@ public class PlayerUpdateJobConfig {
     private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
+    private final EntityManagerFactory emf;
 
     private final BrawlStarsClient brawlStarsClient;
-    private final PlayerCollectionJpaRepository playerRepository;
 
     PlayerUpdateJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
-            BrawlStarsClient brawlStarsClient,
-            PlayerCollectionJpaRepository playerRepository
+            EntityManagerFactory emf,
+            BrawlStarsClient brawlStarsClient
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
+        this.emf = emf;
         this.brawlStarsClient = brawlStarsClient;
-        this.playerRepository = playerRepository;
     }
 
     @Bean(JOB_NAME)
@@ -71,42 +72,45 @@ public class PlayerUpdateJobConfig {
 
     @Bean(STEP_NAME)
     @JobScope
-    public Step step() {
+    Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
-        TaskletStepBuilder taskletStepBuilder = new TaskletStepBuilder(stepBuilder);
-        return taskletStepBuilder
-                .tasklet((contribution, chunkContext) -> {
-                    List<PlayerCollectionEntity> items = read();
+        return stepBuilder
+                .<PlayerCollectionEntity, PlayerCollectionEntity>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .reader(reader())
+                .processor(processor())
+                .writer(writer())
 
-                    List<PlayerCollectionEntity> results = new ArrayList<>();
-                    for (PlayerCollectionEntity item : items) {
-                        PlayerCollectionEntity processed = processor().process(item);
-                        if (processed != null) {
-                            results.add(processed);
-                        }
-                    }
+                .faultTolerant()
+                .skip(DataIntegrityViolationException.class)
+                .listener(new PlayerBattleUpdateWriterSkipListener())
 
-                    if (!results.isEmpty()) {
-                        playerRepository.saveAll(results);
-                    }
-
-                    return RepeatStatus.FINISHED;
-                }, txManager)
                 .build();
     }
 
-    private List<PlayerCollectionEntity> read() {
-        return playerRepository
-                .findAllByDeletedFalseAndStatusInOrderByUpdateWeight(
-                        List.of(PlayerStatus.BATTLE_UPDATED),
-                        Limit.of(chunkSizeJobParameter().getSize())
-                );
+    @Bean(STEP_NAME + "ItemReader")
+    @StepScope
+    QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
+        return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory ->
+                queryFactory
+                        .selectFrom(playerCollectionEntity)
+                        .where(
+                                playerCollectionEntity.status.eq(PlayerStatus.BATTLE_UPDATED)
+                        )
+        );
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     PlayerUpdateJobItemProcessor processor() {
-        return new PlayerUpdateJobItemProcessor(clock, brawlStarsClient);
+        return new PlayerUpdateJobItemProcessor(brawlStarsClient);
     }
 
+    @Bean(STEP_NAME + "ItemWriter")
+    @StepScope
+    JpaItemWriter<PlayerCollectionEntity> writer() {
+        return new JpaItemWriterBuilder<PlayerCollectionEntity>()
+                .entityManagerFactory(emf)
+                .usePersist(false)
+                .build();
+    }
 }

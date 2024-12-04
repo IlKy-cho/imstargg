@@ -2,70 +2,43 @@ package com.imstargg.batch.job;
 
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
+import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import org.junit.jupiter.api.BeforeEach;
+import com.imstargg.storage.db.core.PlayerCollectionEntityFixture;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class PlayerUpdateJobItemProcessorTest {
 
+    @InjectMocks
     private PlayerUpdateJobItemProcessor playerUpdateJobItemProcessor;
 
-    private Clock clock;
-
+    @Mock
     private BrawlStarsClient brawlStarsClient;
 
-    @BeforeEach
-    void setUp() {
-        clock = Clock.fixed(Instant.now(), ZoneOffset.systemDefault());
-        brawlStarsClient = mock(BrawlStarsClient.class);
-
-        playerUpdateJobItemProcessor = new PlayerUpdateJobItemProcessor(
-                clock,
-                brawlStarsClient
-        );
-    }
-
-    @Test
-    void 업데이트_쿨다운이_지나지_않으면_업데이트하지않는다() throws Exception {
-        // given
-        PlayerCollectionEntity playerEntity = mock(PlayerCollectionEntity.class);
-        given(playerEntity.isNextUpdateCooldownOver(LocalDateTime.now(clock))).willReturn(false);
-
-        // when
-        var result = playerUpdateJobItemProcessor.process(playerEntity);
-
-        // then
-        assertThat(result).isNull();
-    }
 
     @Test
     void 클라이언트로_정보_조회시_존재하지_않을경우_삭제된_플레이어로_처리한다() throws Exception {
         // given
-        PlayerCollectionEntity playerEntity = mock(PlayerCollectionEntity.class);
-        given(playerEntity.getBrawlStarsTag()).willReturn("testTag");
-        given(playerEntity.isNextUpdateCooldownOver(LocalDateTime.now(clock))).willReturn(true);
+        PlayerCollectionEntity playerEntity = new PlayerCollectionEntityFixture()
+                .build();
 
         BrawlStarsClientNotFoundException notFoundException = mock(BrawlStarsClientNotFoundException.class);
-        given(brawlStarsClient.getPlayerInformation("testTag"))
+        given(brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag()))
                 .willThrow(notFoundException);
 
         // when
         playerUpdateJobItemProcessor.process(playerEntity);
 
         // then
-        then(playerEntity).should().delete();
+        assertThat(playerEntity.getStatus()).isEqualTo(PlayerStatus.DELETED);
     }
 }

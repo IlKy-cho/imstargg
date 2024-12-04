@@ -12,30 +12,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
 public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerCollectionEntity, PlayerCollectionEntity> {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerUpdateJobItemProcessor.class);
 
-    private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
 
-    public PlayerUpdateJobItemProcessor(
-            Clock clock,
-            BrawlStarsClient brawlStarsClient
-    ) {
-        this.clock = clock;
+    public PlayerUpdateJobItemProcessor(BrawlStarsClient brawlStarsClient) {
         this.brawlStarsClient = brawlStarsClient;
     }
 
     @Override
     public PlayerCollectionEntity process(PlayerCollectionEntity item) throws Exception {
-        if (!item.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
-            log.warn("Player 업데이트 쿨타임이 지나지 않아 스킵. playerTag={}", item.getBrawlStarsTag());
-            return null;
-        }
 
         try {
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(item.getBrawlStarsTag());
@@ -68,11 +56,10 @@ public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerCollect
                         brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
                 );
             }
-
             return item;
         } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.getBrawlStarsTag());
-            item.delete();
+            item.deleted();
             return item;
         }
     }
