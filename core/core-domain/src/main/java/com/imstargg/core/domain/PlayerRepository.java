@@ -1,5 +1,12 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.enums.Brawler;
+import com.imstargg.core.enums.Gadget;
+import com.imstargg.core.enums.Gear;
+import com.imstargg.core.enums.StarPower;
+import com.imstargg.core.error.CoreException;
+import com.imstargg.storage.db.core.PlayerBrawlerEntity;
+import com.imstargg.storage.db.core.PlayerBrawlerJpaRepository;
 import com.imstargg.storage.db.core.PlayerEntity;
 import com.imstargg.storage.db.core.PlayerJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerEntity;
@@ -20,14 +27,18 @@ public class PlayerRepository {
 
     private final UnknownPlayerJpaRepository unknownPlayerJpaRepository;
 
+    private final PlayerBrawlerJpaRepository playerBrawlerJpaRepository;
+
     public PlayerRepository(
             Clock clock,
             PlayerJpaRepository playerJpaRepository,
-            UnknownPlayerJpaRepository unknownPlayerJpaRepository
+            UnknownPlayerJpaRepository unknownPlayerJpaRepository,
+            PlayerBrawlerJpaRepository playerBrawlerJpaRepository
     ) {
         this.clock = clock;
         this.playerJpaRepository = playerJpaRepository;
         this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
+        this.playerBrawlerJpaRepository = playerBrawlerJpaRepository;
     }
 
     public Optional<Player> findByTag(BrawlStarsTag tag) {
@@ -69,6 +80,30 @@ public class PlayerRepository {
                 tag,
                 entity.getStatus(),
                 entity.getUpdateAvailableAt()
+        );
+    }
+
+    public List<PlayerBrawler> findBrawlers(Player player) {
+        PlayerEntity playerEntity = playerJpaRepository.findByBrawlStarsTagAndDeletedFalse(player.tag().value())
+                .orElseThrow(() -> new CoreException("Player not found: " + player.tag()));
+        return playerBrawlerJpaRepository.findAllByPlayerId(playerEntity.getId()).stream()
+                .map(this::mapEntityToPlayerBrawler)
+                .toList();
+    }
+
+    private PlayerBrawler mapEntityToPlayerBrawler(PlayerBrawlerEntity entity) {
+        return new PlayerBrawler(
+                Brawler.find(entity.getBrawlerBrawlStarsId()),
+                entity.getGearBrawlStarsIds().stream()
+                        .map(Gear::find).toList(),
+                entity.getStarPowerBrawlStarsIds().stream()
+                        .map(StarPower::find).toList(),
+                entity.getGadgetBrawlStarsIds().stream()
+                        .map(Gadget::find).toList(),
+                entity.getPower(),
+                entity.getRank(),
+                entity.getTrophies(),
+                entity.getHighestTrophies()
         );
     }
 }
