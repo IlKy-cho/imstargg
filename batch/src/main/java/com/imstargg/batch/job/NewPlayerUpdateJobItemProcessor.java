@@ -1,7 +1,6 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.NewPlayer;
-import com.imstargg.batch.domain.PlayerDeleter;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
 import com.imstargg.client.brawlstars.response.AccessoryResponse;
@@ -26,16 +25,13 @@ public class NewPlayerUpdateJobItemProcessor
 
     private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
-    private final PlayerDeleter playerDeleter;
 
     public NewPlayerUpdateJobItemProcessor(
             Clock clock,
-            BrawlStarsClient brawlStarsClient,
-            PlayerDeleter playerDeleter
+            BrawlStarsClient brawlStarsClient
     ) {
         this.clock = clock;
         this.brawlStarsClient = brawlStarsClient;
-        this.playerDeleter = playerDeleter;
     }
 
     @Override
@@ -77,8 +73,8 @@ public class NewPlayerUpdateJobItemProcessor
         }
         catch (BrawlStarsClientNotFoundException ex) {
             log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.getBrawlStarsTag());
-            playerDeleter.delete(item);
-            return null;
+            item.setStatus(UnknownPlayerStatus.DELETED);
+            return new NewPlayer(item, null);
         }
     }
 

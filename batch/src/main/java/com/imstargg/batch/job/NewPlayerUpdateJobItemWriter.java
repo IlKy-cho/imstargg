@@ -35,8 +35,10 @@ public class NewPlayerUpdateJobItemWriter implements ItemWriter<NewPlayer>, Init
         List<Object> totalList = new ArrayList<>();
 
         for (NewPlayer item : items) {
-            totalList.add(item.playerEntity());
             totalList.add(item.unknownPlayerEntity());
+            if (item.playerEntity() != null) {
+                totalList.add(item.playerEntity());
+            }
         }
 
         jpaItemWriter.write(new Chunk<>(totalList));

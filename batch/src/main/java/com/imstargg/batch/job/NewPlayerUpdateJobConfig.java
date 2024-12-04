@@ -1,7 +1,6 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.NewPlayer;
-import com.imstargg.batch.domain.PlayerDeleter;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslPagingItemReader;
@@ -41,7 +40,6 @@ public class NewPlayerUpdateJobConfig {
 
     private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
-    private final PlayerDeleter playerDeleter;
 
     NewPlayerUpdateJobConfig(
             Clock clock,
@@ -49,8 +47,7 @@ public class NewPlayerUpdateJobConfig {
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             AlertManager alertManager,
-            BrawlStarsClient brawlStarsClient,
-            PlayerDeleter playerDeleter
+            BrawlStarsClient brawlStarsClient
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
@@ -58,7 +55,6 @@ public class NewPlayerUpdateJobConfig {
         this.emf = emf;
         this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
-        this.playerDeleter = playerDeleter;
     }
 
     @Bean(JOB_NAME)
@@ -112,7 +108,7 @@ public class NewPlayerUpdateJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerUpdateJobItemProcessor processor() {
-        return new NewPlayerUpdateJobItemProcessor(clock, brawlStarsClient, playerDeleter);
+        return new NewPlayerUpdateJobItemProcessor(clock, brawlStarsClient);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
