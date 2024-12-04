@@ -16,15 +16,15 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class PlayerBattleUpdateJobItemProcessor implements ItemProcessor<BattleCollectionEntity, PlayerBattleUpdateResult> {
+public class BattleUpdateJobItemProcessor implements ItemProcessor<BattleCollectionEntity, PlayerBattleUpdateResult> {
 
-    private static final Logger log = LoggerFactory.getLogger(PlayerBattleUpdateJobItemProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(BattleUpdateJobItemProcessor.class);
 
     private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
     private final BattleUpdateApplier battleUpdateApplier;
 
-    public PlayerBattleUpdateJobItemProcessor(
+    public BattleUpdateJobItemProcessor(
             Clock clock,
             BrawlStarsClient brawlStarsClient,
             BattleUpdateApplier battleUpdateApplier
