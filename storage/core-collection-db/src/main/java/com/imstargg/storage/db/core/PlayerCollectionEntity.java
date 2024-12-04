@@ -193,6 +193,8 @@ public class PlayerCollectionEntity extends BaseEntity {
     }
 
     public void battleUpdated(LocalDateTime now, List<LocalDateTime> updatedBattleTimes) {
+        this.status = this.status == PlayerStatus.NEW ? PlayerStatus.PLAYER_UPDATED : PlayerStatus.BATTLE_UPDATED;
+
         Optional<LocalDateTime> latestBattleTimeOpt = updatedBattleTimes.stream()
                 .max(Comparator.naturalOrder());
         if (latestBattleTimeOpt.isEmpty()) {
@@ -211,7 +213,7 @@ public class PlayerCollectionEntity extends BaseEntity {
                         * trophyWeight()
                         * expLevelWeight()
         ), ChronoUnit.MILLIS);
-        this.status = PlayerStatus.BATTLE_UPDATED;
+
     }
 
     private long noUpdatedCountWeight() {
