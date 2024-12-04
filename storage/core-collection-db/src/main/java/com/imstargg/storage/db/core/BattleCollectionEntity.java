@@ -58,9 +58,6 @@ public class BattleCollectionEntity extends BaseEntity {
     @OneToMany(mappedBy = "battle", cascade = CascadeType.ALL)
     private List<BattlePlayerCollectionEntity> battlePlayers = new ArrayList<>();
 
-    @Column(name = "latest", nullable = false)
-    private boolean latest = false;
-
     protected BattleCollectionEntity() {
     }
 
@@ -94,14 +91,6 @@ public class BattleCollectionEntity extends BaseEntity {
             BattlePlayerCollectionEntityBrawler brawler
     ) {
         battlePlayers.add(new BattlePlayerCollectionEntity(this, brawlStarsTag, name, teamIdx, playerIdx, brawler));
-    }
-
-    public void latest() {
-        this.latest = true;
-    }
-
-    public void notLatest() {
-        this.latest = false;
     }
 
     public Long getId() {
@@ -149,7 +138,4 @@ public class BattleCollectionEntity extends BaseEntity {
         return battlePlayers;
     }
 
-    public boolean isLatest() {
-        return latest;
-    }
 }

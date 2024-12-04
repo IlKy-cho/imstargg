@@ -89,6 +89,10 @@ public class PlayerEntity extends BaseEntity {
     @Column(name = "update_weight", nullable = false)
     private LocalDateTime updateWeight;
 
+    @Nullable
+    @Column(name = "latest_battle_time")
+    private LocalDateTime latestBattleTime;
+
     protected PlayerEntity() {
     }
 

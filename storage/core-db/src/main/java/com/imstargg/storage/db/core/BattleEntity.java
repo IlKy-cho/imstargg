@@ -63,18 +63,11 @@ public class BattleEntity extends BaseEntity {
     @Embedded
     private BattleEntityPlayer player;
 
-    @Column(name = "latest", nullable = false)
-    private boolean latest = false;
-
     protected BattleEntity() {
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getBattleKey() {
-        return battleKey;
     }
 
     public LocalDateTime getBattleTime() {

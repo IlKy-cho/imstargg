@@ -16,7 +16,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class BattleUpdateJobItemProcessor implements ItemProcessor<BattleCollectionEntity, PlayerBattleUpdateResult> {
+public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> {
 
     private static final Logger log = LoggerFactory.getLogger(BattleUpdateJobItemProcessor.class);
 
@@ -35,29 +35,28 @@ public class BattleUpdateJobItemProcessor implements ItemProcessor<BattleCollect
     }
 
     @Override
-    public PlayerBattleUpdateResult process(BattleCollectionEntity item) throws Exception {
-        PlayerCollectionEntity playerEntity = item.getPlayer().getPlayer();
-        if (!playerEntity.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
-            log.warn("Player 업데이트 쿨타임이 지나지 않아 스킵. playerTag={}", playerEntity.getBrawlStarsTag());
+    public PlayerBattleUpdateResult process(PlayerCollectionEntity item) throws Exception {
+        if (!item.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
+            log.warn("Player 업데이트 쿨타임이 지나지 않아 스킵. playerTag={}", item.getBrawlStarsTag());
             return null;
         }
         try {
             ListResponse<BattleResponse> battleListResponse = brawlStarsClient
-                    .getPlayerRecentBattles(playerEntity.getBrawlStarsTag());
+                    .getPlayerRecentBattles(item.getBrawlStarsTag());
             List<BattleCollectionEntity> updatedBattleEntities = battleUpdateApplier
-                    .update(playerEntity, battleListResponse, item);
+                    .update(item, battleListResponse);
             List<LocalDateTime> updatedBattleTimes = updatedBattleEntities.stream()
                     .map(BattleCollectionEntity::getBattleTime)
                     .toList();
             
-            playerEntity.battleUpdated(LocalDateTime.now(clock), updatedBattleTimes);
+            item.battleUpdated(LocalDateTime.now(clock), updatedBattleTimes);
 
-            return new PlayerBattleUpdateResult(playerEntity, updatedBattleEntities);
+            return new PlayerBattleUpdateResult(item, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}",
-                    playerEntity.getBrawlStarsTag());
-            playerEntity.deleted();
-            return new PlayerBattleUpdateResult(playerEntity, List.of());
+                    item.getBrawlStarsTag());
+            item.deleted();
+            return new PlayerBattleUpdateResult(item, List.of());
         }
     }
 }
