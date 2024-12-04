@@ -1,6 +1,8 @@
 package com.imstargg.core.api.controller.v1;
 
+import com.imstargg.core.api.controller.response.ListResponse;
 import com.imstargg.core.api.controller.v1.request.PlayerSearchRequest;
+import com.imstargg.core.api.controller.v1.response.PlayerBrawlerResponse;
 import com.imstargg.core.api.controller.v1.response.PlayerResponse;
 import com.imstargg.core.api.controller.v1.response.PlayerSearchResponse;
 import com.imstargg.core.domain.BrawlStarsTag;
@@ -36,5 +38,15 @@ public class PlayerController {
     @GetMapping("/api/v1/players/{tag}")
     public PlayerResponse get(@PathVariable String tag) {
         return PlayerResponse.from(playerService.get(new BrawlStarsTag(tag)));
+    }
+
+    @GetMapping("/api/v1/players/{tag}/brawlers")
+    public ListResponse<PlayerBrawlerResponse> getBrawlers(@PathVariable String tag) {
+        return new ListResponse<>(
+                playerService.getBrawlers(new BrawlStarsTag(tag))
+                        .stream()
+                        .map(PlayerBrawlerResponse::from)
+                        .toList()
+        );
     }
 }
