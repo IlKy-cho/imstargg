@@ -36,7 +36,8 @@ public class BattleCollectionEntity extends BaseEntity {
     @Column(name = "mode", length = 105, updatable = false, nullable = false)
     private String mode;
 
-    @Column(name = "type", length = 105, updatable = false, nullable = false)
+    @Nullable
+    @Column(name = "type", length = 105, updatable = false)
     private String type;
 
     @Nullable

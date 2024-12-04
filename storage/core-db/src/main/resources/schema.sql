@@ -7,7 +7,7 @@ create table battle
     event_mode                 varchar(65),
     event_map                  varchar(65),
     mode                       varchar(105) not null,
-    type                       varchar(105) not null,
+    type                       varchar(105),
     result                     varchar(25),
     duration                   int,
     star_player_brawlstars_tag varchar(45),
