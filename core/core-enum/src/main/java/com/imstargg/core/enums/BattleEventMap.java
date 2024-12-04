@@ -4,7 +4,6 @@ public enum BattleEventMap {
 
     NOT_FOUND(null),
 
-
     RING_O_BRAWLN("Ring 'o Brawlin"),
     SIZZLING_CHANMBERS("Sizzling Chambers"),
     FLYING_FANTASIES("Flying Fantasies"),
