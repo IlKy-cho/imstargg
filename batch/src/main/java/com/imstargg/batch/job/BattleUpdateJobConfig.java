@@ -100,8 +100,7 @@ public class BattleUpdateJobConfig {
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(
-                                playerCollectionEntity.status.in(PlayerStatus.PLAYER_UPDATED, PlayerStatus.NEW),
-                                playerCollectionEntity.deleted.isFalse()
+                                playerCollectionEntity.status.in(PlayerStatus.PLAYER_UPDATED, PlayerStatus.NEW)
                         )
                         .orderBy(playerCollectionEntity.updateWeight.asc())
         );
