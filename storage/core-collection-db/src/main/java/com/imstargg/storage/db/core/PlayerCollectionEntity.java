@@ -191,7 +191,7 @@ public class PlayerCollectionEntity extends BaseEntity {
         return status.isNextUpdateCooldownOver(now, getUpdatedAt());
     }
 
-    public void nextUpdateWeight(LocalDateTime now, List<LocalDateTime> updatedBattleTimes) {
+    public void battleUpdated(LocalDateTime now, List<LocalDateTime> updatedBattleTimes) {
         Optional<LocalDateTime> recentBattleOpt = updatedBattleTimes.stream()
                 .min(Comparator.naturalOrder());
         if (recentBattleOpt.isEmpty()) {
@@ -199,6 +199,7 @@ public class PlayerCollectionEntity extends BaseEntity {
             this.updateWeight = now.plus((long) (
                     noUpdatedCountWeight() * trophyWeight() * expLevelWeight()
             ), ChronoUnit.MILLIS);
+            this.status = PlayerStatus.PLAYER_UPDATED;
             return;
         }
         notUpdatedCount = 0;
@@ -209,6 +210,7 @@ public class PlayerCollectionEntity extends BaseEntity {
                         * trophyWeight()
                         * expLevelWeight()
         ), ChronoUnit.MILLIS);
+        this.status = PlayerStatus.BATTLE_UPDATED;
     }
 
     private long noUpdatedCountWeight() {
@@ -266,6 +268,10 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.bestRoboRumbleTime = bestRoboRumbleTime;
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
         this.brawlStarsClubTag = brawlStarsClubTag;
+    }
+
+    public void deletedStatus() {
+        this.status = PlayerStatus.DELETED;
     }
 
     public Long getId() {
@@ -353,59 +359,4 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.status = status;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setNameColor(String nameColor) {
-        this.nameColor = nameColor;
-    }
-
-    public void setIconBrawlStarsId(long iconBrawlStarsId) {
-        this.iconBrawlStarsId = iconBrawlStarsId;
-    }
-
-    public void setTrophies(int trophies) {
-        this.trophies = trophies;
-    }
-
-    public void setHighestTrophies(int highestTrophies) {
-        this.highestTrophies = highestTrophies;
-    }
-
-    public void setExpLevel(int expLevel) {
-        this.expLevel = expLevel;
-    }
-
-    public void setExpPoints(int expPoints) {
-        this.expPoints = expPoints;
-    }
-
-    public void setQualifiedFromChampionshipChallenge(boolean qualifiedFromChampionshipChallenge) {
-        this.qualifiedFromChampionshipChallenge = qualifiedFromChampionshipChallenge;
-    }
-
-    public void setVictories3vs3(int victories3vs3) {
-        this.victories3vs3 = victories3vs3;
-    }
-
-    public void setSoloVictories(int soloVictories) {
-        this.soloVictories = soloVictories;
-    }
-
-    public void setDuoVictories(int duoVictories) {
-        this.duoVictories = duoVictories;
-    }
-
-    public void setBestRoboRumbleTime(int bestRoboRumbleTime) {
-        this.bestRoboRumbleTime = bestRoboRumbleTime;
-    }
-
-    public void setBestTimeAsBigBrawler(int bestTimeAsBigBrawler) {
-        this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
-    }
-
-    public void setBrawlStarsClubTag(@Nullable String brawlStarsClubTag) {
-        this.brawlStarsClubTag = brawlStarsClubTag;
-    }
 }

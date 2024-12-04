@@ -103,6 +103,7 @@ public class PlayerBattleUpdateJobConfig {
                         battleCollectionEntity.player.player.status.eq(PlayerStatus.PLAYER_UPDATED),
                         battleCollectionEntity.latest.isTrue()
                 )
+                .orderBy(battleCollectionEntity.player.player.updateWeight.asc())
         );
     }
 

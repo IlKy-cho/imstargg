@@ -6,7 +6,6 @@ import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.slf4j.Logger;
@@ -38,6 +37,10 @@ public class PlayerBattleUpdateJobItemProcessor implements ItemProcessor<BattleC
     @Override
     public PlayerBattleUpdateResult process(BattleCollectionEntity item) throws Exception {
         PlayerCollectionEntity playerEntity = item.getPlayer().getPlayer();
+        if (!playerEntity.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
+            log.warn("Player 업데이트 쿨타임이 지나지 않아 스킵. playerTag={}", playerEntity.getBrawlStarsTag());
+            return null;
+        }
         try {
             ListResponse<BattleResponse> battleListResponse = brawlStarsClient
                     .getPlayerRecentBattles(playerEntity.getBrawlStarsTag());
@@ -47,14 +50,13 @@ public class PlayerBattleUpdateJobItemProcessor implements ItemProcessor<BattleC
                     .map(BattleCollectionEntity::getBattleTime)
                     .toList();
             
-            playerEntity.nextUpdateWeight(LocalDateTime.now(clock), updatedBattleTimes);
-            playerEntity.setStatus(PlayerStatus.BATTLE_UPDATED);
+            playerEntity.battleUpdated(LocalDateTime.now(clock), updatedBattleTimes);
 
             return new PlayerBattleUpdateResult(playerEntity, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}",
                     playerEntity.getBrawlStarsTag());
-            playerEntity.delete();
+            playerEntity.deletedStatus();
             return new PlayerBattleUpdateResult(playerEntity, List.of());
         }
     }

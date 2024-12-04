@@ -48,7 +48,7 @@ public class NewPlayerBattleUpdateJobItemProcessor implements ItemProcessor<Play
             List<LocalDateTime> updatedBattleTimes = updatedBattleEntities.stream()
                     .map(BattleCollectionEntity::getBattleTime)
                     .toList();
-            item.nextUpdateWeight(LocalDateTime.now(clock), updatedBattleTimes);
+            item.battleUpdated(LocalDateTime.now(clock), updatedBattleTimes);
             item.setStatus(PlayerStatus.BATTLE_UPDATED);
 
             return new PlayerBattleUpdateResult(item, updatedBattleEntities);
