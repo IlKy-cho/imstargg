@@ -7,7 +7,7 @@ import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -19,40 +19,29 @@ public class BattleUpdateApplier {
             PlayerCollectionEntity playerEntity,
             ListResponse<BattleResponse> battleListResponse
     ) {
-        return update(playerEntity, battleListResponse, null);
+        return update(playerEntity, battleListResponse, playerEntity.getLatestBattleTime());
     }
 
     public List<BattleCollectionEntity> update(
             PlayerCollectionEntity playerEntity,
             ListResponse<BattleResponse> battleListResponse,
-            @Nullable BattleCollectionEntity lastBattleEntity
+            @Nullable LocalDateTime latestBattleTime
     ) {
         List<BattleResponse> battleResponseListToUpdate = getBattleResponseListToUpdate(
-                battleListResponse, lastBattleEntity);
+                battleListResponse, latestBattleTime);
 
-        List<BattleCollectionEntity> battleEntities = new ArrayList<>();
-        if (lastBattleEntity != null) {
-            lastBattleEntity.notLatest();
-            battleEntities.add(lastBattleEntity);
-        }
-
-        battleResponseListToUpdate.forEach(battleResponse ->
-                battleEntities.add(new BattleCollectionEntityBuilder(playerEntity, battleResponse).build())
-        );
-
-        battleEntities.sort(Comparator.comparing(BattleCollectionEntity::getBattleTime));
-
-        if (!battleEntities.isEmpty()) {
-            battleEntities.getLast().latest();
-        }
-        return battleEntities;
+        return battleResponseListToUpdate.stream()
+                .map(battleResponse ->
+                        new BattleCollectionEntityBuilder(playerEntity, battleResponse).build())
+                .sorted(Comparator.comparing(BattleCollectionEntity::getBattleTime))
+                .toList();
     }
 
     private List<BattleResponse> getBattleResponseListToUpdate(
-            ListResponse<BattleResponse> battleListResponse, @Nullable BattleCollectionEntity lastBattleEntity) {
-        return Optional.ofNullable(lastBattleEntity)
+            ListResponse<BattleResponse> battleListResponse, @Nullable LocalDateTime latestBattleTime) {
+        return Optional.ofNullable(latestBattleTime)
                 .map(battle -> battleListResponse.items().stream()
-                        .filter(battleResponse -> battleResponse.battleTime().isAfter(battle.getBattleTime()))
+                        .filter(battleResponse -> battleResponse.battleTime().isAfter(latestBattleTime))
                         .toList())
                 .orElse(battleListResponse.items());
     }

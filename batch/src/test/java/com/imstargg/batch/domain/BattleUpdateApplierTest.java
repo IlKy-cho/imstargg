@@ -12,7 +12,6 @@ import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Brawler;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionEntityFixture;
 import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,10 +41,7 @@ class BattleUpdateApplierTest {
         given(playerEntity.getId()).willReturn(123L);
         given(playerEntity.getTrophies()).willReturn(500);
 
-        BattleCollectionEntity lastBattleEntity = new BattleCollectionEntityFixture()
-                .battleTime(LocalDateTime.of(2024, 12, 1, 0, 0, 0))
-                .build();
-        lastBattleEntity.latest();
+        LocalDateTime latestBattleTime = LocalDateTime.of(2024, 12, 1, 0, 0, 0);
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
@@ -340,18 +336,13 @@ class BattleUpdateApplierTest {
 
         // when
         var results = battleUpdateApplier.update(
-                playerEntity, new ListResponse<>(battleResponseList, null), lastBattleEntity);
+                playerEntity, new ListResponse<>(battleResponseList, null), latestBattleTime);
 
         // then
-        assertThat(results).hasSize(2);
+        assertThat(results).hasSize(1);
 
-        var oldLatestBattleEntity = results.get(0);
-        assertThat(oldLatestBattleEntity).isEqualTo(lastBattleEntity);
-        assertThat(oldLatestBattleEntity.isLatest()).isFalse();
-
-        var battleEntity = results.get(1);
+        var battleEntity = results.get(0);
         assertThat(battleEntity.getBattleTime()).isEqualTo(LocalDateTime.of(2024, 12, 29, 0, 0, 0));
-        assertThat(battleEntity.isLatest()).isTrue();
     }
 
     @Test

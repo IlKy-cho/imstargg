@@ -97,6 +97,10 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Transient
     private Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToBrawler;
 
+    @Nullable
+    @Column(name = "latest_battle_time")
+    private LocalDateTime latestBattleTime;
+
     protected PlayerCollectionEntity() {
     }
 
@@ -189,9 +193,9 @@ public class PlayerCollectionEntity extends BaseEntity {
     }
 
     public void battleUpdated(LocalDateTime now, List<LocalDateTime> updatedBattleTimes) {
-        Optional<LocalDateTime> recentBattleOpt = updatedBattleTimes.stream()
-                .min(Comparator.naturalOrder());
-        if (recentBattleOpt.isEmpty()) {
+        Optional<LocalDateTime> latestBattleTimeOpt = updatedBattleTimes.stream()
+                .max(Comparator.naturalOrder());
+        if (latestBattleTimeOpt.isEmpty()) {
             notUpdatedCount += 1;
             this.updateWeight = now.plus((long) (
                     noUpdatedCountWeight() * trophyWeight() * expLevelWeight()
@@ -200,9 +204,9 @@ public class PlayerCollectionEntity extends BaseEntity {
             return;
         }
         notUpdatedCount = 0;
-        LocalDateTime recentBattleTime = recentBattleOpt.get();
+        this.latestBattleTime = latestBattleTimeOpt.get();
         this.updateWeight = now.plus((long) (
-                recentBattleTimeWeight(Duration.between(recentBattleTime, now))
+                recentBattleTimeWeight(Duration.between(latestBattleTime, now))
                         * battleCountWeight(updatedBattleTimes.size())
                         * trophyWeight()
                         * expLevelWeight()
@@ -350,6 +354,11 @@ public class PlayerCollectionEntity extends BaseEntity {
 
     public List<PlayerBrawlerCollectionEntity> getBrawlers() {
         return brawlers;
+    }
+
+    @Nullable
+    public LocalDateTime getLatestBattleTime() {
+        return latestBattleTime;
     }
 
     public void setStatus(PlayerStatus status) {

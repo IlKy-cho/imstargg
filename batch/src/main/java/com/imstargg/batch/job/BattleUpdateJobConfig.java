@@ -8,7 +8,7 @@ import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
@@ -25,7 +25,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
 
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
+import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
 
 @Configuration
 public class BattleUpdateJobConfig {
@@ -81,7 +81,7 @@ public class BattleUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<BattleCollectionEntity, PlayerBattleUpdateResult>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<PlayerCollectionEntity, PlayerBattleUpdateResult>chunk(chunkSizeJobParameter().getSize(), txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -95,16 +95,15 @@ public class BattleUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    QuerydslZeroPagingItemReader<BattleCollectionEntity> reader() {
+    QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
         return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory ->
                 queryFactory
-                        .selectFrom(battleCollectionEntity)
-                        .join(battleCollectionEntity.player.player).fetchJoin()
+                        .selectFrom(playerCollectionEntity)
                         .where(
-                                battleCollectionEntity.player.player.status.eq(PlayerStatus.PLAYER_UPDATED),
-                                battleCollectionEntity.latest.isTrue()
+                                playerCollectionEntity.status.in(PlayerStatus.PLAYER_UPDATED, PlayerStatus.NEW),
+                                playerCollectionEntity.deleted.isFalse()
                         )
-                        .orderBy(battleCollectionEntity.player.player.updateWeight.asc())
+                        .orderBy(playerCollectionEntity.updateWeight.asc())
         );
     }
 
