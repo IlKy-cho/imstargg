@@ -99,7 +99,8 @@ public class NewPlayerBattleUpdateJobConfig {
         return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory -> queryFactory
                 .selectFrom(playerCollectionEntity)
                 .where(
-                        playerCollectionEntity.status.eq(PlayerStatus.NEW)
+                        playerCollectionEntity.status.eq(PlayerStatus.NEW),
+                        playerCollectionEntity.deleted.isFalse()
                 )
         );
     }
