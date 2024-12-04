@@ -28,10 +28,10 @@ import java.time.Clock;
 import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
-public class PlayerBattleUpdateJobConfig {
+public class BattleUpdateJobConfig {
 
-    private static final String JOB_NAME = "playerBattleUpdateJob";
-    private static final String STEP_NAME = "playerBattleUpdateStep";
+    private static final String JOB_NAME = "battleUpdateJob";
+    private static final String STEP_NAME = "battleUpdateStep";
 
     private final Clock clock;
     private final JobRepository jobRepository;
@@ -42,7 +42,7 @@ public class PlayerBattleUpdateJobConfig {
     private final BrawlStarsClient brawlStarsClient;
     private final BattleUpdateApplier battleUpdateApplier;
 
-    public PlayerBattleUpdateJobConfig(
+    public BattleUpdateJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
@@ -110,8 +110,8 @@ public class PlayerBattleUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
-    PlayerBattleUpdateJobItemProcessor processor() {
-        return new PlayerBattleUpdateJobItemProcessor(clock, brawlStarsClient, battleUpdateApplier);
+    BattleUpdateJobItemProcessor processor() {
+        return new BattleUpdateJobItemProcessor(clock, brawlStarsClient, battleUpdateApplier);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
