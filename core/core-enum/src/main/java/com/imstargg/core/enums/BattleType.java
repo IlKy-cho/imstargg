@@ -11,6 +11,8 @@ public enum BattleType {
 
     RANKED("ranked"),
     SOLO_RANKED("soloRanked"),
+    FRIENDLY("friendly"),
+    CHALLENGE("challenge"),
     ;
 
     private final String code;

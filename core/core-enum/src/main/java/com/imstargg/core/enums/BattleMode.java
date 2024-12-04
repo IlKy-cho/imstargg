@@ -22,6 +22,9 @@ public enum BattleMode {
     WIPEOUT("wipeout"),
     VOLLEY_BRAWL("volleyBrawl"),
     TROPHY_THIEVES("trophyThieves"),
+    BOSS_FIGHT("bossFight"),
+    BIG_GAME("bigGame"),
+    BASKET_BRAWL("basketBrawl"),
 
     ;
 
