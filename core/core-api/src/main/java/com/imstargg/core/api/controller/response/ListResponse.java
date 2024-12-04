@@ -1,4 +1,4 @@
-package com.imstargg.core.api.controller;
+package com.imstargg.core.api.controller.response;
 
 import java.util.List;
 
