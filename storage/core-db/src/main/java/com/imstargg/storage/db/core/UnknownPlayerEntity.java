@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 @Entity
@@ -41,9 +42,44 @@ public class UnknownPlayerEntity extends BaseEntity {
     private int notFoundCount;
 
     @Column(name = "update_available_at", updatable = false, nullable = false)
-    private LocalDateTime updatedAvailableAt;
+    private LocalDateTime updateAvailableAt;
 
     protected UnknownPlayerEntity() {
     }
 
+    public UnknownPlayerEntity(String brawlStarsTag, UnknownPlayerStatus status, LocalDateTime updateAvailableAt) {
+        this.brawlStarsTag = brawlStarsTag;
+        this.status = status;
+        this.notFoundCount = 0;
+        this.updateAvailableAt = updateAvailableAt;
+    }
+
+    public static UnknownPlayerEntity newSearchNew(String brawlStarsTag, Clock clock) {
+        return new UnknownPlayerEntity(brawlStarsTag, UnknownPlayerStatus.SEARCH_NEW, LocalDateTime.now(clock));
+    }
+
+    public void refresh(Clock clock) {
+        this.notFoundCount = 0;
+        this.updateAvailableAt = LocalDateTime.now(clock);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getBrawlStarsTag() {
+        return brawlStarsTag;
+    }
+
+    public UnknownPlayerStatus getStatus() {
+        return status;
+    }
+
+    public int getNotFoundCount() {
+        return notFoundCount;
+    }
+
+    public LocalDateTime getUpdateAvailableAt() {
+        return updateAvailableAt;
+    }
 }
