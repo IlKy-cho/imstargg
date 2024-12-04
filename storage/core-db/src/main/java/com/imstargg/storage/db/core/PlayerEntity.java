@@ -80,7 +80,7 @@ public class PlayerEntity extends BaseEntity {
     private int bestTimeAsBigBrawler;
 
     @Nullable
-    @Column(name = "brawlstars_club_tag", length = 45, updatable = false, nullable = false)
+    @Column(name = "brawlstars_club_tag", length = 45, updatable = false)
     private String brawlStarsClubTag;
 
     @Column(name = "not_updated_count", nullable = false)
