@@ -3,7 +3,6 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.NewPlayer;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.job.support.QuerydslPagingItemReader;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
@@ -92,7 +91,7 @@ public class NewPlayerUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    QuerydslPagingItemReader<UnknownPlayerCollectionEntity> reader() {
+    QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader() {
         QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(
                 emf, chunkSizeJobParameter().getSize(), queryFactory ->
                 queryFactory
