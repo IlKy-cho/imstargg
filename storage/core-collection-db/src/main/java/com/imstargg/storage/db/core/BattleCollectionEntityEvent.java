@@ -1,18 +1,22 @@
 package com.imstargg.storage.db.core;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class BattleCollectionEntityEvent {
 
-    @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
-    private long eventBrawlStarsId;
+    @Nullable
+    @Column(name = "event_brawlstars_id", updatable = false)
+    private Long eventBrawlStarsId;
 
-    @Column(name = "event_mode", length = 65, updatable = false, nullable = false)
+    @Nullable
+    @Column(name = "event_mode", length = 65, updatable = false)
     private String mode;
 
-    @Column(name = "event_map", length = 65, updatable = false, nullable = false)
+    @Nullable
+    @Column(name = "event_map", length = 65, updatable = false)
     private String map;
 
     protected BattleCollectionEntityEvent() {
@@ -24,7 +28,8 @@ public class BattleCollectionEntityEvent {
         this.map = map;
     }
 
-    public long getEventBrawlStarsId() {
+    @Nullable
+    public Long getEventBrawlStarsId() {
         return eventBrawlStarsId;
     }
 
