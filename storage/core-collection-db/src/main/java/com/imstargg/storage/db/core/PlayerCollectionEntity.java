@@ -13,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-import jakarta.persistence.Version;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -94,9 +93,6 @@ public class PlayerCollectionEntity extends BaseEntity {
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<PlayerBrawlerCollectionEntity> brawlers = new ArrayList<>();
-
-    @Version
-    private Integer version;
 
     @Transient
     private Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToBrawler;
