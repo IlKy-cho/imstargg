@@ -15,9 +15,6 @@ dependencies {
     // Jackson
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
-    // Caffeine
-    implementation 'com.github.ben-manes.caffeine:caffeine'
-
     // Test
     testImplementation(testFixtures(project(":storage:core-db")))
     testImplementation(testFixtures(project(":storage:core-collection-db")))

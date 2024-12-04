@@ -1,17 +1,15 @@
 package com.imstargg.batch.domain;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
 import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.ConcurrentSkipListSet;
+
 @Component
 public class PlayerTagFinderWithLocalCache {
 
-    private final Cache<String, Boolean> tagCache = Caffeine.newBuilder()
-            .maximumSize(1000)
-            .build();
+    private final ConcurrentSkipListSet<String> tagCache = new ConcurrentSkipListSet<>();
 
     private final PlayerCollectionJpaRepository playerRepository;
     private final UnknownPlayerCollectionJpaRepository unknownPlayerRepository;
@@ -25,12 +23,11 @@ public class PlayerTagFinderWithLocalCache {
     }
 
     public boolean exists(String tag) {
-        Boolean cacheResult = tagCache.getIfPresent(tag);
-        if (cacheResult != null) {
+        if (tagCache.contains(tag)) {
             return true;
         }
 
-        tagCache.put(tag, true);
+        tagCache.add(tag);
         return playerRepository.existsByBrawlStarsTag(tag) || unknownPlayerRepository.existsByBrawlStarsTag(tag);
     }
 }
