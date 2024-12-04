@@ -27,6 +27,9 @@ spring:
         order_updates: true
         default_batch_fetch_size: 500
 
+logging.level:
+  org.hibernate: info
+
 ---
 spring:
   config:
