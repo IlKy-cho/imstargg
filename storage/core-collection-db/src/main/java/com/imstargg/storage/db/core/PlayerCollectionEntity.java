@@ -45,7 +45,8 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Column(name = "name", length = 105, nullable = false)
     private String name;
 
-    @Column(name = "name_color", length = 45, nullable = false)
+    @Nullable
+    @Column(name = "name_color", length = 45)
     private String nameColor;
 
     @Column(name = "icon_brawlstars_id", nullable = false)

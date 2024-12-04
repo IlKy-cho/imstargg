@@ -122,7 +122,7 @@ create table player
     brawlstars_tag                        varchar(45)  not null,
     status                                varchar(45)  not null,
     name                                  varchar(105) not null,
-    name_color                            varchar(45)  not null,
+    name_color                            varchar(45),
     icon_brawlstars_id                    bigint       not null,
     trophies                              int          not null,
     highest_trophies                      int          not null,
