@@ -56,7 +56,7 @@ public class PlayerBattleUpdateJobItemProcessor implements ItemProcessor<BattleC
         } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}",
                     playerEntity.getBrawlStarsTag());
-            playerEntity.deletedStatus();
+            playerEntity.deleted();
             return new PlayerBattleUpdateResult(playerEntity, List.of());
         }
     }

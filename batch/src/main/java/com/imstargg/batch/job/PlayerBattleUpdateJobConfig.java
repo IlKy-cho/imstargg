@@ -96,14 +96,15 @@ public class PlayerBattleUpdateJobConfig {
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
     QuerydslZeroPagingItemReader<BattleCollectionEntity> reader() {
-        return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory -> queryFactory
-                .selectFrom(battleCollectionEntity)
-                .join(battleCollectionEntity.player.player).fetchJoin()
-                .where(
-                        battleCollectionEntity.player.player.status.eq(PlayerStatus.PLAYER_UPDATED),
-                        battleCollectionEntity.latest.isTrue()
-                )
-                .orderBy(battleCollectionEntity.player.player.updateWeight.asc())
+        return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory ->
+                queryFactory
+                        .selectFrom(battleCollectionEntity)
+                        .join(battleCollectionEntity.player.player).fetchJoin()
+                        .where(
+                                battleCollectionEntity.player.player.status.eq(PlayerStatus.PLAYER_UPDATED),
+                                battleCollectionEntity.latest.isTrue()
+                        )
+                        .orderBy(battleCollectionEntity.player.player.updateWeight.asc())
         );
     }
 

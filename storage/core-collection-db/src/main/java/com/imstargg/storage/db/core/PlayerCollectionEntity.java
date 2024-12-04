@@ -237,6 +237,10 @@ public class PlayerCollectionEntity extends BaseEntity {
         return 1 / (1 + Math.exp(expLevel / 100D)) + 1;
     }
 
+    public void deleted() {
+        this.status = PlayerStatus.DELETED;
+    }
+
     public void update(
             String name,
             String nameColor,
@@ -268,10 +272,6 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.bestRoboRumbleTime = bestRoboRumbleTime;
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
         this.brawlStarsClubTag = brawlStarsClubTag;
-    }
-
-    public void deletedStatus() {
-        this.status = PlayerStatus.DELETED;
     }
 
     public Long getId() {
