@@ -13,11 +13,15 @@ public enum BattleType {
     SOLO_RANKED("soloRanked"),
     ;
 
+    private final String code;
+
     private static final Map<String, BattleType> ENUM_BY_CODE = Arrays.stream(BattleType.values())
             .filter(e -> e != NOT_FOUND)
             .collect(Collectors.toMap(BattleType::getCode, Function.identity()));
 
-    private final String code;
+    public static BattleType find(String code) {
+        return ENUM_BY_CODE.getOrDefault(code, NOT_FOUND);
+    }
 
     BattleType(String code) {
         this.code = code;

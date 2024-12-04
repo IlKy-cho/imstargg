@@ -35,8 +35,8 @@ public class BattlePlayerEntity extends BaseEntity {
     @Column(name = "team_idx", updatable = false, nullable = false)
     private int teamIdx;
 
-    @Column(name = "idx", updatable = false, nullable = false)
-    private int idx;
+    @Column(name = "player_idx", updatable = false, nullable = false)
+    private int playerIdx;
 
     @Embedded
     private BattlePlayerEntityBrawler brawler;
@@ -64,8 +64,8 @@ public class BattlePlayerEntity extends BaseEntity {
         return teamIdx;
     }
 
-    public int getIdx() {
-        return idx;
+    public int getPlayerIdx() {
+        return playerIdx;
     }
 
     public BattlePlayerEntityBrawler getBrawler() {
