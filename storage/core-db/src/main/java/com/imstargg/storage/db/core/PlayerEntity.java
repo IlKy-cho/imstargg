@@ -12,7 +12,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import jakarta.persistence.Version;
 
 import java.time.LocalDateTime;
 
@@ -89,9 +88,6 @@ public class PlayerEntity extends BaseEntity {
 
     @Column(name = "update_weight", nullable = false)
     private LocalDateTime updateWeight;
-
-    @Version
-    private Integer version;
 
     protected PlayerEntity() {
     }

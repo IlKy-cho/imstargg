@@ -6,13 +6,13 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class BattleEntityEvent {
 
-    @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
+    @Column(name = "event_brawlstars_id", updatable = false)
     private long eventBrawlStarsId;
 
-    @Column(name = "event_mode", length = 65, updatable = false, nullable = false)
+    @Column(name = "event_mode", length = 65, updatable = false)
     private String mode;
 
-    @Column(name = "event_map", length = 65, updatable = false, nullable = false)
+    @Column(name = "event_map", length = 65, updatable = false)
     private String map;
 
     protected BattleEntityEvent() {
