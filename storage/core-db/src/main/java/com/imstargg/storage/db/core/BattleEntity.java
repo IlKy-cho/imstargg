@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
         },
         indexes = {
                 @Index(name = "ix_battle__eventbrawlstarsid", columnList = "event_brawlstars_id"),
-                @Index(name = "ix_battle__createdat", columnList = "created_at desc"),
+                @Index(name = "ix_battle__battletime", columnList = "battle_time desc"),
         }
 )
 public class BattleEntity extends BaseEntity {
