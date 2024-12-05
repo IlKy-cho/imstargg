@@ -13,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -48,5 +49,11 @@ public class PlayerController {
                         .map(PlayerBrawlerResponse::from)
                         .toList()
         );
+    }
+
+    @PostMapping("/api/v1/players/{tag}/renew")
+    public ResponseEntity<Void> renew(@PathVariable String tag) {
+        playerService.renew(new BrawlStarsTag(tag));
+        return ResponseEntity.accepted().build();
     }
 }
