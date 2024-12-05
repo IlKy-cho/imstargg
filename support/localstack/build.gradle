@@ -1,0 +1,5 @@
+dependencies {
+    implementation("cloud.localstack:localstack-utils:${localstackUtilsVersion}")
+    implementation("software.amazon.awssdk:sqs")
+    implementation("org.springframework.boot:spring-boot-starter")
+}
