@@ -1,17 +1,20 @@
 package com.imstargg.worker.handler;
 
-import com.imstargg.core.event.PlayerRenewalEvent;
 import io.awspring.cloud.sqs.annotation.SqsListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 class PlayerRenewalEventHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(PlayerRenewalEventHandler.class);
+
     @SqsListener(
-            queueNames = "${app.event.player-renewal-queue-name}",
+            queueNames = "${app.event.queue.player-renewal}",
             pollTimeoutSeconds = "10"
     )
-    void handlePlayerRenewalEvent(PlayerRenewalEvent event) {
-
+    void handlePlayerRenewalEvent(String test) {
+        log.info("message={}", test);
     }
 }
