@@ -1,0 +1,11 @@
+dependencies {
+
+    implementation(project(":core:core-enum"))
+    implementation(project(":client:brawlstars-client"))
+    implementation(project(":storage:core-collection-db"))
+
+    // Test
+    testImplementation(testFixtures(project(":storage:core-collection-db")))
+}
+
+

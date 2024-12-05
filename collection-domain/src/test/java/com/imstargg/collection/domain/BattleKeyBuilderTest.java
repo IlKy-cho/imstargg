@@ -1,4 +1,4 @@
-package com.imstargg.batch.domain;
+package com.imstargg.collection.domain;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BattleUpdateApplier;
+import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
