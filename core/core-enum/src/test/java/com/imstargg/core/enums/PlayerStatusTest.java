@@ -13,14 +13,14 @@ class PlayerStatusTest {
     void 업데이트_가능_기간이_지나야_업데이트_가능하다() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime updatedAt = now.minusSeconds(121);
-        assertTrue(PlayerStatus.UPDATED.isNextUpdateCooldownOver(now, updatedAt));
+        assertTrue(PlayerStatus.NEW.isNextUpdateCooldownOver(now, updatedAt));
     }
 
     @Test
     void 업데이트_가능_기간이_지나기_전에는_업데이트_불가능하다() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime updatedAt = now.minusSeconds(119);
-        assertFalse(PlayerStatus.UPDATED.isNextUpdateCooldownOver(now, updatedAt));
+        assertFalse(PlayerStatus.NEW.isNextUpdateCooldownOver(now, updatedAt));
     }
 
 }
