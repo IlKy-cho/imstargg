@@ -1,6 +1,7 @@
 package com.imstargg.core.event;
 
 public record PlayerRenewalEvent(
-        long playerId
+        RenewalType type,
+        String tag
 ) {
 }
