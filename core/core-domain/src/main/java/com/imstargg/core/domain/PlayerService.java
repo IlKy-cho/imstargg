@@ -8,9 +8,11 @@ import java.util.List;
 public class PlayerService {
 
     private final PlayerReader playerReader;
+    private final PlayerRenewer playerRenewer;
 
-    public PlayerService(PlayerReader playerReader) {
+    public PlayerService(PlayerReader playerReader, PlayerRenewer playerRenewer) {
         this.playerReader = playerReader;
+        this.playerRenewer = playerRenewer;
     }
 
     public Player get(BrawlStarsTag tag) {
@@ -19,5 +21,10 @@ public class PlayerService {
 
     public List<PlayerBrawler> getBrawlers(BrawlStarsTag tag) {
         return playerReader.getBrawlers(playerReader.get(tag));
+    }
+
+    public void renew(BrawlStarsTag tag) {
+        Player player = playerReader.get(tag);
+        playerRenewer.renew(player);
     }
 }

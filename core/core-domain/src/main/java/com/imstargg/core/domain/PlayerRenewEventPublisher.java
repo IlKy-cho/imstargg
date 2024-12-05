@@ -8,4 +8,8 @@ public class PlayerRenewEventPublisher {
     public void publishNew(BrawlStarsTag tag) {
         // TODO
     }
+
+    public void publish(Player player) {
+        // TODO
+    }
 }
