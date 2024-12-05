@@ -1,5 +1,6 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import org.slf4j.Logger;
@@ -44,5 +45,14 @@ public class PlayerRenewer {
         }
         playerRepository.renewRequested(player);
         eventPublisher.publish(player);
+    }
+
+    public boolean isRenewing(BrawlStarsTag tag) {
+        return playerRepository.findByTag(tag)
+                .map(player -> player.status().isRenewing())
+                .or(() -> playerRepository.findNew(tag)
+                        .map(player -> player.status() == UnknownPlayerStatus.SEARCH_NEW)
+                )
+                .orElseThrow(() -> new CoreException(CoreErrorType.PLAYER_NOT_FOUND, "playerTag=" + tag));
     }
 }

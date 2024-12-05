@@ -78,8 +78,17 @@ public class PlayerRepository {
                                 clock
                         )
                 ));
+        return mapNewPlayer(entity);
+    }
+
+    public Optional<NewPlayer> findNew(BrawlStarsTag tag) {
+        return unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
+                .map(PlayerRepository::mapNewPlayer);
+    }
+
+    private static NewPlayer mapNewPlayer(UnknownPlayerEntity entity) {
         return new NewPlayer(
-                tag,
+                new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getStatus(),
                 entity.getUpdateAvailableAt()
         );
