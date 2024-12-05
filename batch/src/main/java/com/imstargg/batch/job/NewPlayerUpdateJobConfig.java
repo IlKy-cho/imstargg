@@ -1,7 +1,6 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.NewPlayer;
-import com.imstargg.batch.job.support.ChunkErrorLogListener;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
@@ -20,7 +19,6 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
@@ -82,10 +80,6 @@ public class NewPlayerUpdateJobConfig {
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
-
-                .faultTolerant()
-                .skip(DataIntegrityViolationException.class)
-                .listener(new ChunkErrorLogListener())
 
                 .build();
     }

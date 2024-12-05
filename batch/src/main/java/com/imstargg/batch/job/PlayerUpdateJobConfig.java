@@ -1,6 +1,5 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.job.support.ChunkErrorLogListener;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
@@ -9,7 +8,6 @@ import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.OptimisticLockException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -17,8 +15,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -81,10 +78,6 @@ public class PlayerUpdateJobConfig {
                 .processor(processor())
                 .writer(writer())
 
-                .faultTolerant()
-                .skip(OptimisticLockException.class)
-                .listener(new ChunkErrorLogListener())
-
                 .build();
     }
 
@@ -108,10 +101,8 @@ public class PlayerUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    JpaItemWriter<PlayerCollectionEntity> writer() {
-        return new JpaItemWriterBuilder<PlayerCollectionEntity>()
-                .entityManagerFactory(emf)
-                .usePersist(false)
-                .build();
+    ItemWriter<PlayerCollectionEntity> writer() {
+        return chunk -> {
+        };
     }
 }

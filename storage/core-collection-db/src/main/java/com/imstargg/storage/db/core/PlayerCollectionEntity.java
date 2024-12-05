@@ -371,5 +371,4 @@ public class PlayerCollectionEntity extends BaseEntity {
     public void setStatus(PlayerStatus status) {
         this.status = status;
     }
-
 }
