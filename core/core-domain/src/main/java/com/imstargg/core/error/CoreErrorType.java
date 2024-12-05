@@ -9,6 +9,7 @@ public enum CoreErrorType {
     DEFAULT_ERROR(SERVER_ERROR, "서버에 문제가 발생했습니다.", ERROR),
 
     PLAYER_NOT_FOUND(CoreErrorKind.NOT_FOUND, "플레이어를 찾을 수 없습니다.", INFO),
+    PLAYER_ALREADY_RENEWED(CoreErrorKind.FORBIDDEN, "이미 갱신된 플레이어입니다.", INFO),
     ;
 
     private final CoreErrorKind kind;

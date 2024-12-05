@@ -1,5 +1,9 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.error.CoreErrorType;
+import com.imstargg.core.error.CoreException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
@@ -7,6 +11,8 @@ import java.time.LocalDateTime;
 
 @Component
 public class PlayerRenewer {
+
+    private static final Logger log = LoggerFactory.getLogger(PlayerRenewer.class);
 
     private final Clock clock;
     private final PlayerRepository playerRepository;
@@ -26,5 +32,17 @@ public class PlayerRenewer {
 
         eventPublisher.publishNew(tag);
         return true;
+    }
+
+    public void renew(Player player) {
+        if (!player.isNextUpdateCooldownOver(clock)) {
+            throw new CoreException(CoreErrorType.PLAYER_ALREADY_RENEWED, "playerTag=" + player.tag());
+        }
+        if (player.status().isRenewing()) {
+            log.info("이미 플레이어가 갱신 중입니다. playerTag={}, status={}", player.tag(), player.status());
+            return;
+        }
+        playerRepository.renewRequested(player);
+        eventPublisher.publish(player);
     }
 }
