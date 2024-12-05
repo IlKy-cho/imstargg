@@ -2,6 +2,7 @@ dependencies {
     implementation(project(":core:core-enum"))
     implementation(project(":core:core-event"))
     implementation(project(":client:brawlstars-client"))
+    implementation(project(":collection-domain"))
 
     implementation(project(":storage:core-collection-db"))
 
