@@ -2,6 +2,7 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.BattleUpdateApplier;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
+import com.imstargg.batch.job.support.ChunkErrorLogListener;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
@@ -88,7 +89,7 @@ public class BattleUpdateJobConfig {
 
                 .faultTolerant()
                 .skip(OptimisticLockException.class)
-                .listener(new PlayerBattleUpdateWriterSkipListener())
+                .listener(new ChunkErrorLogListener())
 
                 .build();
     }
