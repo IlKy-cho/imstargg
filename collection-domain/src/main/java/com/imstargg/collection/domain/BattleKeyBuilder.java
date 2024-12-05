@@ -1,4 +1,4 @@
-package com.imstargg.batch.domain;
+package com.imstargg.collection.domain;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;

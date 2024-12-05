@@ -1,6 +1,6 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BattleUpdateApplier;
+import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;

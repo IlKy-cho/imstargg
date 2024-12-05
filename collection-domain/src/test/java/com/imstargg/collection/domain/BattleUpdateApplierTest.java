@@ -1,4 +1,4 @@
-package com.imstargg.batch.domain;
+package com.imstargg.collection.domain;
 
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.BattleResultBrawlerResponse;
