@@ -22,10 +22,15 @@ spring:
       hibernate:
         jdbc:
           batch_size: 30
-        batch_versioned_data: true
+          batch_versioned_data: false
         order_inserts: true
         order_updates: true
         default_batch_fetch_size: 500
+
+#logging.level:
+#  org.hibernate:
+#    SQL: debug
+#    orm.jdbc.bind: trace
 
 ---
 spring:

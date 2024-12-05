@@ -2,7 +2,6 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.BattleUpdateApplier;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
-import com.imstargg.batch.job.support.ChunkErrorLogListener;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
@@ -12,7 +11,6 @@ import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.OptimisticLockException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -87,10 +85,6 @@ public class BattleUpdateJobConfig {
                 .processor(processor())
                 .writer(writer())
 
-                .faultTolerant()
-                .skip(OptimisticLockException.class)
-                .listener(new ChunkErrorLogListener())
-
                 .build();
     }
 
@@ -101,7 +95,9 @@ public class BattleUpdateJobConfig {
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(
-                                playerCollectionEntity.status.in(PlayerStatus.PLAYER_UPDATED, PlayerStatus.NEW)
+                                playerCollectionEntity.status.in(
+                                        PlayerStatus.PLAYER_UPDATED, PlayerStatus.BATTLE_UPDATED, PlayerStatus.NEW
+                                )
                         )
                         .orderBy(playerCollectionEntity.updateWeight.asc())
         );

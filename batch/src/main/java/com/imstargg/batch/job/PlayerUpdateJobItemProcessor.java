@@ -27,7 +27,6 @@ public class PlayerUpdateJobItemProcessor implements ItemProcessor<PlayerCollect
 
         try {
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(item.getBrawlStarsTag());
-
             item.update(
                     playerResponse.name(),
                     playerResponse.nameColor(),
