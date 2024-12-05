@@ -1,5 +1,6 @@
 package com.imstargg.batch.job;
 
+import com.imstargg.batch.job.support.ChunkErrorLogListener;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
@@ -8,6 +9,7 @@ import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -19,7 +21,6 @@ import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
@@ -81,8 +82,8 @@ public class PlayerUpdateJobConfig {
                 .writer(writer())
 
                 .faultTolerant()
-                .skip(DataIntegrityViolationException.class)
-                .listener(new PlayerBattleUpdateWriterSkipListener())
+                .skip(OptimisticLockException.class)
+                .listener(new ChunkErrorLogListener())
 
                 .build();
     }

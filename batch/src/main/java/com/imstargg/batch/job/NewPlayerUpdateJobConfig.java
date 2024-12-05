@@ -1,6 +1,7 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.NewPlayer;
+import com.imstargg.batch.job.support.ChunkErrorLogListener;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
@@ -84,7 +85,7 @@ public class NewPlayerUpdateJobConfig {
 
                 .faultTolerant()
                 .skip(DataIntegrityViolationException.class)
-                .listener(new NewPlayerUpdateJobSkipListener())
+                .listener(new ChunkErrorLogListener())
 
                 .build();
     }
