@@ -27,4 +27,9 @@ public class PlayerService {
         Player player = playerReader.get(tag);
         playerRenewer.renew(player);
     }
+
+    public boolean isRenewalFinished(BrawlStarsTag tag) {
+        Player player = playerReader.get(tag);
+        return !player.status().isRenewing();
+    }
 }

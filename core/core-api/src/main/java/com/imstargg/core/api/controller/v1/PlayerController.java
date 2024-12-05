@@ -5,6 +5,7 @@ import com.imstargg.core.api.controller.v1.request.PlayerSearchRequest;
 import com.imstargg.core.api.controller.v1.response.PlayerBrawlerResponse;
 import com.imstargg.core.api.controller.v1.response.PlayerResponse;
 import com.imstargg.core.api.controller.v1.response.PlayerSearchResponse;
+import com.imstargg.core.api.controller.v1.response.RenewalStatusResponse;
 import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.domain.PlayerSearchService;
 import com.imstargg.core.domain.PlayerService;
@@ -55,5 +56,10 @@ public class PlayerController {
     public ResponseEntity<Void> renew(@PathVariable String tag) {
         playerService.renew(new BrawlStarsTag(tag));
         return ResponseEntity.accepted().build();
+    }
+
+    @GetMapping("/api/v1/players/{tag}/renewal-status")
+    public RenewalStatusResponse getRenewalStatus(@PathVariable String tag) {
+        return new RenewalStatusResponse(playerService.isRenewalFinished(new BrawlStarsTag(tag)));
     }
 }
