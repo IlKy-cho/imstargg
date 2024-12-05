@@ -10,7 +10,9 @@ public class PlayerService {
     private final PlayerReader playerReader;
     private final PlayerRenewer playerRenewer;
 
-    public PlayerService(PlayerReader playerReader, PlayerRenewer playerRenewer) {
+    public PlayerService(
+            PlayerReader playerReader,
+            PlayerRenewer playerRenewer) {
         this.playerReader = playerReader;
         this.playerRenewer = playerRenewer;
     }
@@ -28,8 +30,7 @@ public class PlayerService {
         playerRenewer.renew(player);
     }
 
-    public boolean isRenewalFinished(BrawlStarsTag tag) {
-        Player player = playerReader.get(tag);
-        return !player.status().isRenewing();
+    public boolean isRenewing(BrawlStarsTag tag) {
+        return playerRenewer.isRenewing(tag);
     }
 }
