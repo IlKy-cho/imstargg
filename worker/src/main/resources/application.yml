@@ -1,0 +1,51 @@
+spring:
+  application.name: worker
+
+  profiles.active: local
+
+  config:
+    import:
+      - core-db.yml
+      - brawlstars-client.yml
+      - logging.yml
+      - monitoring.yml
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 30
+          batch_versioned_data: false
+        order_inserts: true
+        order_updates: true
+        default_batch_fetch_size: 500
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+#logging.level:
+#  org.hibernate:
+#    SQL: debug
+#    orm.jdbc.bind: trace
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: live
+

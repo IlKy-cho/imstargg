@@ -1,22 +1,18 @@
-bootJar.enabled = true
-
 dependencies {
-
     implementation(project(":core:core-enum"))
     implementation(project(":client:brawlstars-client"))
+
     implementation(project(":storage:core-collection-db"))
+
     implementation(project(":support:alert-manager"))
     implementation(project(":support:logging"))
+    implementation(project(":support:monitoring"))
 
-    // Spring
-    implementation("org.springframework.boot:spring-boot-starter-batch")
-    implementation("org.springframework.retry:spring-retry")
+    implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs")
+    implementation("org.springframework.boot:spring-boot-starter")
 
     // Test
     testImplementation(testFixtures(project(":storage:core-db")))
     testImplementation(testFixtures(project(":storage:core-collection-db")))
     testImplementation(project(":tests:java-test-util"))
-    testImplementation("org.springframework.batch:spring-batch-test")
 }
-
-

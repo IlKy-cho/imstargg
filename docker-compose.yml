@@ -15,3 +15,16 @@ services:
       - ./docker/mysql/var/lib/mysql:/var/lib/mysql # data
       - ./docker/mysql/etc/mysql/conf.d:/etc/mysql/conf.d # config
       - ./docker/mysql/init:/docker-entrypoint-initdb.d # init
+  localstack:
+    container_name: imstargg-localstack-main
+    image: localstack/localstack:4.0.3
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+    environment:
+      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
+      - DEBUG=${DEBUG:-0}
+      - PERSISTENCE=${PERSISTENCE:-1}
+    volumes:
+      - ./docker/localstack/var/lib/localstack:/var/lib/localstack
+#      - "/var/run/docker.sock:/var/run/docker.sock"
