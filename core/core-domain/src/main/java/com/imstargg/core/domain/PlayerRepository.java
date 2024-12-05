@@ -5,6 +5,7 @@ import com.imstargg.core.enums.Gadget;
 import com.imstargg.core.enums.Gear;
 import com.imstargg.core.enums.StarPower;
 import com.imstargg.core.error.CoreException;
+import com.imstargg.storage.db.core.BaseEntity;
 import com.imstargg.storage.db.core.PlayerBrawlerEntity;
 import com.imstargg.storage.db.core.PlayerBrawlerJpaRepository;
 import com.imstargg.storage.db.core.PlayerEntity;
@@ -54,6 +55,7 @@ public class PlayerRepository {
 
     private Player mapEntityToPlayer(PlayerEntity entity) {
         return new Player(
+                new PlayerId(entity.getId()),
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getName(),
                 entity.getNameColor(),
@@ -61,21 +63,21 @@ public class PlayerRepository {
                 entity.getTrophies(),
                 entity.getHighestTrophies(),
                 entity.getBrawlStarsClubTag() == null ? null : new BrawlStarsTag(entity.getBrawlStarsClubTag()),
-                entity.getUpdatedAt()
+                entity.getUpdatedAt(),
+                entity.getStatus()
         );
     }
 
     @Transactional
     public NewPlayer getNew(BrawlStarsTag tag) {
         UnknownPlayerEntity entity = unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
+                .filter(BaseEntity::isActive)
                 .orElseGet(() -> unknownPlayerJpaRepository.save(
                         UnknownPlayerEntity.newSearchNew(
                                 tag.value(),
                                 clock
                         )
                 ));
-        entity.restore();
-        entity.refresh(clock);
         return new NewPlayer(
                 tag,
                 entity.getStatus(),
@@ -105,5 +107,12 @@ public class PlayerRepository {
                 entity.getTrophies(),
                 entity.getHighestTrophies()
         );
+    }
+
+    @Transactional
+    public void renewRequested(Player player) {
+        PlayerEntity playerEntity = playerJpaRepository.findById(player.id().value())
+                .orElseThrow(() -> new CoreException("Player not found. id=" + player.id()));
+        playerEntity.renewRequested();
     }
 }
