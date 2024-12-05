@@ -8,14 +8,14 @@ import java.util.List;
 public class PlayerSearchService {
 
     private final PlayerSearcher playerSearcher;
-    private final PlayerRefresher playerRefresher;
+    private final PlayerRenewer playerRenewer;
 
     public PlayerSearchService(
             PlayerSearcher playerSearcher,
-            PlayerRefresher playerRefresher
+            PlayerRenewer playerRenewer
     ) {
         this.playerSearcher = playerSearcher;
-        this.playerRefresher = playerRefresher;
+        this.playerRenewer = playerRenewer;
     }
 
     public PlayerSearchResult search(PlayerSearchParam param) {
@@ -30,7 +30,7 @@ public class PlayerSearchService {
             return PlayerSearchResult.nonAcceptedResult(players);
         }
 
-        return playerRefresher.refreshNew(tag)
+        return playerRenewer.renewNew(tag)
                 ? PlayerSearchResult.acceptedResult(tag) : PlayerSearchResult.nonAcceptedResult(List.of());
     }
 }
