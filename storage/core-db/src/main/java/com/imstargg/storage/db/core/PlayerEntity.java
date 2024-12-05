@@ -101,6 +101,10 @@ public class PlayerEntity extends BaseEntity {
     protected PlayerEntity() {
     }
 
+    public void renewRequested() {
+        this.status = PlayerStatus.RENEW_REQUESTED;
+    }
+
     public Long getId() {
         return id;
     }
