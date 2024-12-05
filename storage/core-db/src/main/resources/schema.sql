@@ -137,6 +137,7 @@ create table player
     not_updated_count                     int          not null,
     update_weight                         timestamp(6) not null,
     latest_battle_time                    timestamp(6),
+    version                               int          not null,
     created_at                            timestamp(6) not null,
     updated_at                            timestamp(6) not null,
     deleted                               boolean      not null,

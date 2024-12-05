@@ -11,6 +11,7 @@ import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -20,7 +21,6 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
@@ -87,7 +87,7 @@ public class BattleUpdateJobConfig {
                 .writer(writer())
 
                 .faultTolerant()
-                .skip(DataIntegrityViolationException.class)
+                .skip(OptimisticLockException.class)
                 .listener(new PlayerBattleUpdateWriterSkipListener())
 
                 .build();
@@ -96,7 +96,7 @@ public class BattleUpdateJobConfig {
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
     QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
-        return new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory ->
+        QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory ->
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(
@@ -104,6 +104,8 @@ public class BattleUpdateJobConfig {
                         )
                         .orderBy(playerCollectionEntity.updateWeight.asc())
         );
+        reader.setTransacted(false);
+        return reader;
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
