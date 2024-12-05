@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 
 import java.time.LocalDateTime;
 
@@ -92,6 +93,10 @@ public class PlayerEntity extends BaseEntity {
     @Nullable
     @Column(name = "latest_battle_time")
     private LocalDateTime latestBattleTime;
+
+    @Version
+    @Column(name = "version", nullable = false)
+    private int version;
 
     protected PlayerEntity() {
     }
