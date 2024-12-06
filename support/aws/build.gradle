@@ -1,0 +1,5 @@
+dependencies {
+    api("io.awspring.cloud:spring-cloud-aws-starter-sqs")
+
+    implementation("cloud.localstack:localstack-utils:${localstackUtilsVersion}")
+}
