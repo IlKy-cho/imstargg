@@ -249,6 +249,10 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.status = PlayerStatus.DELETED;
     }
 
+    public void renewRequested() {
+        this.status = PlayerStatus.RENEW_REQUESTED;
+    }
+
     public void update(
             String name,
             String nameColor,

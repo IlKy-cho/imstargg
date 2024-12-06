@@ -1,8 +1,10 @@
 package com.imstargg.storage.db.core;
 
 import com.imstargg.core.enums.UnknownPlayerStatus;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,5 +17,6 @@ public interface UnknownPlayerCollectionJpaRepository extends JpaRepository<Unkn
     List<UnknownPlayerCollectionEntity> findAllByStatusInAndDeletedFalseOrderByCreatedAtAsc(
             Collection<UnknownPlayerStatus> statuses, Limit limit);
 
-    Optional<UnknownPlayerCollectionEntity> findByBrawlStarsTag(String brawlStarsTag);
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
+    Optional<UnknownPlayerCollectionEntity> findWithOptimisticLockByBrawlStarsTag(String brawlStarsTag);
 }

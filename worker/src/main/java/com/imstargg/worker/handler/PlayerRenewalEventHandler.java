@@ -1,7 +1,6 @@
 package com.imstargg.worker.handler;
 
 import com.imstargg.core.event.PlayerRenewalEvent;
-import com.imstargg.core.event.RenewalType;
 import com.imstargg.support.alert.AlertCommand;
 import com.imstargg.support.alert.AlertManager;
 import com.imstargg.worker.domain.PlayerRenewer;
@@ -30,24 +29,16 @@ class PlayerRenewalEventHandler {
     void handlePlayerRenewalEvent(PlayerRenewalEvent event) {
         log.debug("플레이어 갱신 이벤트 수신 event={}", event);
         try {
-            processRenewal(event);
+            playerRenewer.renew(event.tag());
         } catch (Exception ex) {
-            log.error("플레이어 갱신 중 예외 발생. type={}, tag={}", event.type(), event.tag(), ex);
+            log.error("플레이어 갱신 중 예외 발생. tag={}", event.tag(), ex);
             alertManager.alert(AlertCommand.builder()
                     .error()
                     .title("플레이어 갱신 중 예외 발생")
-                    .content("- type=" + event.type() + "%n" + "- tag=" + event.tag())
+                    .content("- tag=" + event.tag())
                     .ex(ex)
                     .build());
         }
     }
 
-    private void processRenewal(PlayerRenewalEvent event) {
-        if (event.type() == RenewalType.RENEW) {
-            playerRenewer.renew(event.tag());
-        }
-        else {
-            throw new IllegalArgumentException("지원하지 않는 갱신 타입입니다. type=" + event.type());
-        }
-    }
 }
