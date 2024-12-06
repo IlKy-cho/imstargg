@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+      credentials:
+        access-key: test-aws-access-key
+        secret-key: test-aws-secret-key

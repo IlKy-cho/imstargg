@@ -1,0 +1,4 @@
+app:
+  event:
+    queue:
+      player-renewal: test-player-renewal-queue
