@@ -1,15 +1,19 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.event.PlayerRenewalEvent;
+import io.awspring.cloud.sqs.operations.SqsTemplate;
 import org.springframework.stereotype.Component;
 
 @Component
 public class PlayerRenewEventPublisher {
 
-    public void publishNew(BrawlStarsTag tag) {
-        // TODO
+    private final SqsTemplate sqsTemplate;
+
+    public PlayerRenewEventPublisher(SqsTemplate sqsTemplate) {
+        this.sqsTemplate = sqsTemplate;
     }
 
-    public void publish(Player player) {
-        // TODO
+    public void publish(BrawlStarsTag tag) {
+        sqsTemplate.send(new PlayerRenewalEvent(tag.value()));
     }
 }

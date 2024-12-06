@@ -31,7 +31,7 @@ public class PlayerRenewer {
             return false;
         }
 
-        eventPublisher.publishNew(tag);
+        eventPublisher.publish(tag);
         return true;
     }
 
@@ -44,7 +44,7 @@ public class PlayerRenewer {
             return;
         }
         playerRepository.renewRequested(player);
-        eventPublisher.publish(player);
+        eventPublisher.publish(player.tag());
     }
 
     public boolean isRenewing(BrawlStarsTag tag) {

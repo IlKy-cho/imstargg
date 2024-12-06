@@ -1,6 +1,8 @@
 dependencies {
     api(project(":core:core-enum"))
+    implementation(project(":core:core-event"))
     implementation(project(":storage:core-db"))
+    implementation(project(":support:aws"))
 
     implementation("org.springframework:spring-context")
     implementation("org.springframework.boot:spring-boot-starter-logging")
