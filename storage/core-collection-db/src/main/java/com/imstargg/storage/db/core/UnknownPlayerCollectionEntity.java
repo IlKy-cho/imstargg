@@ -74,6 +74,20 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         );
     }
 
+    public void updated() {
+        this.status = UnknownPlayerStatus.UPDATED;
+    }
+
+    public void notFound() {
+        if (this.status == UnknownPlayerStatus.ADMIN_NEW || this.status == UnknownPlayerStatus.UPDATE_NEW) {
+            this.status = UnknownPlayerStatus.DELETED;
+        }
+        else {
+            this.status = UnknownPlayerStatus.NOT_FOUND;
+            this.notFoundCount++;
+        }
+    }
+
     public void setStatus(UnknownPlayerStatus status) {
         this.status = status;
     }

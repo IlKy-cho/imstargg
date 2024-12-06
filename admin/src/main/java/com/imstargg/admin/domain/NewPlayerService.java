@@ -24,7 +24,7 @@ public class NewPlayerService {
 
     @Transactional
     public void create(String brawlStarsTag) {
-        unknownPlayerRepository.findByBrawlStarsTag(brawlStarsTag).ifPresentOrElse(
+        unknownPlayerRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag).ifPresentOrElse(
                 player -> {
                     player.restore();
                     player.setStatus(UnknownPlayerStatus.ADMIN_NEW);
