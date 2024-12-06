@@ -10,7 +10,7 @@ dependencies {
     implementation(project(":support:logging"))
     implementation(project(":support:monitoring"))
 
-    implementation("io.awspring.cloud:spring-cloud-aws-starter-sqs")
+    implementation(project(":support:aws"))
     implementation("org.springframework.boot:spring-boot-starter")
 
     // Test

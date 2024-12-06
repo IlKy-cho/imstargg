@@ -8,6 +8,7 @@ spring:
       - core-db.yml
       - core-event.yml
       - brawlstars-client.yml
+      - aws.yml
       - logging.yml
       - monitoring.yml
 
@@ -20,14 +21,6 @@ spring:
         order_inserts: true
         order_updates: true
         default_batch_fetch_size: 500
-
-  cloud:
-    aws:
-      region:
-        static: ap-northeast-2
-      credentials:
-        access-key: ${AWS_ACCESS_KEY}
-        secret-key: ${AWS_SECRET_KEY}
 
 ---
 spring:
