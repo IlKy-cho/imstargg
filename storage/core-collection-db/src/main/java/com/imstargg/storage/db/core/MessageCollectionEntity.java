@@ -25,6 +25,12 @@ public class MessageCollectionEntity extends BaseEntity {
     protected MessageCollectionEntity() {
     }
 
+    public MessageCollectionEntity(String code, String lang, String content) {
+        this.code = code;
+        this.lang = lang;
+        this.content = content;
+    }
+
     public Long getId() {
         return id;
     }
