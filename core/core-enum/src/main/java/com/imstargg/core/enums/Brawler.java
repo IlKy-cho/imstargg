@@ -545,6 +545,10 @@ public enum Brawler {
         return ENUM_BY_ID.getOrDefault(brawlStarsId, NOT_FOUND);
     }
 
+    public static List<Brawler> all() {
+        return ENUM_BY_ID.values().stream().toList();
+    }
+
     private final long brawlStarsId;
     private final String brawlStarsName;
     private final BrawlerRarity rarity;

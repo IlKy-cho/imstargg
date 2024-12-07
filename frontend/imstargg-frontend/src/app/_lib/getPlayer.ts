@@ -1,3 +1,5 @@
+import Player from "@/model/Player";
+
 interface PlayerResponse {
   tag: string;
   name: string;
@@ -7,17 +9,6 @@ interface PlayerResponse {
   highestTrophies: number;
   clubTag: string | null;
   updatedAt: string;
-}
-
-export interface Player {
-  tag: string;
-  name: string;
-  nameColor: string;
-  iconId: number;
-  trophies: number;
-  highestTrophies: number;
-  clubTag: string | null;
-  updatedAt: Date;
 }
 
 export async function getPlayer(tag: string): Promise<Player> {

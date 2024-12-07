@@ -20,7 +20,7 @@ public class BattleController {
         this.battleService = battleService;
     }
 
-    @GetMapping("/api/v1/players/{tag}/battles/")
+    @GetMapping("/api/v1/players/{tag}/battles")
     public ListResponse<BattleResponse> getBattles(
             @PathVariable String tag,
             @ModelAttribute @Validated PageRequest pageRequest) {
