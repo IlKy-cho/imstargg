@@ -529,7 +529,7 @@ public enum Brawler {
             16000087, "JUJU", BrawlerRarity.MYTHIC, BrawlerRole.ARTILLERY,
             List.of(Gadget.VOODOO_CHILE, Gadget.ELEMENTALIST),
             Gear.gearListWith(),
-            List.of(StarPower.GUARDED_GRIS_GRIS, StarPower.GUARDED_GRIS_GRIS)
+            List.of(StarPower.GUARDED_GRIS_GRIS, StarPower.NUMBING_NEEDLES)
     ),
     ;
 

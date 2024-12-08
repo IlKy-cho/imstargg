@@ -182,3 +182,97 @@ create table message
 
 alter table message
     add constraint uk_message__code_lang unique (code, lang);
+
+-- BrawlStars
+
+create table battle_map
+(
+    battle_map_id     bigint       not null auto_increment,
+    code             varchar(45)  not null,
+    name_message_code varchar(105) not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (battle_map_id)
+) engine = innodb;
+
+alter table battle_map
+    add constraint uk_battle_map__code unique (code);
+
+
+create table brawler
+(
+    brawler_id         bigint       not null auto_increment,
+    brawlstars_id     bigint       not null,
+    name_message_code varchar(105) not null,
+    rarity           varchar(45)  not null,
+    role            varchar(45)  not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (brawler_id)
+) engine = innodb;
+
+alter table brawler
+    add constraint uk_brawler__brawlstarsid unique (brawlstars_id);
+
+
+create table brawler_gear
+(
+    brawler_gear_id         bigint       not null auto_increment,
+    brawler_id     bigint       not null,
+    gear_id       bigint       not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (brawler_gear_id)
+) engine = innodb;
+
+alter table brawler_gear
+    add constraint uk_brawler_gear__brawlerid_gearid unique (brawler_id, gear_id);
+
+
+create table gadget
+(
+    gadget_id         bigint       not null auto_increment,
+    brawlstars_id     bigint       not null,
+    name_message_code varchar(105) not null,
+    brawler_id        bigint       not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (gadget_id)
+) engine = innodb;
+
+alter table gadget
+    add constraint uk_gadget__brawlstarsid unique (brawlstars_id);
+
+create table gear
+(
+    gear_id           bigint       not null auto_increment,
+    brawlstars_id     bigint       not null,
+    name_message_code varchar(105) not null,
+    rarity            varchar(45)  not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (gear_id)
+) engine = innodb;
+
+alter table gear
+    add constraint uk_gear__brawlstarsid unique (brawlstars_id);
+
+create table star_power
+(
+    star_power_id     bigint       not null auto_increment,
+    brawlstars_id     bigint       not null,
+    name_message_code varchar(105) not null,
+    brawler_id        bigint       not null,
+    created_at        timestamp(6) not null,
+    updated_at        timestamp(6) not null,
+    deleted           boolean      not null,
+    primary key (star_power_id)
+) engine = innodb;
+
+alter table star_power
+    add constraint uk_starpower__brawlstarsid unique (brawlstars_id);
