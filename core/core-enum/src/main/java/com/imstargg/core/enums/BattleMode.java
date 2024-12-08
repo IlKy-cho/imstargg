@@ -25,7 +25,10 @@ public enum BattleMode {
     BOSS_FIGHT("bossFight"),
     BIG_GAME("bigGame"),
     BASKET_BRAWL("basketBrawl"),
-
+    ROBO_RUMBLE("roboRumble"),
+    PAYLOAD("payload"),
+    TAKEDOWN("takedown"),
+    HUNTERS("hunters"),
     ;
 
     private final String code;
