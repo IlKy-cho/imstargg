@@ -42,6 +42,7 @@ public enum BattleEventMode {
     TRIO_SHOWDOWN("trioShowdown"),
     ZOMBIE_PLUNDER("zombiePlunder"),
     JELLYFISHING("jellyfishing"),
+    TAKEDOWN("takedown"),
     UNKNOWN("unknown"),
     ;
 

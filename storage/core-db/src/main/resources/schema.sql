@@ -185,10 +185,26 @@ alter table message
 
 -- BrawlStars
 
+create table battle_event
+(
+    battle_event_id bigint       not null auto_increment,
+    brawlstars_id   bigint       not null,
+    mode            varchar(45)  not null,
+    map_id          bigint       not null,
+    created_at      timestamp(6) not null,
+    updated_at      timestamp(6) not null,
+    deleted         boolean      not null,
+    primary key (battle_event_id)
+) engine = innodb;
+
+alter table battle_event
+    add constraint uk_battle_event__brawlstarsid unique (brawlstars_id);
+
+
 create table battle_map
 (
     battle_map_id     bigint       not null auto_increment,
-    code             varchar(45)  not null,
+    code              varchar(45)  not null,
     name_message_code varchar(105) not null,
     created_at        timestamp(6) not null,
     updated_at        timestamp(6) not null,
@@ -202,11 +218,11 @@ alter table battle_map
 
 create table brawler
 (
-    brawler_id         bigint       not null auto_increment,
+    brawler_id        bigint       not null auto_increment,
     brawlstars_id     bigint       not null,
     name_message_code varchar(105) not null,
-    rarity           varchar(45)  not null,
-    role            varchar(45)  not null,
+    rarity            varchar(45)  not null,
+    role              varchar(45)  not null,
     created_at        timestamp(6) not null,
     updated_at        timestamp(6) not null,
     deleted           boolean      not null,
@@ -219,12 +235,12 @@ alter table brawler
 
 create table brawler_gear
 (
-    brawler_gear_id         bigint       not null auto_increment,
-    brawler_id     bigint       not null,
-    gear_id       bigint       not null,
-    created_at        timestamp(6) not null,
-    updated_at        timestamp(6) not null,
-    deleted           boolean      not null,
+    brawler_gear_id bigint       not null auto_increment,
+    brawler_id      bigint       not null,
+    gear_id         bigint       not null,
+    created_at      timestamp(6) not null,
+    updated_at      timestamp(6) not null,
+    deleted         boolean      not null,
     primary key (brawler_gear_id)
 ) engine = innodb;
 
