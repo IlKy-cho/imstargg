@@ -1,5 +1,7 @@
 package com.imstargg.admin.domain;
 
+import com.imstargg.admin.support.error.AdminErrorKind;
+import com.imstargg.admin.support.error.AdminException;
 import com.imstargg.storage.db.core.MessageCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlerCollectionEntity;
@@ -27,22 +29,26 @@ public class BrawlerService {
     @Transactional
     public void register(NewBrawler newBrawler) {
         newBrawler.names().validate();
+        if (brawlerRepository.findByBrawlStarsId(newBrawler.brawlStarsId()).isPresent()) {
+            throw new AdminException(AdminErrorKind.DUPLICATED,
+                    "이미 등록된 브롤러입니다. brawlStarsId: " + newBrawler.brawlStarsId());
+        }
         BrawlerCollectionEntity brawler = brawlerRepository.save(new BrawlerCollectionEntity(
                 newBrawler.brawlStarsId(),
                 newBrawler.rarity(),
                 newBrawler.role()
         ));
 
-        newBrawler.names().messages().forEach((language, name) -> {
-            messageRepository.save(new MessageCollectionEntity(brawler.getNameMessageCode(), language.getCode(), name));
-        });
+        newBrawler.names().messages().forEach((language, name) -> messageRepository.save(
+                new MessageCollectionEntity(brawler.getNameMessageCode(), language.getCode(), name)));
     }
 
     @Transactional
     public void update(long brawlStarsId, BrawlerUpdate brawlerUpdate) {
         brawlerUpdate.names().validate();
         BrawlerCollectionEntity brawler = brawlerRepository.findByBrawlStarsId(brawlStarsId)
-                .orElseThrow(() -> new IllegalArgumentException("브롤러를 찾을 수 없습니다. brawlStarsId: " + brawlStarsId));
+                .orElseThrow(() -> new AdminException(AdminErrorKind.NOT_FOUND,
+                        "브롤러를 찾을 수 없습니다. brawlStarsId: " + brawlStarsId));
 
         Map<String, MessageCollectionEntity> langToMessage = messageRepository.findAllByCode(brawler.getNameMessageCode())
                         .stream()
