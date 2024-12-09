@@ -1,6 +1,6 @@
 package com.imstargg.admin.controller.request;
 
-import com.imstargg.admin.domain.MessageCollection;
+import com.imstargg.admin.domain.NewMessageCollection;
 import com.imstargg.admin.domain.NewBrawler;
 import com.imstargg.core.enums.BrawlerRarity;
 import com.imstargg.core.enums.BrawlerRole;
@@ -18,6 +18,6 @@ public record NewBrawlerRequest(
 ) {
 
     public NewBrawler toNewBrawler() {
-        return new NewBrawler(brawlStarsId, rarity, role, new MessageCollection(names));
+        return new NewBrawler(brawlStarsId, rarity, role, new NewMessageCollection(names));
     }
 }

@@ -1,7 +1,7 @@
 package com.imstargg.admin.controller.request;
 
 import com.imstargg.admin.domain.BrawlerUpdate;
-import com.imstargg.admin.domain.MessageCollection;
+import com.imstargg.admin.domain.NewMessageCollection;
 import com.imstargg.core.enums.Language;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -12,6 +12,6 @@ public record BrawlerUpdateRequest(
 ) {
 
     public BrawlerUpdate toBrawlerUpdate() {
-        return new BrawlerUpdate(new MessageCollection(names));
+        return new BrawlerUpdate(new NewMessageCollection(names));
     }
 }

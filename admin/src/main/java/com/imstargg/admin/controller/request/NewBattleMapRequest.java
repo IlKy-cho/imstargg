@@ -1,6 +1,6 @@
 package com.imstargg.admin.controller.request;
 
-import com.imstargg.admin.domain.MessageCollection;
+import com.imstargg.admin.domain.NewMessageCollection;
 import com.imstargg.admin.domain.NewBattleMap;
 import com.imstargg.core.enums.Language;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +13,6 @@ public record NewBattleMapRequest(
         @NotEmpty EnumMap<Language, String> names
 ) {
     public NewBattleMap toNewBattleMap() {
-        return new NewBattleMap(code, new MessageCollection(names));
+        return new NewBattleMap(code, new NewMessageCollection(names));
     }
 }

@@ -7,7 +7,7 @@ public record NewBrawler(
         long brawlStarsId,
         BrawlerRarity rarity,
         BrawlerRole role,
-        MessageCollection names
+        NewMessageCollection names
 ) {
 
 }
