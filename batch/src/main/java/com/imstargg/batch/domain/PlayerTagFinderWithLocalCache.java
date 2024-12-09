@@ -2,10 +2,12 @@ package com.imstargg.batch.domain;
 
 import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentSkipListSet;
 
+@JobScope
 @Component
 public class PlayerTagFinderWithLocalCache {
 

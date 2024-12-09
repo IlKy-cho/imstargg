@@ -94,7 +94,7 @@ public class NewPlayerFindJobConfig {
                         battlePlayerCollectionEntity.battle.battleTime.goe(periodDateTimeJobParameter().getFrom()),
                         battlePlayerCollectionEntity.battle.battleTime.lt(periodDateTimeJobParameter().getTo())
                 )
-                .orderBy(battlePlayerCollectionEntity.battle.battleTime.asc())
+                .orderBy(battlePlayerCollectionEntity.battle.battleTime.desc())
         );
     }
 
