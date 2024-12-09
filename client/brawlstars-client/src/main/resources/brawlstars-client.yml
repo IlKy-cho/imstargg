@@ -26,9 +26,6 @@ resilience4j:
 app.client.brawlstars:
   url: https://api.brawlstars.com
   key: ${BRAWL_STARS_API_KEY}
-  rate-limit:
-    limit: 10
-    time-window: 10
 
 ---
 spring.config.activate.on-profile: local
