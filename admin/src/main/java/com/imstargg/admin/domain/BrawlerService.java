@@ -26,21 +26,21 @@ public class BrawlerService {
 
     @Transactional
     public void register(NewBrawler newBrawler) {
-        newBrawler.validate();
+        newBrawler.names().validate();
         BrawlerCollectionEntity brawler = brawlerRepository.save(new BrawlerCollectionEntity(
                 newBrawler.brawlStarsId(),
                 newBrawler.rarity(),
                 newBrawler.role()
         ));
 
-        newBrawler.names().forEach((language, name) -> {
+        newBrawler.names().messages().forEach((language, name) -> {
             messageRepository.save(new MessageCollectionEntity(brawler.getNameMessageCode(), language.getCode(), name));
         });
     }
 
     @Transactional
     public void update(long brawlStarsId, BrawlerUpdate brawlerUpdate) {
-        brawlerUpdate.validate();
+        brawlerUpdate.names().validate();
         BrawlerCollectionEntity brawler = brawlerRepository.findByBrawlStarsId(brawlStarsId)
                 .orElseThrow(() -> new IllegalArgumentException("브롤러를 찾을 수 없습니다. brawlStarsId: " + brawlStarsId));
 
@@ -48,7 +48,7 @@ public class BrawlerService {
                         .stream()
                                 .collect(Collectors.toMap(MessageCollectionEntity::getLang, m -> m));
 
-        brawlerUpdate.names().forEach((language, name) -> {
+        brawlerUpdate.names().messages().forEach((language, name) -> {
             if (langToMessage.containsKey(language.getCode())) {
                 langToMessage.get(language.getCode()).update(name);
             } else {
