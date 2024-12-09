@@ -14,7 +14,7 @@ public record NewBrawlerRequest(
         long brawlStarsId,
         @NotNull BrawlerRarity rarity,
         @NotNull BrawlerRole role,
-        @NotNull @NotEmpty EnumMap<Language, String> names
+        @NotEmpty EnumMap<Language, String> names
 ) {
 
     public NewBrawler toNewBrawler() {
