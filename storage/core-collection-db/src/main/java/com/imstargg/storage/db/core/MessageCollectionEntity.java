@@ -34,6 +34,10 @@ public class MessageCollectionEntity extends BaseEntity {
         this.content = content;
     }
 
+    public void update(String content) {
+        this.content = content;
+    }
+
     public Long getId() {
         return id;
     }
