@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 
 public enum BattleMode {
 
-    NOT_FOUND(null),
+    NOT_FOUND("notFound"),
 
     KNOCKOUT("knockout"),
     GEM_GRAB("gemGrab"),
