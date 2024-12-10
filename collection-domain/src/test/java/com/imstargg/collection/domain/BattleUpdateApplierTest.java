@@ -9,7 +9,6 @@ import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.Brawler;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
@@ -46,6 +45,42 @@ class BattleUpdateApplierTest {
         static final BattleEvent KNOCKOUT_5VS5_SIZZLING_CHAMBERS = new BattleEvent(10000005, "knockout5V5", "Sizzling Chambers");
     }
 
+    private record Brawler(
+            long brawlStarsId,
+            String brawlStarsName
+    ) {
+        static final Brawler JUJU = new Brawler(10000001, "Juju");
+        static final Brawler TICK = new Brawler(10000002, "Tick");
+        static final Brawler BUSTER = new Brawler(10000003, "Buster");
+        static final Brawler SPROUT = new Brawler(10000004, "Sprout");
+        static final Brawler MOE = new Brawler(10000005, "Moe");
+        static final Brawler SQUEAK = new Brawler(10000006, "Squeak");
+        static final Brawler GALE = new Brawler(10000007, "Gale");
+        static final Brawler GENE = new Brawler(10000008, "Gene");
+        static final Brawler BULL = new Brawler(10000009, "Bull");
+        static final Brawler BYRON = new Brawler(10000010, "Byron");
+        static final Brawler SHADE = new Brawler(10000011, "Shade");
+        static final Brawler COLT = new Brawler(10000012, "Colt");
+        static final Brawler ANGELO = new Brawler(10000013, "Angelo");
+        static final Brawler PAM = new Brawler(10000014, "Pam");
+        static final Brawler LILY = new Brawler(10000015, "Lily");
+        static final Brawler EDGAR = new Brawler(10000016, "Edgar");
+        static final Brawler GUS = new Brawler(10000017, "Gus");
+        static final Brawler EIGHT_BIT = new Brawler(10000018, "8-BIT");
+        static final Brawler SPIKE = new Brawler(10000018, "Spike");
+        static final Brawler BEA = new Brawler(10000018, "Bea");
+        static final Brawler BROCK = new Brawler(10000018, "Brock");
+        static final Brawler FANG = new Brawler(10000018, "Fang");
+        static final Brawler MICO = new Brawler(10000018, "Mico");
+        static final Brawler LOLA = new Brawler(10000018, "Lola");
+        static final Brawler PENNY = new Brawler(10000018, "Penny");
+        static final Brawler DOUG = new Brawler(10000018, "Doug");
+        static final Brawler POCO = new Brawler(10000018, "Poco");
+        static final Brawler WILLOW = new Brawler(10000018, "Willow");
+        static final Brawler GROM = new Brawler(10000018, "Grom");
+        static final Brawler ROSA = new Brawler(10000018, "Rosa");
+    }
+
     @Test
     void 최근_전적_보다_이전_배틀은_필터링되고_가장_최신_전적만_latest상태로_표시한다() {
         // given
@@ -77,8 +112,8 @@ class BattleUpdateApplierTest {
                                                         "#player1",
                                                         "player1",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.JUJU.getBrawlStarsId(),
-                                                                Brawler.JUJU.getBrawlStarsName(),
+                                                                Brawler.JUJU.brawlStarsId(),
+                                                                Brawler.JUJU.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -89,8 +124,8 @@ class BattleUpdateApplierTest {
                                                         "#player2",
                                                         "player2",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.TICK.getBrawlStarsId(),
-                                                                Brawler.TICK.getBrawlStarsName(),
+                                                                Brawler.TICK.brawlStarsId(),
+                                                                Brawler.TICK.brawlStarsName(),
                                                                 10,
                                                                 11,
                                                                 null
@@ -101,8 +136,8 @@ class BattleUpdateApplierTest {
                                                         "#player3",
                                                         "player3",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BUSTER.getBrawlStarsId(),
-                                                                Brawler.BUSTER.getBrawlStarsName(),
+                                                                Brawler.BUSTER.brawlStarsId(),
+                                                                Brawler.BUSTER.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -115,8 +150,8 @@ class BattleUpdateApplierTest {
                                                         "#player4",
                                                         "player4",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SPROUT.getBrawlStarsId(),
-                                                                Brawler.SPROUT.getBrawlStarsName(),
+                                                                Brawler.SPROUT.brawlStarsId(),
+                                                                Brawler.SPROUT.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -127,8 +162,8 @@ class BattleUpdateApplierTest {
                                                         "#player5",
                                                         "player5",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.MOE.getBrawlStarsId(),
-                                                                Brawler.MOE.getBrawlStarsName(),
+                                                                Brawler.MOE.brawlStarsId(),
+                                                                Brawler.MOE.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -139,8 +174,8 @@ class BattleUpdateApplierTest {
                                                         "#player6",
                                                         "player6",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SQUEAK.getBrawlStarsId(),
-                                                                Brawler.SQUEAK.getBrawlStarsName(),
+                                                                Brawler.SQUEAK.brawlStarsId(),
+                                                                Brawler.SQUEAK.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -173,8 +208,8 @@ class BattleUpdateApplierTest {
                                                         "#player1",
                                                         "player1",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.JUJU.getBrawlStarsId(),
-                                                                Brawler.JUJU.getBrawlStarsName(),
+                                                                Brawler.JUJU.brawlStarsId(),
+                                                                Brawler.JUJU.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -185,8 +220,8 @@ class BattleUpdateApplierTest {
                                                         "#player2",
                                                         "player2",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.TICK.getBrawlStarsId(),
-                                                                Brawler.TICK.getBrawlStarsName(),
+                                                                Brawler.TICK.brawlStarsId(),
+                                                                Brawler.TICK.brawlStarsName(),
                                                                 10,
                                                                 11,
                                                                 null
@@ -197,8 +232,8 @@ class BattleUpdateApplierTest {
                                                         "#player3",
                                                         "player3",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BUSTER.getBrawlStarsId(),
-                                                                Brawler.BUSTER.getBrawlStarsName(),
+                                                                Brawler.BUSTER.brawlStarsId(),
+                                                                Brawler.BUSTER.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -211,8 +246,8 @@ class BattleUpdateApplierTest {
                                                         "#player4",
                                                         "player4",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SPROUT.getBrawlStarsId(),
-                                                                Brawler.SPROUT.getBrawlStarsName(),
+                                                                Brawler.SPROUT.brawlStarsId(),
+                                                                Brawler.SPROUT.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -223,8 +258,8 @@ class BattleUpdateApplierTest {
                                                         "#player5",
                                                         "player5",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.MOE.getBrawlStarsId(),
-                                                                Brawler.MOE.getBrawlStarsName(),
+                                                                Brawler.MOE.brawlStarsId(),
+                                                                Brawler.MOE.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -235,8 +270,8 @@ class BattleUpdateApplierTest {
                                                         "#player6",
                                                         "player6",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SQUEAK.getBrawlStarsId(),
-                                                                Brawler.SQUEAK.getBrawlStarsName(),
+                                                                Brawler.SQUEAK.brawlStarsId(),
+                                                                Brawler.SQUEAK.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -269,8 +304,8 @@ class BattleUpdateApplierTest {
                                                         "#player1",
                                                         "player1",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.JUJU.getBrawlStarsId(),
-                                                                Brawler.JUJU.getBrawlStarsName(),
+                                                                Brawler.JUJU.brawlStarsId(),
+                                                                Brawler.JUJU.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -281,8 +316,8 @@ class BattleUpdateApplierTest {
                                                         "#player2",
                                                         "player2",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.TICK.getBrawlStarsId(),
-                                                                Brawler.TICK.getBrawlStarsName(),
+                                                                Brawler.TICK.brawlStarsId(),
+                                                                Brawler.TICK.brawlStarsName(),
                                                                 10,
                                                                 11,
                                                                 null
@@ -293,8 +328,8 @@ class BattleUpdateApplierTest {
                                                         "#player3",
                                                         "player3",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BUSTER.getBrawlStarsId(),
-                                                                Brawler.BUSTER.getBrawlStarsName(),
+                                                                Brawler.BUSTER.brawlStarsId(),
+                                                                Brawler.BUSTER.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -307,8 +342,8 @@ class BattleUpdateApplierTest {
                                                         "#player4",
                                                         "player4",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SPROUT.getBrawlStarsId(),
-                                                                Brawler.SPROUT.getBrawlStarsName(),
+                                                                Brawler.SPROUT.brawlStarsId(),
+                                                                Brawler.SPROUT.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -319,8 +354,8 @@ class BattleUpdateApplierTest {
                                                         "#player5",
                                                         "player5",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.MOE.getBrawlStarsId(),
-                                                                Brawler.MOE.getBrawlStarsName(),
+                                                                Brawler.MOE.brawlStarsId(),
+                                                                Brawler.MOE.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -331,8 +366,8 @@ class BattleUpdateApplierTest {
                                                         "#player6",
                                                         "player6",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SQUEAK.getBrawlStarsId(),
-                                                                Brawler.SQUEAK.getBrawlStarsName(),
+                                                                Brawler.SQUEAK.brawlStarsId(),
+                                                                Brawler.SQUEAK.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -386,8 +421,8 @@ class BattleUpdateApplierTest {
                                                         "#player1",
                                                         "player1",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.JUJU.getBrawlStarsId(),
-                                                                Brawler.JUJU.getBrawlStarsName(),
+                                                                Brawler.JUJU.brawlStarsId(),
+                                                                Brawler.JUJU.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -398,8 +433,8 @@ class BattleUpdateApplierTest {
                                                         "#player2",
                                                         "player2",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.TICK.getBrawlStarsId(),
-                                                                Brawler.TICK.getBrawlStarsName(),
+                                                                Brawler.TICK.brawlStarsId(),
+                                                                Brawler.TICK.brawlStarsName(),
                                                                 10,
                                                                 11,
                                                                 null
@@ -410,8 +445,8 @@ class BattleUpdateApplierTest {
                                                         "#player3",
                                                         "player3",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BUSTER.getBrawlStarsId(),
-                                                                Brawler.BUSTER.getBrawlStarsName(),
+                                                                Brawler.BUSTER.brawlStarsId(),
+                                                                Brawler.BUSTER.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -424,8 +459,8 @@ class BattleUpdateApplierTest {
                                                         "#player4",
                                                         "player4",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SPROUT.getBrawlStarsId(),
-                                                                Brawler.SPROUT.getBrawlStarsName(),
+                                                                Brawler.SPROUT.brawlStarsId(),
+                                                                Brawler.SPROUT.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -436,8 +471,8 @@ class BattleUpdateApplierTest {
                                                         "#player5",
                                                         "player5",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.MOE.getBrawlStarsId(),
-                                                                Brawler.MOE.getBrawlStarsName(),
+                                                                Brawler.MOE.brawlStarsId(),
+                                                                Brawler.MOE.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -448,8 +483,8 @@ class BattleUpdateApplierTest {
                                                         "#player6",
                                                         "player6",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SQUEAK.getBrawlStarsId(),
-                                                                Brawler.SQUEAK.getBrawlStarsName(),
+                                                                Brawler.SQUEAK.brawlStarsId(),
+                                                                Brawler.SQUEAK.brawlStarsName(),
                                                                 11,
                                                                 11,
                                                                 null
@@ -507,8 +542,8 @@ class BattleUpdateApplierTest {
                                                         "#player1",
                                                         "player1",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.GALE.getBrawlStarsId(),
-                                                                Brawler.GALE.getBrawlStarsName(),
+                                                                Brawler.GALE.brawlStarsId(),
+                                                                Brawler.GALE.brawlStarsName(),
                                                                 9,
                                                                 476,
                                                                 null
@@ -519,8 +554,8 @@ class BattleUpdateApplierTest {
                                                         "#player2",
                                                         "player2",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.GENE.getBrawlStarsId(),
-                                                                Brawler.GENE.getBrawlStarsName(),
+                                                                Brawler.GENE.brawlStarsId(),
+                                                                Brawler.GENE.brawlStarsName(),
                                                                 11,
                                                                 619,
                                                                 null
@@ -533,8 +568,8 @@ class BattleUpdateApplierTest {
                                                         "#player3",
                                                         "player3",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BULL.getBrawlStarsId(),
-                                                                Brawler.BULL.getBrawlStarsName(),
+                                                                Brawler.BULL.brawlStarsId(),
+                                                                Brawler.BULL.brawlStarsName(),
                                                                 8,
                                                                 606,
                                                                 null
@@ -545,8 +580,8 @@ class BattleUpdateApplierTest {
                                                         "#player4",
                                                         "player4",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BYRON.getBrawlStarsId(),
-                                                                Brawler.BYRON.getBrawlStarsName(),
+                                                                Brawler.BYRON.brawlStarsId(),
+                                                                Brawler.BYRON.brawlStarsName(),
                                                                 9,
                                                                 601,
                                                                 null
@@ -559,8 +594,8 @@ class BattleUpdateApplierTest {
                                                         "#player5",
                                                         "player5",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SHADE.getBrawlStarsId(),
-                                                                Brawler.SHADE.getBrawlStarsName(),
+                                                                Brawler.SHADE.brawlStarsId(),
+                                                                Brawler.SHADE.brawlStarsName(),
                                                                 10,
                                                                 640,
                                                                 null
@@ -571,8 +606,8 @@ class BattleUpdateApplierTest {
                                                         "#player6",
                                                         "player6",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.COLT.getBrawlStarsId(),
-                                                                Brawler.COLT.getBrawlStarsName(),
+                                                                Brawler.COLT.brawlStarsId(),
+                                                                Brawler.COLT.brawlStarsName(),
                                                                 11,
                                                                 602,
                                                                 null
@@ -585,8 +620,8 @@ class BattleUpdateApplierTest {
                                                         "#player7",
                                                         "player7",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.ANGELO.getBrawlStarsId(),
-                                                                Brawler.ANGELO.getBrawlStarsName(),
+                                                                Brawler.ANGELO.brawlStarsId(),
+                                                                Brawler.ANGELO.brawlStarsName(),
                                                                 11,
                                                                 609,
                                                                 null
@@ -597,8 +632,8 @@ class BattleUpdateApplierTest {
                                                         "#player8",
                                                         "player8",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.PAM.getBrawlStarsId(),
-                                                                Brawler.PAM.getBrawlStarsName(),
+                                                                Brawler.PAM.brawlStarsId(),
+                                                                Brawler.PAM.brawlStarsName(),
                                                                 9,
                                                                 621,
                                                                 null
@@ -611,8 +646,8 @@ class BattleUpdateApplierTest {
                                                         "#player9",
                                                         "player9",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.LILY.getBrawlStarsId(),
-                                                                Brawler.LILY.getBrawlStarsName(),
+                                                                Brawler.LILY.brawlStarsId(),
+                                                                Brawler.LILY.brawlStarsName(),
                                                                 11,
                                                                 606,
                                                                 null
@@ -623,8 +658,8 @@ class BattleUpdateApplierTest {
                                                         "#player10",
                                                         "player10",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.EDGAR.getBrawlStarsId(),
-                                                                Brawler.EDGAR.getBrawlStarsName(),
+                                                                Brawler.EDGAR.brawlStarsId(),
+                                                                Brawler.EDGAR.brawlStarsName(),
                                                                 9,
                                                                 623,
                                                                 null
@@ -681,8 +716,8 @@ class BattleUpdateApplierTest {
                                                 "#player1",
                                                 "player1",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.GALE.getBrawlStarsId(),
-                                                        Brawler.GALE.getBrawlStarsName(),
+                                                        Brawler.GALE.brawlStarsId(),
+                                                        Brawler.GALE.brawlStarsName(),
                                                         9,
                                                         476,
                                                         null
@@ -693,8 +728,8 @@ class BattleUpdateApplierTest {
                                                 "#player2",
                                                 "player2",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.GENE.getBrawlStarsId(),
-                                                        Brawler.GENE.getBrawlStarsName(),
+                                                        Brawler.GENE.brawlStarsId(),
+                                                        Brawler.GENE.brawlStarsName(),
                                                         11,
                                                         619,
                                                         null
@@ -705,8 +740,8 @@ class BattleUpdateApplierTest {
                                                 "#player3",
                                                 "player3",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.BULL.getBrawlStarsId(),
-                                                        Brawler.BULL.getBrawlStarsName(),
+                                                        Brawler.BULL.brawlStarsId(),
+                                                        Brawler.BULL.brawlStarsName(),
                                                         8,
                                                         606,
                                                         null
@@ -717,8 +752,8 @@ class BattleUpdateApplierTest {
                                                 "#player4",
                                                 "player4",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.BYRON.getBrawlStarsId(),
-                                                        Brawler.BYRON.getBrawlStarsName(),
+                                                        Brawler.BYRON.brawlStarsId(),
+                                                        Brawler.BYRON.brawlStarsName(),
                                                         9,
                                                         601,
                                                         null
@@ -729,8 +764,8 @@ class BattleUpdateApplierTest {
                                                 "#player5",
                                                 "player5",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.SHADE.getBrawlStarsId(),
-                                                        Brawler.SHADE.getBrawlStarsName(),
+                                                        Brawler.SHADE.brawlStarsId(),
+                                                        Brawler.SHADE.brawlStarsName(),
                                                         10,
                                                         640,
                                                         null
@@ -741,8 +776,8 @@ class BattleUpdateApplierTest {
                                                 "#player6",
                                                 "player6",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.COLT.getBrawlStarsId(),
-                                                        Brawler.COLT.getBrawlStarsName(),
+                                                        Brawler.COLT.brawlStarsId(),
+                                                        Brawler.COLT.brawlStarsName(),
                                                         11,
                                                         602,
                                                         null
@@ -753,8 +788,8 @@ class BattleUpdateApplierTest {
                                                 "#player7",
                                                 "player7",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.ANGELO.getBrawlStarsId(),
-                                                        Brawler.ANGELO.getBrawlStarsName(),
+                                                        Brawler.ANGELO.brawlStarsId(),
+                                                        Brawler.ANGELO.brawlStarsName(),
                                                         11,
                                                         609,
                                                         null
@@ -765,8 +800,8 @@ class BattleUpdateApplierTest {
                                                 "#player8",
                                                 "player8",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.PAM.getBrawlStarsId(),
-                                                        Brawler.PAM.getBrawlStarsName(),
+                                                        Brawler.PAM.brawlStarsId(),
+                                                        Brawler.PAM.brawlStarsName(),
                                                         9,
                                                         621,
                                                         null
@@ -777,8 +812,8 @@ class BattleUpdateApplierTest {
                                                 "#player9",
                                                 "player9",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.LILY.getBrawlStarsId(),
-                                                        Brawler.LILY.getBrawlStarsName(),
+                                                        Brawler.LILY.brawlStarsId(),
+                                                        Brawler.LILY.brawlStarsName(),
                                                         11,
                                                         606,
                                                         null
@@ -789,8 +824,8 @@ class BattleUpdateApplierTest {
                                                 "#player10",
                                                 "player10",
                                                 new BattleResultBrawlerResponse(
-                                                        Brawler.EDGAR.getBrawlStarsId(),
-                                                        Brawler.EDGAR.getBrawlStarsName(),
+                                                        Brawler.EDGAR.brawlStarsId(),
+                                                        Brawler.EDGAR.brawlStarsName(),
                                                         9,
                                                         623,
                                                         null
@@ -847,22 +882,22 @@ class BattleUpdateApplierTest {
                                                 null,
                                                 List.of(
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.JUJU.getBrawlStarsId(),
-                                                                Brawler.JUJU.getBrawlStarsName(),
+                                                                Brawler.JUJU.brawlStarsId(),
+                                                                Brawler.JUJU.brawlStarsName(),
                                                                 11,
                                                                 89,
                                                                 4
                                                         ),
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.LILY.getBrawlStarsId(),
-                                                                Brawler.LILY.getBrawlStarsName(),
+                                                                Brawler.LILY.brawlStarsId(),
+                                                                Brawler.LILY.brawlStarsName(),
                                                                 11,
                                                                 581,
                                                                 4
                                                         ),
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.GUS.getBrawlStarsId(),
-                                                                Brawler.GUS.getBrawlStarsName(),
+                                                                Brawler.GUS.brawlStarsId(),
+                                                                Brawler.GUS.brawlStarsName(),
                                                                 11,
                                                                 458,
                                                                 4
@@ -875,22 +910,22 @@ class BattleUpdateApplierTest {
                                                 null,
                                                 List.of(
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.COLT.getBrawlStarsId(),
-                                                                Brawler.COLT.getBrawlStarsName(),
+                                                                Brawler.COLT.brawlStarsId(),
+                                                                Brawler.COLT.brawlStarsName(),
                                                                 11,
                                                                 586,
                                                                 0
                                                         ),
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.EIGHT_BIT.getBrawlStarsId(),
-                                                                Brawler.EIGHT_BIT.getBrawlStarsName(),
+                                                                Brawler.EIGHT_BIT.brawlStarsId(),
+                                                                Brawler.EIGHT_BIT.brawlStarsName(),
                                                                 11,
                                                                 590,
                                                                 0
                                                         ),
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BULL.getBrawlStarsId(),
-                                                                Brawler.BULL.getBrawlStarsName(),
+                                                                Brawler.BULL.brawlStarsId(),
+                                                                Brawler.BULL.brawlStarsName(),
                                                                 11,
                                                                 587,
                                                                 0
@@ -946,8 +981,8 @@ class BattleUpdateApplierTest {
                                                         "#player1",
                                                         "player1",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.GUS.getBrawlStarsId(),
-                                                                Brawler.GUS.getBrawlStarsName(),
+                                                                Brawler.GUS.brawlStarsId(),
+                                                                Brawler.GUS.brawlStarsName(),
                                                                 11,
                                                                 575,
                                                                 null
@@ -958,8 +993,8 @@ class BattleUpdateApplierTest {
                                                         "#player2",
                                                         "player2",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.EDGAR.getBrawlStarsId(),
-                                                                Brawler.EDGAR.getBrawlStarsName(),
+                                                                Brawler.EDGAR.brawlStarsId(),
+                                                                Brawler.EDGAR.brawlStarsName(),
                                                                 11,
                                                                 807,
                                                                 null
@@ -970,8 +1005,8 @@ class BattleUpdateApplierTest {
                                                         "#player3",
                                                         "player3",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BUSTER.getBrawlStarsId(),
-                                                                Brawler.BUSTER.getBrawlStarsName(),
+                                                                Brawler.BUSTER.brawlStarsId(),
+                                                                Brawler.BUSTER.brawlStarsName(),
                                                                 7,
                                                                 210,
                                                                 null
@@ -984,8 +1019,8 @@ class BattleUpdateApplierTest {
                                                         "#player4",
                                                         "player4",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.EDGAR.getBrawlStarsId(),
-                                                                Brawler.EDGAR.getBrawlStarsName(),
+                                                                Brawler.EDGAR.brawlStarsId(),
+                                                                Brawler.EDGAR.brawlStarsName(),
                                                                 11,
                                                                 690,
                                                                 null
@@ -996,8 +1031,8 @@ class BattleUpdateApplierTest {
                                                         "#player5",
                                                         "player5",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SPIKE.getBrawlStarsId(),
-                                                                Brawler.SPIKE.getBrawlStarsName(),
+                                                                Brawler.SPIKE.brawlStarsId(),
+                                                                Brawler.SPIKE.brawlStarsName(),
                                                                 9,
                                                                 507,
                                                                 null
@@ -1008,8 +1043,8 @@ class BattleUpdateApplierTest {
                                                         "#player6",
                                                         "player6",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BEA.getBrawlStarsId(),
-                                                                Brawler.BEA.getBrawlStarsName(),
+                                                                Brawler.BEA.brawlStarsId(),
+                                                                Brawler.BEA.brawlStarsName(),
                                                                 11,
                                                                 529,
                                                                 null
@@ -1022,8 +1057,8 @@ class BattleUpdateApplierTest {
                                                         "#player7",
                                                         "player7",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BROCK.getBrawlStarsId(),
-                                                                Brawler.BROCK.getBrawlStarsName(),
+                                                                Brawler.BROCK.brawlStarsId(),
+                                                                Brawler.BROCK.brawlStarsName(),
                                                                 11,
                                                                 529,
                                                                 null
@@ -1034,8 +1069,8 @@ class BattleUpdateApplierTest {
                                                         "#player8",
                                                         "player8",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.FANG.getBrawlStarsId(),
-                                                                Brawler.FANG.getBrawlStarsName(),
+                                                                Brawler.FANG.brawlStarsId(),
+                                                                Brawler.FANG.brawlStarsName(),
                                                                 11,
                                                                 649,
                                                                 null
@@ -1046,8 +1081,8 @@ class BattleUpdateApplierTest {
                                                         "#player9",
                                                         "player9",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BEA.getBrawlStarsId(),
-                                                                Brawler.BEA.getBrawlStarsName(),
+                                                                Brawler.BEA.brawlStarsId(),
+                                                                Brawler.BEA.brawlStarsName(),
                                                                 9,
                                                                 419,
                                                                 null
@@ -1060,8 +1095,8 @@ class BattleUpdateApplierTest {
                                                         "#player10",
                                                         "player10",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.SPIKE.getBrawlStarsId(),
-                                                                Brawler.SPIKE.getBrawlStarsName(),
+                                                                Brawler.SPIKE.brawlStarsId(),
+                                                                Brawler.SPIKE.brawlStarsName(),
                                                                 11,
                                                                 497,
                                                                 null
@@ -1072,8 +1107,8 @@ class BattleUpdateApplierTest {
                                                         "#player11",
                                                         "player11",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.LILY.getBrawlStarsId(),
-                                                                Brawler.LILY.getBrawlStarsName(),
+                                                                Brawler.LILY.brawlStarsId(),
+                                                                Brawler.LILY.brawlStarsName(),
                                                                 9,
                                                                 507,
                                                                 null
@@ -1084,8 +1119,8 @@ class BattleUpdateApplierTest {
                                                         "#player12",
                                                         "player12",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.MICO.getBrawlStarsId(),
-                                                                Brawler.MICO.getBrawlStarsName(),
+                                                                Brawler.MICO.brawlStarsId(),
+                                                                Brawler.MICO.brawlStarsName(),
                                                                 11,
                                                                 500,
                                                                 null
@@ -1140,8 +1175,8 @@ class BattleUpdateApplierTest {
                                         "#player1",
                                         "player1",
                                         new BattleResultBrawlerResponse(
-                                                Brawler.JUJU.getBrawlStarsId(),
-                                                Brawler.JUJU.getBrawlStarsName(),
+                                                Brawler.JUJU.brawlStarsId(),
+                                                Brawler.JUJU.brawlStarsName(),
                                                 11,
                                                 93,
                                                 null
@@ -1154,8 +1189,8 @@ class BattleUpdateApplierTest {
                                                         "#player1",
                                                         "player1",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.JUJU.getBrawlStarsId(),
-                                                                Brawler.JUJU.getBrawlStarsName(),
+                                                                Brawler.JUJU.brawlStarsId(),
+                                                                Brawler.JUJU.brawlStarsName(),
                                                                 11,
                                                                 93,
                                                                 null
@@ -1166,8 +1201,8 @@ class BattleUpdateApplierTest {
                                                         "#player2",
                                                         "player2",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.LOLA.getBrawlStarsId(),
-                                                                Brawler.LOLA.getBrawlStarsName(),
+                                                                Brawler.LOLA.brawlStarsId(),
+                                                                Brawler.LOLA.brawlStarsName(),
                                                                 1,
                                                                 17,
                                                                 null
@@ -1178,8 +1213,8 @@ class BattleUpdateApplierTest {
                                                         "#player3",
                                                         "player3",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.PENNY.getBrawlStarsId(),
-                                                                Brawler.PENNY.getBrawlStarsName(),
+                                                                Brawler.PENNY.brawlStarsId(),
+                                                                Brawler.PENNY.brawlStarsName(),
                                                                 4,
                                                                 96,
                                                                 null
@@ -1190,8 +1225,8 @@ class BattleUpdateApplierTest {
                                                         "#player4",
                                                         "player4",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.DOUG.getBrawlStarsId(),
-                                                                Brawler.DOUG.getBrawlStarsName(),
+                                                                Brawler.DOUG.brawlStarsId(),
+                                                                Brawler.DOUG.brawlStarsName(),
                                                                 4,
                                                                 0,
                                                                 null
@@ -1202,8 +1237,8 @@ class BattleUpdateApplierTest {
                                                         "#player5",
                                                         "player5",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.POCO.getBrawlStarsId(),
-                                                                Brawler.POCO.getBrawlStarsName(),
+                                                                Brawler.POCO.brawlStarsId(),
+                                                                Brawler.POCO.brawlStarsName(),
                                                                 1,
                                                                 17,
                                                                 null
@@ -1216,8 +1251,8 @@ class BattleUpdateApplierTest {
                                                         "#player6",
                                                         "player6",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.BULL.getBrawlStarsId(),
-                                                                Brawler.BULL.getBrawlStarsName(),
+                                                                Brawler.BULL.brawlStarsId(),
+                                                                Brawler.BULL.brawlStarsName(),
                                                                 4,
                                                                 56,
                                                                 null
@@ -1228,8 +1263,8 @@ class BattleUpdateApplierTest {
                                                         "#player7",
                                                         "player7",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.WILLOW.getBrawlStarsId(),
-                                                                Brawler.WILLOW.getBrawlStarsName(),
+                                                                Brawler.WILLOW.brawlStarsId(),
+                                                                Brawler.WILLOW.brawlStarsName(),
                                                                 3,
                                                                 56,
                                                                 null
@@ -1240,8 +1275,8 @@ class BattleUpdateApplierTest {
                                                         "#player8",
                                                         "player8",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.GROM.getBrawlStarsId(),
-                                                                Brawler.GROM.getBrawlStarsName(),
+                                                                Brawler.GROM.brawlStarsId(),
+                                                                Brawler.GROM.brawlStarsName(),
                                                                 5,
                                                                 56,
                                                                 null
@@ -1252,8 +1287,8 @@ class BattleUpdateApplierTest {
                                                         "#player9",
                                                         "player9",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.EIGHT_BIT.getBrawlStarsId(),
-                                                                Brawler.EIGHT_BIT.getBrawlStarsName(),
+                                                                Brawler.EIGHT_BIT.brawlStarsId(),
+                                                                Brawler.EIGHT_BIT.brawlStarsName(),
                                                                 4,
                                                                 48,
                                                                 null
@@ -1264,8 +1299,8 @@ class BattleUpdateApplierTest {
                                                         "#player10",
                                                         "player10",
                                                         new BattleResultBrawlerResponse(
-                                                                Brawler.ROSA.getBrawlStarsId(),
-                                                                Brawler.ROSA.getBrawlStarsName(),
+                                                                Brawler.ROSA.brawlStarsId(),
+                                                                Brawler.ROSA.brawlStarsName(),
                                                                 3,
                                                                 48,
                                                                 null

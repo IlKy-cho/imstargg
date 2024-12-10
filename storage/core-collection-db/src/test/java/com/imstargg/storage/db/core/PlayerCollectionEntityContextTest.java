@@ -1,6 +1,5 @@
 package com.imstargg.storage.db.core;
 
-import com.imstargg.core.enums.Brawler;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.test.AbstractDataJpaTest;
 import org.junit.jupiter.api.Tag;
@@ -93,7 +92,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
                 LocalDateTime.now(clock)
         );
         player.updateBrawler(
-                Brawler.ASH.getBrawlStarsId(),
+                1,
                 1,
                 1,
                 0,
@@ -110,7 +109,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
         // when
         PlayerCollectionEntity foundPlayer = repository.findById(player.getId()).get();
         foundPlayer.updateBrawler(
-                Brawler.ASH.getBrawlStarsId(),
+                1,
                 2,
                 2,
                 100,
@@ -120,7 +119,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
                 List.of(5L, 6L)
         );
         foundPlayer.updateBrawler(
-                Brawler.BROCK.getBrawlStarsId(),
+                2,
                 3,
                 3,
                 300,
@@ -139,7 +138,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
         assertThat(updatedPlayer.getBrawlers())
                 .hasSize(2)
                 .anySatisfy(playerBrawler -> {
-                    assertThat(playerBrawler.getBrawlerBrawlStarsId()).isEqualTo(Brawler.ASH.getBrawlStarsId());
+                    assertThat(playerBrawler.getBrawlerBrawlStarsId()).isEqualTo(1);
                     assertThat(playerBrawler.getPower()).isEqualTo(2);
                     assertThat(playerBrawler.getRank()).isEqualTo(2);
                     assertThat(playerBrawler.getTrophies()).isEqualTo(100);
@@ -149,7 +148,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
                     assertThat(playerBrawler.getGadgetBrawlStarsIds()).containsExactly(5L, 6L);
                 })
                 .anySatisfy(playerBrawler -> {
-                    assertThat(playerBrawler.getBrawlerBrawlStarsId()).isEqualTo(Brawler.BROCK.getBrawlStarsId());
+                    assertThat(playerBrawler.getBrawlerBrawlStarsId()).isEqualTo(2);
                     assertThat(playerBrawler.getPower()).isEqualTo(3);
                     assertThat(playerBrawler.getRank()).isEqualTo(3);
                     assertThat(playerBrawler.getTrophies()).isEqualTo(300);
