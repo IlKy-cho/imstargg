@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "battle_map")
 public class BattleMapCollectionEntity extends BaseEntity {
@@ -23,11 +25,8 @@ public class BattleMapCollectionEntity extends BaseEntity {
     @Column(name = "name_message_code", length = 105, updatable = false, nullable = false)
     private String nameMessageCode;
 
-    protected BattleMapCollectionEntity() {
-    }
-
-    public BattleMapCollectionEntity(String code) {
-        this.code = code;
+    public BattleMapCollectionEntity() {
+        this.code = UUID.randomUUID().toString().substring(0, 8);
         this.nameMessageCode = "battle.map." + code + ".name";
     }
 

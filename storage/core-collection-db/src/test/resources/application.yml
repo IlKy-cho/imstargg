@@ -1,3 +1,3 @@
 spring:
   config.import:
-    - core-db.yml
+    - core-db-test.yml
