@@ -47,4 +47,7 @@ public class GadgetEntity extends BaseEntity {
         return nameMessageCode;
     }
 
+    public long getBrawlerId() {
+        return brawlerId;
+    }
 }

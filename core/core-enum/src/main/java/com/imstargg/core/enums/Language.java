@@ -12,6 +12,15 @@ public enum Language {
         this.code = code;
     }
 
+    public static Language of(String code) {
+        for (Language language : values()) {
+            if (language.code.equals(code)) {
+                return language;
+            }
+        }
+        throw new IllegalArgumentException("Unknown language code: " + code);
+    }
+
     public String getCode() {
         return code;
     }
