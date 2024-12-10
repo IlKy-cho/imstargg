@@ -1,6 +1,6 @@
 package com.imstargg.storage.db.core;
 
-import com.imstargg.core.enums.BattleEvent;
+import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
@@ -13,6 +13,9 @@ public class BattleCollectionEntityFixture {
 
     @Nullable
     private LocalDateTime battleTime;
+
+    @Nullable
+    private BattleCollectionEntityEvent event;
 
     @Nullable
     private Long eventId;
@@ -63,6 +66,11 @@ public class BattleCollectionEntityFixture {
 
     public BattleCollectionEntityFixture battleTime(LocalDateTime battleTime) {
         this.battleTime = battleTime;
+        return this;
+    }
+
+    public BattleCollectionEntityFixture event(BattleCollectionEntityEvent event) {
+        this.event = event;
         return this;
     }
 
@@ -142,11 +150,7 @@ public class BattleCollectionEntityFixture {
         return new BattleCollectionEntity(
                 battleKey,
                 battleTime,
-                new BattleCollectionEntityEvent(
-                        BattleEvent.KNOCKOUT_FLARING_PHOENIX.getBrawlStarsId(),
-                        BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMode().getName(),
-                        BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMap().getName()
-                ),
+                event,
                 mode,
                 type,
                 result,
@@ -169,6 +173,13 @@ public class BattleCollectionEntityFixture {
         }
         if (battleTime == null) {
             battleTime = LocalDateTime.now();
+        }
+        if (event == null) {
+            event = new BattleCollectionEntityEvent(
+                    fillKey,
+                    BattleEventMode.GEM_GRAB.getName(),
+                    "map-" + fillKey
+            );
         }
         if (eventId == null) {
             eventId = LongIncrementUtil.next();

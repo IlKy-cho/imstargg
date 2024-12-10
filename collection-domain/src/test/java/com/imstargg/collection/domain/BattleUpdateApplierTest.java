@@ -6,7 +6,6 @@ import com.imstargg.client.brawlstars.response.BattleResultPlayerResponse;
 import com.imstargg.client.brawlstars.response.BattleResultResponse;
 import com.imstargg.client.brawlstars.response.EventResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
-import com.imstargg.core.enums.BattleEvent;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
@@ -34,6 +33,19 @@ class BattleUpdateApplierTest {
         battleUpdateApplier = new BattleUpdateApplier();
     }
 
+    private record BattleEvent(
+            long brawlStarsId,
+            String mode,
+            String map
+    ) {
+
+        static final BattleEvent SOLO_SHOWDOWN_FLYING_FANTASIES = new BattleEvent(10000001, "soloShowdown", "Flying Fantasies");
+        static final BattleEvent DUO_SHOWDOWN_FLYING_FANTASIES = new BattleEvent(10000002, "duoShowdown", "Flying Fantasies");
+        static final BattleEvent KNOCKOUT_FLARING_PHOENIX = new BattleEvent(10000003, "knockout", "Flaring Phoenix");
+        static final BattleEvent TRIO_SHOWDOWN_RING_O_BRAWLNG = new BattleEvent(10000004, "trioShowdown", "Ring 'o Brawlin");
+        static final BattleEvent KNOCKOUT_5VS5_SIZZLING_CHAMBERS = new BattleEvent(10000005, "knockout5V5", "Sizzling Chambers");
+    }
+
     @Test
     void 최근_전적_보다_이전_배틀은_필터링되고_가장_최신_전적만_latest상태로_표시한다() {
         // given
@@ -47,9 +59,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 11, 29, 0, 0, 0),
                         new EventResponse(
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getBrawlStarsId(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMode().getName(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMap().getName()
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.KNOCKOUT.getName(),
@@ -143,9 +155,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 12, 1, 0, 0, 0),
                         new EventResponse(
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getBrawlStarsId(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMode().getName(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMap().getName()
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.KNOCKOUT.getName(),
@@ -239,9 +251,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 12, 29, 0, 0, 0),
                         new EventResponse(
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getBrawlStarsId(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMode().getName(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMap().getName()
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.KNOCKOUT.getName(),
@@ -356,9 +368,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 11, 29, 11, 0, 0),
                         new EventResponse(
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getBrawlStarsId(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMode().getName(),
-                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.getMap().getName()
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
+                                BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.KNOCKOUT.getName(),
@@ -477,9 +489,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 11, 29, 11, 0, 0),
                         new EventResponse(
-                                BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.getBrawlStarsId(),
-                                BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.getMode().getName(),
-                                BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.getMap().getName()
+                                BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.brawlStarsId(),
+                                BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.mode(),
+                                BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.DUO_SHOWDOWN.getName(),
@@ -651,9 +663,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 11, 29, 11, 0, 0),
                         new EventResponse(
-                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.getBrawlStarsId(),
-                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.getMode().getName(),
-                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.getMap().getName()
+                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.brawlStarsId(),
+                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.mode(),
+                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.SOLO_SHOWDOWN.getName(),
@@ -815,9 +827,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 11, 29, 11, 0, 0),
                         new EventResponse(
-                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.getBrawlStarsId(),
-                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.getMode().getName(),
-                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.getMap().getName()
+                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.brawlStarsId(),
+                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.mode(),
+                                BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.SOLO_SHOWDOWN.getName(),
@@ -916,9 +928,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 11, 29, 11, 0, 0),
                         new EventResponse(
-                                BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.getBrawlStarsId(),
-                                BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.getMode().getName(),
-                                BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.getMap().getName()
+                                BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.brawlStarsId(),
+                                BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.mode(),
+                                BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.TRIO_SHOWDOWN.getName(),
@@ -1113,9 +1125,9 @@ class BattleUpdateApplierTest {
                 new BattleResponse(
                         LocalDateTime.of(2024, 11, 29, 11, 0, 0),
                         new EventResponse(
-                                BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.getBrawlStarsId(),
-                                BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.getMode().getName(),
-                                BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.getMap().getName()
+                                BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.brawlStarsId(),
+                                BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.mode(),
+                                BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.map()
                         ),
                         new BattleResultResponse(
                                 BattleEventMode.KNOCKOUT.getName(),

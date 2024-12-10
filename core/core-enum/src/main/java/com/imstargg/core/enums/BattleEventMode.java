@@ -2,7 +2,7 @@ package com.imstargg.core.enums;
 
 public enum BattleEventMode {
 
-    NOT_FOUND(null),
+    NOT_FOUND("notFound"),
 
     SOLO_SHOWDOWN("soloShowdown"),
     DUO_SHOWDOWN("duoShowdown"),
