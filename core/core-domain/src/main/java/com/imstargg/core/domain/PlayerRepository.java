@@ -1,8 +1,9 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.enums.Brawler;
+import com.imstargg.core.domain.brawlstars.BrawlerRepository;
 import com.imstargg.core.enums.Gadget;
 import com.imstargg.core.enums.Gear;
+import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.StarPower;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.BaseEntity;
@@ -23,23 +24,23 @@ import java.util.Optional;
 public class PlayerRepository {
 
     private final Clock clock;
-
     private final PlayerJpaRepository playerJpaRepository;
-
     private final UnknownPlayerJpaRepository unknownPlayerJpaRepository;
-
     private final PlayerBrawlerJpaRepository playerBrawlerJpaRepository;
+    private final BrawlerRepository brawlerRepository;
 
     public PlayerRepository(
             Clock clock,
             PlayerJpaRepository playerJpaRepository,
             UnknownPlayerJpaRepository unknownPlayerJpaRepository,
-            PlayerBrawlerJpaRepository playerBrawlerJpaRepository
+            PlayerBrawlerJpaRepository playerBrawlerJpaRepository,
+            BrawlerRepository brawlerRepository
     ) {
         this.clock = clock;
         this.playerJpaRepository = playerJpaRepository;
         this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
         this.playerBrawlerJpaRepository = playerBrawlerJpaRepository;
+        this.brawlerRepository = brawlerRepository;
     }
 
     public Optional<Player> findByTag(BrawlStarsTag tag) {
@@ -104,7 +105,8 @@ public class PlayerRepository {
 
     private PlayerBrawler mapEntityToPlayerBrawler(PlayerBrawlerEntity entity) {
         return new PlayerBrawler(
-                Brawler.find(entity.getBrawlerBrawlStarsId()),
+                brawlerRepository.find(new BrawlStarsId(entity.getBrawlerBrawlStarsId()), Language.KOREAN)
+                        .orElse(null),
                 entity.getGearBrawlStarsIds().stream()
                         .map(Gear::find).toList(),
                 entity.getStarPowerBrawlStarsIds().stream()

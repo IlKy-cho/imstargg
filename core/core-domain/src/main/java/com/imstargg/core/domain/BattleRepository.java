@@ -1,9 +1,9 @@
 package com.imstargg.core.domain;
 
 import com.imstargg.core.domain.brawlstars.BattleEventRepository;
+import com.imstargg.core.domain.brawlstars.BrawlerRepository;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.Brawler;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.BattleEntity;
@@ -29,17 +29,20 @@ public class BattleRepository {
     private final BattleJpaRepository battleJpaRepository;
     private final BattlePlayerJpaRepository battlePlayerJpaRepository;
     private final BattleEventRepository battleEventRepository;
+    private final BrawlerRepository brawlerRepository;
 
     public BattleRepository(
             PlayerJpaRepository playerJpaRepository,
             BattleJpaRepository battleJpaRepository,
             BattlePlayerJpaRepository battlePlayerJpaRepository,
-            BattleEventRepository battleEventRepository
+            BattleEventRepository battleEventRepository,
+            BrawlerRepository brawlerRepository
     ) {
         this.playerJpaRepository = playerJpaRepository;
         this.battleJpaRepository = battleJpaRepository;
         this.battlePlayerJpaRepository = battlePlayerJpaRepository;
         this.battleEventRepository = battleEventRepository;
+        this.brawlerRepository = brawlerRepository;
     }
 
     public List<PlayerBattle> find(Player player, int page) {
@@ -91,7 +94,9 @@ public class BattleRepository {
                     battlePlayers.getLast().add(new BattlePlayer(
                             new BrawlStarsTag(entity.getBrawlStarsTag()),
                             entity.getName(),
-                            Brawler.find(entity.getBrawler().getBrawlStarsId()),
+                            brawlerRepository
+                                    .find(new BrawlStarsId(entity.getBrawler().getBrawlStarsId()), Language.KOREAN)
+                                    .orElse(null),
                             entity.getBrawler().getPower(),
                             entity.getBrawler().getTrophies(),
                             entity.getBrawler().getTrophyChange()
