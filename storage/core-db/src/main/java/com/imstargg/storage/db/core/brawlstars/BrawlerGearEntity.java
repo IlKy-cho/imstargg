@@ -20,7 +20,7 @@ import jakarta.persistence.UniqueConstraint;
 public class BrawlerGearEntity extends BaseEntity {
 
     @Id
-    @Column(name = "brwaler_gear_id")
+    @Column(name = "brawler_gear_id")
     private Long id;
 
     @Column(name = "brawler_id", updatable = false, nullable = false)

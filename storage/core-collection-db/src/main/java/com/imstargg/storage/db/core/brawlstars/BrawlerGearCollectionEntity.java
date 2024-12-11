@@ -14,7 +14,7 @@ public class BrawlerGearCollectionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brwaler_gear_id")
+    @Column(name = "brawler_gear_id")
     private Long id;
 
     @Column(name = "brawler_id", updatable = false, nullable = false)
