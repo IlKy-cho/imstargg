@@ -6,7 +6,7 @@ import jakarta.annotation.Nullable;
 public record BattlePlayerResponse(
         String tag,
         String name,
-        @Nullable BrawlerResponse brawler,
+        @Nullable BattlePlayerBrawlerResponse brawler,
         int brawlerPower,
         @Nullable Integer brawlerTrophies,
         @Nullable Integer brawlerTrophyChange
@@ -16,7 +16,7 @@ public record BattlePlayerResponse(
         return new BattlePlayerResponse(
                 battlePlayer.tag().value(),
                 battlePlayer.name(),
-                battlePlayer.brawler() == null ? null : BrawlerResponse.from(battlePlayer.brawler()),
+                battlePlayer.brawler() == null ? null : BattlePlayerBrawlerResponse.from(battlePlayer.brawler()),
                 battlePlayer.brawlerPower(),
                 battlePlayer.brawlerTrophies(),
                 battlePlayer.brawlerTrophyChange()
