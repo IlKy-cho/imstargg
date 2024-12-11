@@ -68,7 +68,7 @@ public class BattleRepository {
                                 ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
                         Language.KOREAN),
                 BattleType.find(battleEntity.getType()),
-                BattleResult.find(battleEntity.getResult()),
+                battleEntity.getResult() != null ? BattleResult.map(battleEntity.getResult()) : null,
                 battleEntity.getDuration(),
                 battleEntity.getPlayer().getRank(),
                 battleEntity.getPlayer().getTrophyChange(),
