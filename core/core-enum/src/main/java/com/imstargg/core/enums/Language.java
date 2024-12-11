@@ -6,6 +6,8 @@ public enum Language {
     ENGLISH("en"),
     ;
 
+    public static final Language DEFAULT = ENGLISH;
+
     private final String code;
 
     Language(String code) {
