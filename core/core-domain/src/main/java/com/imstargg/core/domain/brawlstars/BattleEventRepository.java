@@ -34,14 +34,15 @@ public class BattleEventRepository {
         this.messageRepository = messageRepository;
     }
 
-    @Cacheable(key = "#language.name() + ':' + #id.value()")
-    public PlayerBattleEvent getPlayerBattleEvent(@Nullable BrawlStarsId id, Language language) {
+    @Cacheable(key = "'battle-events:v1:' + #language.name() + ':' + #id.value()")
+    public Optional<BattleEvent> find(@Nullable BrawlStarsId id, Language language) {
         if (id == null) {
-            return PlayerBattleEvent.UNKNOWN;
+            return Optional.empty();
         }
+
         Optional<BattleEventEntity> eventEntityOpt = battleEventJpaRepository.findByBrawlStarsId(id.value());
         if (eventEntityOpt.isEmpty()) {
-            return PlayerBattleEvent.UNKNOWN;
+            return Optional.empty();
         }
 
         BattleEventEntity eventEntity = eventEntityOpt.get();
@@ -49,12 +50,15 @@ public class BattleEventRepository {
                 .orElseThrow(() -> new CoreException("맵이 존재하지 않습니다. " +
                         "eventId: " + eventEntity.getId() + ", mapId: " + eventEntity.getMapId()));
         Message battleMapName = messageRepository.get(battleMapEntity.getNameMessageCode(), language);
-        return new PlayerBattleEvent(
-                new BrawlStarsId(eventEntity.getId()),
-                eventEntity.getMode(),
-                new BattleMap(
-                        battleMapEntity.getCode(),
-                        battleMapName.content()
+
+        return Optional.of(
+                new BattleEvent(
+                        new BrawlStarsId(eventEntity.getId()),
+                        eventEntity.getMode(),
+                        new BattleMap(
+                                battleMapEntity.getCode(),
+                                battleMapName.content()
+                        )
                 )
         );
     }

@@ -63,10 +63,11 @@ public class BattleRepository {
     private PlayerBattle mapBattle(BattleEntity battleEntity, List<BattlePlayerEntity> battlePlayerEntities) {
         return new PlayerBattle(
                 battleEntity.getBattleTime(),
-                battleEventRepository.getPlayerBattleEvent(
+                battleEventRepository.find(
                         battleEntity.getEvent().getEventBrawlStarsId() != null
                                 ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
-                        Language.KOREAN),
+                        Language.KOREAN)
+                        .orElse(null),
                 BattleType.find(battleEntity.getType()),
                 battleEntity.getResult() != null ? BattleResult.map(battleEntity.getResult()) : null,
                 battleEntity.getDuration(),
