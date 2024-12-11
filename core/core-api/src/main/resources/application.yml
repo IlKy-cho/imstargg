@@ -6,7 +6,7 @@ spring:
   config.import:
     - monitoring.yml
     - logging.yml
-    - core-db.yml
+    - db-core.yml
 
   web.resources.add-mappings: false
 
