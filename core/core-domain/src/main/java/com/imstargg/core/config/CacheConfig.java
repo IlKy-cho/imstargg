@@ -20,7 +20,10 @@ public class CacheConfig {
         cacheManager.setCaffeine(
                 Caffeine.newBuilder().expireAfterWrite(Duration.ofHours(1))
         );
-        cacheManager.setCacheNames(List.of("battle-events"));
+        cacheManager.setCacheNames(List.of(
+                "battle-events",
+                "brawler"
+        ));
         return cacheManager;
     }
 }

@@ -14,23 +14,22 @@ import com.imstargg.storage.db.core.brawlstars.GearEntity;
 import com.imstargg.storage.db.core.brawlstars.GearJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.StarPowerEntity;
 import com.imstargg.storage.db.core.brawlstars.StarPowerJpaRepository;
-import org.springframework.scheduling.annotation.Scheduled;
+import jakarta.annotation.Nullable;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
+@CacheConfig(cacheNames = "brawler")
 public class BrawlerRepository {
-
-    private final Map<Language, Map<BrawlStarsId, Brawler>> cache;
 
     private final BrawlerJpaRepository brawlerJpaRepository;
     private final BrawlerGearJpaRepository brawlerGearJpaRepository;
@@ -53,14 +52,48 @@ public class BrawlerRepository {
         this.starPowerJpaRepository = starPowerJpaRepository;
         this.gadgetJpaRepository = gadgetJpaRepository;
         this.messageRepository = messageRepository;
-
-        this.cache = new ConcurrentHashMap<>();
-        Arrays.stream(Language.values())
-                .forEach(language -> cache.put(language, new ConcurrentHashMap<>()));
     }
 
-    @Scheduled(fixedRate = 120, timeUnit = TimeUnit.MINUTES)
-    void init() {
+    @Cacheable(key = "'brawlers:v1:' + #language.name() + ':' + #id.value()")
+    public Optional<Brawler> find(@Nullable BrawlStarsId id, Language language) {
+        if (id == null) {
+            return Optional.empty();
+        }
+
+        Optional<BrawlerEntity> brawlerEntityOpt = brawlerJpaRepository.findByBrawlStarsId(id.value());
+        if (brawlerEntityOpt.isEmpty()) {
+            return Optional.empty();
+        }
+
+        BrawlerEntity brawlerEntity = brawlerEntityOpt.get();
+        List<GearEntity> gearEntities = gearJpaRepository.findAllById(
+                brawlerGearJpaRepository.findAllByBrawlerId(brawlerEntity.getId()).stream()
+                        .map(BrawlerGearEntity::getGearId)
+                        .toList()
+        );
+        List<StarPowerEntity> starPowerEntities = starPowerJpaRepository.findAllByBrawlerId(brawlerEntity.getId());
+        List<GadgetEntity> gadgetEntities = gadgetJpaRepository.findAllByBrawlerId(brawlerEntity.getId());
+        Map<String, MessageCollection> codeToMessageCollection = getCodeToMessageCollection(
+                List.of(brawlerEntity),
+                gearEntities,
+                starPowerEntities,
+                gadgetEntities
+        );
+
+        return Optional.of(
+                mapToBrawler(
+                        brawlerEntity,
+                        gadgetEntities,
+                        gearEntities,
+                        starPowerEntities,
+                        language,
+                        codeToMessageCollection
+                )
+        );
+    }
+
+    @Cacheable(key = "'brawlers:v1:' + #language.name()")
+    public List<Brawler> findAll(Language language) {
         List<BrawlerEntity> brawlerEntities = brawlerJpaRepository.findAll();
         Map<Long, List<BrawlerGearEntity>> brawlerIdToBrawlerGearEntities = brawlerGearJpaRepository.findAll().stream()
                 .collect(Collectors.groupingBy(BrawlerGearEntity::getBrawlerId));
@@ -77,36 +110,44 @@ public class BrawlerRepository {
                 brawlerIdToGadgetEntities.values().stream().flatMap(List::stream).toList()
         );
 
-        for (BrawlerEntity brawlerEntity : brawlerEntities) {
-            List<GearEntity> gearEntities = brawlerIdToBrawlerGearEntities.get(brawlerEntity.getId()).stream()
-                    .map(brawlerGear -> idToGearEntities.get(brawlerGear.getGearId()))
-                    .toList();
-            List<StarPowerEntity> starPowerEntities = brawlerIdToStarPowerEntities.get(brawlerEntity.getId());
-            List<GadgetEntity> gadgetEntities = brawlerIdToGadgetEntities.get(brawlerEntity.getId());
-
-            BrawlStarsId brawlerId = new BrawlStarsId(brawlerEntity.getBrawlStarsId());
-            for (Language language : Language.values()) {
-                cache.get(language).put(
-                        brawlerId,
-                        new Brawler(
-                                brawlerId,
-                                codeToMessageCollection.get(brawlerEntity.getNameMessageCode()).find(language)
-                                        .orElseThrow(() -> new IllegalStateException(
-                                                "브롤러 이름을 찾을 수 없습니다. brawlerId=" + brawlerId))
-                                        .content(),
-                                brawlerEntity.getRarity(),
-                                gadgetEntities.stream().map(gadgetEntity ->
-                                        mapToGadget(language, gadgetEntity, codeToMessageCollection)).toList(),
-                                gearEntities.stream().map(gearEntity ->
-                                        mapToGear(language, gearEntity, codeToMessageCollection)).toList(),
-                                starPowerEntities.stream().map(starPowerEntity ->
-                                        mapToStarPower(language, starPowerEntity, codeToMessageCollection)).toList()
-                        ));
-            }
-        }
+        return brawlerEntities.stream()
+                .map(brawlerEntity -> mapToBrawler(
+                        brawlerEntity,
+                        brawlerIdToGadgetEntities.get(brawlerEntity.getId()),
+                        brawlerIdToBrawlerGearEntities.get(brawlerEntity.getId()).stream()
+                                .map(brawlerGear -> idToGearEntities.get(brawlerGear.getGearId()))
+                                .toList(),
+                        brawlerIdToStarPowerEntities.get(brawlerEntity.getId()),
+                        language,
+                        codeToMessageCollection
+                )).toList();
     }
 
-    private static StarPower mapToStarPower(
+    private Brawler mapToBrawler(
+            BrawlerEntity brawlerEntity,
+            List<GadgetEntity> gadgetEntities,
+            List<GearEntity> gearEntities,
+            List<StarPowerEntity> starPowerEntities,
+            Language language,
+            Map<String, MessageCollection> codeToMessageCollection
+    ) {
+        return new Brawler(
+                new BrawlStarsId(brawlerEntity.getBrawlStarsId()),
+                codeToMessageCollection.get(brawlerEntity.getNameMessageCode()).find(language)
+                        .orElseThrow(() -> new IllegalStateException(
+                                "브롤러 이름을 찾을 수 없습니다. brawlerId=" + brawlerEntity.getId()))
+                        .content(),
+                brawlerEntity.getRarity(),
+                gadgetEntities.stream().map(gadgetEntity ->
+                        mapToGadget(language, gadgetEntity, codeToMessageCollection)).toList(),
+                gearEntities.stream().map(gearEntity ->
+                        mapToGear(language, gearEntity, codeToMessageCollection)).toList(),
+                starPowerEntities.stream().map(starPowerEntity ->
+                        mapToStarPower(language, starPowerEntity, codeToMessageCollection)).toList()
+        );
+    }
+
+    private StarPower mapToStarPower(
             Language language,
             StarPowerEntity starPowerEntity,
             Map<String, MessageCollection> codeToMessageCollection) {
@@ -120,7 +161,7 @@ public class BrawlerRepository {
         );
     }
 
-    private static Gear mapToGear(
+    private Gear mapToGear(
             Language language,
             GearEntity gearEntity,
             Map<String, MessageCollection> codeToMessageCollection) {
@@ -135,7 +176,7 @@ public class BrawlerRepository {
         );
     }
 
-    private static Gadget mapToGadget(
+    private Gadget mapToGadget(
             Language language,
             GadgetEntity gadgetEntity,
             Map<String, MessageCollection> codeToMessageCollection) {
