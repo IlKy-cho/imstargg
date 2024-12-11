@@ -27,6 +27,6 @@ public class MessageCollection {
 
     public Optional<Message> find(Language language) {
         return Optional.ofNullable(messages.get(language))
-                .or(() -> Optional.ofNullable(messages.get(Language.ENGLISH)));
+                .or(() -> Optional.ofNullable(messages.get(Language.DEFAULT)));
     }
 }
