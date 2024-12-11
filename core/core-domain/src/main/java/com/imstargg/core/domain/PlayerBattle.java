@@ -12,7 +12,7 @@ public record PlayerBattle(
         LocalDateTime battleTime,
         PlayerBattleEvent event,
         BattleType type,
-        BattleResult result,
+        @Nullable BattleResult result,
         @Nullable Integer duration,
         @Nullable Integer rank,
         @Nullable Integer trophyChange,
