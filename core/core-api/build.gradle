@@ -20,7 +20,7 @@ dependencies {
 
     // Test
     testImplementation(testFixtures(project(":core:core-domain")))
-    testImplementation(testFixtures(project(":storage:core-db")))
+    testImplementation(testFixtures(project(":storage:db-core")))
 
     asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")

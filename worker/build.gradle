@@ -4,7 +4,7 @@ dependencies {
     implementation(project(":client:brawlstars-client"))
     implementation(project(":collection-domain"))
 
-    implementation(project(":storage:core-collection-db"))
+    implementation(project(":storage:db-core-collection"))
 
     implementation(project(":support:alert-manager"))
     implementation(project(":support:logging"))
@@ -14,7 +14,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter")
 
     // Test
-    testImplementation(testFixtures(project(":storage:core-db")))
-    testImplementation(testFixtures(project(":storage:core-collection-db")))
+    testImplementation(testFixtures(project(":storage:db-core")))
+    testImplementation(testFixtures(project(":storage:db-core-collection")))
     testImplementation(project(":tests:java-test-util"))
 }

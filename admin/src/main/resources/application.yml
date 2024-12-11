@@ -3,7 +3,7 @@ spring:
     name: imstargg-admin
 
   config.import:
-    - core-db.yml
+    - db-core.yml
 
   profiles:
     active: local

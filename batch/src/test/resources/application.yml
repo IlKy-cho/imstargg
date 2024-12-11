@@ -1,6 +1,6 @@
 spring:
   config.import:
-    - core-db-test.yml
+    - db-core-test.yml
     - brawlstars-client.yml
 
   batch:
