@@ -1,6 +1,6 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.enums.BattleEvent;
+import com.imstargg.core.domain.brawlstars.PlayerBattleEvent;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import jakarta.annotation.Nullable;
@@ -8,9 +8,9 @@ import jakarta.annotation.Nullable;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record Battle(
+public record PlayerBattle(
         LocalDateTime battleTime,
-        BattleEvent event,
+        PlayerBattleEvent event,
         BattleType type,
         BattleResult result,
         @Nullable Integer duration,

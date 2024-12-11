@@ -1,9 +1,10 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.enums.BattleEvent;
+import com.imstargg.core.domain.brawlstars.BattleEventRepository;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Brawler;
+import com.imstargg.core.enums.Language;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleJpaRepository;
@@ -27,18 +28,21 @@ public class BattleRepository {
     private final PlayerJpaRepository playerJpaRepository;
     private final BattleJpaRepository battleJpaRepository;
     private final BattlePlayerJpaRepository battlePlayerJpaRepository;
+    private final BattleEventRepository battleEventRepository;
 
     public BattleRepository(
             PlayerJpaRepository playerJpaRepository,
             BattleJpaRepository battleJpaRepository,
-            BattlePlayerJpaRepository battlePlayerJpaRepository
+            BattlePlayerJpaRepository battlePlayerJpaRepository,
+            BattleEventRepository battleEventRepository
     ) {
         this.playerJpaRepository = playerJpaRepository;
         this.battleJpaRepository = battleJpaRepository;
         this.battlePlayerJpaRepository = battlePlayerJpaRepository;
+        this.battleEventRepository = battleEventRepository;
     }
 
-    public List<Battle> find(Player player, int page) {
+    public List<PlayerBattle> find(Player player, int page) {
         PlayerEntity playerEntity = playerJpaRepository.findByBrawlStarsTagAndDeletedFalse(player.tag().value())
                 .orElseThrow(() -> new CoreException("Player not found: " + player.tag()));
         List<BattleEntity> battleEntities = battleJpaRepository.findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
@@ -53,10 +57,13 @@ public class BattleRepository {
                 .toList();
     }
 
-    private Battle mapBattle(BattleEntity battleEntity, List<BattlePlayerEntity> battlePlayerEntities) {
-        return new Battle(
+    private PlayerBattle mapBattle(BattleEntity battleEntity, List<BattlePlayerEntity> battlePlayerEntities) {
+        return new PlayerBattle(
                 battleEntity.getBattleTime(),
-                BattleEvent.find(battleEntity.getEvent().getEventBrawlStarsId()),
+                battleEventRepository.getPlayerBattleEvent(
+                        battleEntity.getEvent().getEventBrawlStarsId() != null
+                                ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
+                        Language.KOREAN),
                 BattleType.find(battleEntity.getType()),
                 BattleResult.find(battleEntity.getResult()),
                 battleEntity.getDuration(),

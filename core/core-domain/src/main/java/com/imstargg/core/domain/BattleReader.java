@@ -13,7 +13,7 @@ public class BattleReader {
         this.battleRepository = battleRepository;
     }
 
-    public List<Battle> getList(Player player, int page) {
+    public List<PlayerBattle> getList(Player player, int page) {
         return battleRepository.find(player, page + 1);
     }
 }
