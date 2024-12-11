@@ -1,6 +1,7 @@
 package com.imstargg.core.domain;
 
 import com.imstargg.core.enums.Language;
+import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.MessageEntity;
 import com.imstargg.storage.db.core.MessageJpaRepository;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,14 @@ public class MessageRepository {
 
     public MessageRepository(MessageJpaRepository messageJpaRepository) {
         this.messageJpaRepository = messageJpaRepository;
+    }
+
+    public Message get(String code, Language language) {
+        return messageJpaRepository.findByCodeAndLang(code, language.getCode())
+                .map(entity -> new Message(Language.of(entity.getLang()), entity.getContent()))
+                .or(() -> messageJpaRepository.findByCodeAndLang(code, Language.ENGLISH.getCode())
+                        .map(entity -> new Message(Language.of(entity.getLang()), entity.getContent()))
+                ).orElseThrow(() -> new CoreException("메시지를 찾을 수 없습니다. code: " + code + ", language: " + language));
     }
 
     public MessageCollection getCollection(String code) {

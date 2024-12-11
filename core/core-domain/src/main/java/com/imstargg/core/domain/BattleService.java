@@ -15,7 +15,7 @@ public class BattleService {
         this.battleReader = battleReader;
     }
 
-    public List<Battle> getPlayerBattles(BrawlStarsTag tag, int page) {
+    public List<PlayerBattle> getPlayerBattles(BrawlStarsTag tag, int page) {
         Player player = playerReader.get(tag);
         return battleReader.getList(player, page);
     }
