@@ -1,11 +1,14 @@
 import dayjs from 'dayjs';
 import type Player from "@/model/Player";
+import {getPlayer} from "@/app/_lib/getPlayer";
 
 type Props = {
-  player: Player;
+  tag: string;
 };
 
-export function Player({ player }: Readonly<Props>) {
+export async function Player({ tag }: Readonly<Props>) {
+  const player = await getPlayer(tag);
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
       <div className="flex items-start gap-6">

@@ -64,9 +64,9 @@ public class BattleRepository {
         return new PlayerBattle(
                 battleEntity.getBattleTime(),
                 battleEventRepository.find(
-                        battleEntity.getEvent().getEventBrawlStarsId() != null
-                                ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
-                        Language.KOREAN)
+                                battleEntity.getEvent().getEventBrawlStarsId() != null
+                                        ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
+                                Language.KOREAN)
                         .orElse(null),
                 BattleType.find(battleEntity.getType()),
                 battleEntity.getResult() != null ? BattleResult.map(battleEntity.getResult()) : null,
@@ -95,12 +95,14 @@ public class BattleRepository {
                     battlePlayers.getLast().add(new BattlePlayer(
                             new BrawlStarsTag(entity.getBrawlStarsTag()),
                             entity.getName(),
-                            brawlerRepository
-                                    .find(new BrawlStarsId(entity.getBrawler().getBrawlStarsId()), Language.KOREAN)
-                                    .orElse(null),
-                            entity.getBrawler().getPower(),
-                            entity.getBrawler().getTrophies(),
-                            entity.getBrawler().getTrophyChange()
+                            new BattlePlayerBrawler(
+                                    brawlerRepository
+                                            .find(new BrawlStarsId(entity.getBrawler().getBrawlStarsId()), Language.KOREAN)
+                                            .orElse(null),
+                                    entity.getBrawler().getPower(),
+                                    entity.getBrawler().getTrophies(),
+                                    entity.getBrawler().getTrophyChange()
+                            )
                     ));
                 });
 

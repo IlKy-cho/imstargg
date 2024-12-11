@@ -1,10 +1,7 @@
-import Brawler from "@/model/Brawler";
+import BattlePlayerBrawler from "@/model/BattlePlayerBrawler";
 
 export default interface BattlePlayer {
   tag: string;
   name: string;
-  brawler: Brawler;
-  brawlerPower: number;
-  brawlerTrophies: number | null;
-  brawlerTrophyChange: number | null;
+  brawler: BattlePlayerBrawler;
 }

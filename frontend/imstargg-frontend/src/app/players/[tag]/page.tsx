@@ -13,13 +13,12 @@ type Props = {
   }
 };
 
-export default async function PlayerPage({params}: Readonly<Props>) {
-  const player = await getPlayer(params.tag);
+export default function PlayerPage({params}: Readonly<Props>) {
 
   return (
     <div className="space-y-4">
-      <Player player={player}/>
-      <PlayerBattleList player={player}/>
+      <Player tag={params.tag}/>
+      <PlayerBattleList tag={params.tag}/>
     </div>
   );
 }

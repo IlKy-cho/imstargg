@@ -5,7 +5,7 @@ import BattleEvent from "@/model/BattleEvent";
 
 export default interface PlayerBattle {
   battleTime: Date;
-  event: BattleEvent;
+  event: BattleEvent | null;
   type: BattleType;
   result: BattleResult | null;
   duration: number | null;

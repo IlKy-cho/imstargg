@@ -1,13 +1,16 @@
 'use client';
 
-import Player from "@/model/Player";
 import {getBattles} from "@/app/players/[tag]/_lib/getBattles";
 import {useEffect, useState} from "react";
-import Battle from "@/model/Battle";
+import PlayerBattle from "@/model/PlayerBattle";
 import PlayerBattle from "./PlayerBattle";
 
-export default function PlayerBattleList({player}: { player: Player }) {
-  const [battles, setBattles] = useState<Battle[]>([]);
+type Props = {
+  tag: string;
+};
+
+export default function PlayerBattleList({ tag }: Readonly<Props>) {
+  const [battles, setBattles] = useState<PlayerBattle[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -17,7 +20,7 @@ export default function PlayerBattleList({player}: { player: Player }) {
     
     setLoading(true);
     try {
-      const newBattles = await getBattles(player.tag, page);
+      const newBattles = await getBattles(tag, page);
       if (newBattles.length === 0) {
         setHasMore(false);
       } else {

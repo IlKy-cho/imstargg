@@ -17,10 +17,10 @@ export default function Header({ menuItems }: HeaderProps) {
     <header className="bg-[#1a237e] text-white h-14 px-4 w-full z-50">
       <div className="max-w-7xl mx-auto h-full flex items-center">
         <div className="flex items-center gap-6">
-          <div className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <img src="/logo.png" alt="ImStarGG" className="h-8 w-8" />
             <h1 className="text-xl font-bold">ImStarGG</h1>
-          </div>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-4">
             {menuItems.map((item) => {

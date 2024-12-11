@@ -1,6 +1,5 @@
 package com.imstargg.core.api.controller.v1.response;
 
-import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.domain.PlayerBattle;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
@@ -11,13 +10,13 @@ import java.util.List;
 
 public record PlayerBattleResponse(
         LocalDateTime battleTime,
-        BattleEventResponse event,
+        @Nullable BattleEventResponse event,
         BattleType type,
         BattleResult result,
         @Nullable Integer duration,
         @Nullable Integer rank,
         @Nullable Integer trophyChange,
-        @Nullable BrawlStarsTag starPlayerTag,
+        @Nullable String starPlayerTag,
         List<List<BattlePlayerResponse>> teams
 ) {
 
@@ -30,7 +29,7 @@ public record PlayerBattleResponse(
                 battle.duration(),
                 battle.rank(),
                 battle.trophyChange(),
-                battle.starPlayerTag(),
+                battle.starPlayerTag() == null ? null : battle.starPlayerTag().value(),
                 battle.teams().stream()
                         .map(team -> team.stream()
                                 .map(BattlePlayerResponse::from)
