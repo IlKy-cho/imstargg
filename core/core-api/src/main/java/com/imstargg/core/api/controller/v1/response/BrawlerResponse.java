@@ -1,9 +1,6 @@
 package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.brawlstars.Brawler;
-import com.imstargg.core.domain.brawlstars.Gadget;
-import com.imstargg.core.domain.brawlstars.Gear;
-import com.imstargg.core.domain.brawlstars.StarPower;
 import com.imstargg.core.enums.BrawlerRarity;
 
 import java.util.List;
@@ -12,9 +9,9 @@ public record BrawlerResponse(
         long id,
         String name,
         BrawlerRarity rarity,
-        List<Gadget> gadgets,
-        List<Gear> gears,
-        List<StarPower> starPowers
+        List<GadgetResponse> gadgets,
+        List<GearResponse> gears,
+        List<StarPowerResponse> starPowers
 ) {
 
     public static BrawlerResponse from(Brawler brawler) {
@@ -22,9 +19,9 @@ public record BrawlerResponse(
                 brawler.id().value(),
                 brawler.name(),
                 brawler.rarity(),
-                brawler.gadgets(),
-                brawler.gears(),
-                brawler.starPowers()
+                brawler.gadgets().stream().map(GadgetResponse::from).toList(),
+                brawler.gears().stream().map(GearResponse::from).toList(),
+                brawler.starPowers().stream().map(StarPowerResponse::from).toList()
         );
     }
 }

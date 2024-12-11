@@ -1,10 +1,8 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.domain.brawlstars.Brawler;
 import com.imstargg.core.domain.brawlstars.BrawlerRepository;
-import com.imstargg.core.enums.Gadget;
-import com.imstargg.core.enums.Gear;
 import com.imstargg.core.enums.Language;
-import com.imstargg.core.enums.StarPower;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.BaseEntity;
 import com.imstargg.storage.db.core.PlayerBrawlerEntity;
@@ -104,15 +102,28 @@ public class PlayerRepository {
     }
 
     private PlayerBrawler mapEntityToPlayerBrawler(PlayerBrawlerEntity entity) {
+        Optional<Brawler> brawlerOpt = brawlerRepository.find(
+                new BrawlStarsId(entity.getBrawlerBrawlStarsId()), Language.KOREAN);
+        if (brawlerOpt.isEmpty()) {
+            return new PlayerBrawler(
+                    null,
+                    List.of(),
+                    List.of(),
+                    List.of(),
+                    entity.getPower(),
+                    entity.getRank(),
+                    entity.getTrophies(),
+                    entity.getHighestTrophies()
+            );
+        }
+
+        Brawler brawler = brawlerOpt.get();
+
         return new PlayerBrawler(
-                brawlerRepository.find(new BrawlStarsId(entity.getBrawlerBrawlStarsId()), Language.KOREAN)
-                        .orElse(null),
-                entity.getGearBrawlStarsIds().stream()
-                        .map(Gear::find).toList(),
-                entity.getStarPowerBrawlStarsIds().stream()
-                        .map(StarPower::find).toList(),
-                entity.getGadgetBrawlStarsIds().stream()
-                        .map(Gadget::find).toList(),
+                brawlerOpt.orElse(null),
+                brawler.filterGears(entity.getGearBrawlStarsIds().stream().map(BrawlStarsId::new).toList()),
+                brawler.filterStarPowers(entity.getStarPowerBrawlStarsIds().stream().map(BrawlStarsId::new).toList()),
+                brawler.filterGadgets(entity.getGadgetBrawlStarsIds().stream().map(BrawlStarsId::new).toList()),
                 entity.getPower(),
                 entity.getRank(),
                 entity.getTrophies(),
