@@ -8,6 +8,10 @@ import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.OptimisticLockException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -15,6 +19,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +32,7 @@ import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollect
 @Configuration
 public class PlayerUpdateJobConfig {
 
+    private static final Logger log = LoggerFactory.getLogger(PlayerUpdateJobConfig.class);
 
     private static final String JOB_NAME = "playerUpdateJob";
     private static final String STEP_NAME = "playerUpdateStep";
@@ -77,6 +83,20 @@ public class PlayerUpdateJobConfig {
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
+
+                .faultTolerant()
+                .skipLimit(3)
+                .skip(OptimisticLockException.class)
+                .listener(new ItemWriteListener<>() {
+                    @Override
+                    public void onWriteError(Exception exception, Chunk<? extends PlayerCollectionEntity> items) {
+                        log.warn("{} 중 플레이어 업데이트 충돌 발생. items={}",
+                                JOB_NAME,
+                                items.getItems().stream().map(PlayerCollectionEntity::getBrawlStarsTag).toList(),
+                                exception
+                        );
+                    }
+                })
 
                 .build();
     }
