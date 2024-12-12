@@ -3,6 +3,7 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
+import com.imstargg.batch.job.support.PlayerStatusJobParameter;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
@@ -29,6 +30,7 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
@@ -91,6 +93,12 @@ public class BattleUpdateJobConfig {
         return new PeriodDateTimeJobParameter();
     }
 
+    @Bean(JOB_NAME + "PlayerStatusJobParameter")
+    @JobScope
+    PlayerStatusJobParameter playerStatusJobParameter() {
+        return new PlayerStatusJobParameter();
+    }
+
     @Bean(STEP_NAME)
     @JobScope
     Step step() {
@@ -102,6 +110,7 @@ public class BattleUpdateJobConfig {
                 .writer(asyncWriter())
 
                 .faultTolerant()
+                .backOffPolicy(new FixedBackOffPolicy())
                 .skipLimit(3)
                 .skip(OptimisticLockException.class)
                 .listener(new ItemWriteListener<>() {
@@ -125,9 +134,7 @@ public class BattleUpdateJobConfig {
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(
-                                playerCollectionEntity.status.in(
-                                        PlayerStatus.PLAYER_UPDATED, PlayerStatus.BATTLE_UPDATED, PlayerStatus.NEW
-                                ),
+                                playerStatusCondition(),
                                 nextUpdateTimeGoe(),
                                 nextUpdateTimeLt()
                         )
@@ -136,6 +143,16 @@ public class BattleUpdateJobConfig {
         reader.setTransacted(false);
         reader.setSaveState(false);
         return reader;
+    }
+
+    private BooleanExpression playerStatusCondition() {
+        if (playerStatusJobParameter().getStatus() != null) {
+            return playerCollectionEntity.status.eq(playerStatusJobParameter().getStatus());
+        }
+
+        return playerCollectionEntity.status.in(
+                PlayerStatus.PLAYER_UPDATED, PlayerStatus.BATTLE_UPDATED
+        );
     }
 
     private BooleanExpression nextUpdateTimeGoe() {
