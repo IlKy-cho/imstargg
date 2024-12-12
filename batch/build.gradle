@@ -11,6 +11,7 @@ dependencies {
 
     // Spring
     implementation("org.springframework.boot:spring-boot-starter-batch")
+    implementation("org.springframework.batch:spring-batch-integration")
 
     // Test
     testImplementation(testFixtures(project(":storage:db-core")))
