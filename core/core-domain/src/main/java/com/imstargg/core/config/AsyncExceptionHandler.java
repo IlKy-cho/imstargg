@@ -1,4 +1,4 @@
-package com.imstargg.core.api.config;
+package com.imstargg.core.config;
 
 import com.imstargg.core.error.CoreException;
 import org.slf4j.Logger;

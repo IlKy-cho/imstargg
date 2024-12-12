@@ -10,6 +10,17 @@ spring:
 
   web.resources.add-mappings: false
 
+  task:
+    execution:
+      thread-name-prefix: "core-task-"
+      pool:
+        core-size: 10
+        max-size: 10
+        queue-capacity: 10000
+      shutdown:
+        await-termination: true
+        await-termination-period: 10000
+
 server:
   servlet:
     encoding:
