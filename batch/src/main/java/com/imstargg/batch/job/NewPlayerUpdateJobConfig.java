@@ -1,7 +1,6 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.NewPlayer;
-import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
@@ -37,6 +36,7 @@ public class NewPlayerUpdateJobConfig {
 
     private static final String JOB_NAME = "newPlayerUpdateJob";
     private static final String STEP_NAME = "newPlayerUpdateStep";
+    private static final int CHUNK_SIZE = 10;
 
     private final Clock clock;
     private final JobRepository jobRepository;
@@ -72,18 +72,12 @@ public class NewPlayerUpdateJobConfig {
                 .build();
     }
 
-    @Bean(JOB_NAME + "ChunkSizeJobParameter")
-    @JobScope
-    ChunkSizeJobParameter chunkSizeJobParameter() {
-        return new ChunkSizeJobParameter(10);
-    }
-
     @Bean(STEP_NAME)
     @JobScope
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<UnknownPlayerCollectionEntity, NewPlayer>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<UnknownPlayerCollectionEntity, NewPlayer>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -109,7 +103,7 @@ public class NewPlayerUpdateJobConfig {
     @StepScope
     QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader() {
         QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(
-                emf, chunkSizeJobParameter().getSize(), queryFactory ->
+                emf, CHUNK_SIZE, queryFactory ->
                 queryFactory
                         .selectFrom(unknownPlayerCollectionEntity)
                         .where(unknownPlayerCollectionEntity.status.in(
