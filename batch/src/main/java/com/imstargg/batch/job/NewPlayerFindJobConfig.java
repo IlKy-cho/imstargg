@@ -1,6 +1,6 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.PlayerTagFinderWithLocalCache;
+import com.imstargg.batch.domain.PlayerTagSet;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
 import com.imstargg.batch.job.support.QuerydslPagingItemReader;
@@ -15,8 +15,6 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -26,7 +24,7 @@ import java.time.Clock;
 import static com.imstargg.storage.db.core.QBattlePlayerCollectionEntity.battlePlayerCollectionEntity;
 
 @Configuration
-public class NewPlayerFindJobConfig {
+class NewPlayerFindJobConfig {
 
     private static final String JOB_NAME = "newPlayerFindJob";
     private static final String STEP_NAME = "newPlayerFindStep";
@@ -38,22 +36,19 @@ public class NewPlayerFindJobConfig {
     private final EntityManagerFactory emf;
 
     private final AlertManager alertManager;
-    private final PlayerTagFinderWithLocalCache playerTagFinder;
 
     NewPlayerFindJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
-            AlertManager alertManager,
-            PlayerTagFinderWithLocalCache playerTagFinder
+            AlertManager alertManager
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
         this.alertManager = alertManager;
-        this.playerTagFinder = playerTagFinder;
     }
 
     @Bean(JOB_NAME)
@@ -101,15 +96,18 @@ public class NewPlayerFindJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerFindJobItemProcessor processor() {
-        return new NewPlayerFindJobItemProcessor(clock, playerTagFinder);
+        return new NewPlayerFindJobItemProcessor(clock, playerTagSet());
     }
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    JpaItemWriter<UnknownPlayerCollectionEntity> writer() {
-        return new JpaItemWriterBuilder<UnknownPlayerCollectionEntity>()
-                .entityManagerFactory(emf)
-                .usePersist(true)
-                .build();
+    NewPlayerFindJobItemWriter writer() {
+        return new NewPlayerFindJobItemWriter(emf, playerTagSet());
+    }
+
+    @Bean(JOB_NAME + "PlayerTagSet")
+    @JobScope
+    PlayerTagSet playerTagSet() {
+        return new PlayerTagSet(emf);
     }
 }
