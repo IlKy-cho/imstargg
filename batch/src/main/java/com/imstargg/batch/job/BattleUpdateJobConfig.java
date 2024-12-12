@@ -21,14 +21,16 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.integration.async.AsyncItemProcessor;
+import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.Chunk;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
+import java.util.concurrent.Future;
 
 import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
 
@@ -45,6 +47,7 @@ public class BattleUpdateJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
+    private final TaskExecutor taskExecutor;
 
     private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
@@ -55,6 +58,7 @@ public class BattleUpdateJobConfig {
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
+            TaskExecutor taskExecutor,
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient,
             BattleUpdateApplier battleUpdateApplier
@@ -63,6 +67,7 @@ public class BattleUpdateJobConfig {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
+        this.taskExecutor = taskExecutor;
         this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
         this.battleUpdateApplier = battleUpdateApplier;
@@ -78,43 +83,28 @@ public class BattleUpdateJobConfig {
                 .build();
     }
 
-    @Bean
-    @JobScope
-    TaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setThreadNamePrefix(JOB_NAME + "-task-");
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(5);
-        executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.initialize();
-        return executor;
-    }
-
     @Bean(STEP_NAME)
     @JobScope
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerCollectionEntity, PlayerBattleUpdateResult>chunk(CHUNK_SIZE, txManager)
+                .<PlayerCollectionEntity, Future<PlayerBattleUpdateResult>>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
-                .processor(processor())
-                .writer(writer())
+                .processor(asyncProcessor())
+                .writer(asyncWriter())
 
                 .faultTolerant()
                 .skipLimit(3)
                 .skip(OptimisticLockException.class)
                 .listener(new ItemWriteListener<>() {
                     @Override
-                    public void onWriteError(Exception exception, Chunk<? extends PlayerBattleUpdateResult> items) {
-                        log.warn("{} 중 플레이어 업데이트 충돌 발생. items={}",
+                    public void onWriteError(Exception exception, Chunk<? extends Future<PlayerBattleUpdateResult>> items) {
+                        log.warn("{} 중 플레이어 업데이트 충돌 발생.",
                                 JOB_NAME,
-                                items.getItems().stream().map(item -> item.playerEntity().getBrawlStarsTag()).toList(),
                                 exception
                         );
                     }
                 })
-
-                .taskExecutor(taskExecutor())
 
                 .build();
     }
@@ -138,10 +128,27 @@ public class BattleUpdateJobConfig {
         return reader;
     }
 
+    @Bean(STEP_NAME + "AsyncItemProcessor")
+    @StepScope
+    AsyncItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> asyncProcessor() {
+        AsyncItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> asyncProcessor = new AsyncItemProcessor<>();
+        asyncProcessor.setDelegate(processor());
+        asyncProcessor.setTaskExecutor(taskExecutor);
+        return asyncProcessor;
+    }
+
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     BattleUpdateJobItemProcessor processor() {
         return new BattleUpdateJobItemProcessor(clock, brawlStarsClient, battleUpdateApplier);
+    }
+
+    @Bean(STEP_NAME + "AsyncItemWriter")
+    @StepScope
+    AsyncItemWriter<PlayerBattleUpdateResult> asyncWriter() {
+        AsyncItemWriter<PlayerBattleUpdateResult> asyncWriter = new AsyncItemWriter<>();
+        asyncWriter.setDelegate(writer());
+        return asyncWriter;
     }
 
     @Bean(STEP_NAME + "ItemWriter")

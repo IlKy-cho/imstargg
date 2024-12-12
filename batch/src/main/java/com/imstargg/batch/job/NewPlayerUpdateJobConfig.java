@@ -19,13 +19,17 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.integration.async.AsyncItemProcessor;
+import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.Chunk;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Clock;
+import java.util.concurrent.Future;
 
 import static com.imstargg.storage.db.core.QUnknownPlayerCollectionEntity.unknownPlayerCollectionEntity;
 
@@ -42,6 +46,7 @@ public class NewPlayerUpdateJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
+    private final TaskExecutor taskExecutor;
 
     private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
@@ -51,6 +56,7 @@ public class NewPlayerUpdateJobConfig {
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
+            TaskExecutor taskExecutor,
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient
     ) {
@@ -58,6 +64,7 @@ public class NewPlayerUpdateJobConfig {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
+        this.taskExecutor = taskExecutor;
         this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
     }
@@ -77,20 +84,18 @@ public class NewPlayerUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<UnknownPlayerCollectionEntity, NewPlayer>chunk(CHUNK_SIZE, txManager)
+                .<UnknownPlayerCollectionEntity, Future<NewPlayer>>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
-                .processor(processor())
-                .writer(writer())
+                .processor(asyncProcessor())
+                .writer(asyncWriter())
 
                 .faultTolerant()
-                .retryLimit(3)
-                .retry(SQLIntegrityConstraintViolationException.class)
+                .skip(SQLIntegrityConstraintViolationException.class)
                 .listener(new ItemWriteListener<>() {
                     @Override
-                    public void onWriteError(Exception exception, Chunk<? extends NewPlayer> items) {
-                        log.warn("{} 중 중복된 플레이어 저장 발생. items={}",
+                    public void onWriteError(Exception exception, Chunk<? extends Future<NewPlayer>> items) {
+                        log.warn("{} 중 중복된 플레이어 저장 발생.",
                                 JOB_NAME,
-                                items.getItems().stream().map(item -> item.unknownPlayerEntity().getBrawlStarsTag()).toList(),
                                 exception
                         );
                     }
@@ -111,13 +116,31 @@ public class NewPlayerUpdateJobConfig {
                         ))
         );
         reader.setTransacted(false);
+        reader.setSaveState(false);
         return reader;
+    }
+
+    @Bean(STEP_NAME + "AsyncItemProcessor")
+    @StepScope
+    AsyncItemProcessor<UnknownPlayerCollectionEntity, NewPlayer> asyncProcessor() {
+        AsyncItemProcessor<UnknownPlayerCollectionEntity, NewPlayer> asyncProcessor = new AsyncItemProcessor<>();
+        asyncProcessor.setDelegate(processor());
+        asyncProcessor.setTaskExecutor(taskExecutor);
+        return asyncProcessor;
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerUpdateJobItemProcessor processor() {
         return new NewPlayerUpdateJobItemProcessor(clock, brawlStarsClient);
+    }
+
+    @Bean(STEP_NAME + "AsyncItemWriter")
+    @StepScope
+    AsyncItemWriter<NewPlayer> asyncWriter() {
+        AsyncItemWriter<NewPlayer> asyncWriter = new AsyncItemWriter<>();
+        asyncWriter.setDelegate(writer());
+        return asyncWriter;
     }
 
     @Bean(STEP_NAME + "ItemWriter")
