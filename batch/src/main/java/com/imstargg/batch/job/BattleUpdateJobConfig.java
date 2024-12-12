@@ -1,16 +1,20 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.OptimisticLockException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -18,6 +22,7 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -28,6 +33,8 @@ import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollect
 
 @Configuration
 public class BattleUpdateJobConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(BattleUpdateJobConfig.class);
 
     private static final String JOB_NAME = "battleUpdateJob";
     private static final String STEP_NAME = "battleUpdateStep";
@@ -84,6 +91,20 @@ public class BattleUpdateJobConfig {
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
+
+                .faultTolerant()
+                .skipLimit(3)
+                .skip(OptimisticLockException.class)
+                .listener(new ItemWriteListener<>() {
+                    @Override
+                    public void onWriteError(Exception exception, Chunk<? extends PlayerBattleUpdateResult> items) {
+                        log.warn("{} 중 플레이어 업데이트 충돌 발생. items={}",
+                                JOB_NAME,
+                                items.getItems().stream().map(item -> item.playerEntity().getBrawlStarsTag()).toList(),
+                                exception
+                        );
+                    }
+                })
 
                 .build();
     }

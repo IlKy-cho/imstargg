@@ -8,6 +8,9 @@ import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -15,16 +18,20 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Clock;
 
 import static com.imstargg.storage.db.core.QBattlePlayerCollectionEntity.battlePlayerCollectionEntity;
 
 @Configuration
 class NewPlayerFindJobConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(NewPlayerFindJobConfig.class);
 
     private static final String JOB_NAME = "newPlayerFindJob";
     private static final String STEP_NAME = "newPlayerFindStep";
@@ -76,6 +83,21 @@ class NewPlayerFindJobConfig {
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
+
+                .faultTolerant()
+                .retryLimit(3)
+                .retry(SQLIntegrityConstraintViolationException.class)
+                .listener(new ItemWriteListener<>() {
+                    @Override
+                    public void onWriteError(Exception exception, Chunk<? extends UnknownPlayerCollectionEntity> items) {
+                        log.warn("{} 중 중복된 플레이어 저장 발생. items={}",
+                                JOB_NAME,
+                                items.getItems().stream().map(UnknownPlayerCollectionEntity::getBrawlStarsTag).toList(),
+                                exception
+                        );
+                    }
+                })
+
                 .build();
     }
 
