@@ -1,7 +1,6 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
-import com.imstargg.batch.job.support.ChunkSizeJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
@@ -25,6 +24,8 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.Chunk;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
@@ -38,6 +39,7 @@ public class BattleUpdateJobConfig {
 
     private static final String JOB_NAME = "battleUpdateJob";
     private static final String STEP_NAME = "battleUpdateStep";
+    private static final int CHUNK_SIZE = 10;
 
     private final Clock clock;
     private final JobRepository jobRepository;
@@ -76,10 +78,16 @@ public class BattleUpdateJobConfig {
                 .build();
     }
 
-    @Bean(JOB_NAME + "ChunkSizeJobParameter")
+    @Bean
     @JobScope
-    ChunkSizeJobParameter chunkSizeJobParameter() {
-        return new ChunkSizeJobParameter(10);
+    TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setThreadNamePrefix(JOB_NAME + "-task-");
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(5);
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.initialize();
+        return executor;
     }
 
     @Bean(STEP_NAME)
@@ -87,7 +95,7 @@ public class BattleUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerCollectionEntity, PlayerBattleUpdateResult>chunk(chunkSizeJobParameter().getSize(), txManager)
+                .<PlayerCollectionEntity, PlayerBattleUpdateResult>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -106,13 +114,16 @@ public class BattleUpdateJobConfig {
                     }
                 })
 
+                .taskExecutor(taskExecutor())
+
                 .build();
     }
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
     QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
-        QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(emf, chunkSizeJobParameter().getSize(), queryFactory ->
+        QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(
+                emf, CHUNK_SIZE, queryFactory ->
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(
@@ -123,6 +134,7 @@ public class BattleUpdateJobConfig {
                         .orderBy(playerCollectionEntity.updateWeight.asc())
         );
         reader.setTransacted(false);
+        reader.setSaveState(false);
         return reader;
     }
 
