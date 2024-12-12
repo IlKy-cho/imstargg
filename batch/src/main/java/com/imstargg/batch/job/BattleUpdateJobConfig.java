@@ -2,6 +2,7 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
+import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
 import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
@@ -9,6 +10,7 @@ import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
 import org.slf4j.Logger;
@@ -83,6 +85,12 @@ public class BattleUpdateJobConfig {
                 .build();
     }
 
+    @Bean(JOB_NAME + "PeriodDateTimeJobParameter")
+    @JobScope
+    PeriodDateTimeJobParameter periodDateTimeJobParameter() {
+        return new PeriodDateTimeJobParameter();
+    }
+
     @Bean(STEP_NAME)
     @JobScope
     Step step() {
@@ -119,13 +127,31 @@ public class BattleUpdateJobConfig {
                         .where(
                                 playerCollectionEntity.status.in(
                                         PlayerStatus.PLAYER_UPDATED, PlayerStatus.BATTLE_UPDATED, PlayerStatus.NEW
-                                )
+                                ),
+                                nextUpdateTimeGoe(),
+                                nextUpdateTimeLt()
                         )
                         .orderBy(playerCollectionEntity.updateWeight.asc())
         );
         reader.setTransacted(false);
         reader.setSaveState(false);
         return reader;
+    }
+
+    private BooleanExpression nextUpdateTimeGoe() {
+        if (periodDateTimeJobParameter().getFrom() == null) {
+            return null;
+        }
+
+        return playerCollectionEntity.updateWeight.goe(periodDateTimeJobParameter().getFrom());
+    }
+
+    private BooleanExpression nextUpdateTimeLt() {
+        if (periodDateTimeJobParameter().getTo() == null) {
+            return null;
+        }
+
+        return playerCollectionEntity.updateWeight.lt(periodDateTimeJobParameter().getTo());
     }
 
     @Bean(STEP_NAME + "AsyncItemProcessor")
