@@ -4,7 +4,7 @@ spring.cloud.openfeign:
       brawlstars:
         connectTimeout: 2100
         readTimeout: 5000
-        loggerLevel: basic
+        loggerLevel: BASIC
   compression:
     response:
       enabled: false
@@ -39,4 +39,4 @@ spring.config.activate.on-profile:
 spring.config.activate.on-profile:
   - live
 
-spring.cloud.openfeign.client.config.brawlstars.loggerLevel: basic
+spring.cloud.openfeign.client.config.brawlstars.loggerLevel: NONE
