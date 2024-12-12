@@ -22,6 +22,7 @@ import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
@@ -79,6 +80,7 @@ public class PlayerUpdateJobConfig {
                 .writer(writer())
 
                 .faultTolerant()
+                .backOffPolicy(new FixedBackOffPolicy())
                 .skipLimit(3)
                 .skip(OptimisticLockException.class)
                 .listener(new ItemWriteListener<>() {
