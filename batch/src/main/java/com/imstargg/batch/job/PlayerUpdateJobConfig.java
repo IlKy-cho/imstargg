@@ -1,7 +1,7 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
-import com.imstargg.batch.job.support.QuerydslZeroPagingItemReader;
+import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;

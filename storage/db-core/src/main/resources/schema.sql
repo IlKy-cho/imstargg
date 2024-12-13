@@ -15,6 +15,7 @@ create table battle
     battle_rank                int,
     trophy_change              int,
     trophies_snapshot          int,
+    teams json,
     created_at                 timestamp(6) not null default now(),
     updated_at                 timestamp(6) not null default now(),
     deleted                    boolean      not null default false,

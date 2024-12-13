@@ -5,6 +5,7 @@ import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
 import java.time.LocalDateTime;
+import java.util.stream.IntStream;
 
 public class BattleCollectionEntityFixture {
 
@@ -161,7 +162,12 @@ public class BattleCollectionEntityFixture {
                         rank,
                         trophyChange,
                         trophySnapshot
-                )
+                ),
+                IntStream.range(0, 3).mapToObj(i ->
+                        IntStream.range(0, 3).mapToObj(j ->
+                                new BattleCollectionEntityTeamPlayerFixture().build()
+                        ).toList()
+                ).toList()
         );
     }
 

@@ -3,7 +3,7 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.PlayerTagSet;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
-import com.imstargg.batch.job.support.QuerydslPagingItemReader;
+import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
 import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;

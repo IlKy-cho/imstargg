@@ -6,7 +6,8 @@ import com.imstargg.client.brawlstars.response.BattleResultPlayerResponse;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityEvent;
 import com.imstargg.storage.db.core.BattleCollectionEntityPlayer;
-import com.imstargg.storage.db.core.BattlePlayerCollectionEntityBrawler;
+import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayerBrawler;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 
 import java.util.Collection;
@@ -26,9 +27,9 @@ public class BattleCollectionEntityBuilder {
     public BattleCollectionEntity build() {
         List<List<BattleResultPlayerResponse>> battleResponseTeamList = getBattleTeamList();
         String battleKey = createBattleKey(battleResponseTeamList);
-        BattleCollectionEntity battleEntity = buildBattleEntity(battleKey);
-        addBattlePlayers(battleEntity, battleResponseTeamList);
-        return battleEntity;
+        List<List<BattleCollectionEntityTeamPlayer>> battleTeamPlayerEntities = buildBattleTeamPlayers(
+                battleResponseTeamList);
+        return buildBattleEntity(battleKey, battleTeamPlayerEntities);
     }
 
     private List<List<BattleResultPlayerResponse>> getBattleTeamList() {
@@ -47,7 +48,8 @@ public class BattleCollectionEntityBuilder {
         return battleKeyBuilder.build();
     }
 
-    private BattleCollectionEntity buildBattleEntity(String battleKey) {
+    private BattleCollectionEntity buildBattleEntity(
+            String battleKey, List<List<BattleCollectionEntityTeamPlayer>> battleTeamPlayerEntities) {
         return new BattleCollectionEntity(
                 battleKey,
                 battleResponse.battleTime(),
@@ -67,37 +69,36 @@ public class BattleCollectionEntityBuilder {
                         battleResponse.battle().rank(),
                         battleResponse.battle().trophyChange(),
                         playerEntity.getTrophies()
-                )
+                ),
+                battleTeamPlayerEntities
         );
     }
 
-    private void addBattlePlayers(
-            BattleCollectionEntity battleEntity, List<List<BattleResultPlayerResponse>> teams) {
-        for (int teamIdx = 0; teamIdx < teams.size(); teamIdx++) {
-            for (int playerIdx = 0; playerIdx < teams.get(teamIdx).size(); playerIdx++) {
-                BattleResultPlayerResponse playerResponse = teams.get(teamIdx).get(playerIdx);
-                List<BattleResultBrawlerResponse> brawlerResponseList = Optional.ofNullable(playerResponse.brawler())
-                        .map(List::of)
-                        .or(() -> Optional.ofNullable(playerResponse.brawlers()))
-                        .orElseThrow(() -> new IllegalArgumentException("브롤러가 없습니다. " +
-                                "playerResponse=" + playerResponse));
+    private List<List<BattleCollectionEntityTeamPlayer>> buildBattleTeamPlayers(
+            List<List<BattleResultPlayerResponse>> teams) {
+        return teams.stream().map(
+                team -> team.stream().flatMap(
+                        player -> getPlayerBrawlers(player).stream().map(
+                                brawler -> new BattleCollectionEntityTeamPlayer(
+                                        player.tag(),
+                                        player.name(),
+                                        new BattleCollectionEntityTeamPlayerBrawler(
+                                                brawler.id(),
+                                                brawler.name(),
+                                                brawler.power(),
+                                                brawler.trophies(),
+                                                brawler.trophyChange()
+                                        )
+                                ))
+                ).toList()
+        ).toList();
+    }
 
-                for (BattleResultBrawlerResponse brawlerResponse : brawlerResponseList) {
-                    battleEntity.addPlayer(
-                            playerResponse.tag(),
-                            playerResponse.name(),
-                            teamIdx,
-                            playerIdx,
-                            new BattlePlayerCollectionEntityBrawler(
-                                    brawlerResponse.id(),
-                                    brawlerResponse.name(),
-                                    brawlerResponse.power(),
-                                    brawlerResponse.trophies(),
-                                    brawlerResponse.trophyChange()
-                            )
-                    );
-                }
-            }
-        }
+    private static List<BattleResultBrawlerResponse> getPlayerBrawlers(BattleResultPlayerResponse player) {
+        return Optional.ofNullable(player.brawler())
+                .map(List::of)
+                .or(() -> Optional.ofNullable(player.brawlers()))
+                .orElseThrow(() -> new IllegalArgumentException("브롤러가 없습니다. " +
+                        "player=" + player));
     }
 }
