@@ -97,7 +97,7 @@ public class QuerydslNoOffsetStringOptions<T> extends QuerydslNoOffsetOptions<T>
 
     @Override
     public void resetCurrentId(T item) {
-        currentId = (String) getFiledValue(item);
+        currentId = (String) getFieldValue(item);
         if (logger.isDebugEnabled()) {
             logger.debug("Current Select Key= " + currentId);
         }

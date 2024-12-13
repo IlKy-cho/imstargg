@@ -98,7 +98,7 @@ public class QuerydslNoOffsetNumberOptions<T, N extends Number & Comparable<?>> 
     @Override
     public void resetCurrentId(T item) {
         //noinspection unchecked
-        currentId = (N) getFiledValue(item);
+        currentId = (N) getFieldValue(item);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Current Select Key= " + currentId);
