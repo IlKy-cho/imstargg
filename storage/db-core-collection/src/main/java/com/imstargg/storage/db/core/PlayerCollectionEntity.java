@@ -18,7 +18,6 @@ import jakarta.persistence.Version;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -126,7 +125,7 @@ public class PlayerCollectionEntity extends BaseEntity {
             int bestRoboRumbleTime,
             int bestTimeAsBigBrawler,
             @Nullable String brawlStarsClubTag,
-            LocalDateTime now
+            Clock clock
     ) {
         this.status = PlayerStatus.NEW;
         this.brawlStarsTag = brawlStarsTag;
@@ -145,7 +144,7 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
         this.brawlStarsClubTag = brawlStarsClubTag;
         this.notUpdatedCount = 0;
-        this.updateWeight = now;
+        this.updateWeight = LocalDateTime.now(clock);
     }
 
     public void updateBrawler(
@@ -199,52 +198,104 @@ public class PlayerCollectionEntity extends BaseEntity {
     }
 
     public void battleUpdated(Clock clock, List<LocalDateTime> updatedBattleTimes) {
-        this.status = this.status == PlayerStatus.NEW ? PlayerStatus.PLAYER_UPDATED : PlayerStatus.BATTLE_UPDATED;
-
-        Optional<LocalDateTime> latestBattleTimeOpt = updatedBattleTimes.stream()
-                .max(Comparator.naturalOrder());
         LocalDateTime now = LocalDateTime.now(clock);
+        Optional<LocalDateTime> latestBattleTimeOpt = findLatestBattleTime(updatedBattleTimes);
+
         if (latestBattleTimeOpt.isEmpty()) {
-            notUpdatedCount += 1;
-            this.updateWeight = now.plus((long) (
-                    noUpdatedCountWeight() * trophyWeight() * expLevelWeight()
-            ), ChronoUnit.MILLIS);
-            this.status = PlayerStatus.PLAYER_UPDATED;
+            handleNoBattleUpdate(now);
             return;
         }
-        notUpdatedCount = 0;
-        this.latestBattleTime = latestBattleTimeOpt.get();
-        this.updateWeight = now.plus((long) (
-                recentBattleTimeWeight(Duration.between(latestBattleTime, now))
-                        * battleCountWeight(updatedBattleTimes.size())
-                        * trophyWeight()
-                        * expLevelWeight()
-        ), ChronoUnit.MILLIS);
 
+        handleBattleUpdate(latestBattleTimeOpt.get(), now);
     }
 
-    private long noUpdatedCountWeight() {
-        return (long) (1000000 * Math.log(notUpdatedCount + 1D) + Duration.ofHours(1).toMillis());
+    private Optional<LocalDateTime> findLatestBattleTime(List<LocalDateTime> battleTimes) {
+        return battleTimes.stream()
+                .max(Comparator.naturalOrder());
     }
 
-    // f(0) = 10분, f(10분) = 20분, ... 로그함수로 증가
-    private long recentBattleTimeWeight(Duration timeGap) {
-        return (long) (50000 * Math.log(timeGap.toMillis() + 1D) + 600000);
+    private void handleNoBattleUpdate(LocalDateTime now) {
+        if (checkDormant(now)) {
+            this.status = PlayerStatus.DORMANT;
+            return;
+        }
+        this.updateWeight = nextUpdateTimeWhenNotBattleUpdated(now);
+        this.status = PlayerStatus.PLAYER_UPDATED;
     }
 
-    // 1 ~ 2: f(25) = 2, x->1 = y->1
-    private double battleCountWeight(int x) {
-        return 2 / (1 + Math.exp(-(x - 25) / 2D)) + 1;
+    private void handleBattleUpdate(LocalDateTime latestBattleTime, LocalDateTime now) {
+        this.status = determineNewStatus();
+        this.latestBattleTime = latestBattleTime;
+        this.updateWeight = nextUpdateTimeWhenBattleUpdated(now, latestBattleTime);
     }
 
-    // 1.5 ~ 1L: f(0) = 1.5, x -> inf = y -> 1
-    private double trophyWeight() {
-        return 1 / (1 + Math.exp(trophies / 10000D)) + 1;
+    private PlayerStatus determineNewStatus() {
+        return this.status == PlayerStatus.NEW ? 
+               PlayerStatus.PLAYER_UPDATED : 
+               PlayerStatus.BATTLE_UPDATED;
     }
 
-    // 1.5 ~ 1L: f(0) = 1.5, x -> inf = y -> 1
-    private double expLevelWeight() {
-        return 1 / (1 + Math.exp(expLevel / 100D)) + 1;
+    private LocalDateTime nextUpdateTimeWhenBattleUpdated(
+            LocalDateTime now, LocalDateTime latestBattleTime) {
+        if (isRecentBattle(latestBattleTime, now)) {
+            return calculateWeightedUpdateTime(now);
+        }
+        return now.plusHours(12);
+    }
+
+    private boolean isRecentBattle(LocalDateTime battleTime, LocalDateTime now) {
+        return Duration.between(battleTime, now).toMinutes() < 30;
+    }
+
+    private LocalDateTime calculateWeightedUpdateTime(LocalDateTime now) {
+        long weightMultiplier = (long) trophyWeight() * expLevelWeight();
+        return now.plus(Duration.ofMinutes(60).multipliedBy(weightMultiplier));
+    }
+
+    private boolean checkDormant(LocalDateTime now) {
+        return durationBetweenLastBattleUpdated(now).toDays() > 30;
+    }
+
+    private Duration durationBetweenLastBattleUpdated(LocalDateTime now) {
+        return Duration.between(
+                latestBattleTime != null ? latestBattleTime : getCreatedAt(),
+                now
+        );
+    }
+
+    private LocalDateTime nextUpdateTimeWhenNotBattleUpdated(LocalDateTime now) {
+        Duration term = Duration.ofHours(12);
+        Duration lastUpdatedDuration = durationBetweenLastBattleUpdated(now);
+        while (term.toDays() <= 30) {
+            if (term.compareTo(lastUpdatedDuration) >= 0) {
+                break;
+            }
+            term = term.multipliedBy(2);
+        }
+
+        return now.plus(term);
+    }
+
+    private int trophyWeight() {
+        if (trophies < 10000) {
+            return 4;
+        } else if (trophies < 20000) {
+            return 3;
+        } else if (trophies < 30000) {
+            return 2;
+        }
+
+        return 1;
+    }
+
+    private int expLevelWeight() {
+        if (expLevel < 50) {
+            return 3;
+        } else if (expLevel < 100) {
+            return 2;
+        }
+
+        return 1;
     }
 
     public void deleted() {
@@ -372,9 +423,5 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Nullable
     public LocalDateTime getLatestBattleTime() {
         return latestBattleTime;
-    }
-
-    public void setStatus(PlayerStatus status) {
-        this.status = status;
     }
 }
