@@ -39,7 +39,7 @@ public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerCollect
     public PlayerBattleUpdateResult process(PlayerCollectionEntity item) throws Exception {
         if (PlayerStatus.NEW != item.getStatus() && !item.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
             log.warn("Player 업데이트 쿨타임이 지나지 않아 스킵. playerTag={}", item.getBrawlStarsTag());
-            item.battleUpdated(LocalDateTime.now(clock), List.of());
+            item.battleUpdated(clock, List.of());
             return new PlayerBattleUpdateResult(item, List.of());
         }
         try {
@@ -51,7 +51,7 @@ public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerCollect
                     .map(BattleCollectionEntity::getBattleTime)
                     .toList();
             
-            item.battleUpdated(LocalDateTime.now(clock), updatedBattleTimes);
+            item.battleUpdated(clock, updatedBattleTimes);
 
             return new PlayerBattleUpdateResult(item, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {

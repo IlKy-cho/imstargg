@@ -15,6 +15,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.persistence.Version;
 
+import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -197,11 +198,12 @@ public class PlayerCollectionEntity extends BaseEntity {
         return status.isNextUpdateCooldownOver(now, getUpdatedAt());
     }
 
-    public void battleUpdated(LocalDateTime now, List<LocalDateTime> updatedBattleTimes) {
+    public void battleUpdated(Clock clock, List<LocalDateTime> updatedBattleTimes) {
         this.status = this.status == PlayerStatus.NEW ? PlayerStatus.PLAYER_UPDATED : PlayerStatus.BATTLE_UPDATED;
 
         Optional<LocalDateTime> latestBattleTimeOpt = updatedBattleTimes.stream()
                 .max(Comparator.naturalOrder());
+        LocalDateTime now = LocalDateTime.now(clock);
         if (latestBattleTimeOpt.isEmpty()) {
             notUpdatedCount += 1;
             this.updateWeight = now.plus((long) (
