@@ -135,7 +135,7 @@ public class PlayerRenewer {
                 .map(BattleCollectionEntity::getBattleTime)
                 .toList();
 
-        playerEntity.battleUpdated(LocalDateTime.now(clock), updatedBattleTimes);
+        playerEntity.battleUpdated(clock, updatedBattleTimes);
         return updatedBattleEntities;
     }
 
