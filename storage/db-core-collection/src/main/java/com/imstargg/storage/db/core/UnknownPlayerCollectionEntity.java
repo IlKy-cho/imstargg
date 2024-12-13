@@ -78,6 +78,10 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         this.status = UnknownPlayerStatus.UPDATED;
     }
 
+    public void adminNew() {
+        this.status = UnknownPlayerStatus.ADMIN_NEW;
+    }
+
     public void notFound() {
         if (this.status == UnknownPlayerStatus.ADMIN_NEW || this.status == UnknownPlayerStatus.UPDATE_NEW) {
             this.status = UnknownPlayerStatus.DELETED;
@@ -86,10 +90,6 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
             this.status = UnknownPlayerStatus.NOT_FOUND;
             this.notFoundCount++;
         }
-    }
-
-    public void setStatus(UnknownPlayerStatus status) {
-        this.status = status;
     }
 
     public Long getId() {
