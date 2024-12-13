@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public record NewMessageCollection(
-        EnumMap<Language, String> messages
+        Map<Language, String> messages
 ) {
 
     private static final EnumMap<Language, Pattern> VALIDATION_PATTERNS = new EnumMap<>(Map.of(

@@ -8,5 +8,6 @@ public enum BrawlerRarity {
     EPIC,               // 영웅
     MYTHIC,             // 신화
     LEGENDARY,          // 전설
+    TIME_LIMITED_BRAWLER,
     ;
 }
