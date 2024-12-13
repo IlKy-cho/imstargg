@@ -1,4 +1,4 @@
-package com.imstargg.batch.job.support;
+package com.imstargg.batch.job.support.querydsl;
 
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;

@@ -10,8 +10,11 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(
@@ -63,6 +66,10 @@ public class BattleEntity extends BaseEntity {
     @Embedded
     private BattleEntityPlayer player;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "teams", columnDefinition = "json")
+    private List<List<BattleEntityTeamPlayer>> teams;
+
     protected BattleEntity() {
     }
 
@@ -103,5 +110,9 @@ public class BattleEntity extends BaseEntity {
 
     public BattleEntityPlayer getPlayer() {
         return player;
+    }
+
+    public List<List<BattleEntityTeamPlayer>> getTeams() {
+        return teams;
     }
 }

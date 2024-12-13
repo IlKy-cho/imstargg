@@ -10,6 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -58,6 +60,10 @@ public class BattleCollectionEntity extends BaseEntity {
     @OneToMany(mappedBy = "battle", cascade = CascadeType.ALL)
     private List<BattlePlayerCollectionEntity> battlePlayers = new ArrayList<>();
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "teams", columnDefinition = "json")
+    private List<List<BattleCollectionEntityTeamPlayer>> teams;
+
     protected BattleCollectionEntity() {
     }
 
@@ -70,7 +76,8 @@ public class BattleCollectionEntity extends BaseEntity {
             @Nullable String result,
             @Nullable Integer duration,
             @Nullable String starPlayerBrawlStarsTag,
-            BattleCollectionEntityPlayer player
+            BattleCollectionEntityPlayer player,
+            List<List<BattleCollectionEntityTeamPlayer>> teams
     ) {
         this.battleKey = battleKey;
         this.battleTime = battleTime;
@@ -81,16 +88,7 @@ public class BattleCollectionEntity extends BaseEntity {
         this.duration = duration;
         this.starPlayerBrawlStarsTag = starPlayerBrawlStarsTag;
         this.player = player;
-    }
-
-    public void addPlayer(
-            String brawlStarsTag,
-            String name,
-            int teamIdx,
-            int playerIdx,
-            BattlePlayerCollectionEntityBrawler brawler
-    ) {
-        battlePlayers.add(new BattlePlayerCollectionEntity(this, brawlStarsTag, name, teamIdx, playerIdx, brawler));
+        this.teams = teams;
     }
 
     public Long getId() {
@@ -134,8 +132,15 @@ public class BattleCollectionEntity extends BaseEntity {
         return player;
     }
 
+    public List<List<BattleCollectionEntityTeamPlayer>> getTeams() {
+        return teams;
+    }
+
     public List<BattlePlayerCollectionEntity> getBattlePlayers() {
         return battlePlayers;
     }
 
+    public void setTeams(List<List<BattleCollectionEntityTeamPlayer>> teams) {
+        this.teams = teams;
+    }
 }

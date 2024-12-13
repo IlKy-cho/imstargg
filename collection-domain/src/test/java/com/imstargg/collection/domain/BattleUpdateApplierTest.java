@@ -10,7 +10,7 @@ import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -509,8 +509,8 @@ class BattleUpdateApplierTest {
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        var battlePlayerEntities = battleEntity.getBattlePlayers();
-        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
+        var battlePlayerEntities = battleEntity.getTeams();
+        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams());
     }
 
     @Test
@@ -684,8 +684,8 @@ class BattleUpdateApplierTest {
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
-        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
+        var battlePlayerEntities = battleEntity.getTeams();
+        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams());
     }
 
     @Test
@@ -848,8 +848,8 @@ class BattleUpdateApplierTest {
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
-        assertBattlePlayers(battlePlayerEntities, battleResponse.battle().players(), battleEntity);
+        var battlePlayerEntities = battleEntity.getTeams();
+        assertBattlePlayers(battlePlayerEntities, battleResponse.battle().players());
     }
 
     @Test
@@ -948,8 +948,8 @@ class BattleUpdateApplierTest {
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
-        assertBattlePlayers(battlePlayerEntities, battleResponse.battle().players(), battleEntity);
+        var battlePlayerEntities = battleEntity.getTeams();
+        assertBattlePlayers(battlePlayerEntities, battleResponse.battle().players());
     }
 
     @Test
@@ -1145,8 +1145,8 @@ class BattleUpdateApplierTest {
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
-        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
+        var battlePlayerEntities = battleEntity.getTeams();
+        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams());
     }
 
     @Test
@@ -1325,8 +1325,8 @@ class BattleUpdateApplierTest {
         BattleResponse battleResponse = battleResponseList.get(0);
         assertBattle(battleEntity, battleResponse, playerEntity);
 
-        List<BattlePlayerCollectionEntity> battlePlayerEntities = battleEntity.getBattlePlayers();
-        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams(), battleEntity);
+        var battlePlayerEntities = battleEntity.getTeams();
+        assertBattleTeams(battlePlayerEntities, battleResponse.battle().teams());
     }
 
     private void assertBattle(
@@ -1361,72 +1361,62 @@ class BattleUpdateApplierTest {
         assertThat(actual.getPlayer().getTrophySnapshot()).isEqualTo(playerEntity.getTrophies());
     }
 
-    private void assertBattleTeams(List<BattlePlayerCollectionEntity> actuals, List<List<BattleResultPlayerResponse>> expecteds, BattleCollectionEntity battleEntity) {
-        int expectedSize = 0;
+    private void assertBattleTeams(
+            List<List<BattleCollectionEntityTeamPlayer>> actuals,
+            List<List<BattleResultPlayerResponse>> expecteds) {
+        assertThat(actuals).hasSize(expecteds.size());
         for (int teamIdx = 0; teamIdx < expecteds.size(); teamIdx++) {
+            int expectedPlayerSize = 0;
             for (int playerIdx = 0; playerIdx < expecteds.get(teamIdx).size(); playerIdx++) {
                 BattleResultPlayerResponse playerResponse = expecteds.get(teamIdx).get(playerIdx);
                 if (playerResponse.brawler() != null) {
                     assertBattlePlayerWithABrawler(
-                            actuals.get(expectedSize),
-                            playerResponse,
-                            battleEntity,
-                            teamIdx,
-                            playerIdx
+                            actuals.get(teamIdx).get(playerIdx),
+                            playerResponse
                     );
-                    expectedSize++;
+                    expectedPlayerSize += 1;
                 } else {
                     for (int playerBrawlerIdx = 0; playerBrawlerIdx < playerResponse.brawlers().size(); playerBrawlerIdx++) {
                         assertBattlePlayerWithBrawlers(
-                                actuals.get(expectedSize),
+                                actuals.get(teamIdx).get(playerIdx + playerBrawlerIdx),
                                 playerResponse,
-                                playerBrawlerIdx,
-                                battleEntity,
-                                teamIdx,
-                                playerIdx
+                                playerBrawlerIdx
                         );
-                        expectedSize++;
                     }
+                    expectedPlayerSize += playerResponse.brawlers().size();
                 }
             }
+            assertThat(actuals.get(teamIdx)).hasSize(expectedPlayerSize);
         }
-
-        assertThat(actuals).hasSize(expectedSize);
     }
 
     private void assertBattlePlayers(
-            List<BattlePlayerCollectionEntity> actuals,
-            List<BattleResultPlayerResponse> expecteds,
-            BattleCollectionEntity battleEntity
+            List<List<BattleCollectionEntityTeamPlayer>> actuals,
+            List<BattleResultPlayerResponse> expecteds
     ) {
-        int expectedSize = 0;
-        for (int i = 0; i < expecteds.size(); i++) {
-            BattleResultPlayerResponse playerResponse = expecteds.get(i);
+        assertThat(actuals).hasSize(expecteds.size());
+        for (int idx = 0; idx < expecteds.size(); idx++) {
+            BattleResultPlayerResponse playerResponse = expecteds.get(idx);
+            int actualBrawlerSize = 0;
             if (playerResponse.brawler() != null) {
-                assertBattlePlayerWithABrawler(actuals.get(i), playerResponse, battleEntity, i, 0);
-                expectedSize += 1;
+                assertBattlePlayerWithABrawler(actuals.get(idx).get(0), playerResponse);
+                actualBrawlerSize += 1;
             } else {
                 for (int playerBrawlerIdx = 0; playerBrawlerIdx < playerResponse.brawlers().size(); playerBrawlerIdx++) {
-                    assertBattlePlayerWithBrawlers(actuals.get(expectedSize), playerResponse, playerBrawlerIdx, battleEntity, i, 0);
-                    expectedSize += 1;
+                    assertBattlePlayerWithBrawlers(actuals.get(idx).get(playerBrawlerIdx), playerResponse, playerBrawlerIdx);
+                    actualBrawlerSize += 1;
                 }
             }
+            assertThat(actuals.get(idx)).hasSize(actualBrawlerSize);
         }
-        assertThat(actuals).hasSize(expectedSize);
     }
 
     private void assertBattlePlayerWithABrawler(
-            BattlePlayerCollectionEntity actual,
-            BattleResultPlayerResponse expected,
-            BattleCollectionEntity battleEntity,
-            int teamIdx, int playerIdx
+            BattleCollectionEntityTeamPlayer actual,
+            BattleResultPlayerResponse expected
     ) {
-        assertThat(actual.getId()).isNull();
-        assertThat(actual.getBattle()).isEqualTo(battleEntity);
         assertThat(actual.getBrawlStarsTag()).isEqualTo(expected.tag());
         assertThat(actual.getName()).isEqualTo(expected.name());
-        assertThat(actual.getTeamIdx()).isEqualTo(teamIdx);
-        assertThat(actual.getPlayerIdx()).isEqualTo(playerIdx);
         assertThat(actual.getBrawler().getBrawlStarsId()).isEqualTo(expected.brawler().id());
         assertThat(actual.getBrawler().getName()).isEqualTo(expected.brawler().name());
         assertThat(actual.getBrawler().getPower()).isEqualTo(expected.brawler().power());
@@ -1435,18 +1425,12 @@ class BattleUpdateApplierTest {
     }
 
     private void assertBattlePlayerWithBrawlers(
-            BattlePlayerCollectionEntity actual,
+            BattleCollectionEntityTeamPlayer actual,
             BattleResultPlayerResponse expected,
-            int playerBrawlerIdx,
-            BattleCollectionEntity battleEntity,
-            int teamIdx, int playerIdx
+            int playerBrawlerIdx
     ) {
-        assertThat(actual.getId()).isNull();
-        assertThat(actual.getBattle()).isEqualTo(battleEntity);
         assertThat(actual.getBrawlStarsTag()).isEqualTo(expected.tag());
         assertThat(actual.getName()).isEqualTo(expected.name());
-        assertThat(actual.getTeamIdx()).isEqualTo(teamIdx);
-        assertThat(actual.getPlayerIdx()).isEqualTo(playerIdx);
         assertThat(actual.getBrawler().getBrawlStarsId()).isEqualTo(expected.brawlers().get(playerBrawlerIdx).id());
         assertThat(actual.getBrawler().getName()).isEqualTo(expected.brawlers().get(playerBrawlerIdx).name());
         assertThat(actual.getBrawler().getPower()).isEqualTo(expected.brawlers().get(playerBrawlerIdx).power());
