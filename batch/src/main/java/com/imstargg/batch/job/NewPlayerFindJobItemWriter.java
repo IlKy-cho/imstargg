@@ -1,7 +1,8 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.PlayerTagSet;
+import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,52 +14,72 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class NewPlayerFindJobItemWriter implements ItemWriter<UnknownPlayerCollectionEntity>, InitializingBean {
+import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
+import static com.imstargg.storage.db.core.QUnknownPlayerCollectionEntity.unknownPlayerCollectionEntity;
+
+public class NewPlayerFindJobItemWriter implements ItemWriter<List<UnknownPlayerCollectionEntity>>, InitializingBean {
 
     private static final Logger log = LoggerFactory.getLogger(NewPlayerFindJobItemWriter.class);
 
     private final JpaItemWriter<UnknownPlayerCollectionEntity> jpaItemWriter;
-    private final PlayerTagSet playerTagSet;
+    private final JPAQueryFactory queryFactory;
 
     public NewPlayerFindJobItemWriter(
             JpaItemWriter<UnknownPlayerCollectionEntity> jpaItemWriter,
-            PlayerTagSet playerTagSet
+            JPAQueryFactory queryFactory
     ) {
         this.jpaItemWriter = jpaItemWriter;
-        this.playerTagSet = playerTagSet;
+        this.queryFactory = queryFactory;
     }
 
-    public NewPlayerFindJobItemWriter(EntityManagerFactory emf, PlayerTagSet playerTagSet) {
+    public NewPlayerFindJobItemWriter(EntityManagerFactory emf) {
         this(
                 new JpaItemWriterBuilder<UnknownPlayerCollectionEntity>()
                         .entityManagerFactory(emf)
                         .usePersist(true)
                         .build(),
-                playerTagSet
+                new JPAQueryFactory(emf.createEntityManager())
         );
     }
 
     @Override
-    public void write(Chunk<? extends UnknownPlayerCollectionEntity> chunk) throws Exception {
+    public void write(Chunk<? extends List<UnknownPlayerCollectionEntity>> chunk) throws Exception {
         Map<String, ? extends UnknownPlayerCollectionEntity> tagToEntity = chunk.getItems().stream()
-            .collect(Collectors.toMap(
-                UnknownPlayerCollectionEntity::getBrawlStarsTag,
-                Function.identity(),
-                (existing, replacement) -> existing
-            ));
+                .flatMap(List::stream)
+                .collect(Collectors.toMap(
+                        UnknownPlayerCollectionEntity::getBrawlStarsTag,
+                        Function.identity(),
+                        (existing, replacement) -> existing
+                ));
 
-        List<String> filteredTags = playerTagSet.filter(tagToEntity.keySet());
+        Set<String> existingTags = Stream.of(
+                        queryFactory.select(playerCollectionEntity.brawlStarsTag)
+                                .from(playerCollectionEntity)
+                                .where(playerCollectionEntity.brawlStarsTag.in(tagToEntity.keySet()))
+                                .fetch().stream(),
+                        queryFactory.select(unknownPlayerCollectionEntity.brawlStarsTag)
+                                .from(unknownPlayerCollectionEntity)
+                                .where(
+                                        unknownPlayerCollectionEntity.brawlStarsTag.in(tagToEntity.keySet()),
+                                        unknownPlayerCollectionEntity.status.ne(UnknownPlayerStatus.NOT_FOUND)
+                                ).fetch().stream()
+                ).flatMap(Function.identity())
+                .collect(Collectors.toSet());
 
+        List<? extends UnknownPlayerCollectionEntity> newPlayers = tagToEntity.entrySet().stream()
+                .filter(entry -> !existingTags.contains(entry.getKey()))
+                .map(Map.Entry::getValue)
+                .toList();
         jpaItemWriter.write(new Chunk<>(
-                filteredTags.stream()
-                        .map(tagToEntity::get)
-                        .toList()
+                newPlayers
         ));
 
-        log.debug("총 {}명의 신규 플레이어를 찾았습니다.", filteredTags.size());
+        log.debug("총 {}명의 신규 플레이어를 찾았습니다.", newPlayers.size());
     }
 
     @Override
