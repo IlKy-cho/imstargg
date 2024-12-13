@@ -38,7 +38,7 @@ public abstract class QuerydslNoOffsetOptions<T> {
 
     public abstract void resetCurrentId(T item);
 
-    protected Object getFiledValue(T item) {
+    protected Object getFieldValue(T item) {
         try {
             Field field = item.getClass().getDeclaredField(fieldName);
             field.setAccessible(true);
