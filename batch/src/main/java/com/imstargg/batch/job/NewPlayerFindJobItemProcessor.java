@@ -1,29 +1,32 @@
 package com.imstargg.batch.job;
 
 
-import com.imstargg.batch.domain.PlayerTagSet;
-import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.time.Clock;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-public class NewPlayerFindJobItemProcessor implements ItemProcessor<BattlePlayerCollectionEntity, UnknownPlayerCollectionEntity> {
+public class NewPlayerFindJobItemProcessor
+        implements ItemProcessor<BattleCollectionEntity, List<UnknownPlayerCollectionEntity>> {
 
     private final Clock clock;
-    private final PlayerTagSet playerTagSet;
+    private final ConcurrentSkipListSet<String> tagCache = new ConcurrentSkipListSet<>();
 
-    public NewPlayerFindJobItemProcessor(Clock clock, PlayerTagSet playerTagSet) {
+    public NewPlayerFindJobItemProcessor(Clock clock) {
         this.clock = clock;
-        this.playerTagSet = playerTagSet;
     }
 
     @Override
-    public UnknownPlayerCollectionEntity process(BattlePlayerCollectionEntity item) throws Exception {
-        if (playerTagSet.contains(item.getBrawlStarsTag())) {
-            return null;
-        }
-
-        return UnknownPlayerCollectionEntity.updateNew(item.getBrawlStarsTag(), clock);
+    public List<UnknownPlayerCollectionEntity> process(BattleCollectionEntity item) throws Exception {
+        return item.getTeams().stream().flatMap(Collection::stream)
+                .map(BattleCollectionEntityTeamPlayer::getBrawlStarsTag)
+                .filter(tagCache::add)
+                .map(tag -> UnknownPlayerCollectionEntity.updateNew(tag, clock))
+                .toList();
     }
 }

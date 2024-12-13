@@ -15,7 +15,7 @@ create table battle
     battle_rank                int,
     trophy_change              int,
     trophies_snapshot          int,
-    teams json,
+    teams                      json         not null,
     created_at                 timestamp(6) not null default now(),
     updated_at                 timestamp(6) not null default now(),
     deleted                    boolean      not null default false,
@@ -30,29 +30,6 @@ create index ix_battle__eventbrawlstarsid
 
 create index ix_battle__battletime
     on battle (battle_time desc);
-
-
-create table battle_player
-(
-    battle_player_id      bigint       not null auto_increment,
-    battle_id             bigint       not null,
-    brawlstars_tag        varchar(45)  not null,
-    name                  varchar(105) not null,
-    team_idx              int          not null,
-    idx                   int          not null,
-    brawler_brawlstars_id bigint       not null,
-    brawler_name          varchar(65)  not null,
-    brawler_power         int          not null,
-    brawler_trophies      int,
-    brawler_trophy_change int,
-    created_at            timestamp(6) not null default now(),
-    updated_at            timestamp(6) not null default now(),
-    deleted               boolean      not null default false,
-    primary key (battle_player_id)
-) engine = innodb;
-
-create index ix_battleplayer__battleid
-    on battle_player (battle_id);
 
 
 create table club
@@ -151,6 +128,12 @@ alter table player
 create index ix_player__name
     on player (name);
 
+create index ix_player__status
+    on player (status);
+
+create index ix_player__updated_weight
+    on player (update_weight);
+
 
 create table unknown_player
 (
@@ -167,6 +150,9 @@ create table unknown_player
 
 alter table unknown_player
     add constraint uk_unknownplayer__brawlstarstag unique (brawlstars_tag);
+
+create index ix_unknownplayer__status
+    on unknown_player (status);
 
 
 create table message

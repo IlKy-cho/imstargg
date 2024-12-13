@@ -67,7 +67,7 @@ public class BattleEntity extends BaseEntity {
     private BattleEntityPlayer player;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "teams", columnDefinition = "json")
+    @Column(name = "teams", columnDefinition = "json", updatable = false, nullable = false)
     private List<List<BattleEntityTeamPlayer>> teams;
 
     protected BattleEntity() {

@@ -1,10 +1,9 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.PlayerTagSet;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
 import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
-import com.imstargg.storage.db.core.BattlePlayerCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -25,8 +24,9 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.Clock;
+import java.util.List;
 
-import static com.imstargg.storage.db.core.QBattlePlayerCollectionEntity.battlePlayerCollectionEntity;
+import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
 class NewPlayerFindJobConfig {
@@ -35,7 +35,7 @@ class NewPlayerFindJobConfig {
 
     private static final String JOB_NAME = "newPlayerFindJob";
     private static final String STEP_NAME = "newPlayerFindStep";
-    private static final int CHUNK_SIZE = 1000;
+    private static final int CHUNK_SIZE = 100;
 
     private final Clock clock;
     private final JobRepository jobRepository;
@@ -79,7 +79,7 @@ class NewPlayerFindJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<BattlePlayerCollectionEntity, UnknownPlayerCollectionEntity>chunk(CHUNK_SIZE, txManager)
+                .<BattleCollectionEntity, List<UnknownPlayerCollectionEntity>>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -89,10 +89,13 @@ class NewPlayerFindJobConfig {
                 .retry(SQLIntegrityConstraintViolationException.class)
                 .listener(new ItemWriteListener<>() {
                     @Override
-                    public void onWriteError(Exception exception, Chunk<? extends UnknownPlayerCollectionEntity> items) {
+                    public void onWriteError(
+                            Exception exception, Chunk<? extends List<UnknownPlayerCollectionEntity>> items) {
                         log.warn("{} 중 중복된 플레이어 저장 발생. items={}",
                                 JOB_NAME,
-                                items.getItems().stream().map(UnknownPlayerCollectionEntity::getBrawlStarsTag).toList(),
+                                items.getItems().stream()
+                                        .flatMap(List::stream)
+                                        .map(UnknownPlayerCollectionEntity::getBrawlStarsTag).toList(),
                                 exception
                         );
                     }
@@ -103,33 +106,26 @@ class NewPlayerFindJobConfig {
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    QuerydslPagingItemReader<BattlePlayerCollectionEntity> reader() {
+    QuerydslPagingItemReader<BattleCollectionEntity> reader() {
         return new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
-                .selectFrom(battlePlayerCollectionEntity)
-                .join(battlePlayerCollectionEntity.battle)
+                .selectFrom(battleCollectionEntity)
                 .where(
-                        battlePlayerCollectionEntity.battle.battleTime.goe(periodDateTimeJobParameter().getFrom()),
-                        battlePlayerCollectionEntity.battle.battleTime.lt(periodDateTimeJobParameter().getTo())
+                        battleCollectionEntity.battleTime.goe(periodDateTimeJobParameter().getFrom()),
+                        battleCollectionEntity.battleTime.lt(periodDateTimeJobParameter().getTo())
                 )
-                .orderBy(battlePlayerCollectionEntity.battle.battleTime.desc())
+                .orderBy(battleCollectionEntity.battleTime.desc())
         );
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerFindJobItemProcessor processor() {
-        return new NewPlayerFindJobItemProcessor(clock, playerTagSet());
+        return new NewPlayerFindJobItemProcessor(clock);
     }
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
     NewPlayerFindJobItemWriter writer() {
-        return new NewPlayerFindJobItemWriter(emf, playerTagSet());
-    }
-
-    @Bean(JOB_NAME + "PlayerTagSet")
-    @JobScope
-    PlayerTagSet playerTagSet() {
-        return new PlayerTagSet(emf);
+        return new NewPlayerFindJobItemWriter(emf);
     }
 }
