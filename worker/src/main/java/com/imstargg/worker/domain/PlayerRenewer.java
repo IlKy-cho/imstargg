@@ -156,7 +156,7 @@ public class PlayerRenewer {
                 playerResponse.bestRoboRumbleTime(),
                 playerResponse.bestTimeAsBigBrawler(),
                 playerResponse.club().tag(),
-                LocalDateTime.now(clock)
+                clock
         );
         for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
             playerEntity.updateBrawler(

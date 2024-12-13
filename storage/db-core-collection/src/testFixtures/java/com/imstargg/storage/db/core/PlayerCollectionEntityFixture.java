@@ -3,9 +3,11 @@ package com.imstargg.storage.db.core;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
-import java.time.LocalDateTime;
+import java.time.Clock;
 
 public class PlayerCollectionEntityFixture {
+
+    private static final Clock clock = Clock.systemDefaultZone();
 
     @Nullable
     private String brawlStarsTag;
@@ -148,7 +150,7 @@ public class PlayerCollectionEntityFixture {
             bestRoboRumbleTime,
             bestTimeAsBigBrawler,
             brawlStarsClubTag,
-            LocalDateTime.now()
+            clock
         );
     }
 

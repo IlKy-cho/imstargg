@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
 
 public class NewPlayerUpdateJobItemProcessor
         implements ItemProcessor<UnknownPlayerCollectionEntity, NewPlayer> {
@@ -55,7 +54,7 @@ public class NewPlayerUpdateJobItemProcessor
                     playerResponse.bestRoboRumbleTime(),
                     playerResponse.bestTimeAsBigBrawler(),
                     playerResponse.club().tag(),
-                    LocalDateTime.now(clock)
+                    clock
             );
             for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
                 playerEntity.updateBrawler(
