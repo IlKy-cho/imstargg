@@ -8,7 +8,6 @@ import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
 import com.imstargg.client.brawlstars.response.GearStatResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
-import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import org.slf4j.Logger;
@@ -36,7 +35,7 @@ public class NewPlayerUpdateJobItemProcessor
     @Override
     public NewPlayer process(UnknownPlayerCollectionEntity item) throws Exception {
         try {
-            item.setStatus(UnknownPlayerStatus.UPDATED);
+            item.updated();
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(item.getBrawlStarsTag());
             PlayerCollectionEntity playerEntity = new PlayerCollectionEntity(
                     playerResponse.tag(),
@@ -72,7 +71,7 @@ public class NewPlayerUpdateJobItemProcessor
         }
         catch (BrawlStarsClientNotFoundException ex) {
             log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.getBrawlStarsTag());
-            item.setStatus(UnknownPlayerStatus.DELETED);
+            item.notFound();
             return new NewPlayer(item, null);
         }
     }
