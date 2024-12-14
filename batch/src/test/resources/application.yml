@@ -10,6 +10,14 @@ spring:
       initialize-schema: embedded
       isolation-level-for-create: default
 
-app.client.brawlstars:
-  url: "https://example.brawlstars.com"
-  key: "test-key"
+app:
+  client.brawlstars:
+    url: "https://example.brawlstars.com"
+    key: "test-key"
+  batch:
+    battleUpdateJob:
+      chunk-size: 10
+    newPlayerUpdateJob:
+      chunk-size: 10
+    playerUpdateJob:
+      chunk-size: 10
