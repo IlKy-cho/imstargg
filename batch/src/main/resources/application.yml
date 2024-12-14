@@ -38,6 +38,15 @@ spring:
         await-termination: true
         await-termination-period: 10000
 
+app:
+  batch:
+    battleUpdateJob:
+      chunk-size: 10
+    newPlayerUpdateJob:
+      chunk-size: 10
+    playerUpdateJob:
+      chunk-size: 10
+
 #logging.level:
 #  org.hibernate:
 #    SQL: debug

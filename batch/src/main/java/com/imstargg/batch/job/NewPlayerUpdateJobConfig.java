@@ -22,6 +22,7 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.Chunk;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -40,8 +41,8 @@ public class NewPlayerUpdateJobConfig {
 
     private static final String JOB_NAME = "newPlayerUpdateJob";
     private static final String STEP_NAME = "newPlayerUpdateStep";
-    private static final int CHUNK_SIZE = 10;
 
+    private final int chunkSize;
     private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
@@ -52,6 +53,7 @@ public class NewPlayerUpdateJobConfig {
     private final BrawlStarsClient brawlStarsClient;
 
     NewPlayerUpdateJobConfig(
+            @Value("${app.batch.newPlayerUpdateJob.chunk-size}") int chunkSize,
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
@@ -60,6 +62,7 @@ public class NewPlayerUpdateJobConfig {
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient
     ) {
+        this.chunkSize = chunkSize;
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
@@ -84,7 +87,7 @@ public class NewPlayerUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<UnknownPlayerCollectionEntity, Future<NewPlayer>>chunk(CHUNK_SIZE, txManager)
+                .<UnknownPlayerCollectionEntity, Future<NewPlayer>>chunk(chunkSize, txManager)
                 .reader(reader())
                 .processor(asyncProcessor())
                 .writer(asyncWriter())
@@ -108,7 +111,7 @@ public class NewPlayerUpdateJobConfig {
     @StepScope
     QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader() {
         QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(
-                emf, CHUNK_SIZE, queryFactory ->
+                emf, chunkSize, queryFactory ->
                 queryFactory
                         .selectFrom(unknownPlayerCollectionEntity)
                         .where(unknownPlayerCollectionEntity.status.in(
