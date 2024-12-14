@@ -158,7 +158,7 @@ public class PlayerCollectionEntity extends BaseEntity {
             List<Long> gadgetBrawlStarsIds
     ) {
         if (brawlStarsIdToBrawler == null) {
-            createBrawlerMap();
+            initializeBrawlStarsIdToBrawler();
         }
 
         if (brawlStarsIdToBrawler.containsKey(brawlerBrawlStarsId)) {
@@ -188,7 +188,7 @@ public class PlayerCollectionEntity extends BaseEntity {
         }
     }
 
-    private void createBrawlerMap() {
+    public void initializeBrawlStarsIdToBrawler() {
         brawlStarsIdToBrawler = brawlers.stream()
                 .collect(Collectors.toMap(PlayerBrawlerCollectionEntity::getBrawlerBrawlStarsId, Function.identity()));
     }
