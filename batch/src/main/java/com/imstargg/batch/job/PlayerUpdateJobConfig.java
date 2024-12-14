@@ -2,7 +2,6 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
-import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
@@ -18,15 +17,20 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.integration.async.AsyncItemProcessor;
+import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.Chunk;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
+import java.util.concurrent.Future;
 
 import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
 
@@ -43,6 +47,7 @@ public class PlayerUpdateJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
+    private final TaskExecutor taskExecutor;
 
     private final BrawlStarsClient brawlStarsClient;
 
@@ -52,6 +57,7 @@ public class PlayerUpdateJobConfig {
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
+            TaskExecutor taskExecutor,
             BrawlStarsClient brawlStarsClient
     ) {
         this.chunkSize = chunkSize;
@@ -59,6 +65,7 @@ public class PlayerUpdateJobConfig {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
+        this.taskExecutor = taskExecutor;
         this.brawlStarsClient = brawlStarsClient;
     }
 
@@ -77,10 +84,10 @@ public class PlayerUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerCollectionEntity, PlayerCollectionEntity>chunk(chunkSize, txManager)
+                .<PlayerCollectionEntity, Future<PlayerCollectionEntity>>chunk(chunkSize, txManager)
                 .reader(reader())
-                .processor(processor())
-                .writer(writer())
+                .processor(asyncProcessor())
+                .writer(asyncWriter())
 
                 .faultTolerant()
                 .backOffPolicy(new FixedBackOffPolicy())
@@ -88,10 +95,9 @@ public class PlayerUpdateJobConfig {
                 .skip(OptimisticLockException.class)
                 .listener(new ItemWriteListener<>() {
                     @Override
-                    public void onWriteError(Exception exception, Chunk<? extends PlayerCollectionEntity> items) {
-                        log.warn("{} 중 플레이어 업데이트 충돌 발생. items={}",
+                    public void onWriteError(Exception exception, Chunk<? extends Future<PlayerCollectionEntity>> items) {
+                        log.warn("{} 중 플레이어 업데이트 충돌 발생.",
                                 JOB_NAME,
-                                items.getItems().stream().map(PlayerCollectionEntity::getBrawlStarsTag).toList(),
                                 exception
                         );
                     }
@@ -102,8 +108,8 @@ public class PlayerUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
-        return new QuerydslZeroPagingItemReader<>(emf, chunkSize, queryFactory ->
+    PlayerUpdateJobItemReader reader() {
+        return new PlayerUpdateJobItemReader(emf, chunkSize, queryFactory ->
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(
@@ -112,16 +118,35 @@ public class PlayerUpdateJobConfig {
         );
     }
 
+    @Bean(STEP_NAME + "AsyncItemProcessor")
+    @StepScope
+    AsyncItemProcessor<PlayerCollectionEntity, PlayerCollectionEntity> asyncProcessor() {
+        AsyncItemProcessor<PlayerCollectionEntity, PlayerCollectionEntity> asyncProcessor = new AsyncItemProcessor<>();
+        asyncProcessor.setDelegate(processor());
+        asyncProcessor.setTaskExecutor(taskExecutor);
+        return asyncProcessor;
+    }
+
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     PlayerUpdateJobItemProcessor processor() {
         return new PlayerUpdateJobItemProcessor(brawlStarsClient);
     }
 
+    @Bean(STEP_NAME + "AsyncItemWriter")
+    @StepScope
+    AsyncItemWriter<PlayerCollectionEntity> asyncWriter() {
+        AsyncItemWriter<PlayerCollectionEntity> asyncWriter = new AsyncItemWriter<>();
+        asyncWriter.setDelegate(writer());
+        return asyncWriter;
+    }
+
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    ItemWriter<PlayerCollectionEntity> writer() {
-        return chunk -> {
-        };
+    JpaItemWriter<PlayerCollectionEntity> writer() {
+        return new JpaItemWriterBuilder<PlayerCollectionEntity>()
+                .entityManagerFactory(emf)
+                .usePersist(false)
+                .build();
     }
 }
