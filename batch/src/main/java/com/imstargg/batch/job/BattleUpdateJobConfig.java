@@ -27,6 +27,7 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.Chunk;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -45,8 +46,8 @@ public class BattleUpdateJobConfig {
 
     private static final String JOB_NAME = "battleUpdateJob";
     private static final String STEP_NAME = "battleUpdateStep";
-    private static final int CHUNK_SIZE = 10;
 
+    private final int chunkSize;
     private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
@@ -58,6 +59,7 @@ public class BattleUpdateJobConfig {
     private final BattleUpdateApplier battleUpdateApplier;
 
     public BattleUpdateJobConfig(
+            @Value("${app.batch.battleUpdateJob.chunk-size}") int chunkSize,
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
@@ -67,6 +69,7 @@ public class BattleUpdateJobConfig {
             BrawlStarsClient brawlStarsClient,
             BattleUpdateApplier battleUpdateApplier
     ) {
+        this.chunkSize = chunkSize;
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
@@ -104,7 +107,7 @@ public class BattleUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerCollectionEntity, Future<PlayerBattleUpdateResult>>chunk(CHUNK_SIZE, txManager)
+                .<PlayerCollectionEntity, Future<PlayerBattleUpdateResult>>chunk(chunkSize, txManager)
                 .reader(reader())
                 .processor(asyncProcessor())
                 .writer(asyncWriter())
@@ -130,7 +133,7 @@ public class BattleUpdateJobConfig {
     @StepScope
     QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
         QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(
-                emf, CHUNK_SIZE, queryFactory ->
+                emf, chunkSize, queryFactory ->
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(

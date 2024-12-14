@@ -1,8 +1,8 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
-import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
 import com.imstargg.batch.job.support.RunTimestampIncrementer;
+import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
@@ -20,6 +20,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
@@ -36,8 +37,8 @@ public class PlayerUpdateJobConfig {
 
     private static final String JOB_NAME = "playerUpdateJob";
     private static final String STEP_NAME = "playerUpdateStep";
-    private static final int CHUNK_SIZE = 10;
 
+    private final int chunkSize;
     private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
@@ -46,12 +47,14 @@ public class PlayerUpdateJobConfig {
     private final BrawlStarsClient brawlStarsClient;
 
     PlayerUpdateJobConfig(
+            @Value("${app.batch.playerUpdateJob.chunk-size}") int chunkSize,
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             BrawlStarsClient brawlStarsClient
     ) {
+        this.chunkSize = chunkSize;
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
@@ -74,7 +77,7 @@ public class PlayerUpdateJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<PlayerCollectionEntity, PlayerCollectionEntity>chunk(CHUNK_SIZE, txManager)
+                .<PlayerCollectionEntity, PlayerCollectionEntity>chunk(chunkSize, txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -100,7 +103,7 @@ public class PlayerUpdateJobConfig {
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
     QuerydslZeroPagingItemReader<PlayerCollectionEntity> reader() {
-        return new QuerydslZeroPagingItemReader<>(emf, CHUNK_SIZE, queryFactory ->
+        return new QuerydslZeroPagingItemReader<>(emf, chunkSize, queryFactory ->
                 queryFactory
                         .selectFrom(playerCollectionEntity)
                         .where(
