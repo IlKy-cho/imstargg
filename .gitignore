@@ -41,3 +41,6 @@ out/
 
 ### Mackbook ###
 .DS_Store
+
+### Node Env ###
+node-22.12.0
