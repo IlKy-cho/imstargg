@@ -13,7 +13,7 @@ spring:
     activate:
       on-profile:
       - dev
-      - prod
+      - live
 
 app:
   alert:

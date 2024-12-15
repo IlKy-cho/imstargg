@@ -8,6 +8,7 @@ spring:
       - db-core.yml
       - brawlstars-client.yml
       - logging.yml
+      - alert-manager.yml
 
   batch:
     job:
