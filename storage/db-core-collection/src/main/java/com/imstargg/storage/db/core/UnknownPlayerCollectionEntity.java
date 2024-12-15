@@ -38,15 +38,14 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
     protected UnknownPlayerCollectionEntity() {
     }
 
-    private UnknownPlayerCollectionEntity(
+    public UnknownPlayerCollectionEntity(
             String brawlStarsTag,
             UnknownPlayerStatus status,
-            int notFoundCount,
             LocalDateTime updateAvailableAt
     ) {
         this.brawlStarsTag = brawlStarsTag;
         this.status = status;
-        this.notFoundCount = notFoundCount;
+        this.notFoundCount = 0;
         this.updateAvailableAt = updateAvailableAt;
     }
 
@@ -57,7 +56,6 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         return new UnknownPlayerCollectionEntity(
                 brawlStarsTag,
                 UnknownPlayerStatus.ADMIN_NEW,
-                0,
                 LocalDateTime.now(clock)
         );
     }
@@ -69,7 +67,6 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         return new UnknownPlayerCollectionEntity(
                 brawlStarsTag,
                 UnknownPlayerStatus.UPDATE_NEW,
-                0,
                 LocalDateTime.now(clock)
         );
     }
