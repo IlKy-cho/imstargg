@@ -15,14 +15,13 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import java.time.Clock;
 
 import static com.imstargg.storage.db.core.QUnknownPlayerCollectionEntity.unknownPlayerCollectionEntity;
 
@@ -35,7 +34,6 @@ class UpdatedUnknownPlayerDeleteJobConfig {
     private static final String STEP_NAME = "updatedUnknownPlayerDeleteStep";
     private static final int CHUNK_SIZE = 100;
 
-    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
@@ -44,14 +42,12 @@ class UpdatedUnknownPlayerDeleteJobConfig {
     private final UnknownPlayerCollectionJpaRepository unknownPlayerJpaRepository;
 
     UpdatedUnknownPlayerDeleteJobConfig(
-            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             AlertManager alertManager,
             UnknownPlayerCollectionJpaRepository unknownPlayerJpaRepository
     ) {
-        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
@@ -64,6 +60,7 @@ class UpdatedUnknownPlayerDeleteJobConfig {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
                 .start(step())
+                .incrementer(new RunIdIncrementer())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .build();
     }
