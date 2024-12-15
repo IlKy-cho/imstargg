@@ -1,7 +1,6 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
-import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
@@ -15,6 +14,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
@@ -29,7 +29,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.time.Clock;
 import java.util.concurrent.Future;
 
 import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
@@ -43,7 +42,6 @@ public class PlayerUpdateJobConfig {
     private static final String STEP_NAME = "playerUpdateStep";
 
     private final int chunkSize;
-    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
@@ -53,7 +51,6 @@ public class PlayerUpdateJobConfig {
 
     PlayerUpdateJobConfig(
             @Value("${app.batch.playerUpdateJob.chunk-size}") int chunkSize,
-            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
@@ -61,7 +58,6 @@ public class PlayerUpdateJobConfig {
             BrawlStarsClient brawlStarsClient
     ) {
         this.chunkSize = chunkSize;
-        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
@@ -73,7 +69,7 @@ public class PlayerUpdateJobConfig {
     Job job() {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
-                .incrementer(new RunTimestampIncrementer(clock))
+                .incrementer(new RunIdIncrementer())
                 .start(step())
                 .listener(new ExceptionLoggingJobExecutionListener())
                 .build();

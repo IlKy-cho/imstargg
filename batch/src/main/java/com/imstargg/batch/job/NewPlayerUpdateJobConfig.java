@@ -3,7 +3,6 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.NewPlayer;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
-import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
@@ -17,6 +16,7 @@ import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
@@ -76,7 +76,7 @@ public class NewPlayerUpdateJobConfig {
     Job job() {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
-                .incrementer(new RunTimestampIncrementer(clock))
+                .incrementer(new RunIdIncrementer())
                 .start(step())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .build();

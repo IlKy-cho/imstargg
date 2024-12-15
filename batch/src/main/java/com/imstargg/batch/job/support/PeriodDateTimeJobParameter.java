@@ -1,11 +1,16 @@
 package com.imstargg.batch.job.support;
 
 import jakarta.annotation.Nullable;
+import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.LocalDateTime;
 
 public class PeriodDateTimeJobParameter {
+
+    private static final Logger log = LoggerFactory.getLogger(PeriodDateTimeJobParameter.class);
 
     @Nullable
     private LocalDateTime from;
@@ -21,6 +26,12 @@ public class PeriodDateTimeJobParameter {
     @Value("#{jobParameters['period.to']}")
     public void setTo(@Nullable LocalDateTime to) {
         this.to = to;
+    }
+
+    @PostConstruct
+    void init() {
+        log.debug("JobParameter[period.from]={}", from);
+        log.debug("JobParameter[period.to]={}", to);
     }
 
     @Nullable

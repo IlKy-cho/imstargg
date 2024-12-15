@@ -5,7 +5,6 @@ import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
 import com.imstargg.batch.job.support.PlayerStatusJobParameter;
 import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
-import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.core.enums.PlayerStatus;
@@ -21,6 +20,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
+import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -84,7 +84,10 @@ public class BattleUpdateJobConfig {
     Job job() {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
-                .incrementer(new RunTimestampIncrementer(clock))
+                .validator(new DefaultJobParametersValidator(
+                        new String[]{},
+                        new String[]{"player.status", "period.from", "period.to"}
+                ))
                 .start(step())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .build();

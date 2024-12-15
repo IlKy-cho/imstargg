@@ -1,6 +1,5 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.job.support.RunTimestampIncrementer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
 import com.imstargg.storage.db.core.brawlstars.BrawlerCollectionEntity;
@@ -14,6 +13,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.builder.TaskletStepBuilder;
@@ -22,7 +22,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.time.Clock;
 import java.util.List;
 
 import static com.imstargg.storage.db.core.brawlstars.QBrawlerCollectionEntity.brawlerCollectionEntity;
@@ -37,20 +36,17 @@ public class BrawlerSyncCheckJobConfig {
     private static final String JOB_NAME = "brawlerSyncCheckJob";
     private static final String STEP_NAME = "brawlerSyncCheckStep";
 
-    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
     private final BrawlStarsClient brawlStarsClient;
 
     public BrawlerSyncCheckJobConfig(
-            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             BrawlStarsClient brawlStarsClient
     ) {
-        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
@@ -61,7 +57,7 @@ public class BrawlerSyncCheckJobConfig {
     public Job job() {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
-                .incrementer(new RunTimestampIncrementer(clock))
+                .incrementer(new RunIdIncrementer())
                 .start(step())
                 .build();
     }
