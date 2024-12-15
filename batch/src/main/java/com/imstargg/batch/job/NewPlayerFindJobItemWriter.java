@@ -1,8 +1,8 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +11,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -27,14 +28,14 @@ public class NewPlayerFindJobItemWriter implements ItemWriter<List<UnknownPlayer
     private static final Logger log = LoggerFactory.getLogger(NewPlayerFindJobItemWriter.class);
 
     private final JpaItemWriter<UnknownPlayerCollectionEntity> jpaItemWriter;
-    private final JPAQueryFactory queryFactory;
+    private final EntityManagerFactory emf;
 
     public NewPlayerFindJobItemWriter(
             JpaItemWriter<UnknownPlayerCollectionEntity> jpaItemWriter,
-            JPAQueryFactory queryFactory
+            EntityManagerFactory emf
     ) {
         this.jpaItemWriter = jpaItemWriter;
-        this.queryFactory = queryFactory;
+        this.emf = emf;
     }
 
     public NewPlayerFindJobItemWriter(EntityManagerFactory emf) {
@@ -43,7 +44,7 @@ public class NewPlayerFindJobItemWriter implements ItemWriter<List<UnknownPlayer
                         .entityManagerFactory(emf)
                         .usePersist(true)
                         .build(),
-                new JPAQueryFactory(emf.createEntityManager())
+                emf
         );
     }
 
@@ -57,6 +58,8 @@ public class NewPlayerFindJobItemWriter implements ItemWriter<List<UnknownPlayer
                         (existing, replacement) -> existing
                 ));
 
+        JPAQueryFactory queryFactory = getQueryFactory();
+
         Set<String> existingTags = Stream.of(
                         queryFactory.select(playerCollectionEntity.brawlStarsTag)
                                 .from(playerCollectionEntity)
@@ -64,10 +67,8 @@ public class NewPlayerFindJobItemWriter implements ItemWriter<List<UnknownPlayer
                                 .fetch().stream(),
                         queryFactory.select(unknownPlayerCollectionEntity.brawlStarsTag)
                                 .from(unknownPlayerCollectionEntity)
-                                .where(
-                                        unknownPlayerCollectionEntity.brawlStarsTag.in(tagToEntity.keySet()),
-                                        unknownPlayerCollectionEntity.status.ne(UnknownPlayerStatus.NOT_FOUND)
-                                ).fetch().stream()
+                                .where(unknownPlayerCollectionEntity.brawlStarsTag.in(tagToEntity.keySet()))
+                                .fetch().stream()
                 ).flatMap(Function.identity())
                 .collect(Collectors.toSet());
 
@@ -80,6 +81,11 @@ public class NewPlayerFindJobItemWriter implements ItemWriter<List<UnknownPlayer
         ));
 
         log.debug("총 {}명의 신규 플레이어를 찾았습니다.", newPlayers.size());
+    }
+
+    private JPAQueryFactory getQueryFactory() {
+        EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
+        return new JPAQueryFactory(entityManager);
     }
 
     @Override
