@@ -16,8 +16,8 @@ create table battle
     trophy_change              int,
     trophies_snapshot          int,
     teams                      json         not null,
-    created_at                 timestamp(6) not null default now(),
-    updated_at                 timestamp(6) not null default now(),
+    created_at                 timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                 timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted                    boolean      not null default false,
     primary key (battle_id)
 ) engine = innodb;
@@ -42,8 +42,8 @@ create table club
     badge_id          bigint       not null,
     required_trophies int          not null,
     trophies          int          not null,
-    created_at        timestamp(6) not null default now(),
-    updated_at        timestamp(6) not null default now(),
+    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,
     primary key (club_id)
 ) engine = innodb;
@@ -61,8 +61,8 @@ create table club_member
     club_id        bigint       not null,
     member_id      bigint       not null,
     role           varchar(25)  not null,
-    created_at     timestamp(6) not null default now(),
-    updated_at     timestamp(6) not null default now(),
+    created_at     timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at     timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted        boolean      not null default false,
     primary key (club_member_id)
 ) engine = innodb;
@@ -83,8 +83,8 @@ create table player_brawler
     gear_brawlstars_ids       varchar(255) not null,
     star_power_brawlstars_ids varchar(255) not null,
     gadget_brawlstars_ids     varchar(255) not null,
-    created_at                timestamp(6) not null default now(),
-    updated_at                timestamp(6) not null default now(),
+    created_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted                   boolean      not null default false,
     primary key (player_brawler_id)
 ) engine = innodb;
@@ -116,8 +116,8 @@ create table player
     update_weight                         timestamp(6) not null,
     latest_battle_time                    timestamp(6),
     version                               int          not null,
-    created_at                            timestamp(6) not null default now(),
-    updated_at                            timestamp(6) not null default now(),
+    created_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted                               boolean      not null default false,
     primary key (player_id)
 ) engine = innodb;
@@ -142,8 +142,8 @@ create table unknown_player
     status              varchar(45)  not null,
     not_found_count     int          not null,
     update_available_at timestamp(6) not null,
-    created_at          timestamp(6) not null default now(),
-    updated_at          timestamp(6) not null default now(),
+    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false,
     primary key (unknown_player_id)
 ) engine = innodb;
@@ -161,14 +161,32 @@ create table message
     code       varchar(105) not null,
     lang       varchar(25)  not null,
     content    text         not null,
-    created_at timestamp(6) not null default now(),
-    updated_at timestamp(6) not null default now(),
+    created_at timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted    boolean      not null default false,
     primary key (message_id)
 ) engine = innodb;
 
 alter table message
     add constraint uk_message__code_lang unique (code, lang);
+
+
+create table images
+(
+    images_id   bigint       not null auto_increment,
+    bucket      varchar(25)  not null,
+    type        varchar(25)  not null,
+    code        varchar(65)  not null,
+    stored_name varchar(255) not null,
+    url         varchar(500) not null,
+    created_at  timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at  timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted     boolean      not null default false,
+    primary key (images_id)
+) engine = innodb;
+
+alter table images
+    add constraint uk_images__code unique (code);
 
 -- BrawlStars
 
@@ -178,8 +196,8 @@ create table battle_event
     brawlstars_id   bigint       not null,
     mode            varchar(45)  not null,
     map_id          bigint       not null,
-    created_at      timestamp(6) not null default now(),
-    updated_at      timestamp(6) not null default now(),
+    created_at      timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at      timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted         boolean      not null default false,
     primary key (battle_event_id)
 ) engine = innodb;
@@ -193,8 +211,8 @@ create table battle_map
     battle_map_id     bigint       not null auto_increment,
     code              varchar(45)  not null,
     name_message_code varchar(105) not null,
-    created_at        timestamp(6) not null default now(),
-    updated_at        timestamp(6) not null default now(),
+    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,
     primary key (battle_map_id)
 ) engine = innodb;
@@ -210,8 +228,8 @@ create table brawler
     name_message_code varchar(105) not null,
     rarity            varchar(45)  not null,
     role              varchar(45)  not null,
-    created_at        timestamp(6) not null default now(),
-    updated_at        timestamp(6) not null default now(),
+    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,
     primary key (brawler_id)
 ) engine = innodb;
@@ -225,8 +243,8 @@ create table brawler_gear
     brawler_gear_id bigint       not null auto_increment,
     brawler_id      bigint       not null,
     gear_id         bigint       not null,
-    created_at      timestamp(6) not null default now(),
-    updated_at      timestamp(6) not null default now(),
+    created_at      timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at      timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted         boolean      not null default false,
     primary key (brawler_gear_id)
 ) engine = innodb;
@@ -241,8 +259,8 @@ create table gadget
     brawlstars_id     bigint       not null,
     name_message_code varchar(105) not null,
     brawler_id        bigint       not null,
-    created_at        timestamp(6) not null default now(),
-    updated_at        timestamp(6) not null default now(),
+    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,
     primary key (gadget_id)
 ) engine = innodb;
@@ -256,8 +274,8 @@ create table gear
     brawlstars_id     bigint       not null,
     name_message_code varchar(105) not null,
     rarity            varchar(45)  not null,
-    created_at        timestamp(6) not null default now(),
-    updated_at        timestamp(6) not null default now(),
+    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,
     primary key (gear_id)
 ) engine = innodb;
@@ -271,8 +289,8 @@ create table star_power
     brawlstars_id     bigint       not null,
     name_message_code varchar(105) not null,
     brawler_id        bigint       not null,
-    created_at        timestamp(6) not null default now(),
-    updated_at        timestamp(6) not null default now(),
+    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,
     primary key (star_power_id)
 ) engine = innodb;
