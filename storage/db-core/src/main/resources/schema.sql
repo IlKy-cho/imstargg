@@ -171,22 +171,21 @@ alter table message
     add constraint uk_message__code_lang unique (code, lang);
 
 
-create table images
+create table brawlstars_image
 (
-    images_id   bigint       not null auto_increment,
-    bucket      varchar(25)  not null,
-    type        varchar(25)  not null,
-    code        varchar(65)  not null,
-    stored_name varchar(255) not null,
-    url         varchar(500) not null,
-    created_at  timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at  timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    deleted     boolean      not null default false,
-    primary key (images_id)
+    brawlstars_image_id bigint       not null auto_increment,
+    type                varchar(25)  not null,
+    code                varchar(65)  not null,
+    stored_name         varchar(255) not null,
+    url                 varchar(500) not null,
+    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted             boolean      not null default false,
+    primary key (brawlstars_image_id)
 ) engine = innodb;
 
-alter table images
-    add constraint uk_images__code unique (code);
+alter table brawlstars_image
+    add constraint uk_brawlstars_image__code unique (code);
 
 -- BrawlStars
 

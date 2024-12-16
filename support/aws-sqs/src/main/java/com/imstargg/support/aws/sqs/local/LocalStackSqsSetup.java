@@ -1,4 +1,4 @@
-package com.imstargg.support.aws.local;
+package com.imstargg.support.aws.sqs.local;
 
 import cloud.localstack.awssdkv2.TestUtils;
 import org.springframework.beans.factory.annotation.Value;

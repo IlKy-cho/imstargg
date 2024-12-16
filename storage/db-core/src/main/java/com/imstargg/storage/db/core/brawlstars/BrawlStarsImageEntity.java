@@ -1,7 +1,7 @@
-package com.imstargg.storage.db.core;
+package com.imstargg.storage.db.core.brawlstars;
 
-import com.imstargg.core.enums.ImageBucket;
-import com.imstargg.core.enums.ImageType;
+import com.imstargg.core.enums.BrawlStarsImageType;
+import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,24 +12,20 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "images",
+        name = "brawlstars_image",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_images__code", columnNames = {"code"})
+                @UniqueConstraint(name = "uk_brawlstars_image__code", columnNames = {"code"})
         }
 )
-public class ImageEntity extends BaseEntity {
+public class BrawlStarsImageEntity extends BaseEntity {
 
     @Id
-    @Column(name = "images_id")
+    @Column(name = "brawlstars_image_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "bucket", length = 25, updatable = false, nullable = false)
-    private ImageBucket bucket;
-
-    @Enumerated(EnumType.STRING)
     @Column(name = "type", length = 25, updatable = false, nullable = false)
-    private ImageType type;
+    private BrawlStarsImageType type;
 
     @Column(name = "code", length = 65, updatable = false, nullable = false)
     private String code;
@@ -40,18 +36,14 @@ public class ImageEntity extends BaseEntity {
     @Column(name = "url", length = 500, nullable = false)
     private String url;
 
-    protected ImageEntity() {
+    protected BrawlStarsImageEntity() {
     }
 
     public Long getId() {
         return id;
     }
 
-    public ImageBucket getBucket() {
-        return bucket;
-    }
-
-    public ImageType getType() {
+    public BrawlStarsImageType getType() {
         return type;
     }
 
