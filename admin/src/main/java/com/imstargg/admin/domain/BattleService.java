@@ -1,6 +1,10 @@
 package com.imstargg.admin.domain;
 
+import com.imstargg.admin.support.error.AdminErrorKind;
+import com.imstargg.admin.support.error.AdminException;
+import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BrawlStarsImageType;
+import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
@@ -13,8 +17,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 
 import static java.util.stream.Collectors.groupingBy;
@@ -109,5 +115,29 @@ public class BattleService {
                         battle.getEvent().getMode(),
                         battle.getEvent().getMap()
                 )).toList();
+    }
+
+    public void registerEvent(NewBattleEvent newBattleEvent) {
+        BattleCollectionEntity battle = battleEventRepository.findAllNotRegisteredEventBattle().stream()
+                .filter(b -> Objects.equals(
+                        b.getEvent().getEventBrawlStarsId(), newBattleEvent.brawlStarsId()))
+                .findAny()
+                .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
+                        "이벤트가 존재하지 않습니다. brawlStarsId: " + newBattleEvent.brawlStarsId()));
+        BattleMapCollectionEntity battleMap = battleMapRepository.findByCode(newBattleEvent.mapCode())
+                .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
+                        "맵이 존재하지 않습니다. code: " + newBattleEvent.mapCode()));
+        BattleEventMode battleEventMode = Arrays.stream(BattleEventMode.values())
+                .filter(mode -> mode.getName().equals(battle.getEvent().getMode()))
+                .findAny()
+                .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
+                        "모드가 존재하지 않습니다. mode: " + battle.getEvent().getMode()));
+        battleEventRepository.save(
+                new BattleEventCollectionEntity(
+                        newBattleEvent.brawlStarsId(),
+                        battleEventMode,
+                        battleMap.getId()
+                )
+        );
     }
 }
