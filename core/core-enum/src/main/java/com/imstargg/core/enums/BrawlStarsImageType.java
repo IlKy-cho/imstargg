@@ -5,6 +5,7 @@ import java.util.function.UnaryOperator;
 public enum BrawlStarsImageType {
 
     BRAWLER_PROFILE(brawlStarsId -> "brawlers." + brawlStarsId + ".profile"),
+    GEAR(brawlStarsId -> "brawlers." + brawlStarsId + ".gear"),
     ;
 
     private final UnaryOperator<String> codeFunction;
