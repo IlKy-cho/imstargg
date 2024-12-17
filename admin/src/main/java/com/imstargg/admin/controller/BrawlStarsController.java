@@ -9,6 +9,7 @@ import com.imstargg.admin.domain.BattleMap;
 import com.imstargg.admin.domain.BattleService;
 import com.imstargg.admin.domain.Brawler;
 import com.imstargg.admin.domain.BrawlerService;
+import com.imstargg.admin.domain.NotRegisteredBattleEvent;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,5 +77,10 @@ public class BrawlStarsController {
     @GetMapping("/admin/api/events")
     public ListResponse<BattleEvent> getEvents() {
         return new ListResponse<>(battleService.getEventList());
+    }
+
+    @GetMapping("/admin/api/not-registered-events")
+    public ListResponse<NotRegisteredBattleEvent> getNotRegisteredEvents() {
+        return new ListResponse<>(battleService.getNotRegisteredEventList());
     }
 }
