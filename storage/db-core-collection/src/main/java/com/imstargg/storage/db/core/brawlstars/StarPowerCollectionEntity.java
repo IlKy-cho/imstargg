@@ -47,4 +47,8 @@ public class StarPowerCollectionEntity extends BaseEntity {
     public String getNameMessageCode() {
         return nameMessageCode;
     }
+
+    public long getBrawlerId() {
+        return brawlerId;
+    }
 }
