@@ -6,6 +6,7 @@ public enum BrawlStarsImageType {
 
     BRAWLER_PROFILE(brawlStarsId -> "brawlers." + brawlStarsId + ".profile"),
     GEAR(brawlStarsId -> "brawlers." + brawlStarsId + ".gear"),
+    BATTLE_MAP(mapCode -> "maps." + mapCode)
     ;
 
     private final UnaryOperator<String> codeFunction;

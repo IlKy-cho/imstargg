@@ -53,6 +53,23 @@ public class BrawlStarsImageUploader {
         ));
     }
 
+    public void uploadMap(String mapCode, Image image) {
+        String storedName = storedName(mapCode, image.ext(), "maps");
+        URL imageUrl = imageUploader.upload(image, BUCKET_NAME, storedName);
+
+        BrawlStarsImageType type = BrawlStarsImageType.BATTLE_MAP;
+        brawlStarsImageJpaRepository.save(new BrawlStarsImageCollectionEntity(
+                type,
+                type.code(mapCode),
+                storedName,
+                imageUrl.toString()
+        ));
+    }
+
+    private String storedName(String mapCode, String ext, String... dirs) {
+        return String.join("/", dirs) + "/" + mapCode + "." + ext;
+    }
+
     private String storedName(long brawlStarsId, String ext, String... dirs) {
         return String.join("/", dirs) + "/" + brawlStarsId + "." + ext;
     }
