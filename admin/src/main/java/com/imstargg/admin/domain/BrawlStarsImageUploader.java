@@ -40,6 +40,19 @@ public class BrawlStarsImageUploader {
         ));
     }
 
+    public void uploadGear(long brawlStarsId, Image image) {
+        String storedName = storedName(brawlStarsId, image.ext(), "gears");
+        URL imageUrl = imageUploader.upload(image, BUCKET_NAME, storedName);
+
+        BrawlStarsImageType type = BrawlStarsImageType.GEAR;
+        brawlStarsImageJpaRepository.save(new BrawlStarsImageCollectionEntity(
+                type,
+                type.code(brawlStarsId),
+                storedName,
+                imageUrl.toString()
+        ));
+    }
+
     private String storedName(long brawlStarsId, String ext, String... dirs) {
         return String.join("/", dirs) + "/" + brawlStarsId + "." + ext;
     }
