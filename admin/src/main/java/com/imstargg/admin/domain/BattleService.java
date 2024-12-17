@@ -101,4 +101,13 @@ public class BattleService {
                         )
                 )).toList();
     }
+
+    public List<NotRegisteredBattleEvent> getNotRegisteredEventList() {
+        return battleEventRepository.findAllNotRegisteredEventBattle().stream()
+                .map(battle -> new NotRegisteredBattleEvent(
+                        battle.getEvent().getEventBrawlStarsId(),
+                        battle.getEvent().getMode(),
+                        battle.getEvent().getMap()
+                )).toList();
+    }
 }
