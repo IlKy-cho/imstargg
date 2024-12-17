@@ -1,10 +1,11 @@
 package com.imstargg.admin.controller;
 
 import com.imstargg.admin.controller.request.BrawlerUpdateRequest;
-import com.imstargg.admin.controller.request.NewBrawlerRequest;
 import com.imstargg.admin.controller.request.NewBattleMapRequest;
+import com.imstargg.admin.controller.request.NewBrawlerRequest;
 import com.imstargg.admin.controller.response.ListResponse;
-import com.imstargg.admin.domain.BattleMapService;
+import com.imstargg.admin.domain.BattleMap;
+import com.imstargg.admin.domain.BattleService;
 import com.imstargg.admin.domain.Brawler;
 import com.imstargg.admin.domain.BrawlerService;
 import org.springframework.validation.annotation.Validated;
@@ -20,14 +21,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class BrawlStarsController {
 
     private final BrawlerService brawlerService;
-    private final BattleMapService mapService;
+    private final BattleService battleService;
 
     public BrawlStarsController(
             BrawlerService brawlerService,
-            BattleMapService mapService
+            BattleService battleService
     ) {
         this.brawlerService = brawlerService;
-        this.mapService = mapService;
+        this.battleService = battleService;
     }
 
     @GetMapping("/admin/api/brawlers")
@@ -55,14 +56,19 @@ public class BrawlStarsController {
         brawlerService.uploadProfileImage(brawlStarsId, image.getResource());
     }
 
+    @GetMapping("/admin/api/maps")
+    public ListResponse<BattleMap> getMaps() {
+        return new ListResponse<>(battleService.getMapList());
+    }
+
     @PostMapping("/admin/api/maps")
     public void registerMap(@Validated @RequestBody NewBattleMapRequest request) {
-        mapService.register(request.toNewBattleMap());
+        battleService.registerMap(request.toNewBattleMap());
     }
 
     @PutMapping("/admin/api/maps/{mapCode}/image")
     public void uploadMapImage(
             @PathVariable String mapCode, MultipartFile image) {
-        mapService.uploadImage(mapCode, image.getResource());
+        battleService.uploadMapImage(mapCode, image.getResource());
     }
 }
