@@ -22,9 +22,9 @@ public class MessageRepository {
 
     public Message get(String code, Language language) {
         return messageJpaRepository.findByCodeAndLang(code, language.getCode())
-                .map(entity -> new Message(Language.of(entity.getLang()), entity.getContent()))
+                .map(entity -> new Message(entity.getLang(), entity.getContent()))
                 .or(() -> messageJpaRepository.findByCodeAndLang(code, Language.DEFAULT.getCode())
-                        .map(entity -> new Message(Language.of(entity.getLang()), entity.getContent()))
+                        .map(entity -> new Message(entity.getLang(), entity.getContent()))
                 ).orElseThrow(() -> new CoreException("메시지를 찾을 수 없습니다. code: " + code + ", language: " + language));
     }
 
@@ -33,7 +33,7 @@ public class MessageRepository {
                 code,
                 messageJpaRepository.findAllByCode(code)
                         .stream()
-                        .map(entity -> new Message(Language.of(entity.getLang()), entity.getContent()))
+                        .map(entity -> new Message(entity.getLang(), entity.getContent()))
                         .toList()
         );
     }
@@ -47,7 +47,7 @@ public class MessageRepository {
                         code,
                         codeToMessageEntities.getOrDefault(code, List.of()).stream()
                                 .map(entity ->
-                                        new Message(Language.of(entity.getLang()), entity.getContent()))
+                                        new Message(entity.getLang(), entity.getContent()))
                                 .toList()
                 )).toList();
     }

@@ -1,7 +1,10 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.core.enums.Language;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -25,8 +28,9 @@ public class MessageEntity extends BaseEntity {
     @Column(name = "code", length = 65, updatable = false, nullable = false)
     private String code;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "lang", length = 25, updatable = false, nullable = false)
-    private String lang;
+    private Language lang;
 
     @Column(name = "content", updatable = false, nullable = false)
     private String content;
@@ -42,7 +46,7 @@ public class MessageEntity extends BaseEntity {
         return code;
     }
 
-    public String getLang() {
+    public Language getLang() {
         return lang;
     }
 

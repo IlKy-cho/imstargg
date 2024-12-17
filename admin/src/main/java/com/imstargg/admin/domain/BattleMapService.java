@@ -31,7 +31,7 @@ public class BattleMapService {
         BattleMapCollectionEntity battleMap = battleMapRepository.save(new BattleMapCollectionEntity());
 
         newBattleMap.names().messages().forEach((language, name) -> messageRepository.save(
-                new MessageCollectionEntity(battleMap.getNameMessageCode(), language.getCode(), name)));
+                new MessageCollectionEntity(battleMap.getNameMessageCode(), language, name)));
     }
 
     public void uploadImage(String mapCode, Resource resource) {
