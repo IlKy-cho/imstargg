@@ -27,7 +27,7 @@ public class BrawlStarsImageCollectionEntity extends BaseEntity {
     @Column(name = "code", length = 65, updatable = false, nullable = false)
     private String code;
 
-    @Column(name = "stored_name", updatable = false, nullable = false)
+    @Column(name = "stored_name", nullable = false)
     private String storedName;
 
     @Column(name = "url", length = 500, nullable = false)
@@ -44,6 +44,11 @@ public class BrawlStarsImageCollectionEntity extends BaseEntity {
     ) {
         this.type = type;
         this.code = code;
+        this.storedName = storedName;
+        this.url = url;
+    }
+
+    public void update(String storedName, String url) {
         this.storedName = storedName;
         this.url = url;
     }

@@ -15,11 +15,7 @@ public enum BrawlStarsImageType {
         this.codeFunction = codeFunction;
     }
 
-    public String code(long brawlStarsId) {
-        return codeFunction.apply(String.valueOf(brawlStarsId));
-    }
-
-    public String code(String mapCode) {
-        return codeFunction.apply(mapCode);
+    public String code(String key) {
+        return codeFunction.apply(key);
     }
 }
