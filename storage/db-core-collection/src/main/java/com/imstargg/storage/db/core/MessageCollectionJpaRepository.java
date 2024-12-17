@@ -7,4 +7,6 @@ import java.util.List;
 public interface MessageCollectionJpaRepository extends JpaRepository<MessageCollectionEntity, Long> {
 
     List<MessageCollectionEntity> findAllByCode(String code);
+
+    List<MessageCollectionEntity> findAllByCodeIn(List<String> codes);
 }
