@@ -1,6 +1,7 @@
 package com.imstargg.admin.controller;
 
 import com.imstargg.admin.controller.request.BrawlerUpdateRequest;
+import com.imstargg.admin.controller.request.NewBattleEventRequest;
 import com.imstargg.admin.controller.request.NewBattleMapRequest;
 import com.imstargg.admin.controller.request.NewBrawlerRequest;
 import com.imstargg.admin.controller.response.ListResponse;
@@ -82,5 +83,10 @@ public class BrawlStarsController {
     @GetMapping("/admin/api/not-registered-events")
     public ListResponse<NotRegisteredBattleEvent> getNotRegisteredEvents() {
         return new ListResponse<>(battleService.getNotRegisteredEventList());
+    }
+
+    @PostMapping("/admin/api/events")
+    public void registerEvent(@Validated @RequestBody NewBattleEventRequest request) {
+        battleService.registerEvent(request.toNewBattleEvent());
     }
 }
