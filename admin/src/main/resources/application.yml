@@ -11,6 +11,9 @@ spring:
 
   web.resources.add-mappings: false
   mvc.problemdetails.enabled: true
+
+  jpa:
+    open-in-view: true
 ---
 spring:
   config.activate.on-profile: local

@@ -70,7 +70,7 @@ public class BrawlerService {
         Map<Long, List<StarPowerCollectionEntity>> brawlerIdToStarPowers = starPowerRepository.findAll().stream()
                 .collect(groupingBy(StarPowerCollectionEntity::getBrawlerId));
         Map<Long, GearCollectionEntity> idToGear = gearRepository.findAll().stream()
-                .collect(toMap(GearCollectionEntity::getBrawlStarsId, Function.identity()));
+                .collect(toMap(GearCollectionEntity::getId, Function.identity()));
         Map<Long, List<GearCollectionEntity>> brawlerIdToGears = brawlerGearRepository.findAll().stream()
                 .collect(groupingBy(BrawlerGearCollectionEntity::getBrawlerId,
                         mapping(

@@ -3,9 +3,12 @@ package com.imstargg.admin.controller;
 import com.imstargg.admin.controller.request.BrawlerUpdateRequest;
 import com.imstargg.admin.controller.request.NewBrawlerRequest;
 import com.imstargg.admin.controller.request.NewBattleMapRequest;
+import com.imstargg.admin.controller.response.ListResponse;
 import com.imstargg.admin.domain.BattleMapService;
+import com.imstargg.admin.domain.Brawler;
 import com.imstargg.admin.domain.BrawlerService;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -25,6 +28,11 @@ public class BrawlStarsController {
     ) {
         this.brawlerService = brawlerService;
         this.mapService = mapService;
+    }
+
+    @GetMapping("/admin/api/brawlers")
+    public ListResponse<Brawler> getBrawlers() {
+        return new ListResponse<>(brawlerService.getList());
     }
 
     @PostMapping("/admin/api/brawlers")
