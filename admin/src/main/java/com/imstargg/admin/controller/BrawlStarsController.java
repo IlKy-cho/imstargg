@@ -4,6 +4,7 @@ import com.imstargg.admin.controller.request.BrawlerUpdateRequest;
 import com.imstargg.admin.controller.request.NewBattleMapRequest;
 import com.imstargg.admin.controller.request.NewBrawlerRequest;
 import com.imstargg.admin.controller.response.ListResponse;
+import com.imstargg.admin.domain.BattleEvent;
 import com.imstargg.admin.domain.BattleMap;
 import com.imstargg.admin.domain.BattleService;
 import com.imstargg.admin.domain.Brawler;
@@ -70,5 +71,10 @@ public class BrawlStarsController {
     public void uploadMapImage(
             @PathVariable String mapCode, MultipartFile image) {
         battleService.uploadMapImage(mapCode, image.getResource());
+    }
+
+    @GetMapping("/admin/api/events")
+    public ListResponse<BattleEvent> getEvents() {
+        return new ListResponse<>(battleService.getEventList());
     }
 }

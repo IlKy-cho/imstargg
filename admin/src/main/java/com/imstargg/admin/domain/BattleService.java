@@ -79,4 +79,26 @@ public class BattleService {
     public void uploadMapImage(String mapCode, Resource resource) {
         brawlStarsImageUploader.uploadMap(mapCode, resource);
     }
+
+    public List<BattleEvent> getEventList() {
+        List<BattleEventCollectionEntity> events = battleEventRepository.findAll();
+        Map<Long, BattleMapCollectionEntity> idToMap = battleMapRepository.findAll().stream()
+                .collect(toMap(BattleMapCollectionEntity::getId, Function.identity()));
+        List<MessageCollectionEntity> mapNameCodeToMessage = messageRepository.findAllByCodeIn(
+                idToMap.values().stream().map(BattleMapCollectionEntity::getNameMessageCode).toList());
+        Map<String, BrawlStarsImageCollectionEntity> mapImageCodeToImage = brawlStarsImageRepository.findAllByType(BrawlStarsImageType.BATTLE_MAP).stream()
+                .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
+
+        return events.stream()
+                .map(event -> new BattleEvent(
+                        event,
+                        new BattleEventMap(
+                                idToMap.get(event.getMapId()),
+                                mapNameCodeToMessage.stream()
+                                        .filter(message -> message.getCode().equals(idToMap.get(event.getMapId()).getNameMessageCode()))
+                                        .toList(),
+                                mapImageCodeToImage.get(idToMap.get(event.getMapId()).getCode())
+                        )
+                )).toList();
+    }
 }
