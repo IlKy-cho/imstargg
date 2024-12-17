@@ -10,6 +10,7 @@ import com.imstargg.storage.db.core.brawlstars.GadgetCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.GadgetCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.StarPowerCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.StarPowerCollectionJpaRepository;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,17 +25,20 @@ public class BrawlerService {
     private final GadgetCollectionJpaRepository gadgetRepository;
     private final StarPowerCollectionJpaRepository starPowerRepository;
     private final MessageCollectionJpaRepository messageRepository;
+    private final BrawlStarsImageUploader brawlStarsImageUploader;
 
     public BrawlerService(
             BrawlerCollectionJpaRepository brawlerRepository,
             GadgetCollectionJpaRepository gadgetRepository,
             StarPowerCollectionJpaRepository starPowerRepository,
-            MessageCollectionJpaRepository messageRepository
+            MessageCollectionJpaRepository messageRepository,
+            BrawlStarsImageUploader brawlStarsImageUploader
     ) {
         this.brawlerRepository = brawlerRepository;
         this.gadgetRepository = gadgetRepository;
         this.starPowerRepository = starPowerRepository;
         this.messageRepository = messageRepository;
+        this.brawlStarsImageUploader = brawlStarsImageUploader;
     }
 
     @Transactional
@@ -114,5 +118,9 @@ public class BrawlerService {
                         new MessageCollectionEntity(brawler.getNameMessageCode(), language.getCode(), name));
             }
         });
+    }
+
+    public void uploadProfileImage(long brawlStarsId, Resource resource) {
+        brawlStarsImageUploader.uploadBrawlerProfile(brawlStarsId, resource);
     }
 }
