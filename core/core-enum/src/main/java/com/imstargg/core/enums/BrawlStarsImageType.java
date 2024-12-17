@@ -12,4 +12,12 @@ public enum BrawlStarsImageType {
     BrawlStarsImageType(UnaryOperator<String> codeFunction) {
         this.codeFunction = codeFunction;
     }
+
+    public String code(long brawlStarsId) {
+        return codeFunction.apply(String.valueOf(brawlStarsId));
+    }
+
+    public String code(String mapCode) {
+        return codeFunction.apply(mapCode);
+    }
 }
