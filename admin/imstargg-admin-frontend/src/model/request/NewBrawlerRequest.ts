@@ -17,6 +17,7 @@ export default interface NewBrawlerRequest {
     rarity: BrawlerRarityType;
     role: BrawlerRoleType;
     names: Record<Language, string>;
+    gearIds: number[];
     gadgets: NewGadgetRequest[];
     starPowers: NewStarPowerRequest[];
 } 
