@@ -191,4 +191,18 @@ public class BrawlerService {
     public void uploadProfileImage(long brawlStarsId, Resource resource) {
         brawlStarsImageUploader.uploadBrawlerProfile(brawlStarsId, resource);
     }
+
+    public List<Gear> getGearList() {
+        List<GearCollectionEntity> gears = gearRepository.findAll();
+        Map<String, List<MessageCollectionEntity>> codeToMessages = messageRepository.findAll()
+                .stream()
+                .collect(groupingBy(MessageCollectionEntity::getCode));
+
+        return gears.stream().map(gear ->
+                new Gear(
+                        gear,
+                        codeToMessages.get(gear.getNameMessageCode())
+                )
+        ).toList();
+    }
 }

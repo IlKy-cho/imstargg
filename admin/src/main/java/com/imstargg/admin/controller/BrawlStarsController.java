@@ -10,6 +10,7 @@ import com.imstargg.admin.domain.BattleMap;
 import com.imstargg.admin.domain.BattleService;
 import com.imstargg.admin.domain.Brawler;
 import com.imstargg.admin.domain.BrawlerService;
+import com.imstargg.admin.domain.Gear;
 import com.imstargg.admin.domain.NotRegisteredBattleEvent;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -57,6 +58,11 @@ public class BrawlStarsController {
     public void uploadBrawlerProfileImage(
             @PathVariable long brawlStarsId, MultipartFile image) {
         brawlerService.uploadProfileImage(brawlStarsId, image.getResource());
+    }
+
+    @GetMapping("/admin/api/gears")
+    public ListResponse<Gear> getGears() {
+        return new ListResponse<>(brawlerService.getGearList());
     }
 
     @GetMapping("/admin/api/maps")
