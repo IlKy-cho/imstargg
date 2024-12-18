@@ -15,6 +15,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import getBrawlerList from "@/lib/api/getBrawlerList";
+import { BrawlerImageUpload } from './brawler-image-upload';
 
 export async function BrawlerList() {
   const brawlers = await getBrawlerList();
@@ -124,7 +125,9 @@ export async function BrawlerList() {
                 </PopoverContent>
               </Popover>
             </TableCell>
-            <TableCell className="text-right">메뉴버튼</TableCell>
+            <TableCell className="text-right space-x-2">
+              <BrawlerImageUpload brawlStarsId={brawler.entity.brawlStarsId} />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
