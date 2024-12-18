@@ -205,4 +205,18 @@ public class BrawlerService {
                 )
         ).toList();
     }
+
+    @Transactional
+    public void registerGear(NewGear newGear) {
+        newGear.names().validate();
+        GearCollectionEntity gear = gearRepository.save(
+                new GearCollectionEntity(
+                        newGear.brawlStarsId(),
+                        newGear.rarity()
+                )
+        );
+
+        newGear.names().messages().forEach((language, name) -> messageRepository.save(
+                new MessageCollectionEntity(gear.getNameMessageCode(), language, name)));
+    }
 }
