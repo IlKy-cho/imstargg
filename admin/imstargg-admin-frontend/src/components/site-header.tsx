@@ -1,5 +1,4 @@
 import Link from "next/link";
-import {MapIcon, StarIcon, SwordsIcon} from 'lucide-react';
 import {
   NavigationMenu,
   NavigationMenuLink,
@@ -7,12 +6,7 @@ import {
   navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
 import Image from 'next/image';
-
-const menuItems = [
-  { label: "브롤러", href: "/brawlers", icon:  StarIcon},
-  { label: "맵", href: "/maps", icon:  MapIcon },
-  { label: "이벤트", href: "/events", icon:  SwordsIcon },
-]
+import {menuItems} from "@/config/site";
 
 export default function SiteHeader() {
   return (
