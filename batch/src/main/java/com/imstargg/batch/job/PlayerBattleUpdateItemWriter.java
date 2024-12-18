@@ -1,6 +1,8 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
+import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
@@ -13,37 +15,46 @@ import java.util.List;
 
 public class PlayerBattleUpdateItemWriter implements ItemWriter<PlayerBattleUpdateResult>, InitializingBean {
 
-    private final JpaItemWriter<Object> jpaItemWriter;
+    private final JpaItemWriter<PlayerCollectionEntity> playerJpaItemWriter;
+    private final JpaItemWriter<BattleCollectionEntity> battleJpaItemWriter;
 
     public PlayerBattleUpdateItemWriter(
-            JpaItemWriter<Object> jpaItemWriter
+            JpaItemWriter<PlayerCollectionEntity> playerJpaItemWriter,
+            JpaItemWriter<BattleCollectionEntity> battleJpaItemWriter
     ) {
-        this.jpaItemWriter = jpaItemWriter;
+        this.playerJpaItemWriter = playerJpaItemWriter;
+        this.battleJpaItemWriter = battleJpaItemWriter;
     }
 
     public PlayerBattleUpdateItemWriter(EntityManagerFactory emf) {
         this(
-                new JpaItemWriterBuilder<>()
+                new JpaItemWriterBuilder<PlayerCollectionEntity>()
                         .entityManagerFactory(emf)
                         .usePersist(false)
+                        .build(),
+                new JpaItemWriterBuilder<BattleCollectionEntity>()
+                        .entityManagerFactory(emf)
+                        .usePersist(true)
                         .build()
         );
     }
 
     @Override
     public void write(Chunk<? extends PlayerBattleUpdateResult> items) throws Exception {
-        List<Object> totalList = new ArrayList<>();
+        List<PlayerCollectionEntity> playerTotalList = new ArrayList<>();
+        List<BattleCollectionEntity> battleTotalList = new ArrayList<>();
 
         for (PlayerBattleUpdateResult item : items) {
-            totalList.add(item.playerEntity());
-            totalList.addAll(item.battleEntities());
+            playerTotalList.add(item.playerEntity());
+            battleTotalList.addAll(item.battleEntities());
         }
 
-        jpaItemWriter.write(new Chunk<>(totalList));
+        playerJpaItemWriter.write(new Chunk<>(playerTotalList));
+        battleJpaItemWriter.write(new Chunk<>(battleTotalList));
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        jpaItemWriter.afterPropertiesSet();
+        playerJpaItemWriter.afterPropertiesSet();
     }
 }
