@@ -19,12 +19,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import registerBrawler from "@/lib/api/registerBrawler"
 import { Language, LanguageValues } from "@/model/enums/Language"
 import {BrawlerRole, BrawlerRoleType, BrawlerRoleValues} from "@/model/enums/BrawlerRoleType"
 import {BrawlerRarity, BrawlerRarityType, BrawlerRarityValues} from "@/model/enums/BrawlerRarityType";
 import { XIcon } from "lucide-react"
+import getGearList from "@/lib/api/getGearList"
+import Gear from "@/model/Gear"
 
 interface GadgetForm {
   brawlStarsId: string;
@@ -45,6 +47,21 @@ export function BrawlerAdd() {
   );
   const [gadgets, setGadgets] = useState<GadgetForm[]>([]);
   const [starPowers, setStarPowers] = useState<StarPowerForm[]>([]);
+  const [gearIds, setGearIds] = useState<number[]>([]);
+  const [gears, setGears] = useState<Gear[]>([]);
+
+  useEffect(() => {
+    const fetchGears = async () => {
+      try {
+        const gearList = await getGearList();
+        setGears(gearList);
+      } catch (error) {
+        console.error("기어 목록 로딩 실패:", error);
+      }
+    };
+    
+    fetchGears();
+  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -53,6 +70,7 @@ export function BrawlerAdd() {
         rarity,
         role,
         names,
+        gearIds,
         gadgets: gadgets.map(g => ({
           brawlStarsId: Number(g.brawlStarsId),
           names: g.names
@@ -248,6 +266,33 @@ export function BrawlerAdd() {
                 ))}
               </div>
             ))}
+          </div>
+
+          <div className="border-t pt-4">
+            <div className="flex justify-between items-center mb-4">
+              <h4 className="font-semibold">기어</h4>
+            </div>
+            <div className="grid grid-cols-4 gap-4">
+              {gears.map((gear) => (
+                <div key={gear.entity.id} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id={`gear-${gear.entity.id}`}
+                    checked={gearIds.includes(gear.entity.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setGearIds([...gearIds, gear.entity.id]);
+                      } else {
+                        setGearIds(gearIds.filter(id => id !== gear.entity.id));
+                      }
+                    }}
+                  />
+                  <Label htmlFor={`gear-${gear.entity.id}`}>
+                    {gear.names.sort((a, b) => a.lang.localeCompare(b.lang)).map(message => `${message.lang}(${message.content})`).join(' ')}
+                  </Label>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
         <DialogFooter>
