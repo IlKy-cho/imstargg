@@ -1,4 +1,4 @@
-const BrawlerRole = {
+export const BrawlerRole = {
   TANK: 'TANK',
   ASSASSIN: 'ASSASSIN',
   SUPPORT: 'SUPPORT',
@@ -6,6 +6,10 @@ const BrawlerRole = {
   DAMAGE_DEALER: 'DAMAGE_DEALER',
   MARKSMAN: 'MARKSMAN',
   ARTILLERY: 'ARTILLERY',
+
+  values() {
+    return Object.keys(this) as BrawlerRoleType[];
+  }
 } as const;
 
-export type BrawlerRole = typeof BrawlerRole[keyof typeof BrawlerRole];
+export type BrawlerRoleType = typeof BrawlerRole[keyof typeof BrawlerRole];
