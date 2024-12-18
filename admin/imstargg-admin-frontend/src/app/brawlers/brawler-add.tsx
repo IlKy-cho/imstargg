@@ -22,8 +22,8 @@ import {
 import { useState } from "react"
 import registerBrawler from "@/lib/api/registerBrawler"
 import { Language, LanguageValues } from "@/model/enums/Language"
-import {BrawlerRole, BrawlerRoleType} from "@/model/enums/BrawlerRoleType"
-import {BrawlerRarity, BrawlerRarityType} from "@/model/enums/BrawlerRarityType";
+import {BrawlerRole, BrawlerRoleType, BrawlerRoleValues} from "@/model/enums/BrawlerRoleType"
+import {BrawlerRarity, BrawlerRarityType, BrawlerRarityValues} from "@/model/enums/BrawlerRarityType";
 import { XIcon } from "lucide-react"
 
 interface GadgetForm {
@@ -123,7 +123,7 @@ export function BrawlerAdd() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {BrawlerRarity.values().map((r) => (
+                {BrawlerRarityValues.map((r) => (
                   <SelectItem key={r} value={r}>{r}</SelectItem>
                 ))}
               </SelectContent>
@@ -137,7 +137,7 @@ export function BrawlerAdd() {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {BrawlerRole.values().map((r) => (
+                {BrawlerRoleValues.map((r) => (
                   <SelectItem key={r} value={r}>{r}</SelectItem>
                 ))}
               </SelectContent>
