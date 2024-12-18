@@ -14,7 +14,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import {getBrawlerList} from "@/lib/api/getBrawlerList";
+import getBrawlerList from "@/lib/api/getBrawlerList";
 
 export async function BrawlerList() {
   const brawlers = await getBrawlerList();

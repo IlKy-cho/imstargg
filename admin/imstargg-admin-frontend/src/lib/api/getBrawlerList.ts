@@ -4,7 +4,7 @@ interface BrawlerListResponse {
   content: Brawler[];
 }
 
-export async function getBrawlerList(): Promise<Brawler[]> {
+export default async function getBrawlerList(): Promise<Brawler[]> {
 
     const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/api/brawlers`);
     console.log(`Fetch from ${url}`);
