@@ -2,9 +2,13 @@ import Image from 'next/image';
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import getMapList from "@/lib/api/getMapList";
 import { MapImageUpload } from './map-image-upload';
+import BattleMap from '@/model/BattleMap';
 
-export async function MapList() {
-  const battleMaps = await getMapList();
+type Props = {
+  battleMaps: BattleMap[];
+}
+
+export async function MapList({ battleMaps }: Props) {
 
   return (
     <Table>
