@@ -16,6 +16,7 @@ public record NewBrawlerRequest(
         @NotNull BrawlerRarity rarity,
         @NotNull BrawlerRole role,
         @NotEmpty EnumMap<Language, String> names,
+        @NotNull List<Long> gearIds,
         @NotNull List<NewGadgetRequest> gadgets,
         @NotNull List<NewStarPowerRequest> starPowers
 ) {
@@ -26,6 +27,7 @@ public record NewBrawlerRequest(
                 rarity,
                 role,
                 new NewMessageCollection(names),
+                gearIds,
                 gadgets.stream().map(NewGadgetRequest::toNewGadget).toList(),
                 starPowers.stream().map(NewStarPowerRequest::toNewStarPower).toList()
         );
