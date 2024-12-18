@@ -10,6 +10,7 @@ public record NewBrawler(
         BrawlerRarity rarity,
         BrawlerRole role,
         NewMessageCollection names,
+        List<Long> gearIds,
         List<NewGadget> gadgets,
         List<NewStarPower> starPowers
 ) {

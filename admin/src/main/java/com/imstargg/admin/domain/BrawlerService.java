@@ -144,6 +144,17 @@ public class BrawlerService {
             newStarPower.names().messages().forEach((language, name) -> messageRepository.save(
                     new MessageCollectionEntity(starPower.getNameMessageCode(), language, name)));
         });
+
+        List<GearCollectionEntity> gearEntities = gearRepository.findAllById(newBrawler.gearIds());
+        if (gearEntities.size() != newBrawler.gearIds().size()) {
+            throw new AdminException(AdminErrorKind.VALIDATION_FAILED,
+                    "존재하지 않는 기어가 포함되어 있습니다. " +
+                            "추가되는 기어 아이디: " + newBrawler.gearIds() +
+                            ", 존재하는 기어 아이디: " + gearEntities.stream().map(GearCollectionEntity::getId).toList());
+        }
+        brawlerGearRepository.saveAll(gearEntities.stream()
+                .map(gear -> new BrawlerGearCollectionEntity(brawler.getId(), gear.getId()))
+                .toList());
     }
 
     private void validateNewBrawler(NewBrawler newBrawler) {
