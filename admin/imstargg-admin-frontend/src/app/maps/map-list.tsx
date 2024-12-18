@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import getMapList from "@/lib/api/getMapList";
+import { MapImageUpload } from './map-image-upload';
 
 export async function MapList() {
   const battleMaps = await getMapList();
@@ -43,7 +44,9 @@ export async function MapList() {
                 .map(battleEvent => `${battleEvent.mode}(${battleEvent.brawlStarsId})`)
                 .join(' ')}
             </TableCell>
-            <TableCell className="text-right">메뉴버튼</TableCell>
+            <TableCell className="text-right space-x-2">
+              <MapImageUpload mapCode={battleMap.entity.code} />
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>
