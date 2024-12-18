@@ -1,4 +1,4 @@
-const BattleMode = {
+export const BattleMode = {
   NOT_FOUND: 'NOT_FOUND',
   KNOCKOUT: 'KNOCKOUT',
   GEM_GRAB: 'GEM_GRAB',
@@ -22,4 +22,6 @@ const BattleMode = {
   HUNTERS: 'HUNTERS',
 } as const;
 
-export type BattleMode = typeof BattleMode[keyof typeof BattleMode];
+export type BattleModeType = typeof BattleMode[keyof typeof BattleMode];
+
+export const BattleModeValues = Object.keys(BattleMode) as BattleModeType[];

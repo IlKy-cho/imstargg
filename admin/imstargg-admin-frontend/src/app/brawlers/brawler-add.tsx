@@ -21,29 +21,29 @@ import {
 } from "@/components/ui/select"
 import { useState, useEffect } from "react"
 import registerBrawler from "@/lib/api/registerBrawler"
-import { Language, LanguageValues } from "@/model/enums/Language"
-import {BrawlerRole, BrawlerRoleType, BrawlerRoleValues} from "@/model/enums/BrawlerRoleType"
-import {BrawlerRarity, BrawlerRarityType, BrawlerRarityValues} from "@/model/enums/BrawlerRarityType";
+import { LanguageType, LanguageValues } from "@/model/enums/Language"
+import {BrawlerRole, BrawlerRoleType, BrawlerRoleValues} from "@/model/enums/BrawlerRole"
+import {BrawlerRarity, BrawlerRarityType, BrawlerRarityValues} from "@/model/enums/BrawlerRarity";
 import { XIcon } from "lucide-react"
 import getGearList from "@/lib/api/getGearList"
 import Gear from "@/model/Gear"
 
 interface GadgetForm {
   brawlStarsId: string;
-  names: Record<Language, string>;
+  names: Record<LanguageType, string>;
 }
 
 interface StarPowerForm {
   brawlStarsId: string;
-  names: Record<Language, string>;
+  names: Record<LanguageType, string>;
 }
 
 export function BrawlerAdd() {
   const [brawlStarsId, setBrawlStarsId] = useState<string>("");
   const [rarity, setRarity] = useState<BrawlerRarityType>(BrawlerRarity.STARTING_BRAWLER);
   const [role, setRole] = useState<BrawlerRoleType>(BrawlerRole.DAMAGE_DEALER);
-  const [names, setNames] = useState<Record<Language, string>>(
-    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
+  const [names, setNames] = useState<Record<LanguageType, string>>(
+    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
   );
   const [gadgets, setGadgets] = useState<GadgetForm[]>([]);
   const [starPowers, setStarPowers] = useState<StarPowerForm[]>([]);
@@ -89,14 +89,14 @@ export function BrawlerAdd() {
   const addGadget = () => {
     setGadgets([...gadgets, {
       brawlStarsId: "",
-      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
+      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
     }]);
   };
 
   const addStarPower = () => {
     setStarPowers([...starPowers, {
       brawlStarsId: "",
-      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
+      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
     }]);
   };
 

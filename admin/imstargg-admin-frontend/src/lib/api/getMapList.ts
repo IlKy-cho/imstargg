@@ -1,4 +1,3 @@
-import Brawler from "@/model/Brawler";
 import BattleMap from "@/model/BattleMap";
 
 interface BattleMapListResponse {
