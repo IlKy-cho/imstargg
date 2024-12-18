@@ -37,13 +37,17 @@ export async function BrawlerList() {
         {brawlers.map((brawler) => (
           <TableRow key={brawler.entity.brawlStarsId}>
             <TableCell>
-              {brawler.image && (
+              {brawler.image ? (
                 <Image
                   src={brawler.image.url}
                   alt={brawler.entity.id + " 이미지"}
                   width={100}
                   height={100}
                 />
+              ) : (
+                <div className="flex items-center justify-center w-[100px] h-[100px] bg-gray-100">
+                  <span className="text-2xl text-gray-400">X</span>
+                </div>
               )}
             </TableCell>
             <TableCell>
