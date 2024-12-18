@@ -67,7 +67,7 @@ public class BattleService {
                         new BattleMap(
                                 map,
                                 codeToMessages.get(map.getNameMessageCode()),
-                                codeToImage.get(map.getCode()),
+                                codeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(map.getCode())),
                                 mapIdToEvent.getOrDefault(map.getId(), List.of())
                         )
                 ).toList();
