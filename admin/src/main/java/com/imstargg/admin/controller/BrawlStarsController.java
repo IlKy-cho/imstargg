@@ -4,6 +4,7 @@ import com.imstargg.admin.controller.request.BrawlerUpdateRequest;
 import com.imstargg.admin.controller.request.NewBattleEventRequest;
 import com.imstargg.admin.controller.request.NewBattleMapRequest;
 import com.imstargg.admin.controller.request.NewBrawlerRequest;
+import com.imstargg.admin.controller.request.NewGearRequest;
 import com.imstargg.admin.controller.response.ListResponse;
 import com.imstargg.admin.domain.BattleEvent;
 import com.imstargg.admin.domain.BattleMap;
@@ -63,6 +64,11 @@ public class BrawlStarsController {
     @GetMapping("/admin/api/gears")
     public ListResponse<Gear> getGears() {
         return new ListResponse<>(brawlerService.getGearList());
+    }
+
+    @PostMapping("/admin/api/gears")
+    public void registerGear(@Validated @RequestBody NewGearRequest request) {
+        brawlerService.registerGear(request.toNewGear());
     }
 
     @GetMapping("/admin/api/maps")
