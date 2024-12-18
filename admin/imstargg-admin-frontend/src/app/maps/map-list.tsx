@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import {getMapList} from "@/lib/api/getMapList";
+import getMapList from "@/lib/api/getMapList";
 
 export async function MapList() {
   const battleMaps = await getMapList();

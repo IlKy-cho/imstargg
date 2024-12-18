@@ -5,7 +5,7 @@ interface BattleMapListResponse {
   content: BattleMap[];
 }
 
-export async function getMapList(): Promise<BattleMap[]> {
+export default async function getMapList(): Promise<BattleMap[]> {
 
   const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/admin/api/maps`);
   console.log(`Fetch from ${url}`);
