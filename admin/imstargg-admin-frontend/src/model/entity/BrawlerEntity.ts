@@ -1,5 +1,5 @@
-import {BrawlerRarityType} from "@/model/enums/BrawlerRarityType";
-import {BrawlerRoleType} from "@/model/enums/BrawlerRoleType";
+import {BrawlerRarityType} from "@/model/enums/BrawlerRarity";
+import {BrawlerRoleType} from "@/model/enums/BrawlerRole";
 import BaseEntity from "@/model/entity/BaseEntity";
 
 export default interface BrawlerEntity extends BaseEntity {

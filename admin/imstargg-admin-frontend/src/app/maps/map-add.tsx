@@ -14,11 +14,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import registerMap from "@/lib/api/registerMap"
-import { Language, LanguageValues } from "@/model/enums/Language"
+import { LanguageType, LanguageValues } from "@/model/enums/Language"
 
 export function MapAdd() {
-  const [names, setNames] = useState<Record<Language, string>>(
-    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
+  const [names, setNames] = useState<Record<LanguageType, string>>(
+    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
   )
 
   const handleSubmit = async () => {

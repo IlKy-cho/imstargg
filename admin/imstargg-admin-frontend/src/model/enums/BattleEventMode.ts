@@ -1,4 +1,4 @@
-const BattleEventMode = {
+export const BattleEventMode = {
   NOT_FOUND: 'NOT_FOUND',
   SOLO_SHOWDOWN: 'SOLO_SHOWDOWN',
   DUO_SHOWDOWN: 'DUO_SHOWDOWN',
@@ -42,4 +42,6 @@ const BattleEventMode = {
   UNKNOWN: 'UNKNOWN',
 } as const;
 
-export type BattleEventMode = typeof BattleEventMode[keyof typeof BattleEventMode];
+export type BattleEventModeType = typeof BattleEventMode[keyof typeof BattleEventMode];
+
+export const BattleEventModeValues = Object.keys(BattleEventMode) as BattleEventModeType[];
