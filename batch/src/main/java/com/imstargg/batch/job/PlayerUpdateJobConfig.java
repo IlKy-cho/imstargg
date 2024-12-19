@@ -33,6 +33,10 @@ import java.util.concurrent.Future;
 
 import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
 
+/**
+ * 현재 배치에서는 전적만 업데이트 함.
+ * 필요시에 사용할 수 있도록 남겨둠.
+ */
 @Configuration
 public class PlayerUpdateJobConfig {
 
