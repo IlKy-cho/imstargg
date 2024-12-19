@@ -50,7 +50,6 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
 
         // then
         PlayerCollectionEntity savedEntity = repository.findById(entity.getId()).get();
-        assertThat(savedEntity.getNotUpdatedCount()).isZero();
         assertThat(savedEntity.getUpdateWeight())
                 .isEqualTo(LocalDateTime.now(clock));
         assertThat(savedEntity.getStatus()).isEqualTo(PlayerStatus.NEW);

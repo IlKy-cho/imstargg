@@ -84,9 +84,6 @@ public class PlayerEntity extends BaseEntity {
     @Column(name = "brawlstars_club_tag", length = 45, updatable = false)
     private String brawlStarsClubTag;
 
-    @Column(name = "not_updated_count", nullable = false)
-    private int notUpdatedCount;
-
     @Column(name = "update_weight", nullable = false)
     private LocalDateTime updateWeight;
 

@@ -111,7 +111,6 @@ create table player
     best_robo_rumble_time                 int          not null,
     best_time_as_big_brawler              int          not null,
     brawlstars_club_tag                   varchar(45),
-    not_updated_count                     int          not null,
     update_weight                         timestamp(6) not null,
     latest_battle_time                    timestamp(6),
     version                               int          not null,
