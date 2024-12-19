@@ -1,4 +1,4 @@
-package com.imstargg.batch.job;
+package com.imstargg.batch.job.notused;
 
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;

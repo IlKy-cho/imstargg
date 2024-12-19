@@ -1,4 +1,4 @@
-package com.imstargg.batch.job;
+package com.imstargg.batch.job.notused;
 
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;

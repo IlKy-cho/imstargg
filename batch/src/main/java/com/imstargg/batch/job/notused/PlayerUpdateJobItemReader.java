@@ -1,4 +1,4 @@
-package com.imstargg.batch.job;
+package com.imstargg.batch.job.notused;
 
 import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
