@@ -13,7 +13,7 @@ spring:
 app:
   client.brawlstars:
     url: "https://example.brawlstars.com"
-    key: "test-key"
+    keys: "test-key"
   batch:
     battleUpdateJob:
       chunk-size: 10
