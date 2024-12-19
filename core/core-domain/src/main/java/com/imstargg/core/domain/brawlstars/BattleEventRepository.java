@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.brawlstars;
 
+import com.imstargg.core.config.CacheNames;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.Message;
 import com.imstargg.core.domain.MessageRepository;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-@CacheConfig(cacheNames = "battle-events")
+@CacheConfig(cacheNames = CacheNames.BATTLE_EVENT)
 public class BattleEventRepository {
 
     private final BattleEventJpaRepository battleEventJpaRepository;

@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.brawlstars;
 
+import com.imstargg.core.config.CacheNames;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
@@ -28,7 +29,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-@CacheConfig(cacheNames = "brawler")
+@CacheConfig(cacheNames = CacheNames.BRAWLER)
 public class BrawlerRepository {
 
     private final BrawlerJpaRepository brawlerJpaRepository;
