@@ -20,13 +20,12 @@ public class CacheConfig {
         cacheManager.setCaffeine(
                 Caffeine.newBuilder().expireAfterWrite(Duration.ofHours(1))
         );
+
         cacheManager.setCacheNames(List.of(
-                CacheNames.BATTLE_EVENT
+                CacheNames.BATTLE_EVENT,
+                CacheNames.BRAWLER
         ));
 
-        cacheManager.registerCustomCache(CacheNames.BRAWLER,
-                Caffeine.newBuilder().refreshAfterWrite(Duration.ofHours(1)).build()
-        );
         return cacheManager;
     }
 }
