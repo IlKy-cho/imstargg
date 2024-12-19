@@ -1,8 +1,8 @@
 import PlayerBattle from "@/model/PlayerBattle";
-import {BattleEventMode} from "@/model/BattleEventMode";
-import {BattleType} from "@/model/BattleType";
-import {BattleResult} from "@/model/BattleResult";
-import {BrawlerRarity} from "@/model/BrawlerRarity";
+import {BattleEventModeType} from "@/model/enums/BattleEventMode";
+import {BattleResultType} from "@/model/enums/BattleResult";
+import {BattleTypeType} from "@/model/enums/BattleType";
+import {BrawlerRarityType} from "@/model/enums/BrawlerRarity";
 
 interface PlayerBattleListResponse {
   content: PlayerBattleResponse[];
@@ -11,8 +11,8 @@ interface PlayerBattleListResponse {
 interface PlayerBattleResponse {
   battleTime: string;
   event: BattleEventResponse | null;
-  type: BattleType;
-  result: BattleResult | null;
+  type: BattleTypeType;
+  result: BattleResultType | null;
   duration: number | null;
   rank: number | null;
   trophyChange: number | null;
@@ -22,7 +22,7 @@ interface PlayerBattleResponse {
 
 interface BattleEventResponse {
   id: number;
-  mode: BattleEventMode;
+  mode: BattleEventModeType;
   mapCode: string;
   mapName: string;
 }
@@ -36,7 +36,7 @@ interface BattlePlayerResponse {
 interface BattlePlayerBrawlerResponse {
   id: number | null;
   name: string | null;
-  rarity: BrawlerRarity | null;
+  rarity: BrawlerRarityType | null;
   power: number;
   trophies: number | null;
   trophyChange: number | null;
