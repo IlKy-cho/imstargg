@@ -50,7 +50,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
 
         // then
         PlayerCollectionEntity savedEntity = repository.findById(entity.getId()).get();
-        assertThat(savedEntity.getUpdateWeight())
+        assertThat(savedEntity.getNextUpdateTime())
                 .isEqualTo(LocalDateTime.now(clock));
         assertThat(savedEntity.getStatus()).isEqualTo(PlayerStatus.NEW);
         assertThat(savedEntity.getBrawlStarsTag()).isEqualTo("brawlStarsTag");
@@ -205,7 +205,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
         player.battleUpdated(clock, emptyBattles);
 
         // then
-        assertThat(player.getUpdateWeight()).isEqualTo(LocalDateTime.now(clock).plusDays(7));
+        assertThat(player.getNextUpdateTime()).isEqualTo(LocalDateTime.now(clock).plusDays(7));
     }
 
     @Test
@@ -237,7 +237,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
 
         // then
         long weightMultiplier = 6L; // trophyWeight(3) * expLevelWeight(2)
-        assertThat(player.getUpdateWeight())
+        assertThat(player.getNextUpdateTime())
                 .isEqualTo(LocalDateTime.now(clock).plusDays(weightMultiplier));
     }
 
@@ -255,7 +255,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
 
         // then
         long weightMultiplier = 12L; // trophyWeight(4) * expLevelWeight(3)
-        assertThat(player.getUpdateWeight())
+        assertThat(player.getNextUpdateTime())
                 .isEqualTo(LocalDateTime.now(clock).plusDays(weightMultiplier));
     }
 

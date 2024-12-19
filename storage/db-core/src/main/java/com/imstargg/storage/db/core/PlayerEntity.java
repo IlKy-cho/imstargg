@@ -84,8 +84,8 @@ public class PlayerEntity extends BaseEntity {
     @Column(name = "brawlstars_club_tag", length = 45, updatable = false)
     private String brawlStarsClubTag;
 
-    @Column(name = "update_weight", nullable = false)
-    private LocalDateTime updateWeight;
+    @Column(name = "next_update_time", nullable = false)
+    private LocalDateTime nextUpdateTime;
 
     @Nullable
     @Column(name = "latest_battle_time")
