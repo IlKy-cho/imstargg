@@ -111,7 +111,7 @@ create table player
     best_robo_rumble_time                 int          not null,
     best_time_as_big_brawler              int          not null,
     brawlstars_club_tag                   varchar(45),
-    update_weight                         timestamp(6) not null,
+    next_update_time                         timestamp(6) not null,
     latest_battle_time                    timestamp(6),
     version                               int          not null,
     created_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
@@ -129,8 +129,8 @@ create index ix_player__name
 create index ix_player__status
     on player (status);
 
-create index ix_player__updated_weight
-    on player (update_weight);
+create index ix_player__next_update_time
+    on player (next_update_time);
 
 
 create table unknown_player

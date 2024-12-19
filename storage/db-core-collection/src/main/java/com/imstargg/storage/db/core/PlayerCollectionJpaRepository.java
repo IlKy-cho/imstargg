@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface PlayerCollectionJpaRepository extends JpaRepository<PlayerCollectionEntity, Long> {
 
-    List<PlayerCollectionEntity> findAllByDeletedFalseAndStatusInOrderByUpdateWeight(
+    List<PlayerCollectionEntity> findAllByDeletedFalseAndStatusInOrderByNextUpdateTime(
             Collection<PlayerStatus> statuses, Limit limit);
 
     boolean existsByBrawlStarsTag(String brawlStarsTag);

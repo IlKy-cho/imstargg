@@ -144,7 +144,7 @@ public class BattleUpdateJobConfig {
                                 nextUpdateTimeGoe(),
                                 nextUpdateTimeLt()
                         )
-                        .orderBy(playerCollectionEntity.updateWeight.asc())
+                        .orderBy(playerCollectionEntity.nextUpdateTime.asc())
         );
         reader.setTransacted(false);
         reader.setSaveState(false);
@@ -166,7 +166,7 @@ public class BattleUpdateJobConfig {
             return null;
         }
 
-        return playerCollectionEntity.updateWeight.goe(periodDateTimeJobParameter().getFrom());
+        return playerCollectionEntity.nextUpdateTime.goe(periodDateTimeJobParameter().getFrom());
     }
 
     private BooleanExpression nextUpdateTimeLt() {
@@ -174,7 +174,7 @@ public class BattleUpdateJobConfig {
             return null;
         }
 
-        return playerCollectionEntity.updateWeight.lt(periodDateTimeJobParameter().getTo());
+        return playerCollectionEntity.nextUpdateTime.lt(periodDateTimeJobParameter().getTo());
     }
 
     @Bean(STEP_NAME + "AsyncItemProcessor")

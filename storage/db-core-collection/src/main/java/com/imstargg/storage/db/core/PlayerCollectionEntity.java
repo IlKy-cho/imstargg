@@ -86,8 +86,8 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Column(name = "brawlstars_club_tag", length = 45, updatable = false)
     private String brawlStarsClubTag;
 
-    @Column(name = "update_weight", nullable = false)
-    private LocalDateTime updateWeight;
+    @Column(name = "next_update_time", nullable = false)
+    private LocalDateTime nextUpdateTime;
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
     private List<PlayerBrawlerCollectionEntity> brawlers = new ArrayList<>();
@@ -140,7 +140,7 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.bestRoboRumbleTime = bestRoboRumbleTime;
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
         this.brawlStarsClubTag = brawlStarsClubTag;
-        this.updateWeight = LocalDateTime.now(clock);
+        this.nextUpdateTime = LocalDateTime.now(clock);
     }
 
     public void updateBrawler(
@@ -214,15 +214,15 @@ public class PlayerCollectionEntity extends BaseEntity {
     private void handleNoBattleUpdate(LocalDateTime now) {
         if (checkDormant(now)) {
             this.status = PlayerStatus.DORMANT;
-            this.updateWeight = LocalDateTime.MAX;
+            this.nextUpdateTime = LocalDateTime.MAX;
             return;
         }
-        this.updateWeight = nextUpdateTimeWhenNotBattleUpdated(now);
+        this.nextUpdateTime = nextUpdateTimeWhenNotBattleUpdated(now);
     }
 
     private void handleBattleUpdate(LocalDateTime latestBattleTime, LocalDateTime now) {
         this.latestBattleTime = latestBattleTime;
-        this.updateWeight = nextUpdateTimeWhenBattleUpdated(now);
+        this.nextUpdateTime = nextUpdateTimeWhenBattleUpdated(now);
     }
 
     private LocalDateTime nextUpdateTimeWhenBattleUpdated(LocalDateTime now) {
@@ -278,7 +278,7 @@ public class PlayerCollectionEntity extends BaseEntity {
 
     public void deleted() {
         this.status = PlayerStatus.DELETED;
-        this.updateWeight = LocalDateTime.MAX;
+        this.nextUpdateTime = LocalDateTime.MAX;
     }
 
     public void renewRequested() {
@@ -387,8 +387,8 @@ public class PlayerCollectionEntity extends BaseEntity {
         return brawlStarsClubTag;
     }
 
-    public LocalDateTime getUpdateWeight() {
-        return updateWeight;
+    public LocalDateTime getNextUpdateTime() {
+        return nextUpdateTime;
     }
 
     public List<PlayerBrawlerCollectionEntity> getBrawlers() {
