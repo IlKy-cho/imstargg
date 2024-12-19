@@ -14,7 +14,6 @@ create table battle
     player_id                  bigint       not null,
     battle_rank                int,
     trophy_change              int,
-    trophies_snapshot          int,
     teams                      json         not null,
     created_at                 timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at                 timestamp(6) not null default CURRENT_TIMESTAMP(6),

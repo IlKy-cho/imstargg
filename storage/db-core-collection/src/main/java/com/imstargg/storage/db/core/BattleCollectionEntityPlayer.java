@@ -24,23 +24,17 @@ public class BattleCollectionEntityPlayer {
     @Column(name = "trophy_change", updatable = false)
     private Integer trophyChange;
 
-    @Nullable
-    @Column(name = "trophies_snapshot", updatable = false)
-    private Integer trophySnapshot;
-
     protected BattleCollectionEntityPlayer() {
     }
 
     public BattleCollectionEntityPlayer(
             PlayerCollectionEntity player,
             @Nullable Integer rank,
-            @Nullable Integer trophyChange,
-            @Nullable Integer trophySnapshot
+            @Nullable Integer trophyChange
     ) {
         this.player = player;
         this.rank = rank;
         this.trophyChange = trophyChange;
-        this.trophySnapshot = trophySnapshot;
     }
 
     public PlayerCollectionEntity getPlayer() {
@@ -55,11 +49,6 @@ public class BattleCollectionEntityPlayer {
     @Nullable
     public Integer getTrophyChange() {
         return trophyChange;
-    }
-
-    @Nullable
-    public Integer getTrophySnapshot() {
-        return trophySnapshot;
     }
 
 }
