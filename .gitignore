@@ -44,3 +44,7 @@ out/
 
 ### Node Env ###
 node-22.12.0
+
+### Spring Properties ###
+application-*.properties
+application-*.yml

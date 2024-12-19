@@ -18,8 +18,8 @@ class BrawlStarsApiConfig {
     }
 
     @Bean
-    public AuthorizationKeyInterceptor brawlStarsApiKeyInterceptor() {
-        return new AuthorizationKeyInterceptor(brawlStarsClientProperties.key());
+    public BrawlStarsApiKeyInterceptor brawlStarsApiKeyInterceptor() {
+        return new BrawlStarsApiKeyInterceptor(brawlStarsClientProperties.keys());
     }
 
     @Bean
