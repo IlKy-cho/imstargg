@@ -1,14 +1,14 @@
-import {BrawlerRarity} from "@/model/BrawlerRarity";
-import {BrawlerRole} from "@/model/BrawlerRole";
 import Gadget from "@/model/Gadget";
 import Gear from "@/model/Gear";
 import StarPower from "@/model/StarPower";
+import {BrawlerRarityType} from "@/model/enums/BrawlerRarity";
+import {BrawlerRoleType} from "@/model/enums/BrawlerRole";
 
 export default interface Brawler {
   id: number;
   name: string;
-  rarity: BrawlerRarity;
-  role: BrawlerRole;
+  rarity: BrawlerRarityType;
+  role: BrawlerRoleType;
   gadgets: Gadget[];
   gears: Gear[];
   starPowers: StarPower[];
