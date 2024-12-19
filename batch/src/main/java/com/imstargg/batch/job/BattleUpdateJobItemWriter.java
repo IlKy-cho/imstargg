@@ -13,12 +13,12 @@ import org.springframework.beans.factory.InitializingBean;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerBattleUpdateItemWriter implements ItemWriter<PlayerBattleUpdateResult>, InitializingBean {
+public class BattleUpdateJobItemWriter implements ItemWriter<PlayerBattleUpdateResult>, InitializingBean {
 
     private final JpaItemWriter<PlayerCollectionEntity> playerJpaItemWriter;
     private final JpaItemWriter<BattleCollectionEntity> battleJpaItemWriter;
 
-    public PlayerBattleUpdateItemWriter(
+    public BattleUpdateJobItemWriter(
             JpaItemWriter<PlayerCollectionEntity> playerJpaItemWriter,
             JpaItemWriter<BattleCollectionEntity> battleJpaItemWriter
     ) {
@@ -26,7 +26,7 @@ public class PlayerBattleUpdateItemWriter implements ItemWriter<PlayerBattleUpda
         this.battleJpaItemWriter = battleJpaItemWriter;
     }
 
-    public PlayerBattleUpdateItemWriter(EntityManagerFactory emf) {
+    public BattleUpdateJobItemWriter(EntityManagerFactory emf) {
         this(
                 new JpaItemWriterBuilder<PlayerCollectionEntity>()
                         .entityManagerFactory(emf)

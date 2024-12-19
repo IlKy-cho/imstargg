@@ -202,7 +202,7 @@ public class BattleUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    PlayerBattleUpdateItemWriter writer() {
-        return new PlayerBattleUpdateItemWriter(emf);
+    BattleUpdateJobItemWriter writer() {
+        return new BattleUpdateJobItemWriter(emf);
     }
 }
