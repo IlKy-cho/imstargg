@@ -1358,7 +1358,6 @@ class BattleUpdateApplierTest {
         assertThat(actual.getPlayer().getPlayer().getId()).isEqualTo(playerEntity.getId());
         assertThat(actual.getPlayer().getRank()).isEqualTo(expected.battle().rank());
         assertThat(actual.getPlayer().getTrophyChange()).isEqualTo(expected.battle().trophyChange());
-        assertThat(actual.getPlayer().getTrophySnapshot()).isEqualTo(playerEntity.getTrophies());
     }
 
     private void assertBattleTeams(

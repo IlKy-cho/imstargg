@@ -57,9 +57,6 @@ public class BattleCollectionEntityFixture {
     @Nullable
     private Integer trophySnapshot;
 
-    @Nullable
-    private Integer brawlerTrophySnapshot;
-
     public BattleCollectionEntityFixture battleKey(String battleKey) {
         this.battleKey = battleKey;
         return this;
@@ -140,11 +137,6 @@ public class BattleCollectionEntityFixture {
         return this;
     }
 
-    public BattleCollectionEntityFixture brawlerTrophySnapshot(Integer brawlerTrophySnapshot) {
-        this.brawlerTrophySnapshot = brawlerTrophySnapshot;
-        return this;
-    }
-
     public BattleCollectionEntity build() {
         fillRequiredFields();
 
@@ -160,8 +152,7 @@ public class BattleCollectionEntityFixture {
                 new BattleCollectionEntityPlayer(
                         player,
                         rank,
-                        trophyChange,
-                        trophySnapshot
+                        trophyChange
                 ),
                 IntStream.range(0, 3).mapToObj(i ->
                         IntStream.range(0, 3).mapToObj(j ->
@@ -222,9 +213,6 @@ public class BattleCollectionEntityFixture {
         }
         if (trophySnapshot == null) {
             trophySnapshot = 100;
-        }
-        if (brawlerTrophySnapshot == null) {
-            brawlerTrophySnapshot = 100;
         }
     }
 }

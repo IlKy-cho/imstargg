@@ -18,10 +18,6 @@ public class BattleEntityPlayer {
     @Column(name = "trophy_change", updatable = false)
     private Integer trophyChange;
 
-    @Nullable
-    @Column(name = "trophies_snapshot", updatable = false)
-    private Integer trophySnapshot;
-
     protected BattleEntityPlayer() {
     }
 
@@ -39,8 +35,4 @@ public class BattleEntityPlayer {
         return trophyChange;
     }
 
-    @Nullable
-    public Integer getTrophySnapshot() {
-        return trophySnapshot;
-    }
 }

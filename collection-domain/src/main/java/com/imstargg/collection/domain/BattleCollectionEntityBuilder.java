@@ -67,8 +67,7 @@ public class BattleCollectionEntityBuilder {
                 new BattleCollectionEntityPlayer(
                         playerEntity,
                         battleResponse.battle().rank(),
-                        battleResponse.battle().trophyChange(),
-                        playerEntity.getTrophies()
+                        battleResponse.battle().trophyChange()
                 ),
                 battleTeamPlayerEntities
         );
