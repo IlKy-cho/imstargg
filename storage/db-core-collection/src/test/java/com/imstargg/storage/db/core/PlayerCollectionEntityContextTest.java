@@ -162,7 +162,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
     }
 
     @Test
-    void 새_플레이어는_전투를_업데이트하면_PLAYER_UPDATED_상태가_된다() {
+    void 새_플레이어는_전투를_업데이트하면_BATTLE_UPDATED_상태가_된다() {
         // given
         PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
 
@@ -174,12 +174,12 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
         player.battleUpdated(clock, updatedBattleTimes);
 
         // then
-        assertThat(player.getStatus()).isEqualTo(PlayerStatus.PLAYER_UPDATED);
+        assertThat(player.getStatus()).isEqualTo(PlayerStatus.BATTLE_UPDATED);
         assertThat(player.getLatestBattleTime()).isEqualTo(LocalDateTime.of(2021, 1, 1, 0, 0));
     }
 
     @Test
-    void 기존_플레이어는_전투를_업데이트하면_BATTLE_UPDATED_상태가_된다() {
+    void 기존_플레이어도_전투를_업데이트하면_BATTLE_UPDATED_상태가_된다() {
         // given
         PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
         player.battleUpdated(clock, List.of(LocalDateTime.of(2021, 1, 1, 0, 0)));
@@ -197,7 +197,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
     }
 
     @Test
-    void 전투_기록이_없으면_PLAYER_UPDATED_상태가_되고_12시간_후로_업데이트_시간이_설정된다() {
+    void 전투_기록이_없으면_업데이트_시간이_7일_후로_설정된다() {
         // given
         PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
         List<LocalDateTime> emptyBattles = Collections.emptyList();
@@ -206,8 +206,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
         player.battleUpdated(clock, emptyBattles);
 
         // then
-        assertThat(player.getStatus()).isEqualTo(PlayerStatus.PLAYER_UPDATED);
-        assertThat(player.getUpdateWeight()).isEqualTo(LocalDateTime.now(clock).plusHours(12));
+        assertThat(player.getUpdateWeight()).isEqualTo(LocalDateTime.now(clock).plusDays(7));
     }
 
     @Test
@@ -226,7 +225,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
     }
 
     @Test
-    void 최근_30분_이내_전투는_가중치가_적용된_업데이트_시간을_가진다() {
+    void 전투_기록이_있으면_트로피와_레벨에_따른_가중치가_적용된_업데이트_시간을_가진다() {
         // given
         PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture()
                 .trophies(10000)  // trophyWeight: 3
@@ -238,24 +237,27 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
         player.battleUpdated(clock, List.of(recentBattle));
 
         // then
-        long expectedWeightMultiplier = 6L; // trophyWeight(3) * expLevelWeight(2)
+        long weightMultiplier = 6L; // trophyWeight(3) * expLevelWeight(2)
         assertThat(player.getUpdateWeight())
-                .isEqualTo(LocalDateTime.now(clock).plusMinutes(60 * expectedWeightMultiplier));
-        System.out.println(player.getUpdateWeight());
+                .isEqualTo(LocalDateTime.now(clock).plusDays(weightMultiplier));
     }
 
     @Test
-    void 전투_기록이_30분_이상_지났으면_12시간_후로_업데이트_시간이_설정된다() {
+    void 전투_기록이_있는_경우_트로피와_레벨이_낮으면_더_긴_업데이트_주기를_가진다() {
         // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
-        LocalDateTime oldBattle = LocalDateTime.now(clock).minusHours(1);
+        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture()
+                .trophies(5000)   // trophyWeight: 4
+                .expLevel(30)     // expLevelWeight: 3
+                .build());
+        LocalDateTime battle = LocalDateTime.now(clock).minusHours(1);
 
         // when
-        player.battleUpdated(clock, List.of(oldBattle));
+        player.battleUpdated(clock, List.of(battle));
 
         // then
+        long weightMultiplier = 12L; // trophyWeight(4) * expLevelWeight(3)
         assertThat(player.getUpdateWeight())
-                .isEqualTo(LocalDateTime.now(clock).plusHours(12));
+                .isEqualTo(LocalDateTime.now(clock).plusDays(weightMultiplier));
     }
 
     @Test
