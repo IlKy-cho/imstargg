@@ -157,7 +157,7 @@ public class BattleUpdateJobConfig {
         }
 
         return playerCollectionEntity.status.in(
-                PlayerStatus.PLAYER_UPDATED, PlayerStatus.BATTLE_UPDATED
+                PlayerStatus.PLAYER_UPDATED, PlayerStatus.BATTLE_UPDATED, PlayerStatus.NEW
         );
     }
 
