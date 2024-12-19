@@ -86,9 +86,6 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Column(name = "brawlstars_club_tag", length = 45, updatable = false)
     private String brawlStarsClubTag;
 
-    @Column(name = "not_updated_count", nullable = false)
-    private int notUpdatedCount;
-
     @Column(name = "update_weight", nullable = false)
     private LocalDateTime updateWeight;
 
@@ -143,7 +140,6 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.bestRoboRumbleTime = bestRoboRumbleTime;
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
         this.brawlStarsClubTag = brawlStarsClubTag;
-        this.notUpdatedCount = 0;
         this.updateWeight = LocalDateTime.now(clock);
     }
 
@@ -389,10 +385,6 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Nullable
     public String getBrawlStarsClubTag() {
         return brawlStarsClubTag;
-    }
-
-    public int getNotUpdatedCount() {
-        return notUpdatedCount;
     }
 
     public LocalDateTime getUpdateWeight() {
