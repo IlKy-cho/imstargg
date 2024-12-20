@@ -1,0 +1,3 @@
+spring:
+  config.import:
+    - brawlstars-news-client.yml

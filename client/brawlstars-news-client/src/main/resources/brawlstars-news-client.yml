@@ -1,0 +1,31 @@
+spring.cloud.openfeign:
+  client:
+    config:
+      brawlstars-news:
+        connect-timeout: 2100
+        read-timeout: 5000
+        logger-level: BASIC
+  compression:
+    response:
+      enabled: false
+  httpclient:
+    max-connections: 2000
+    max-connections-per-route: 500
+
+
+app.client.brawlstars-news:
+  url: https://supercell.com
+
+---
+spring.config.activate.on-profile: local
+
+---
+spring.config.activate.on-profile:
+  - local-dev
+  - dev
+
+---
+spring.config.activate.on-profile:
+  - live
+
+spring.cloud.openfeign.client.config.brawlstars.loggerLevel: NONE
