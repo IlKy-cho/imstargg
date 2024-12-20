@@ -111,7 +111,7 @@ create table player
     best_robo_rumble_time                 int          not null,
     best_time_as_big_brawler              int          not null,
     brawlstars_club_tag                   varchar(45),
-    next_update_time                         timestamp(6) not null,
+    next_update_time                      timestamp(6) not null,
     latest_battle_time                    timestamp(6),
     version                               int          not null,
     created_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
@@ -186,6 +186,25 @@ alter table brawlstars_image
     add constraint uk_brawlstars_image__code unique (code);
 
 -- BrawlStars
+
+create table brawlstars_news
+(
+    brawlstars_news_id bigint       not null auto_increment,
+    lang               varchar(25)  not null,
+    title              varchar(255) not null,
+    link_url           varchar(255) not null,
+    publish_date       timestamp(6) not null,
+    created_at         timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at         timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted            boolean      not null default false,
+    primary key (brawlstars_news_id)
+) engine = innodb;
+
+alter table brawlstars_news
+    add constraint uk_brawlstars_news__linkurl unique (link_url);
+
+create index ix_brawlstars_news__lang_publishdate
+    on brawlstars_news (lang, publish_date desc);
 
 create table battle_event
 (
