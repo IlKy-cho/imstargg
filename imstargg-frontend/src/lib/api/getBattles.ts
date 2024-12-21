@@ -1,4 +1,4 @@
-import PlayerBattle from "@/model/PlayerBattle";
+import {PlayerBattle} from "@/model/PlayerBattle";
 import {BattleEventModeType} from "@/model/enums/BattleEventMode";
 import {BattleResultType} from "@/model/enums/BattleResult";
 import {BattleTypeType} from "@/model/enums/BattleType";

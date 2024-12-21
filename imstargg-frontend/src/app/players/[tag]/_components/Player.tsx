@@ -1,6 +1,5 @@
 import dayjs from 'dayjs';
-import type Player from "@/model/Player";
-import {getPlayer} from "@/app/_lib/getPlayer";
+import {getPlayer} from "@/lib/api/getPlayer";
 
 type Props = {
   tag: string;

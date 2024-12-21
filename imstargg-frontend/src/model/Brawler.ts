@@ -4,7 +4,7 @@ import StarPower from "@/model/StarPower";
 import {BrawlerRarityType} from "@/model/enums/BrawlerRarity";
 import {BrawlerRoleType} from "@/model/enums/BrawlerRole";
 
-export default interface Brawler {
+export interface Brawler {
   id: number;
   name: string;
   rarity: BrawlerRarityType;

@@ -1,4 +1,4 @@
-import Player from "@/model/Player";
+import {Player} from "@/model/Player";
 
 interface PlayerResponse {
   tag: string;

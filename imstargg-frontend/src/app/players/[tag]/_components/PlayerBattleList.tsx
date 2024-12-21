@@ -1,16 +1,16 @@
 'use client';
 
-import {getBattles} from "@/app/players/[tag]/_lib/getBattles";
 import {useEffect, useState} from "react";
-import PlayerBattle from "@/model/PlayerBattle";
+import {PlayerBattle as IPlayerBattle} from "@/model/PlayerBattle";
 import PlayerBattle from "./PlayerBattle";
+import {getBattles} from "@/lib/api/getBattles";
 
 type Props = {
   tag: string;
 };
 
 export default function PlayerBattleList({ tag }: Readonly<Props>) {
-  const [battles, setBattles] = useState<PlayerBattle[]>([]);
+  const [battles, setBattles] = useState<IPlayerBattle[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);

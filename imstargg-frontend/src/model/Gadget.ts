@@ -1,4 +1,4 @@
-export default interface Gadget {
+export interface Gadget {
   id: number;
   name: string;
 }
