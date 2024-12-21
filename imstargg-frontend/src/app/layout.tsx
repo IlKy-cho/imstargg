@@ -6,15 +6,19 @@ import NavBar from "./_component/NavBar";
 import SideAd from './_component/SideAd';
 import BottomAd from './_component/BottomAd';
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
+const kobrawl40 = localFont({
+  src: "./fonts/KoBrawl Gothic40.otf",
+  variable: "--font-kobrawl-40",
 });
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
+
+const kobrawl60 = localFont({
+  src: "./fonts/KoBrawl Gothic60.otf",
+  variable: "--font-kobrawl-60",
+});
+
+const lilitaOne = localFont({
+  src: "./fonts/lilitaone-regular.ttf",
+  variable: "--font-lilita-one",
 });
 
 export const metadata: Metadata = {
@@ -29,8 +33,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <div className="flex flex-col min-h-screen">
+      <body className={`${kobrawl40.variable} ${kobrawl60.variable} ${lilitaOne.variable} antialiased`}>
+        <div className="flex flex-col">
           <NavBar />
           <div className="flex flex-1">
             <SideAd />
