@@ -1,10 +1,11 @@
 import Image from "next/image";
 import PlayerSearch from "./_component/PlayerSearch";
+import BrawlStarsNewsList from "@/components/BrawlStarsNewsList";
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-center p-24">
-      <div className="relative mb-8">
+    <main className="flex flex-col items-center justify-center my-4">
+      <div className="mb-8">
         <Image
           src="/logo.png"
           alt="ImStarGG 로고"
@@ -14,7 +15,9 @@ export default function Home() {
         />
       </div>
       
-      <PlayerSearch />
+      <PlayerSearch/>
+
+      <BrawlStarsNewsList />
     </main>
   );
 }
