@@ -3,6 +3,7 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.domain.Slice;
 import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsNewsJpaRepository;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,10 +17,9 @@ public class BrawlStarsNewsRepository {
 
     public Slice<BrawlStarsNews> find(Language language, BrawlStarsNewsPageParam pageParam) {
         org.springframework.data.domain.Slice<BrawlStarsNews> jpaSlice = brawlStarsNewsJpaRepository
-                .findAllByLanguageAndOrderByPublishDateDesc(
-                        language.getCode(),
-                        pageParam.page() - 1,
-                        pageParam.size()
+                .findAllByLanguageOrderByPublishDateDesc(
+                        language,
+                        PageRequest.of(pageParam.page() - 1, pageParam.size())
                 ).map(entity -> new BrawlStarsNews(
                         entity.getTitle(),
                         entity.getLinkUrl(),
