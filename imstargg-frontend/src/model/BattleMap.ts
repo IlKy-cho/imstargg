@@ -1,4 +1,4 @@
-export default interface BattleMap {
+export interface BattleMap {
   code: string;
   name: string;
 }

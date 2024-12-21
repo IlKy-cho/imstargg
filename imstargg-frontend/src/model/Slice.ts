@@ -1,4 +1,4 @@
-export default interface Slice<T> {
+export interface Slice<T> {
   content: T[];
   hasNext: boolean;
 }

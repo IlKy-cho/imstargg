@@ -1,6 +1,6 @@
 'use client';
 
-import type PlayerBattle from "@/model/PlayerBattle";
+import {PlayerBattle as IPlayerBattle} from "@/model/PlayerBattle";
 import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -9,7 +9,7 @@ dayjs.locale('ko');
 dayjs.extend(relativeTime)
 
 interface PlayerBattleProps {
-  battle: PlayerBattle;
+  battle: IPlayerBattle;
 }
 
 export default function PlayerBattle({battle}: PlayerBattleProps) {

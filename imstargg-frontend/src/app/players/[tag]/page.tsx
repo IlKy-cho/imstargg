@@ -1,4 +1,3 @@
-import {getPlayer} from '@/app/_lib/getPlayer'
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {Player} from './_components/Player';

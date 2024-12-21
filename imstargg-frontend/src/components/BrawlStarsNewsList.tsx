@@ -1,17 +1,16 @@
 "use client";
 
 import React, {useEffect, useState} from "react";
-import BrawlStarsNews from "@/model/brawlstars/BrawlStarsNews";
+import {BrawlStarsNews} from "@/model/brawlstars/BrawlStarsNews";
 import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious
 } from "@/components/ui/pagination";
-import {getBrawlStarsNewsPage} from "@/lib/brawlstars/getBrawlStarsNewsPage";
 import BrawlStarsNewsComponent from "@/components/BrawlStarsNews";
+import {getBrawlStarsNewsPage} from "@/lib/api/getBrawlStarsNewsPage";
 
 export default function BrawlStarsNewsList() {
   const [page, setPage] = useState<number>(1);

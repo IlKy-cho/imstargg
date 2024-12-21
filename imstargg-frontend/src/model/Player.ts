@@ -1,4 +1,4 @@
-export default interface Player {
+export interface Player {
   tag: string;
   name: string;
   nameColor: string;

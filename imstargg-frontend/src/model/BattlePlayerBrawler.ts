@@ -1,6 +1,6 @@
 import {BrawlerRarityType} from "@/model/enums/BrawlerRarity";
 
-export default interface BattlePlayerBrawler {
+export interface BattlePlayerBrawler {
   id: number | null;
   name: string | null;
   rarity: BrawlerRarityType | null;

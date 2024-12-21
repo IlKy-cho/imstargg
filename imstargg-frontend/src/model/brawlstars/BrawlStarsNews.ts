@@ -1,4 +1,4 @@
-export default interface BrawlStarsNews {
+export interface BrawlStarsNews {
   title: string;
   linkUrl: string;
   publishDate: Date;
