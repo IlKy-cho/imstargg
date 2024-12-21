@@ -1,11 +1,11 @@
-package com.imstargg.client.brawlstars.news;
+package com.imstargg.client.core;
 
 import feign.Response;
 import feign.RetryableException;
 import feign.codec.ErrorDecoder;
 import org.springframework.http.HttpStatus;
 
-class BrawlStarsNewsHtmlApiErrorDecoder implements ErrorDecoder {
+public class DefaultClientErrorDecoder implements ErrorDecoder {
 
     private final ErrorDecoder defaultErrorDecoder = new Default();
 
