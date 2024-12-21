@@ -1,16 +1,15 @@
-spring.cloud.openfeign:
-  client:
-    config:
-      brawlstars:
-        connect-timeout: 2100
-        read-timeout: 5000
-        logger-level: BASIC
-  compression:
-    response:
-      enabled: false
-  httpclient:
-    max-connections: 2000
-    max-connections-per-route: 500
+spring:
+
+  config.import:
+    - client.yml
+
+  cloud.openfeign:
+    client:
+      config:
+        brawlstars:
+          connect-timeout: 2100
+          read-timeout: 5000
+          logger-level: BASIC
 
 resilience4j:
   ratelimiter:
