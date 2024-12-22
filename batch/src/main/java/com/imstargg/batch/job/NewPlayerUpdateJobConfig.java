@@ -18,11 +18,13 @@ import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.batch.core.step.builder.SimpleStepBuilder;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
 import org.springframework.batch.item.Chunk;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
@@ -35,6 +37,7 @@ import java.util.concurrent.Future;
 import static com.imstargg.storage.db.core.QUnknownPlayerCollectionEntity.unknownPlayerCollectionEntity;
 
 @Configuration
+@EnableConfigurationProperties(NewPlayerUpdateJobConfig.Properties.class)
 public class NewPlayerUpdateJobConfig {
 
     private static final Logger log = LoggerFactory.getLogger(NewPlayerUpdateJobConfig.class);
@@ -42,7 +45,7 @@ public class NewPlayerUpdateJobConfig {
     private static final String JOB_NAME = "newPlayerUpdateJob";
     private static final String STEP_NAME = "newPlayerUpdateStep";
 
-    private final int chunkSize;
+    private final NewPlayerUpdateJobConfig.Properties properties;
     private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
@@ -53,7 +56,7 @@ public class NewPlayerUpdateJobConfig {
     private final BrawlStarsClient brawlStarsClient;
 
     NewPlayerUpdateJobConfig(
-            @Value("${app.batch.newPlayerUpdateJob.chunk-size}") int chunkSize,
+            NewPlayerUpdateJobConfig.Properties properties,
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
@@ -62,7 +65,7 @@ public class NewPlayerUpdateJobConfig {
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient
     ) {
-        this.chunkSize = chunkSize;
+        this.properties = properties;
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
@@ -86,24 +89,37 @@ public class NewPlayerUpdateJobConfig {
     @JobScope
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
-        return stepBuilder
-                .<UnknownPlayerCollectionEntity, Future<NewPlayer>>chunk(chunkSize, txManager)
-                .reader(reader())
-                .processor(asyncProcessor())
-                .writer(asyncWriter())
+        if (properties.asyncEnabled()) {
+            return configureFaultTolerantAndBuild(stepBuilder
+                    .<UnknownPlayerCollectionEntity, Future<NewPlayer>>chunk(properties.chunkSize(), txManager)
+                    .reader(reader())
+                    .processor(asyncProcessor())
+                    .writer(asyncWriter())
+            );
+        } else {
+            return configureFaultTolerantAndBuild(stepBuilder
+                    .<UnknownPlayerCollectionEntity, NewPlayer>chunk(properties.chunkSize(), txManager)
+                    .reader(reader())
+                    .processor(processor())
+                    .writer(writer())
+            );
+        }
+    }
 
-                .faultTolerant()
-                .skip(SQLIntegrityConstraintViolationException.class)
+    private <T> Step configureFaultTolerantAndBuild(
+            SimpleStepBuilder<UnknownPlayerCollectionEntity, T> stepBuilder) {
+        return stepBuilder
                 .listener(new ItemWriteListener<>() {
                     @Override
-                    public void onWriteError(Exception exception, Chunk<? extends Future<NewPlayer>> items) {
+                    public void onWriteError(Exception exception, Chunk<? extends T> items) {
                         log.warn("{} 중 중복된 플레이어 저장 발생.",
                                 JOB_NAME,
                                 exception
                         );
                     }
                 })
-
+                .faultTolerant()
+                .skip(SQLIntegrityConstraintViolationException.class)
                 .build();
     }
 
@@ -111,7 +127,7 @@ public class NewPlayerUpdateJobConfig {
     @StepScope
     QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader() {
         QuerydslZeroPagingItemReader<UnknownPlayerCollectionEntity> reader = new QuerydslZeroPagingItemReader<>(
-                emf, chunkSize, queryFactory ->
+                emf, properties.chunkSize(), queryFactory ->
                 queryFactory
                         .selectFrom(unknownPlayerCollectionEntity)
                         .where(unknownPlayerCollectionEntity.status.in(
@@ -150,5 +166,12 @@ public class NewPlayerUpdateJobConfig {
     @StepScope
     NewPlayerUpdateJobItemWriter writer() {
         return new NewPlayerUpdateJobItemWriter(emf);
+    }
+
+    @ConfigurationProperties(prefix = "app.batch.new-player-update-job")
+    record Properties(
+            int chunkSize,
+            boolean asyncEnabled
+    ) {
     }
 }

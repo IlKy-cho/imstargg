@@ -42,12 +42,12 @@ spring:
 
 app:
   batch:
-    battleUpdateJob:
+    battle-update-job:
       chunk-size: 10
+      async-enabled: false
     newPlayerUpdateJob:
       chunk-size: 10
-    playerUpdateJob:
-      chunk-size: 10
+      async-enabled: false
 
 #logging.level:
 #  org.hibernate:
