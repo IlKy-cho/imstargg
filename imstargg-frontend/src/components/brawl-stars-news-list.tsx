@@ -9,7 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious
 } from "@/components/ui/pagination";
-import BrawlStarsNewsComponent from "@/components/BrawlStarsNews";
+import BrawlStarsNewsComponent from "@/components/brawl-stars-news";
 import {getBrawlStarsNewsPage} from "@/lib/api/getBrawlStarsNewsPage";
 
 export default function BrawlStarsNewsList() {
