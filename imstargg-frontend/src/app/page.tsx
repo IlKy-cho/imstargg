@@ -1,6 +1,7 @@
 import Image from "next/image";
-import PlayerSearch from "./_component/PlayerSearch";
 import BrawlStarsNewsList from "@/components/BrawlStarsNewsList";
+import React from "react";
+import PlayerSearchForm from "@/components/player-search-form";
 
 export default function Home() {
   return (
@@ -15,7 +16,7 @@ export default function Home() {
         />
       </div>
       
-      <PlayerSearch/>
+      <PlayerSearchForm/>
 
       <BrawlStarsNewsList />
     </main>
