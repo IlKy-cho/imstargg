@@ -8,7 +8,7 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center my-4">
       <div className="mb-8">
         <Image
-          src="/logo.png"
+          src="/zBrawl Stars Logo 2_starr_parkk.png"
           alt="ImStarGG 로고"
           width={200}
           height={100}
