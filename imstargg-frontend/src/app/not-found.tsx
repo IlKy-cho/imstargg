@@ -1,4 +1,3 @@
-import {NextPage} from "next";
 
 export default function NotFound() {
   return (
