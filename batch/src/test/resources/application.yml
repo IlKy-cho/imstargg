@@ -2,6 +2,7 @@ spring:
   config.import:
     - db-core-test.yml
     - brawlstars-client.yml
+    - brawlstars-news-client.yml
 
   batch:
     job:
