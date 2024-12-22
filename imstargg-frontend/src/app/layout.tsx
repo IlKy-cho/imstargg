@@ -1,11 +1,10 @@
-import type { Metadata } from "next";
+import type {Metadata} from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Footer from "./_component/Footer";
-import SideAd from './_component/SideAd';
-import BottomAd from './_component/BottomAd';
 import React from "react";
 import SiteHeader from "@/components/site-header";
+import Footer from "@/components/footer";
+import SideArea from "@/components/side-area";
 
 const kobrawl40 = localFont({
   src: "./fonts/KoBrawl Gothic40.otf",
@@ -35,21 +34,20 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${kobrawl40.variable} ${kobrawl60.variable} ${lilitaOne.variable} antialiased`}>
-        <div className="flex flex-col">
+        <div className="flex flex-col min-h-screen">
           <SiteHeader />
           <div className="flex flex-1">
-            <SideAd />
+            <SideArea />
             
-            <div className="flex-1">
-              <main className="flex-grow pb-[100px]">
+            <div className="flex-1 flex flex-col">
+              <main className="flex-1">
                 {children}
               </main>
             </div>
 
-            <SideAd />
+            <SideArea />
           </div>
           <Footer />
-          <BottomAd />
         </div>
       </body>
     </html>
