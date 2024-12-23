@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -83,17 +83,8 @@ public class PlayerCollectionEntity extends BaseEntity {
     private int bestTimeAsBigBrawler;
 
     @Nullable
-    @Column(name = "brawlstars_club_tag", length = 45, updatable = false)
+    @Column(name = "brawlstars_club_tag", length = 45)
     private String brawlStarsClubTag;
-
-    @Column(name = "next_update_time", nullable = false)
-    private LocalDateTime nextUpdateTime;
-
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
-    private List<PlayerBrawlerCollectionEntity> brawlers = new ArrayList<>();
-
-    @Transient
-    private Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToBrawler;
 
     @Nullable
     @Column(name = "latest_battle_time")
@@ -102,6 +93,12 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Version
     @Column(name = "version", nullable = false)
     private int version;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
+    private List<PlayerBrawlerCollectionEntity> brawlers = new ArrayList<>();
+
+    @Transient
+    private Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToBrawler;
 
     protected PlayerCollectionEntity() {
     }
@@ -121,8 +118,7 @@ public class PlayerCollectionEntity extends BaseEntity {
             int duoVictories,
             int bestRoboRumbleTime,
             int bestTimeAsBigBrawler,
-            @Nullable String brawlStarsClubTag,
-            Clock clock
+            @Nullable String brawlStarsClubTag
     ) {
         this.status = PlayerStatus.NEW;
         this.brawlStarsTag = brawlStarsTag;
@@ -140,10 +136,9 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.bestRoboRumbleTime = bestRoboRumbleTime;
         this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
         this.brawlStarsClubTag = brawlStarsClubTag;
-        this.nextUpdateTime = LocalDateTime.now(clock);
     }
 
-    public void updateBrawler(
+    public boolean updateBrawler(
             long brawlerBrawlStarsId,
             int power,
             int rank,
@@ -158,7 +153,7 @@ public class PlayerCollectionEntity extends BaseEntity {
         }
 
         if (brawlStarsIdToBrawler.containsKey(brawlerBrawlStarsId)) {
-            brawlStarsIdToBrawler.get(brawlerBrawlStarsId).update(
+            return brawlStarsIdToBrawler.get(brawlerBrawlStarsId).update(
                     power,
                     rank,
                     trophies,
@@ -181,6 +176,7 @@ public class PlayerCollectionEntity extends BaseEntity {
             );
             brawlers.add(brawler);
             brawlStarsIdToBrawler.put(brawlerBrawlStarsId, brawler);
+            return true;
         }
     }
 
@@ -189,49 +185,18 @@ public class PlayerCollectionEntity extends BaseEntity {
                 .collect(Collectors.toMap(PlayerBrawlerCollectionEntity::getBrawlerBrawlStarsId, Function.identity()));
     }
 
-    public boolean isNextUpdateCooldownOver(LocalDateTime now) {
-        return status.isNextUpdateCooldownOver(now, getUpdatedAt());
-    }
-
-    public void battleUpdated(Clock clock, List<LocalDateTime> updatedBattleTimes) {
-        this.status = PlayerStatus.BATTLE_UPDATED;
-        LocalDateTime now = LocalDateTime.now(clock);
-        Optional<LocalDateTime> latestBattleTimeOpt = findLatestBattleTime(updatedBattleTimes);
-
-        if (latestBattleTimeOpt.isEmpty()) {
-            handleNoBattleUpdate(now);
-            return;
+    public boolean isNextUpdateCooldownOver(Clock clock) {
+        if (status == PlayerStatus.NEW) {
+            return true;
         }
-
-        handleBattleUpdate(latestBattleTimeOpt.get(), now);
+        return status.isNextUpdateCooldownOver(LocalDateTime.now(clock), getUpdatedAt());
     }
 
-    private Optional<LocalDateTime> findLatestBattleTime(List<LocalDateTime> battleTimes) {
-        return battleTimes.stream()
-                .max(Comparator.naturalOrder());
-    }
-
-    private void handleNoBattleUpdate(LocalDateTime now) {
-        if (checkDormant(now)) {
-            this.status = PlayerStatus.DORMANT;
-            this.nextUpdateTime = LocalDateTime.MAX;
-            return;
-        }
-        this.nextUpdateTime = nextUpdateTimeWhenNotBattleUpdated(now);
-    }
-
-    private void handleBattleUpdate(LocalDateTime latestBattleTime, LocalDateTime now) {
-        this.latestBattleTime = latestBattleTime;
-        this.nextUpdateTime = nextUpdateTimeWhenBattleUpdated(now);
-    }
-
-    private LocalDateTime nextUpdateTimeWhenBattleUpdated(LocalDateTime now) {
-        long weightMultiplier = (long) trophyWeight() * expLevelWeight();
-        return now.plus(Duration.ofDays(1).multipliedBy(weightMultiplier));
-    }
-
-    private boolean checkDormant(LocalDateTime now) {
-        return durationBetweenLastBattleUpdated(now).toDays() > 30;
+    public void battleUpdated(List<LocalDateTime> updatedBattleTimes) {
+        updatedBattleTimes
+                .stream()
+                .max(Comparator.naturalOrder())
+                .ifPresent(battleTime -> this.latestBattleTime = battleTime);
     }
 
     private Duration durationBetweenLastBattleUpdated(LocalDateTime now) {
@@ -241,51 +206,15 @@ public class PlayerCollectionEntity extends BaseEntity {
         );
     }
 
-    private LocalDateTime nextUpdateTimeWhenNotBattleUpdated(LocalDateTime now) {
-        Duration term = Duration.ofDays(7);
-        Duration lastUpdatedDuration = durationBetweenLastBattleUpdated(now);
-        while (term.toDays() <= 30) {
-            if (term.compareTo(lastUpdatedDuration) >= 0) {
-                break;
-            }
-            term = term.multipliedBy(2);
-        }
-
-        return now.plus(term);
-    }
-
-    private int trophyWeight() {
-        if (trophies < 10000) {
-            return 4;
-        } else if (trophies < 20000) {
-            return 3;
-        } else if (trophies < 30000) {
-            return 2;
-        }
-
-        return 1;
-    }
-
-    private int expLevelWeight() {
-        if (expLevel < 50) {
-            return 3;
-        } else if (expLevel < 100) {
-            return 2;
-        }
-
-        return 1;
-    }
-
     public void deleted() {
         this.status = PlayerStatus.DELETED;
-        this.nextUpdateTime = LocalDateTime.MAX;
     }
 
     public void renewRequested() {
         this.status = PlayerStatus.RENEW_REQUESTED;
     }
 
-    public void update(
+    public boolean update(
             String name,
             String nameColor,
             long iconBrawlStarsId,
@@ -301,21 +230,40 @@ public class PlayerCollectionEntity extends BaseEntity {
             int bestTimeAsBigBrawler,
             @Nullable String brawlStarsClubTag
     ) {
-        this.status = PlayerStatus.PLAYER_UPDATED;
-        this.name = name;
-        this.nameColor = nameColor;
-        this.iconBrawlStarsId = iconBrawlStarsId;
-        this.trophies = trophies;
-        this.highestTrophies = highestTrophies;
-        this.expLevel = expLevel;
-        this.expPoints = expPoints;
-        this.qualifiedFromChampionshipChallenge = qualifiedFromChampionshipChallenge;
-        this.victories3vs3 = victories3vs3;
-        this.soloVictories = soloVictories;
-        this.duoVictories = duoVictories;
-        this.bestRoboRumbleTime = bestRoboRumbleTime;
-        this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
-        this.brawlStarsClubTag = brawlStarsClubTag;
+        boolean updated = !name.equals(this.name)
+                || !Objects.equals(nameColor, this.nameColor)
+                || iconBrawlStarsId != this.iconBrawlStarsId
+                || trophies != this.trophies
+                || highestTrophies != this.highestTrophies
+                || expLevel != this.expLevel
+                || expPoints != this.expPoints
+                || qualifiedFromChampionshipChallenge != this.qualifiedFromChampionshipChallenge
+                || victories3vs3 != this.victories3vs3
+                || soloVictories != this.soloVictories
+                || duoVictories != this.duoVictories
+                || bestRoboRumbleTime != this.bestRoboRumbleTime
+                || bestTimeAsBigBrawler != this.bestTimeAsBigBrawler
+                || !Objects.equals(brawlStarsClubTag, this.brawlStarsClubTag);
+
+        if (updated) {
+            this.status = PlayerStatus.PLAYER_UPDATED;
+            this.name = name;
+            this.nameColor = nameColor;
+            this.iconBrawlStarsId = iconBrawlStarsId;
+            this.trophies = trophies;
+            this.highestTrophies = highestTrophies;
+            this.expLevel = expLevel;
+            this.expPoints = expPoints;
+            this.qualifiedFromChampionshipChallenge = qualifiedFromChampionshipChallenge;
+            this.victories3vs3 = victories3vs3;
+            this.soloVictories = soloVictories;
+            this.duoVictories = duoVictories;
+            this.bestRoboRumbleTime = bestRoboRumbleTime;
+            this.bestTimeAsBigBrawler = bestTimeAsBigBrawler;
+            this.brawlStarsClubTag = brawlStarsClubTag;
+        }
+
+        return updated;
     }
 
     public Long getId() {
@@ -385,10 +333,6 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Nullable
     public String getBrawlStarsClubTag() {
         return brawlStarsClubTag;
-    }
-
-    public LocalDateTime getNextUpdateTime() {
-        return nextUpdateTime;
     }
 
     public List<PlayerBrawlerCollectionEntity> getBrawlers() {
