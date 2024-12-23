@@ -1,4 +1,5 @@
 app:
   event:
     queue:
-      player-renewal: ${PLAYER_RENEWAL_QUEUE_NAME}
+      player-renewal:
+        name: ${PLAYER_RENEWAL_QUEUE_NAME}
