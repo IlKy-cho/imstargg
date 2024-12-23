@@ -9,12 +9,16 @@ public record PlayerSearchResult(
         @Nullable BrawlStarsTag acceptedTag
 ) {
 
-    public static PlayerSearchResult acceptedResult(BrawlStarsTag tag) {
+    public static PlayerSearchResult accepted(BrawlStarsTag tag) {
         return new PlayerSearchResult(List.of(), tag);
     }
 
-    public static PlayerSearchResult nonAcceptedResult(List<Player> players) {
+    public static PlayerSearchResult notAccepted(List<Player> players) {
         return new PlayerSearchResult(players, null);
+    }
+
+    public static PlayerSearchResult empty() {
+        return new PlayerSearchResult(List.of(), null);
     }
 
     public boolean isAccepted() {
