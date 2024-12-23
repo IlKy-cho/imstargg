@@ -10,7 +10,6 @@ import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
 import com.imstargg.collection.domain.BattleUpdateApplier;
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
@@ -48,11 +47,13 @@ public class PlayerRenewer {
         Optional<PlayerCollectionEntity> playerEntityOpt = playerRepository.find(tag);
         if (playerEntityOpt.isPresent()) {
             renewPlayer(playerEntityOpt.get());
+            log.debug("플레이어 갱신 완료. tag={}", tag);
             return;
         }
         Optional<UnknownPlayerCollectionEntity> unknownPlayerEntityOpt = playerRepository.findUnknown(tag);
         if (unknownPlayerEntityOpt.isPresent()) {
             renewNewPlayer(unknownPlayerEntityOpt.get());
+            log.debug("신규 플레이어 갱신 완료. tag={}", tag);
             return;
         }
 
@@ -60,10 +61,6 @@ public class PlayerRenewer {
     }
 
     private void renewPlayer(PlayerCollectionEntity playerEntity) {
-        if (!playerEntity.isNextUpdateCooldownOver(clock) && playerEntity.getStatus() != PlayerStatus.NEW) {
-            log.info("플레이어가 갱신된지 얼마 되지 않았습니다. tag={}", playerEntity.getBrawlStarsTag());
-            return;
-        }
         try {
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag());
             updatePlayer(playerEntity, playerResponse);
