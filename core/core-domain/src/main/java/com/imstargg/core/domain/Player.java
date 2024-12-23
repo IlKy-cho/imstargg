@@ -22,4 +22,8 @@ public record Player(
     public boolean isNextUpdateCooldownOver(Clock clock) {
         return status.isNextUpdateCooldownOver(LocalDateTime.now(clock), updatedAt);
     }
+
+    public boolean isRenewing() {
+        return status() == PlayerStatus.RENEW_REQUESTED;
+    }
 }
