@@ -13,6 +13,8 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 @Table(name = "battle")
@@ -85,6 +87,14 @@ public class BattleCollectionEntity extends BaseEntity {
         this.teams = teams;
     }
 
+    public Optional<BattleCollectionEntityTeamPlayer> findMe() {
+        return teams.stream()
+                .flatMap(List::stream)
+                .filter(teamPlayer -> Objects.equals(
+                        teamPlayer.getBrawlStarsTag(), this.getPlayer().getPlayer().getBrawlStarsTag())
+                ).findFirst();
+    }
+
     public Long getId() {
         return id;
     }
@@ -105,14 +115,17 @@ public class BattleCollectionEntity extends BaseEntity {
         return mode;
     }
 
+    @Nullable
     public String getType() {
         return type;
     }
 
+    @Nullable
     public String getResult() {
         return result;
     }
 
+    @Nullable
     public Integer getDuration() {
         return duration;
     }
