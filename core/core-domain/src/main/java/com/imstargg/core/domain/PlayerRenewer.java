@@ -38,7 +38,7 @@ public class PlayerRenewer {
 
     public void renew(Player player) {
         validateRequestCount();
-        if (!player.isNextUpdateCooldownOver(clock) || !player.renewAvailable(clock)) {
+        if (!player.renewAvailable(clock)) {
             throw new CoreException(CoreErrorType.PLAYER_ALREADY_RENEWED, "playerTag=" + player.tag());
         }
         playerRepository.renewRequested(player);
