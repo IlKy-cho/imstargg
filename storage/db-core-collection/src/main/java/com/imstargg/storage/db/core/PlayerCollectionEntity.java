@@ -222,8 +222,8 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.status = PlayerStatus.DELETED;
     }
 
-    public void renewRequested() {
-        this.status = PlayerStatus.RENEW_REQUESTED;
+    public void renewing() {
+        this.status = PlayerStatus.RENEWING;
     }
 
     public boolean update(
