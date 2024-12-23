@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -127,13 +126,7 @@ public class PlayerRenewer {
     private List<BattleCollectionEntity> updateBattles(PlayerCollectionEntity playerEntity) {
         ListResponse<BattleResponse> battleListResponse = brawlStarsClient.getPlayerRecentBattles(
                 playerEntity.getBrawlStarsTag());
-        List<BattleCollectionEntity> updatedBattleEntities = battleUpdateApplier.update(
-                playerEntity, battleListResponse);
-        List<LocalDateTime> updatedBattleTimes = updatedBattleEntities.stream()
-                .map(BattleCollectionEntity::getBattleTime)
-                .toList();
-        playerEntity.battleUpdated(updatedBattleTimes);
-        return updatedBattleEntities;
+        return battleUpdateApplier.update(playerEntity, battleListResponse);
     }
 
     private PlayerCollectionEntity newPlayer(PlayerResponse playerResponse) {

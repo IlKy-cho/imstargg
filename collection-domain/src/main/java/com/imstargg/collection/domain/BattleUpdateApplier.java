@@ -19,7 +19,11 @@ public class BattleUpdateApplier {
             PlayerCollectionEntity playerEntity,
             ListResponse<BattleResponse> battleListResponse
     ) {
-        return update(playerEntity, battleListResponse, playerEntity.getLatestBattleTime());
+        var updatedBattleList = update(
+                playerEntity, battleListResponse, playerEntity.getLatestBattleTime());
+        playerEntity.battleUpdated(updatedBattleList.stream().map(BattleCollectionEntity::getBattleTime).toList());
+
+        return updatedBattleList;
     }
 
     public List<BattleCollectionEntity> update(
