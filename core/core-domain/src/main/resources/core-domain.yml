@@ -1,9 +1,8 @@
 spring:
   config.import:
-    - db-core-test.yml
-    - core-event-test.yml
-    - aws-test.yml
-    - core-event-test.yml
+    - db-core.yml
+    - core-event.yml
+    - aws.yml
 
   task:
     execution:

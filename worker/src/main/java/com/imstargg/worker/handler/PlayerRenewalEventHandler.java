@@ -23,7 +23,7 @@ class PlayerRenewalEventHandler {
     }
 
     @SqsListener(
-            queueNames = "${app.event.queue.player-renewal}",
+            queueNames = "${app.event.queue.player-renewal.name}",
             pollTimeoutSeconds = "10"
     )
     void handlePlayerRenewalEvent(PlayerRenewalEvent event) {
