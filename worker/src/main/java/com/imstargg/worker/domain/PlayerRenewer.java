@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,17 +60,13 @@ public class PlayerRenewer {
     }
 
     private void renewPlayer(PlayerCollectionEntity playerEntity) {
-        if (playerEntity.isNextUpdateCooldownOver(clock)) {
-            log.warn("플레이어 정보 갱신 대기 중입니다. tag={}", playerEntity.getBrawlStarsTag());
-            return;
-        }
-
         try {
-            List<BattleCollectionEntity> updatedBattleEntities = updateBattles(playerEntity);
-
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag());
             updatePlayer(playerEntity, playerResponse);
 
+            List<BattleCollectionEntity> updatedBattleEntities = updateBattles(playerEntity);
+
+            playerEntity.playerUpdated(clock);
             playerRepository.update(playerEntity, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("플레이어가 존재하지 않아 삭제합니다. tag={}", playerEntity.getBrawlStarsTag());
@@ -112,15 +107,16 @@ public class PlayerRenewer {
     }
 
     public void renewNewPlayer(UnknownPlayerCollectionEntity unknownPlayerEntity) {
-        unknownPlayerEntity.updated();
-        List<BattleCollectionEntity> battleEntities = new ArrayList<>();
         try {
+            unknownPlayerEntity.updated();
+
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(unknownPlayerEntity.getBrawlStarsTag());
             PlayerCollectionEntity playerEntity = newPlayer(playerResponse);
 
-            updateBattles(playerEntity);
+            List<BattleCollectionEntity> updatedBattleEntities = updateBattles(playerEntity);
 
-            playerRepository.update(unknownPlayerEntity, playerEntity, battleEntities);
+            playerEntity.playerUpdated(clock);
+            playerRepository.update(unknownPlayerEntity, playerEntity, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("플레이어가 존재하지 않아 삭제합니다. tag={}", unknownPlayerEntity.getBrawlStarsTag());
             unknownPlayerEntity.notFound();
@@ -129,12 +125,13 @@ public class PlayerRenewer {
     }
 
     private List<BattleCollectionEntity> updateBattles(PlayerCollectionEntity playerEntity) {
-        ListResponse<BattleResponse> battleListResponse = brawlStarsClient.getPlayerRecentBattles(playerEntity.getBrawlStarsTag());
-        List<BattleCollectionEntity> updatedBattleEntities = battleUpdateApplier.update(playerEntity, battleListResponse);
+        ListResponse<BattleResponse> battleListResponse = brawlStarsClient.getPlayerRecentBattles(
+                playerEntity.getBrawlStarsTag());
+        List<BattleCollectionEntity> updatedBattleEntities = battleUpdateApplier.update(
+                playerEntity, battleListResponse);
         List<LocalDateTime> updatedBattleTimes = updatedBattleEntities.stream()
                 .map(BattleCollectionEntity::getBattleTime)
                 .toList();
-
         playerEntity.battleUpdated(updatedBattleTimes);
         return updatedBattleEntities;
     }
@@ -169,7 +166,7 @@ public class PlayerRenewer {
                     brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
             );
         }
-        playerEntity.renewRequested();
+        playerEntity.renewing();
         return playerRepository.add(playerEntity);
     }
 }
