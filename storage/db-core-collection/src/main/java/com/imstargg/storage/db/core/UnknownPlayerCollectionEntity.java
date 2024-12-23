@@ -10,9 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "unknown_player")
 public class UnknownPlayerCollectionEntity extends BaseEntity {
@@ -32,42 +29,33 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
     @Column(name = "not_found_count", nullable = false)
     private int notFoundCount;
 
-    @Column(name = "update_available_at", updatable = false, nullable = false)
-    private LocalDateTime updateAvailableAt;
-
     protected UnknownPlayerCollectionEntity() {
     }
 
     public UnknownPlayerCollectionEntity(
             String brawlStarsTag,
-            UnknownPlayerStatus status,
-            LocalDateTime updateAvailableAt
+            UnknownPlayerStatus status
     ) {
         this.brawlStarsTag = brawlStarsTag;
         this.status = status;
         this.notFoundCount = 0;
-        this.updateAvailableAt = updateAvailableAt;
     }
 
     public static UnknownPlayerCollectionEntity adminNew(
-            String brawlStarsTag,
-            Clock clock
+            String brawlStarsTag
     ) {
         return new UnknownPlayerCollectionEntity(
                 brawlStarsTag,
-                UnknownPlayerStatus.ADMIN_NEW,
-                LocalDateTime.now(clock)
+                UnknownPlayerStatus.ADMIN_NEW
         );
     }
 
     public static UnknownPlayerCollectionEntity updateNew(
-            String brawlStarsTag,
-            Clock clock
+            String brawlStarsTag
     ) {
         return new UnknownPlayerCollectionEntity(
                 brawlStarsTag,
-                UnknownPlayerStatus.UPDATE_NEW,
-                LocalDateTime.now(clock)
+                UnknownPlayerStatus.UPDATE_NEW
         );
     }
 
@@ -105,7 +93,4 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         return notFoundCount;
     }
 
-    public LocalDateTime getUpdateAvailableAt() {
-        return updateAvailableAt;
-    }
 }

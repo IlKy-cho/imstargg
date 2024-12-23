@@ -120,7 +120,7 @@ class NewPlayerFindJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerFindJobItemProcessor processor() {
-        return new NewPlayerFindJobItemProcessor(clock);
+        return new NewPlayerFindJobItemProcessor();
     }
 
     @Bean(STEP_NAME + "ItemWriter")

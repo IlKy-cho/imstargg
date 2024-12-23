@@ -135,7 +135,6 @@ create table unknown_player
     brawlstars_tag      varchar(45)  not null,
     status              varchar(45)  not null,
     not_found_count     int          not null,
-    update_available_at timestamp(6) not null,
     created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false,
