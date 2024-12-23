@@ -2,6 +2,7 @@ package com.imstargg.collection.domain;
 
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
+import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.annotation.Nullable;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -22,6 +24,8 @@ public class BattleUpdateApplier {
         var updatedBattleList = update(
                 playerEntity, battleListResponse, playerEntity.getLatestBattleTime());
         playerEntity.battleUpdated(updatedBattleList.stream().map(BattleCollectionEntity::getBattleTime).toList());
+
+        updateSoloRankTier(playerEntity, updatedBattleList);
 
         return updatedBattleList;
     }
@@ -48,5 +52,19 @@ public class BattleUpdateApplier {
                         .filter(battleResponse -> battleResponse.battleTime().isAfter(latestBattleTime))
                         .toList())
                 .orElse(battleListResponse.items());
+    }
+
+    private void updateSoloRankTier(PlayerCollectionEntity playerEntity, List<BattleCollectionEntity> updatedBattleList) {
+        updatedBattleList
+                .stream()
+                .filter(battle -> Objects.equals(battle.getType(), BattleType.SOLO_RANKED.getCode()))
+                .max(Comparator.comparing(BattleCollectionEntity::getBattleTime))
+                .flatMap(BattleCollectionEntity::findMe)
+                .ifPresent(latestSoloRankBattlePlayer -> {
+                    Integer soloRankTier = latestSoloRankBattlePlayer.getBrawler().getTrophies();
+                    if (soloRankTier != null) {
+                        playerEntity.updateSoloRankTier(soloRankTier);
+                    }
+                });
     }
 }
