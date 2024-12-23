@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class BattleUpdateProcessor implements ItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> {
@@ -46,11 +45,6 @@ public class BattleUpdateProcessor implements ItemProcessor<PlayerCollectionEnti
                     .getPlayerRecentBattles(item.getBrawlStarsTag());
             List<BattleCollectionEntity> updatedBattleEntities = battleUpdateApplier
                     .update(item, battleListResponse);
-            List<LocalDateTime> updatedBattleTimes = updatedBattleEntities.stream()
-                    .map(BattleCollectionEntity::getBattleTime)
-                    .toList();
-
-            item.battleUpdated(updatedBattleTimes);
 
             return new PlayerBattleUpdateResult(item, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
