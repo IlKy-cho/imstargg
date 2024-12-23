@@ -34,10 +34,12 @@ public class PlayerRepository {
     @Transactional
     @Retryable(retryFor = OptimisticLockingFailureException.class)
     public Optional<PlayerCollectionEntity> find(String brawlStarsTag) {
-        return playerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag).map(player -> {
-            player.renewing();
-            return player;
-        });
+        return playerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag)
+                .map(player -> {
+                    player.initializeBrawlStarsIdToBrawler();
+                    player.renewing();
+                    return player;
+                });
     }
 
     @Transactional
