@@ -1,12 +1,11 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
-import com.imstargg.core.enums.PlayerStatus;
+import com.imstargg.collection.domain.BattleUpdateApplier;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.slf4j.Logger;
@@ -17,15 +16,15 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> {
+public class BattleUpdateProcessor implements ItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> {
 
-    private static final Logger log = LoggerFactory.getLogger(BattleUpdateJobItemProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(BattleUpdateProcessor.class);
 
     private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
     private final BattleUpdateApplier battleUpdateApplier;
 
-    public BattleUpdateJobItemProcessor(
+    public BattleUpdateProcessor(
             Clock clock,
             BrawlStarsClient brawlStarsClient,
             BattleUpdateApplier battleUpdateApplier
@@ -37,11 +36,11 @@ public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerCollect
 
     @Override
     public PlayerBattleUpdateResult process(PlayerCollectionEntity item) throws Exception {
-        if (PlayerStatus.NEW != item.getStatus() && !item.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
-            log.warn("Player 업데이트 쿨타임이 지나지 않아 스킵. playerTag={}", item.getBrawlStarsTag());
-            item.battleUpdated(clock, List.of());
-            return new PlayerBattleUpdateResult(item, List.of());
+        if (!item.isNextUpdateCooldownOver(clock)) {
+            log.info("플레이어 업데이트 쿨타임이 아직 지나지 않아 스킵. playerTag={}", item.getBrawlStarsTag());
+            return null;
         }
+
         try {
             ListResponse<BattleResponse> battleListResponse = brawlStarsClient
                     .getPlayerRecentBattles(item.getBrawlStarsTag());
@@ -50,8 +49,8 @@ public class BattleUpdateJobItemProcessor implements ItemProcessor<PlayerCollect
             List<LocalDateTime> updatedBattleTimes = updatedBattleEntities.stream()
                     .map(BattleCollectionEntity::getBattleTime)
                     .toList();
-            
-            item.battleUpdated(clock, updatedBattleTimes);
+
+            item.battleUpdated(updatedBattleTimes);
 
             return new PlayerBattleUpdateResult(item, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
