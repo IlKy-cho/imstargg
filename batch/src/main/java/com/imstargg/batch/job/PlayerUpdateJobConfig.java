@@ -4,6 +4,7 @@ import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.collection.domain.BattleUpdateApplier;
+import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
@@ -116,7 +117,15 @@ class PlayerUpdateJobConfig {
     CompositeItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> processor() {
         return new CompositeItemProcessor<>(
                 new PlayerUpdateProcessor(clock, brawlStarsClient),
-                new BattleUpdateProcessor(clock, brawlStarsClient, battleUpdateApplier)
+                new BattleUpdateProcessor(clock, brawlStarsClient, battleUpdateApplier),
+                item -> {
+                    PlayerCollectionEntity playerEntity = ((PlayerBattleUpdateResult) item).playerEntity();
+                    playerEntity.playerUpdated(clock);
+                    if (playerEntity.getStatus() == PlayerStatus.DORMANT) {
+                        log.debug("플레이어가 휴면상태 처리됨 playerTag={}", playerEntity.getBrawlStarsTag());
+                    }
+                    return item;
+                }
         );
     }
 

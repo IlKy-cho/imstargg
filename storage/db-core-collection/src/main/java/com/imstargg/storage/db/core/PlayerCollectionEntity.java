@@ -199,6 +199,18 @@ public class PlayerCollectionEntity extends BaseEntity {
                 .ifPresent(battleTime -> this.latestBattleTime = battleTime);
     }
 
+    public void playerUpdated(Clock clock) {
+        if (this.status == PlayerStatus.DELETED) {
+            return;
+        }
+
+        if (durationBetweenLastBattleUpdated(LocalDateTime.now(clock)).toDays() > 30) {
+            this.status = PlayerStatus.DORMANT;
+        } else {
+            this.status = PlayerStatus.PLAYER_UPDATED;
+        }
+    }
+
     private Duration durationBetweenLastBattleUpdated(LocalDateTime now) {
         return Duration.between(
                 latestBattleTime != null ? latestBattleTime : getCreatedAt(),
