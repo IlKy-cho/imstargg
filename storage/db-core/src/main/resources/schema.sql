@@ -112,6 +112,7 @@ create table player
     best_time_as_big_brawler              int          not null,
     brawlstars_club_tag                   varchar(45),
     latest_battle_time                    timestamp(6),
+    solo_rank_tier                        int,
     version                               int          not null,
     created_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
