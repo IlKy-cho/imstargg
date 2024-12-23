@@ -86,8 +86,12 @@ public class PlayerEntity extends BaseEntity {
     private String brawlStarsClubTag;
 
     @Nullable
-    @Column(name = "latest_battle_time")
+    @Column(name = "latest_battle_time", updatable = false)
     private LocalDateTime latestBattleTime;
+
+    @Nullable
+    @Column(name = "solo_rank_tier", updatable = false)
+    private Integer soloRankTier;
 
     @Version
     @Column(name = "version", nullable = false)

@@ -90,6 +90,10 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Column(name = "latest_battle_time")
     private LocalDateTime latestBattleTime;
 
+    @Nullable
+    @Column(name = "solo_rank_tier")
+    private Integer soloRankTier;
+
     @Version
     @Column(name = "version", nullable = false)
     private int version;
@@ -276,6 +280,10 @@ public class PlayerCollectionEntity extends BaseEntity {
         }
 
         return updated;
+    }
+
+    public void updateSoloRankTier(int soloRankTier) {
+        this.soloRankTier = soloRankTier;
     }
 
     public Long getId() {
