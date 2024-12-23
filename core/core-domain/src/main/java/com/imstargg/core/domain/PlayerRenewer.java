@@ -1,6 +1,5 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import org.slf4j.Logger;
@@ -39,12 +38,8 @@ public class PlayerRenewer {
 
     public void renew(Player player) {
         validateRequestCount();
-        if (!player.isNextUpdateCooldownOver(clock)) {
+        if (!player.isNextUpdateCooldownOver(clock) || !player.renewAvailable(clock)) {
             throw new CoreException(CoreErrorType.PLAYER_ALREADY_RENEWED, "playerTag=" + player.tag());
-        }
-        if (player.isRenewing()) {
-            log.info("이미 플레이어가 갱신 중입니다. playerTag={}, status={}", player.tag(), player.status());
-            return;
         }
         playerRepository.renewRequested(player);
         eventPublisher.publish(player.tag());
@@ -61,9 +56,7 @@ public class PlayerRenewer {
     public boolean isRenewing(BrawlStarsTag tag) {
         return playerRepository.findByTag(tag)
                 .map(Player::isRenewing)
-                .or(() -> playerRepository.findNew(tag)
-                        .map(player -> player.status() == UnknownPlayerStatus.SEARCH_NEW)
-                )
+                .or(() -> playerRepository.findNew(tag).map(UnknownPlayer::isRenewing))
                 .orElseThrow(() -> new CoreException(CoreErrorType.PLAYER_NOT_FOUND, "playerTag=" + tag));
     }
 }

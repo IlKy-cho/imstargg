@@ -12,6 +12,10 @@ public record UnknownPlayer(
         LocalDateTime updateAvailableAt
 ) {
 
+    public boolean isRenewing() {
+        return status() == UnknownPlayerStatus.SEARCH_NEW || status() == UnknownPlayerStatus.RENEWING;
+    }
+
     public boolean updateAvailable(Clock clock) {
         boolean timeAvailable = updateAvailableAt().isBefore(LocalDateTime.now(clock));
         if (!timeAvailable) {
