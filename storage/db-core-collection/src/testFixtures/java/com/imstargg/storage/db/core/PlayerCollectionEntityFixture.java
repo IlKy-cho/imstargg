@@ -3,11 +3,7 @@ package com.imstargg.storage.db.core;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
-import java.time.Clock;
-
 public class PlayerCollectionEntityFixture {
-
-    private static final Clock clock = Clock.systemDefaultZone();
 
     @Nullable
     private String brawlStarsTag;
@@ -42,10 +38,6 @@ public class PlayerCollectionEntityFixture {
 
     @Nullable
     private String brawlStarsClubTag;
-
-    private int notUpdatedCount;
-
-    private long updateWeight;
 
     public PlayerCollectionEntityFixture brawlStarsTag(String brawlStarsTag) {
         this.brawlStarsTag = brawlStarsTag;
@@ -122,16 +114,6 @@ public class PlayerCollectionEntityFixture {
         return this;
     }
 
-    public PlayerCollectionEntityFixture notUpdatedCount(int notUpdatedCount) {
-        this.notUpdatedCount = notUpdatedCount;
-        return this;
-    }
-
-    public PlayerCollectionEntityFixture updateWeight(long updateWeight) {
-        this.updateWeight = updateWeight;
-        return this;
-    }
-
     public PlayerCollectionEntity build() {
         fillRequiredFields();
         return new PlayerCollectionEntity(
@@ -149,8 +131,7 @@ public class PlayerCollectionEntityFixture {
             duoVictories,
             bestRoboRumbleTime,
             bestTimeAsBigBrawler,
-            brawlStarsClubTag,
-            clock
+            brawlStarsClubTag
         );
     }
 

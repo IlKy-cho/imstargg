@@ -61,7 +61,7 @@ public class PlayerRenewer {
     }
 
     private void renewPlayer(PlayerCollectionEntity playerEntity) {
-        if (playerEntity.isNextUpdateCooldownOver(LocalDateTime.now(clock))) {
+        if (playerEntity.isNextUpdateCooldownOver(clock)) {
             log.warn("플레이어 정보 갱신 대기 중입니다. tag={}", playerEntity.getBrawlStarsTag());
             return;
         }
@@ -135,7 +135,7 @@ public class PlayerRenewer {
                 .map(BattleCollectionEntity::getBattleTime)
                 .toList();
 
-        playerEntity.battleUpdated(clock, updatedBattleTimes);
+        playerEntity.battleUpdated(updatedBattleTimes);
         return updatedBattleEntities;
     }
 
@@ -155,8 +155,7 @@ public class PlayerRenewer {
                 playerResponse.duoVictories(),
                 playerResponse.bestRoboRumbleTime(),
                 playerResponse.bestTimeAsBigBrawler(),
-                playerResponse.club().tag(),
-                clock
+                playerResponse.club().tag()
         );
         for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
             playerEntity.updateBrawler(

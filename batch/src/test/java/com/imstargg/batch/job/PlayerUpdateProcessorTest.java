@@ -1,4 +1,4 @@
-package com.imstargg.batch.job.notused;
+package com.imstargg.batch.job;
 
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
@@ -16,10 +16,10 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
-class PlayerUpdateJobItemProcessorTest {
+class PlayerUpdateProcessorTest {
 
     @InjectMocks
-    private PlayerUpdateJobItemProcessor playerUpdateJobItemProcessor;
+    private PlayerUpdateProcessor playerUpdateProcessor;
 
     @Mock
     private BrawlStarsClient brawlStarsClient;
@@ -36,7 +36,7 @@ class PlayerUpdateJobItemProcessorTest {
                 .willThrow(notFoundException);
 
         // when
-        playerUpdateJobItemProcessor.process(playerEntity);
+        playerUpdateProcessor.process(playerEntity);
 
         // then
         assertThat(playerEntity.getStatus()).isEqualTo(PlayerStatus.DELETED);

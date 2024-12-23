@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Clock;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,8 +39,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
                 30,
                 120,
                 60,
-                "brawlStarsClubTag",
-                clock
+                "brawlStarsClubTag"
         );
 
         // when
@@ -50,8 +47,6 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
 
         // then
         PlayerCollectionEntity savedEntity = repository.findById(entity.getId()).get();
-        assertThat(savedEntity.getNextUpdateTime())
-                .isEqualTo(LocalDateTime.now(clock));
         assertThat(savedEntity.getStatus()).isEqualTo(PlayerStatus.NEW);
         assertThat(savedEntity.getBrawlStarsTag()).isEqualTo("brawlStarsTag");
         assertThat(savedEntity.getName()).isEqualTo("name");
@@ -89,8 +84,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
                 30,
                 120,
                 60,
-                "brawlStarsClubTag",
-                clock
+                "brawlStarsClubTag"
         );
         player.updateBrawler(
                 1,
@@ -160,120 +154,4 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
                 });
     }
 
-    @Test
-    void 새_플레이어는_전투를_업데이트하면_BATTLE_UPDATED_상태가_된다() {
-        // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
-
-        List<LocalDateTime> updatedBattleTimes = List.of(
-                LocalDateTime.of(2021, 1, 1, 0, 0)
-        );
-
-        // when
-        player.battleUpdated(clock, updatedBattleTimes);
-
-        // then
-        assertThat(player.getStatus()).isEqualTo(PlayerStatus.BATTLE_UPDATED);
-        assertThat(player.getLatestBattleTime()).isEqualTo(LocalDateTime.of(2021, 1, 1, 0, 0));
-    }
-
-    @Test
-    void 기존_플레이어도_전투를_업데이트하면_BATTLE_UPDATED_상태가_된다() {
-        // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
-        player.battleUpdated(clock, List.of(LocalDateTime.of(2021, 1, 1, 0, 0)));
-
-        List<LocalDateTime> updatedBattleTimes = List.of(
-                LocalDateTime.of(2021, 1, 2, 0, 0)
-        );
-
-        // when
-        player.battleUpdated(clock, updatedBattleTimes);
-
-        // then
-        assertThat(player.getStatus()).isEqualTo(PlayerStatus.BATTLE_UPDATED);
-        assertThat(player.getLatestBattleTime()).isEqualTo(LocalDateTime.of(2021, 1, 2, 0, 0));
-    }
-
-    @Test
-    void 전투_기록이_없으면_업데이트_시간이_7일_후로_설정된다() {
-        // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
-        List<LocalDateTime> emptyBattles = Collections.emptyList();
-
-        // when
-        player.battleUpdated(clock, emptyBattles);
-
-        // then
-        assertThat(player.getNextUpdateTime()).isEqualTo(LocalDateTime.now(clock).plusDays(7));
-    }
-
-    @Test
-    void 전투_기록이_30일_이상_없으면_DORMANT_상태가_된다() {
-        // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
-        LocalDateTime oldBattleTime = LocalDateTime.now(clock).minusDays(31);
-        player.battleUpdated(clock, List.of(oldBattleTime));
-        List<LocalDateTime> emptyBattles = Collections.emptyList();
-
-        // when
-        player.battleUpdated(clock, emptyBattles);
-
-        // then
-        assertThat(player.getStatus()).isEqualTo(PlayerStatus.DORMANT);
-    }
-
-    @Test
-    void 전투_기록이_있으면_트로피와_레벨에_따른_가중치가_적용된_업데이트_시간을_가진다() {
-        // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture()
-                .trophies(10000)  // trophyWeight: 3
-                .expLevel(50)     // expLevelWeight: 2
-                .build());
-        LocalDateTime recentBattle = LocalDateTime.now(clock).minusMinutes(20);
-
-        // when
-        player.battleUpdated(clock, List.of(recentBattle));
-
-        // then
-        long weightMultiplier = 6L; // trophyWeight(3) * expLevelWeight(2)
-        assertThat(player.getNextUpdateTime())
-                .isEqualTo(LocalDateTime.now(clock).plusDays(weightMultiplier));
-    }
-
-    @Test
-    void 전투_기록이_있는_경우_트로피와_레벨이_낮으면_더_긴_업데이트_주기를_가진다() {
-        // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture()
-                .trophies(5000)   // trophyWeight: 4
-                .expLevel(30)     // expLevelWeight: 3
-                .build());
-        LocalDateTime battle = LocalDateTime.now(clock).minusHours(1);
-
-        // when
-        player.battleUpdated(clock, List.of(battle));
-
-        // then
-        long weightMultiplier = 12L; // trophyWeight(4) * expLevelWeight(3)
-        assertThat(player.getNextUpdateTime())
-                .isEqualTo(LocalDateTime.now(clock).plusDays(weightMultiplier));
-    }
-
-    @Test
-    void 여러_전투_기록_중_가장_최근_시간이_latestBattleTime으로_설정된다() {
-        // given
-        PlayerCollectionEntity player = repository.save(new PlayerCollectionEntityFixture().build());
-        List<LocalDateTime> battleTimes = List.of(
-                LocalDateTime.of(2021, 1, 1, 0, 0),
-                LocalDateTime.of(2021, 1, 3, 0, 0),
-                LocalDateTime.of(2021, 1, 2, 0, 0)
-        );
-
-        // when
-        player.battleUpdated(clock, battleTimes);
-
-        // then
-        assertThat(player.getLatestBattleTime())
-                .isEqualTo(LocalDateTime.of(2021, 1, 3, 0, 0));
-    }
 }

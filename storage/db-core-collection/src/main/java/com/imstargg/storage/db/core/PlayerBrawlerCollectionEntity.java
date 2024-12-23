@@ -81,7 +81,7 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         this.gadgetBrawlStarsIds = gadgetBrawlStarsIds;
     }
 
-    public void update(
+    public boolean update(
             int power,
             int rank,
             int trophies,
@@ -90,6 +90,13 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
             List<Long> starPowerBrawlStarsIds,
             List<Long> gadgetBrawlStarsIds
     ) {
+        boolean updated = power != this.power
+                || rank != this.rank
+                || trophies != this.trophies
+                || highestTrophies != this.highestTrophies
+                || !gearBrawlStarsIds.equals(this.gearBrawlStarsIds)
+                || !starPowerBrawlStarsIds.equals(this.starPowerBrawlStarsIds)
+                || !gadgetBrawlStarsIds.equals(this.gadgetBrawlStarsIds);
         this.power = power;
         this.rank = rank;
         this.trophies = trophies;
@@ -97,6 +104,7 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         this.gearBrawlStarsIds = gearBrawlStarsIds;
         this.starPowerBrawlStarsIds = starPowerBrawlStarsIds;
         this.gadgetBrawlStarsIds = gadgetBrawlStarsIds;
+        return updated;
     }
 
     public Long getId() {

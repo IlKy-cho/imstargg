@@ -23,7 +23,8 @@ import java.time.LocalDateTime;
                 @UniqueConstraint(name = "uk_player__brawlstarstag", columnNames = "brawlstars_tag")
         },
         indexes = {
-                @Index(name = "ix_player__name", columnList = "name")
+                @Index(name = "ix_player__name", columnList = "name"),
+                @Index(name = "ix_player__trophies", columnList = "trophies"),
         }
 )
 public class PlayerEntity extends BaseEntity {
@@ -83,9 +84,6 @@ public class PlayerEntity extends BaseEntity {
     @Nullable
     @Column(name = "brawlstars_club_tag", length = 45, updatable = false)
     private String brawlStarsClubTag;
-
-    @Column(name = "next_update_time", nullable = false)
-    private LocalDateTime nextUpdateTime;
 
     @Nullable
     @Column(name = "latest_battle_time")
