@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
 
 @Component
 public class PlayerRenewer {
@@ -26,13 +25,24 @@ public class PlayerRenewer {
     }
 
     public boolean renewNew(BrawlStarsTag tag) {
-        NewPlayer newPlayer = playerRepository.getNew(tag);
-        if (newPlayer.updateAvailableAt().isAfter(LocalDateTime.now(clock))) {
+        validateRequestCount();
+
+        UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
+        if (unknownPlayer.updateAvailable(clock)) {
             return false;
         }
 
+        playerRepository.updateSearchNew(unknownPlayer);
         eventPublisher.publish(tag);
         return true;
+    }
+
+    public void validateRequestCount() {
+        int renewRequestedCount = playerRepository.countRenewRequested();
+        log.debug("갱신 요청된 플레이어 수: {}", renewRequestedCount);
+        if (renewRequestedCount > 1000) {
+            throw new CoreException(CoreErrorType.PLAYER_RENEW_UNAVAILABLE);
+        }
     }
 
     public void renew(Player player) {

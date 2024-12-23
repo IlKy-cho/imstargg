@@ -5,19 +5,14 @@ import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
-
 @Service
 public class NewPlayerService {
 
-    private final Clock clock;
     private final UnknownPlayerCollectionJpaRepository unknownPlayerRepository;
 
     public NewPlayerService(
-            Clock clock,
             UnknownPlayerCollectionJpaRepository unknownPlayerRepository
     ) {
-        this.clock = clock;
         this.unknownPlayerRepository = unknownPlayerRepository;
     }
 
@@ -29,7 +24,7 @@ public class NewPlayerService {
                     player.adminNew();
                 },
                 () -> unknownPlayerRepository.save(
-                        UnknownPlayerCollectionEntity.adminNew(brawlStarsTag, clock)
+                        UnknownPlayerCollectionEntity.adminNew(brawlStarsTag)
                 )
         );
     }

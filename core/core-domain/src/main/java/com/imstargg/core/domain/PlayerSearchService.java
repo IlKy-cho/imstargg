@@ -21,16 +21,16 @@ public class PlayerSearchService {
     public PlayerSearchResult search(PlayerSearchParam param) {
         if (!param.isTag()) {
             List<Player> players = playerSearcher.searchName(param.query());
-            return PlayerSearchResult.nonAcceptedResult(players);
+            return PlayerSearchResult.notAccepted(players);
         }
 
         BrawlStarsTag tag = param.toTag();
         List<Player> players = playerSearcher.searchTag(tag);
         if (!players.isEmpty()) {
-            return PlayerSearchResult.nonAcceptedResult(players);
+            return PlayerSearchResult.notAccepted(players);
         }
 
         return playerRenewer.renewNew(tag)
-                ? PlayerSearchResult.acceptedResult(tag) : PlayerSearchResult.nonAcceptedResult(List.of());
+                ? PlayerSearchResult.accepted(tag) : PlayerSearchResult.notAccepted(List.of());
     }
 }

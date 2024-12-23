@@ -3,18 +3,22 @@ package com.imstargg.core.domain;
 import com.imstargg.core.domain.brawlstars.Brawler;
 import com.imstargg.core.domain.brawlstars.BrawlerRepository;
 import com.imstargg.core.enums.Language;
+import com.imstargg.core.enums.PlayerStatus;
+import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.core.error.CoreException;
-import com.imstargg.storage.db.core.BaseEntity;
 import com.imstargg.storage.db.core.PlayerBrawlerEntity;
 import com.imstargg.storage.db.core.PlayerBrawlerJpaRepository;
 import com.imstargg.storage.db.core.PlayerEntity;
 import com.imstargg.storage.db.core.PlayerJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerEntity;
 import com.imstargg.storage.db.core.UnknownPlayerJpaRepository;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -67,10 +71,13 @@ public class PlayerRepository {
         );
     }
 
-    @Transactional
-    public NewPlayer getNew(BrawlStarsTag tag) {
+    public int countRenewRequested() {
+        return unknownPlayerJpaRepository.countByStatus(UnknownPlayerStatus.SEARCH_NEW)
+                + playerJpaRepository.countByStatus(PlayerStatus.RENEW_REQUESTED);
+    }
+
+    public UnknownPlayer getUnknown(BrawlStarsTag tag) {
         UnknownPlayerEntity entity = unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
-                .filter(BaseEntity::isActive)
                 .orElseGet(() -> unknownPlayerJpaRepository.save(
                         UnknownPlayerEntity.newSearchNew(
                                 tag.value(),
@@ -80,17 +87,33 @@ public class PlayerRepository {
         return mapNewPlayer(entity);
     }
 
-    public Optional<NewPlayer> findNew(BrawlStarsTag tag) {
-        return unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
-                .map(PlayerRepository::mapNewPlayer);
+    @Transactional
+    @Retryable(retryFor = OptimisticLockingFailureException.class)
+    public void updateSearchNew(UnknownPlayer unknownPlayer) {
+        UnknownPlayerEntity entity = unknownPlayerJpaRepository.findByBrawlStarsTag(unknownPlayer.tag().value())
+                .orElseThrow(() -> new CoreException("Unknown player not found: " + unknownPlayer.tag()));
+        entity.searchNew();
     }
 
-    private static NewPlayer mapNewPlayer(UnknownPlayerEntity entity) {
-        return new NewPlayer(
+    public Optional<UnknownPlayer> findNew(BrawlStarsTag tag) {
+        return unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
+                .map(this::mapNewPlayer);
+    }
+
+    private UnknownPlayer mapNewPlayer(UnknownPlayerEntity entity) {
+        return new UnknownPlayer(
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getStatus(),
-                entity.getUpdateAvailableAt()
+                updateAvailableAt(entity)
         );
+    }
+
+    private LocalDateTime updateAvailableAt(UnknownPlayerEntity entity) {
+        if (entity.getStatus() != UnknownPlayerStatus.NOT_FOUND) {
+            return LocalDateTime.now(clock);
+        }
+
+        return entity.getUpdatedAt().plusMinutes(1L + entity.getNotFoundCount());
     }
 
     public List<PlayerBrawler> findBrawlers(Player player) {
