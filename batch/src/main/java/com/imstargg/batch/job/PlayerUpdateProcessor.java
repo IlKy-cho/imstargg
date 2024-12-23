@@ -1,6 +1,5 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.NewPlayer;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
 import com.imstargg.client.brawlstars.response.AccessoryResponse;
@@ -9,31 +8,36 @@ import com.imstargg.client.brawlstars.response.GearStatResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
-public class NewPlayerUpdateJobItemProcessor
-        implements ItemProcessor<UnknownPlayerCollectionEntity, NewPlayer> {
+import java.time.Clock;
 
-    private static final Logger log = LoggerFactory.getLogger(NewPlayerUpdateJobItemProcessor.class);
+public class PlayerUpdateProcessor implements ItemProcessor<PlayerCollectionEntity, PlayerCollectionEntity> {
 
+    private static final Logger log = LoggerFactory.getLogger(PlayerUpdateProcessor.class);
+
+    private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
 
-    public NewPlayerUpdateJobItemProcessor(
+    public PlayerUpdateProcessor(
+            Clock clock,
             BrawlStarsClient brawlStarsClient
     ) {
+        this.clock = clock;
         this.brawlStarsClient = brawlStarsClient;
     }
 
     @Override
-    public NewPlayer process(UnknownPlayerCollectionEntity item) throws Exception {
+    public PlayerCollectionEntity process(PlayerCollectionEntity item) throws Exception {
+        if (!item.isNextUpdateCooldownOver(clock)) {
+            log.info("플레이어 업데이트 쿨타임이 아직 지나지 않아 스킵. playerTag={}", item.getBrawlStarsTag());
+            return null;
+        }
         try {
-            item.updated();
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(item.getBrawlStarsTag());
-            PlayerCollectionEntity playerEntity = new PlayerCollectionEntity(
-                    playerResponse.tag(),
+            item.update(
                     playerResponse.name(),
                     playerResponse.nameColor(),
                     playerResponse.icon().id(),
@@ -50,23 +54,22 @@ public class NewPlayerUpdateJobItemProcessor
                     playerResponse.club().tag()
             );
             for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
-                playerEntity.updateBrawler(
+                item.updateBrawler(
                         brawlerResponse.id(),
-                        brawlerResponse.trophies(),
-                        brawlerResponse.highestTrophies(),
                         brawlerResponse.power(),
                         brawlerResponse.rank(),
+                        brawlerResponse.trophies(),
+                        brawlerResponse.highestTrophies(),
                         brawlerResponse.gears().stream().map(GearStatResponse::id).toList(),
                         brawlerResponse.starPowers().stream().map(StarPowerResponse::id).toList(),
                         brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
                 );
             }
-            return new NewPlayer(item, playerEntity);
-        }
-        catch (BrawlStarsClientNotFoundException ex) {
+            return item;
+        } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.getBrawlStarsTag());
-            item.notFound();
-            return new NewPlayer(item, null);
+            item.deleted();
+            return item;
         }
     }
 

@@ -38,7 +38,7 @@ import static com.imstargg.storage.db.core.QUnknownPlayerCollectionEntity.unknow
 
 @Configuration
 @EnableConfigurationProperties(NewPlayerUpdateJobConfig.Properties.class)
-public class NewPlayerUpdateJobConfig {
+class NewPlayerUpdateJobConfig {
 
     private static final Logger log = LoggerFactory.getLogger(NewPlayerUpdateJobConfig.class);
 
@@ -151,8 +151,9 @@ public class NewPlayerUpdateJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerUpdateJobItemProcessor processor() {
-        return new NewPlayerUpdateJobItemProcessor(clock, brawlStarsClient);
+        return new NewPlayerUpdateJobItemProcessor(brawlStarsClient);
     }
+
 
     @Bean(STEP_NAME + "AsyncItemWriter")
     @StepScope

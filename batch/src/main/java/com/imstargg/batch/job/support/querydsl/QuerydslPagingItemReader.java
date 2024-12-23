@@ -69,7 +69,7 @@ public class QuerydslPagingItemReader<T> extends AbstractPagingItemReader<T> {
         EntityTransaction tx = getTxOrNull();
 
         JPQLQuery<T> query = createQuery()
-                .offset(getPage() * getPageSize())
+                .offset((long) getPage() * getPageSize())
                 .limit(getPageSize());
 
         initResults();
