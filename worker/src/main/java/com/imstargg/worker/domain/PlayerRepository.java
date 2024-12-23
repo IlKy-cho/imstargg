@@ -15,42 +15,42 @@ import java.util.Optional;
 @Component
 public class PlayerRepository {
 
-    private final PlayerCollectionJpaRepository playerRepository;
-    private final BattleCollectionJpaRepository battleRepository;
-    private final UnknownPlayerCollectionJpaRepository unknownPlayerRepository;
+    private final PlayerCollectionJpaRepository playerJpaRepository;
+    private final BattleCollectionJpaRepository battleJpaRepository;
+    private final UnknownPlayerCollectionJpaRepository unknownPlayerJpaRepository;
 
     public PlayerRepository(
-            PlayerCollectionJpaRepository playerRepository,
-            BattleCollectionJpaRepository battleRepository,
-            UnknownPlayerCollectionJpaRepository unknownPlayerRepository
+            PlayerCollectionJpaRepository playerJpaRepository,
+            BattleCollectionJpaRepository battleJpaRepository,
+            UnknownPlayerCollectionJpaRepository unknownPlayerJpaRepository
     ) {
-        this.playerRepository = playerRepository;
-        this.battleRepository = battleRepository;
-        this.unknownPlayerRepository = unknownPlayerRepository;
+        this.playerJpaRepository = playerJpaRepository;
+        this.battleJpaRepository = battleJpaRepository;
+        this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
     }
 
     public Optional<PlayerCollectionEntity> find(String brawlStarsTag) {
-        return playerRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag);
+        return playerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag);
     }
 
     public Optional<UnknownPlayerCollectionEntity> findUnknown(String brawlStarsTag) {
-        return unknownPlayerRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag);
+        return unknownPlayerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag);
     }
 
     @Transactional
     public void update(PlayerCollectionEntity player) {
-        playerRepository.save(player);
+        playerJpaRepository.save(player);
     }
 
     @Transactional
     public void update(PlayerCollectionEntity player, List<BattleCollectionEntity> battles) {
-        playerRepository.save(player);
-        battleRepository.saveAll(battles);
+        playerJpaRepository.save(player);
+        battleJpaRepository.saveAll(battles);
     }
 
     @Transactional
     public void update(UnknownPlayerCollectionEntity unknownPlayer) {
-        unknownPlayerRepository.save(unknownPlayer);
+        unknownPlayerJpaRepository.save(unknownPlayer);
     }
 
     @Transactional
@@ -59,12 +59,12 @@ public class PlayerRepository {
             PlayerCollectionEntity player,
             List<BattleCollectionEntity> battles
     ) {
-        unknownPlayerRepository.save(unknownPlayer);
-        playerRepository.save(player);
-        battleRepository.saveAll(battles);
+        unknownPlayerJpaRepository.save(unknownPlayer);
+        playerJpaRepository.save(player);
+        battleJpaRepository.saveAll(battles);
     }
 
     public PlayerCollectionEntity add(PlayerCollectionEntity player) {
-        return playerRepository.save(player);
+        return playerJpaRepository.save(player);
     }
 }
