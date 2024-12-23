@@ -4,6 +4,7 @@ import com.imstargg.core.enums.PlayerStatus;
 import jakarta.annotation.Nullable;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 public record Player(
@@ -24,6 +25,13 @@ public record Player(
     }
 
     public boolean isRenewing() {
-        return status() == PlayerStatus.RENEW_REQUESTED;
+        return status() == PlayerStatus.RENEW_REQUESTED || status() == PlayerStatus.RENEWING;
+    }
+
+    public boolean renewAvailable(Clock clock) {
+        if (!isRenewing()) {
+            return true;
+        }
+        return Duration.between(updatedAt(), LocalDateTime.now(clock)).toSeconds() < 120;
     }
 }
