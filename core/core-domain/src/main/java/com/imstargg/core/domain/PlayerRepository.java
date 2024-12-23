@@ -12,8 +12,6 @@ import com.imstargg.storage.db.core.PlayerEntity;
 import com.imstargg.storage.db.core.PlayerJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerEntity;
 import com.imstargg.storage.db.core.UnknownPlayerJpaRepository;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,7 +86,6 @@ public class PlayerRepository {
     }
 
     @Transactional
-    @Retryable(retryFor = OptimisticLockingFailureException.class)
     public void updateSearchNew(UnknownPlayer unknownPlayer) {
         UnknownPlayerEntity entity = unknownPlayerJpaRepository.findByBrawlStarsTag(unknownPlayer.tag().value())
                 .orElseThrow(() -> new CoreException("Unknown player not found: " + unknownPlayer.tag()));
