@@ -41,9 +41,6 @@ public class UnknownPlayerEntity extends BaseEntity {
     @Column(name = "not_found_count", nullable = false)
     private int notFoundCount;
 
-    @Column(name = "update_available_at", updatable = false, nullable = false)
-    private LocalDateTime updateAvailableAt;
-
     protected UnknownPlayerEntity() {
     }
 
@@ -51,16 +48,14 @@ public class UnknownPlayerEntity extends BaseEntity {
         this.brawlStarsTag = brawlStarsTag;
         this.status = status;
         this.notFoundCount = 0;
-        this.updateAvailableAt = updateAvailableAt;
     }
 
     public static UnknownPlayerEntity newSearchNew(String brawlStarsTag, Clock clock) {
         return new UnknownPlayerEntity(brawlStarsTag, UnknownPlayerStatus.SEARCH_NEW, LocalDateTime.now(clock));
     }
 
-    public void refresh(Clock clock) {
-        this.notFoundCount = 0;
-        this.updateAvailableAt = LocalDateTime.now(clock);
+    public void searchNew() {
+        this.status = UnknownPlayerStatus.SEARCH_NEW;
     }
 
     public Long getId() {
@@ -79,7 +74,4 @@ public class UnknownPlayerEntity extends BaseEntity {
         return notFoundCount;
     }
 
-    public LocalDateTime getUpdateAvailableAt() {
-        return updateAvailableAt;
-    }
 }
