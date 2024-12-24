@@ -28,7 +28,7 @@ public class PlayerController {
         this.playerService = playerService;
     }
 
-    @GetMapping("/api/v1/search")
+    @GetMapping("/api/v1/player/search")
     public ResponseEntity<PlayerSearchResponse> search(
             @ModelAttribute @Validated PlayerSearchRequest request) {
         PlayerSearchResponse response = PlayerSearchResponse
