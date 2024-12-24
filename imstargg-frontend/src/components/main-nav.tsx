@@ -12,21 +12,23 @@ import {navItems} from "@/config/site";
 export default function MainNav() {
   return (
     <NavigationMenu>
-      <NavigationMenuList className="flex">
-        <NavigationMenuItem>
-          {navItems.map((item) => {
-            return (
-              <NavigationMenuLink 
-                key={item.href}
-                href={item.href}
-                className={`${navigationMenuTriggerStyle()} bg-background`}
-              >
-                {item.label}
-              </NavigationMenuLink>
-            );
-          })}
-        </NavigationMenuItem>
-      </NavigationMenuList>
+      <div className="flex gap-5">
+        <NavigationMenuList>
+          <NavigationMenuItem>
+            {navItems.map((item) => {
+              return (
+                <NavigationMenuLink
+                  key={item.href}
+                  href={item.href}
+                  className={`${navigationMenuTriggerStyle()} bg-zinc-900 text-white hover:bg-zinc-500`}
+                >
+                  {item.label}
+                </NavigationMenuLink>
+              );
+            })}
+          </NavigationMenuItem>
+        </NavigationMenuList>
+      </div>
     </NavigationMenu>
   );
 }
