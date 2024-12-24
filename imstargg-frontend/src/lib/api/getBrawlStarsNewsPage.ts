@@ -1,5 +1,5 @@
 import {BrawlStarsNews} from "@/model/brawlstars/BrawlStarsNews";
-import {Slice} from "@/model/Slice";
+import {Slice} from "@/model/response/Slice";
 
 export async function getBrawlStarsNewsPage(page: number): Promise<Slice<BrawlStarsNews>> {
   const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/brawlstars/news`);
