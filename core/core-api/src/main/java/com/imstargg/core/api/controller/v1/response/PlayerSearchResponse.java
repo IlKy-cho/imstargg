@@ -1,21 +1,18 @@
 package com.imstargg.core.api.controller.v1.response;
 
-import com.imstargg.core.domain.PlayerSearchResult;
-import jakarta.annotation.Nullable;
+import com.imstargg.core.domain.Player;
 
 import java.util.List;
 
 public record PlayerSearchResponse(
-        List<PlayerResponse> players,
-        @Nullable String acceptedTag
+        List<PlayerResponse> players
 ) {
 
-    public static PlayerSearchResponse from(PlayerSearchResult playerSearchResult) {
+    public static PlayerSearchResponse from(List<Player> players) {
         return new PlayerSearchResponse(
-                playerSearchResult.players().stream()
+                players.stream()
                         .map(PlayerResponse::from)
-                        .toList(),
-                playerSearchResult.acceptedTag() != null ? playerSearchResult.acceptedTag().value() : null
+                        .toList()
         );
     }
 }
