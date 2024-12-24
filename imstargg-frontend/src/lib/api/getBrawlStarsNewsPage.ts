@@ -1,7 +1,7 @@
 import {BrawlStarsNews} from "@/model/brawlstars/BrawlStarsNews";
-import {Slice} from "@/model/response/Slice";
+import {SliceResponse} from "@/model/response/SliceResponse";
 
-export async function getBrawlStarsNewsPage(page: number): Promise<Slice<BrawlStarsNews>> {
+export async function getBrawlStarsNewsPage(page: number): Promise<SliceResponse<BrawlStarsNews>> {
   const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/brawlstars/news`);
   url.searchParams.append('language', 'KOREAN');
   url.searchParams.append('page', page.toString());
@@ -16,5 +16,5 @@ export async function getBrawlStarsNewsPage(page: number): Promise<Slice<BrawlSt
     throw new Error('Failed to fetch from ' + url);
   }
 
-  return await response.json() as Slice<BrawlStarsNews>;
+  return await response.json() as SliceResponse<BrawlStarsNews>;
 }
