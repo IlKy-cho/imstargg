@@ -21,9 +21,9 @@ public class MessageRepository {
     }
 
     public Message get(String code, Language language) {
-        return messageJpaRepository.findByCodeAndLang(code, language.getCode())
+        return messageJpaRepository.findByCodeAndLang(code, language)
                 .map(entity -> new Message(entity.getLang(), entity.getContent()))
-                .or(() -> messageJpaRepository.findByCodeAndLang(code, Language.DEFAULT.getCode())
+                .or(() -> messageJpaRepository.findByCodeAndLang(code, Language.DEFAULT)
                         .map(entity -> new Message(entity.getLang(), entity.getContent()))
                 ).orElseThrow(() -> new CoreException("메시지를 찾을 수 없습니다. code: " + code + ", language: " + language));
     }
