@@ -23,17 +23,16 @@ public class PlayerRenewer {
         this.eventPublisher = eventPublisher;
     }
 
-    public boolean renewNew(BrawlStarsTag tag) {
+    public void renewNew(BrawlStarsTag tag) {
         validateRequestCount();
 
         UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
         if (unknownPlayer.updateAvailable(clock)) {
-            return false;
+            throw new CoreException(CoreErrorType.PLAYER_ALREADY_RENEWED, "unknownPlayerTag=" + tag);
         }
 
         playerRepository.updateSearchNew(unknownPlayer);
         eventPublisher.publish(tag);
-        return true;
     }
 
     public void renew(Player player) {
