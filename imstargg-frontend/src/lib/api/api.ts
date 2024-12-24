@@ -29,3 +29,13 @@ export async function fetchRenewPlayer(tag: string): Promise<Response> {
     method: 'POST',
   });
 }
+
+export async function fetchGetPlayer(tag: string): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/players/${tag}`);
+  console.log(`Fetch from ${url}`);
+  return await fetch(url, {
+    next: {
+      tags: ['players', tag]
+    }
+  });
+}
