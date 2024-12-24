@@ -7,7 +7,7 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
-import {navItems} from "@/config/site";
+import {navItems} from "@/config/docs";
 
 export default function MainNav() {
   return (
