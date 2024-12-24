@@ -29,12 +29,11 @@ public class PlayerController {
     }
 
     @GetMapping("/api/v1/player/search")
-    public ResponseEntity<PlayerSearchResponse> search(
+    public PlayerSearchResponse search(
             @ModelAttribute @Validated PlayerSearchRequest request) {
-        PlayerSearchResponse response = PlayerSearchResponse
-                .from(playerSearchService.search(request.toParam()));
-        return ResponseEntity.accepted().body(response);
-
+        return PlayerSearchResponse.from(
+                playerSearchService.search(request.toParam())
+        );
     }
 
     @GetMapping("/api/v1/players/{tag}")
