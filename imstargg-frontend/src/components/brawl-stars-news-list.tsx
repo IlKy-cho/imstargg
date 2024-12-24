@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/pagination";
 import BrawlStarsNewsComponent from "@/components/brawl-stars-news";
 import {getBrawlStarsNewsPage} from "@/lib/api/getBrawlStarsNewsPage";
+import Link from "next/link";
 
 export default function BrawlStarsNewsList() {
   const [page, setPage] = useState<number>(1);
@@ -37,7 +38,10 @@ export default function BrawlStarsNewsList() {
 
   return (
     <div className="space-y-4 max-w-2xl mx-auto my-5 w-full">
-      <h1 className="text-2xl font-bold">브롤스타즈 뉴스</h1>
+      <Link href='https://supercell.com/en/games/brawlstars/ko/blog/'>
+        <h1 className="text-2xl font-bold">브롤스타즈 뉴스</h1>
+      </Link>
+
 
       <div className="flex flex-col gap-1">
         {loading
