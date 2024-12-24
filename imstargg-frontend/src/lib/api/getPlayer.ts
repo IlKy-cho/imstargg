@@ -1,36 +1,19 @@
 import {Player} from "@/model/Player";
+import {fetchGetPlayer} from "@/lib/api/api";
 
-interface PlayerResponse {
-  tag: string;
-  name: string;
-  nameColor: string;
-  iconId: number;
-  trophies: number;
-  highestTrophies: number;
-  clubTag: string | null;
-  updatedAt: string;
+export interface PlayerResponse {
+  player: Player | null;
 }
 
-export async function getPlayer(tag: string): Promise<Player> {
-  console.log(process.env.NEXT_PUBLIC_API_BASE_URL);
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/players/${tag}`);
-  console.log(`Fetch from ${url}`);
-  const response = await fetch(url, {
-    next: {
-        tags: ['players', tag]
-    }
-  });
+export async function getPlayer(tag: string): Promise<PlayerResponse> {
+  const response = await fetchGetPlayer(tag);
   
-  if (!response.ok) {
-    if (response.status === 404) {
-      throw new Error('Player not found');
-    }
-    throw new Error('Failed to fetch player data');
+  if (response.ok) {
+    return {player: await response.json() as Player,};
+  } else if (response.status === 404) {
+    return {player: null};
   }
-  
-  const data = await response.json() as PlayerResponse;
-  return {
-    ...data,
-    updatedAt: new Date(data.updatedAt)
-  };
+
+  console.log(`Failed to fetch from ${response.url}. status: ${response.status}, body: ${response.body}`);
+  throw new Error(`Failed to fetch from ${response.url}.`);
 }
