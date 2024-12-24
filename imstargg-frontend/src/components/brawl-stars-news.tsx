@@ -1,7 +1,6 @@
 "use client";
 
 import type {BrawlStarsNews} from "@/model/brawlstars/BrawlStarsNews";
-import {Card, CardContent} from "@/components/ui/card";
 import Link from "next/link";
 import dayjs from "dayjs";
 import {Skeleton} from "@/components/ui/skeleton";
@@ -11,26 +10,32 @@ type Props = {
   news: BrawlStarsNews | null;
 }
 
-export default function BrawlStarsNews({ news }: Props) {
+const NewsContainer = ({ news } : Props) => {
   return (
-    <Card className="transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-800">
-      {news ?
-        <Link href={news.linkUrl}>
-          <CardContent>
-            <h2 className="text-lg font-semibold">{news.title}</h2>
-            <div className="text-sm text-zinc-500">
-              {dayjs(news.publishDate).format('YYYY.MM.DD')}
-            </div>
-          </CardContent>
-        </Link>
-        :
-        <CardContent>
-          <Skeleton className="h-6 w-[300px] my-1" />
-          <div>
-            <Skeleton className="h-3 w-[80px]" />
-          </div>
-        </CardContent>
-      }
-    </Card>
+    <div className="p-4 border rounded-lg cursor-pointer hover:bg-zinc-100">
+      <div className="flex items-center gap-2">
+        {news ?
+          <h2 className="text-lg font-semibold">{news.title}</h2>
+          : <Skeleton className="h-6 w-[300px] my-1"/>
+        }
+      </div>
+      <div className="text-sm text-zinc-600">
+        {news ?
+          dayjs(news.publishDate).format('YYYY.MM.DD')
+          : <Skeleton className="h-3 w-[80px]"/>
+        }
+      </div>
+    </div>
+  );
+};
+
+export default function BrawlStarsNews({news}: Props) {
+  return (
+    news ?
+      <Link href={news.linkUrl}>
+        <NewsContainer news={news}/>
+      </Link>
+      :
+      <NewsContainer news={news}/>
   );
 }
