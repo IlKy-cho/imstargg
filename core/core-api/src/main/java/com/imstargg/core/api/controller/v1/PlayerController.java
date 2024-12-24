@@ -4,7 +4,6 @@ import com.imstargg.core.api.controller.response.ListResponse;
 import com.imstargg.core.api.controller.v1.request.PlayerSearchRequest;
 import com.imstargg.core.api.controller.v1.response.PlayerBrawlerResponse;
 import com.imstargg.core.api.controller.v1.response.PlayerResponse;
-import com.imstargg.core.api.controller.v1.response.PlayerSearchResponse;
 import com.imstargg.core.api.controller.v1.response.RenewalStatusResponse;
 import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.domain.PlayerSearchService;
@@ -29,10 +28,12 @@ public class PlayerController {
     }
 
     @GetMapping("/api/v1/player/search")
-    public PlayerSearchResponse search(
-            @ModelAttribute @Validated PlayerSearchRequest request) {
-        return PlayerSearchResponse.from(
+    public ListResponse<PlayerResponse> search(@ModelAttribute @Validated PlayerSearchRequest request) {
+        return new ListResponse<>(
                 playerSearchService.search(request.toParam())
+                        .stream()
+                        .map(PlayerResponse::from)
+                        .toList()
         );
     }
 
