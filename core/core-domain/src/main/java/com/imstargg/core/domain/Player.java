@@ -1,6 +1,7 @@
 package com.imstargg.core.domain;
 
 import com.imstargg.core.enums.PlayerStatus;
+import com.imstargg.core.enums.SoloRankTier;
 import jakarta.annotation.Nullable;
 
 import java.time.Clock;
@@ -14,6 +15,7 @@ public record Player(
         long iconId,
         int trophies,
         int highestTrophies,
+        @Nullable SoloRankTier soloRankTier,
         @Nullable BrawlStarsTag clubTag,
         LocalDateTime updatedAt,
         PlayerStatus status

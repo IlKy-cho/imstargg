@@ -172,4 +172,9 @@ public class PlayerEntity extends BaseEntity {
     public String getBrawlStarsClubTag() {
         return brawlStarsClubTag;
     }
+
+    @Nullable
+    public Integer getSoloRankTier() {
+        return soloRankTier;
+    }
 }
