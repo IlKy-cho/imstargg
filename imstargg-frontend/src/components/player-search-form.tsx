@@ -8,6 +8,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import React from "react";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   nameOrTag: z.string().min(0).max(100, {
@@ -16,6 +17,7 @@ const formSchema = z.object({
 });
 
 export default function PlayerSearchForm() {
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -24,11 +26,15 @@ export default function PlayerSearchForm() {
   });
 
   function onSubmit(value: z.infer<typeof formSchema>) {
-    console.log(`검색어 값: ${value.nameOrTag}`);
+    if (value.nameOrTag.trim()) {
+      const searchQuery = value.nameOrTag.startsWith('#') ?
+        encodeURIComponent(value.nameOrTag) : `${value.nameOrTag}`;
+      router.push(`/player/search/${searchQuery}`);
+    }
   }
 
   return (
-    <div className="w-full max-w-xl">
+    <div className="w-full max-w-xl m-1">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-1">
           <FormField
