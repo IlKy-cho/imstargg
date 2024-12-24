@@ -4,6 +4,7 @@ import com.imstargg.core.domain.brawlstars.Brawler;
 import com.imstargg.core.domain.brawlstars.BrawlerRepository;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.PlayerStatus;
+import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.PlayerBrawlerEntity;
@@ -63,6 +64,7 @@ public class PlayerRepository {
                 entity.getIconBrawlStarsId(),
                 entity.getTrophies(),
                 entity.getHighestTrophies(),
+                entity.getSoloRankTier() == null ? null : SoloRankTier.of(entity.getSoloRankTier()),
                 entity.getBrawlStarsClubTag() == null ? null : new BrawlStarsTag(entity.getBrawlStarsClubTag()),
                 entity.getUpdatedAt(),
                 entity.getStatus()

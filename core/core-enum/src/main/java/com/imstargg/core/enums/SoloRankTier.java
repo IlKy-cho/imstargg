@@ -24,6 +24,11 @@ public enum SoloRankTier {
     ;
 
     public static SoloRankTier of(int value) {
+        if (value < 1) {
+            return BRONZE_1;
+        } else if (value > 19) {
+            return MASTER;
+        }
         return switch (value) {
             case 1 -> BRONZE_1;
             case 2 -> BRONZE_2;
