@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.core.enums.Language;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -11,5 +12,5 @@ public interface MessageJpaRepository extends JpaRepository<MessageEntity, Long>
 
     List<MessageEntity> findAllByCodeIn(List<String> codes);
 
-    Optional<MessageEntity> findByCodeAndLang(String code, String lang);
+    Optional<MessageEntity> findByCodeAndLang(String code, Language lang);
 }
