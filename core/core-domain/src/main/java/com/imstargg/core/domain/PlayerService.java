@@ -8,12 +8,16 @@ import java.util.List;
 public class PlayerService {
 
     private final PlayerReader playerReader;
+    private final PlayerFinder playerFinder;
     private final PlayerRenewer playerRenewer;
 
     public PlayerService(
             PlayerReader playerReader,
-            PlayerRenewer playerRenewer) {
+            PlayerFinder playerFinder,
+            PlayerRenewer playerRenewer
+    ) {
         this.playerReader = playerReader;
+        this.playerFinder = playerFinder;
         this.playerRenewer = playerRenewer;
     }
 
@@ -26,8 +30,10 @@ public class PlayerService {
     }
 
     public void renew(BrawlStarsTag tag) {
-        Player player = playerReader.get(tag);
-        playerRenewer.renew(player);
+        playerFinder.find(tag).ifPresentOrElse(
+                playerRenewer::renew,
+                () -> playerRenewer.renewNew(tag)
+        );
     }
 
     public boolean isRenewing(BrawlStarsTag tag) {
