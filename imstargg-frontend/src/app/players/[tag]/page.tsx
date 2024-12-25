@@ -20,9 +20,9 @@ function PlayerNotFound({tag}: Readonly<PlayerNotFoundProps>) {
         <h1 className="text-2xl font-bold">태그 {decodeURIComponent(tag)} 플레이어를 찾을 수 없습니다</h1>
         <p className="text-gray-500">다른 플레이어를 검색해보세요</p>
       </div>
-      
+
       <div className="flex justify-center">
-        <PlayerSearchForm />
+        <PlayerSearchForm/>
       </div>
     </div>
   );
@@ -34,6 +34,11 @@ type Props = {
   }
 };
 
+// <div
+//   className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat p-4"
+//   style={{backgroundImage: "url('/brawl_stars_lobby.jpg')"}}
+// >
+
 export default async function PlayerPage({params}: Readonly<Props>) {
   const playerResponse = await getPlayer(params.tag);
 
@@ -44,7 +49,11 @@ export default async function PlayerPage({params}: Readonly<Props>) {
 
   return (
     <div className="space-y-4">
-      <PlayerProfile player={player}/>
+      <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
+        <div className="flex-1">
+          <PlayerProfile player={player}/>
+        </div>
+      </div>
       <PlayerBattleList tag={params.tag}/>
     </div>
   );
