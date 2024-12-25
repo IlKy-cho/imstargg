@@ -1,6 +1,5 @@
 package com.imstargg.core.domain.brawlstars;
 
-import com.imstargg.core.config.CacheNames;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.Message;
 import com.imstargg.core.domain.MessageRepository;
@@ -13,14 +12,11 @@ import com.imstargg.storage.db.core.brawlstars.BattleMapJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import jakarta.annotation.Nullable;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
-@CacheConfig(cacheNames = CacheNames.BATTLE_EVENT)
 public class BattleEventRepository {
 
     private final BattleEventJpaRepository battleEventJpaRepository;
@@ -40,7 +36,6 @@ public class BattleEventRepository {
         this.messageRepository = messageRepository;
     }
 
-    @Cacheable(key = "'battle-events:v1:' + #language.name() + ':' + #id.value()")
     public Optional<BattleEvent> find(@Nullable BrawlStarsId id, Language language) {
         if (id == null) {
             return Optional.empty();

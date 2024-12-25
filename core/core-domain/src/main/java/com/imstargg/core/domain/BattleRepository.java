@@ -1,6 +1,6 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.domain.brawlstars.BattleEventRepository;
+import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
 import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
@@ -23,13 +23,13 @@ public class BattleRepository {
 
     private final PlayerJpaRepository playerJpaRepository;
     private final BattleJpaRepository battleJpaRepository;
-    private final BattleEventRepository battleEventRepository;
+    private final BattleEventRepositoryWithCache battleEventRepository;
     private final BrawlerRepositoryWithCache brawlerRepository;
 
     public BattleRepository(
             PlayerJpaRepository playerJpaRepository,
             BattleJpaRepository battleJpaRepository,
-            BattleEventRepository battleEventRepository,
+            BattleEventRepositoryWithCache battleEventRepository,
             BrawlerRepositoryWithCache brawlerRepository
     ) {
         this.playerJpaRepository = playerJpaRepository;
