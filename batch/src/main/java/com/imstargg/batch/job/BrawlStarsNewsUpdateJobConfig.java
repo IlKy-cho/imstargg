@@ -24,12 +24,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.function.Function;
 
 import static com.imstargg.storage.db.core.brawlstars.QBrawlStarsNewsCollectionEntity.brawlStarsNewsCollectionEntity;
+import static java.util.stream.Collectors.toMap;
 
 @Configuration
 class BrawlStarsNewsUpdateJobConfig {
@@ -75,8 +78,10 @@ class BrawlStarsNewsUpdateJobConfig {
         return taskletStepBuilder
                 .tasklet((contribution, chunkContext) -> {
                     EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
+                    Assert.notNull(em, "EntityManager가 null입니다.");
+
                     JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-                    List<BrawlStarsNewsCollectionEntity> newNewsEntities = new ArrayList<>();
+                    List<BrawlStarsNewsCollectionEntity> results = new ArrayList<>();
 
                     for (Language lang : Language.values()) {
 
@@ -86,23 +91,15 @@ class BrawlStarsNewsUpdateJobConfig {
                                     .getNewsArchive(lang.getCode(), page);
 
                             List<BrawlStarsNewsArticleResponse> articleResponseList = newsArchiveResponse.articles();
-                            Set<String> existingUrl = fetchExistingUrls(queryFactory, articleResponseList);
+                            Map<String, BrawlStarsNewsCollectionEntity> existingNews = fetchExistingNews(
+                                    queryFactory, articleResponseList);
 
-                            List<BrawlStarsNewsCollectionEntity> newsEntities = fetchNotExistsNewsList(
-                                    lang, articleResponseList, existingUrl);
-                            newNewsEntities.addAll(newsEntities);
+                            List<BrawlStarsNewsCollectionEntity> newsEntities = updateNewNews(
+                                    lang, articleResponseList, existingNews);
 
-                            if (log.isDebugEnabled()) {
-                                log.debug("뉴스 아카이브[page({}), lang({})]를 조회했습니다. "
-                                        + "총 {}개의 뉴스 중 {}개가 이미 존재합니다. "
-                                        + "새로운 뉴스 {}개를 저장합니다.",
-                                        page, lang, articleResponseList.size(), existingUrl.size(), newsEntities.size());
-                                log.debug("아카이브 내 뉴스: {}", articleResponseList.stream()
-                                        .map(BrawlStarsNewsArticleResponse::linkUrl).toList());
-                                log.debug("존재하는 뉴스: {}", existingUrl);
-                                log.debug("새로운 뉴스: {}", newsEntities.stream()
-                                        .map(BrawlStarsNewsCollectionEntity::getLinkUrl).toList());
-                            }
+                            results.addAll(newsEntities);
+
+                            debugLog(lang, page, articleResponseList, existingNews, newsEntities);
 
                             if (page == newsArchiveResponse.pageNumbers().getLast()
                                     || newsEntities.size() < articleResponseList.size()) {
@@ -112,37 +109,61 @@ class BrawlStarsNewsUpdateJobConfig {
                         }
                     }
 
-                    if (!newNewsEntities.isEmpty()) {
-                        log.info("새로운 뉴스 {}개를 저장합니다.", newNewsEntities.size());
-                        newNewsEntities.forEach(em::persist);
+                    if (!results.isEmpty()) {
+                        log.info("새로운 뉴스 {}개를 저장합니다.", results.size());
+                        results.forEach(em::persist);
                     }
 
                     return RepeatStatus.FINISHED;
                 }, txManager).build();
     }
 
-    private static Set<String> fetchExistingUrls(
+    private Map<String, BrawlStarsNewsCollectionEntity> fetchExistingNews(
             JPAQueryFactory queryFactory, List<BrawlStarsNewsArticleResponse> articleResponseList) {
-        return Set.copyOf(queryFactory.select(brawlStarsNewsCollectionEntity.linkUrl)
-                .from(brawlStarsNewsCollectionEntity)
+        return queryFactory.selectFrom(brawlStarsNewsCollectionEntity)
                 .where(brawlStarsNewsCollectionEntity.linkUrl.in(
                         articleResponseList.stream()
                                 .map(BrawlStarsNewsArticleResponse::linkUrl)
                                 .toList()
                 ))
-                .fetch());
+                .fetch()
+                .stream()
+                .collect(toMap(BrawlStarsNewsCollectionEntity::getLinkUrl, Function.identity()));
     }
 
-    private static List<BrawlStarsNewsCollectionEntity> fetchNotExistsNewsList(
-            Language lang, List<BrawlStarsNewsArticleResponse> articleResponseList, Set<String> existingUrl) {
+    private List<BrawlStarsNewsCollectionEntity> updateNewNews(
+            Language lang,
+            List<BrawlStarsNewsArticleResponse> articleResponseList,
+            Map<String, BrawlStarsNewsCollectionEntity> existingNews
+    ) {
         return articleResponseList.stream()
-                .filter(article -> !existingUrl.contains(article.linkUrl()))
+                .filter(article -> !existingNews.containsKey(article.linkUrl()))
                 .map(article -> new BrawlStarsNewsCollectionEntity(
                         lang,
                         article.title(),
                         article.linkUrl(),
                         article.publishDate()
                 )).toList();
+    }
+
+    private void debugLog(
+            Language lang,
+            int page,
+            List<BrawlStarsNewsArticleResponse> articleResponseList,
+            Map<String, BrawlStarsNewsCollectionEntity> existingNews,
+            List<BrawlStarsNewsCollectionEntity> newsEntities
+    ) {
+        if (log.isDebugEnabled()) {
+            log.debug("뉴스 아카이브[page({}), lang({})]를 조회했습니다. "
+                            + "총 {}개의 뉴스 중 {}개가 이미 존재합니다. "
+                            + "새로운 뉴스 {}개를 저장합니다.",
+                    page, lang, articleResponseList.size(), existingNews.size(), newsEntities.size());
+            log.debug("아카이브 내 뉴스: {}", articleResponseList.stream()
+                    .map(BrawlStarsNewsArticleResponse::linkUrl).toList());
+            log.debug("존재하는 뉴스: {}", existingNews.keySet());
+            log.debug("새로운 뉴스: {}", newsEntities.stream()
+                    .map(BrawlStarsNewsCollectionEntity::getLinkUrl).toList());
+        }
     }
 
 }

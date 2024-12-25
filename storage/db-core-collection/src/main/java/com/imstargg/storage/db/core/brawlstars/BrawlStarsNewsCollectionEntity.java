@@ -38,7 +38,12 @@ public class BrawlStarsNewsCollectionEntity extends BaseEntity {
     protected BrawlStarsNewsCollectionEntity() {
     }
 
-    public BrawlStarsNewsCollectionEntity(Language language, String title, String linkUrl, LocalDateTime publishDate) {
+    public BrawlStarsNewsCollectionEntity(
+            Language language,
+            String title,
+            String linkUrl,
+            LocalDateTime publishDate
+    ) {
         this.language = language;
         this.title = title;
         this.linkUrl = linkUrl;
