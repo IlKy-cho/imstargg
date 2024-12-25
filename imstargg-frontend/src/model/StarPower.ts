@@ -1,4 +1,4 @@
-export default interface StarPower {
+export interface StarPower {
   id: number;
   name: string;
 }

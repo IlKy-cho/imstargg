@@ -7,10 +7,10 @@ export interface PlayerBattle {
   battleTime: Date;
   event: BattleEvent | null;
   type: BattleTypeType;
-  result: BattleResultType | null;
-  duration: number | null;
-  rank: number | null;
-  trophyChange: number | null;
+  result?: BattleResultType;
+  duration?: number;
+  rank?: number;
+  trophyChange?: number;
   starPlayerTag: string | null;
   teams: BattlePlayer[][];
 }
