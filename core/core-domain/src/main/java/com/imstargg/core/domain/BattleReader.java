@@ -2,8 +2,6 @@ package com.imstargg.core.domain;
 
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class BattleReader {
 
@@ -13,7 +11,7 @@ public class BattleReader {
         this.battleRepository = battleRepository;
     }
 
-    public List<PlayerBattle> getList(Player player, int page) {
+    public Slice<PlayerBattle> getList(Player player, int page) {
         return battleRepository.find(player, page + 1);
     }
 }

@@ -2,8 +2,6 @@ package com.imstargg.core.domain;
 
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class BattleService {
 
@@ -15,7 +13,7 @@ public class BattleService {
         this.battleReader = battleReader;
     }
 
-    public List<PlayerBattle> getPlayerBattles(BrawlStarsTag tag, int page) {
+    public Slice<PlayerBattle> getPlayerBattles(BrawlStarsTag tag, int page) {
         Player player = playerReader.get(tag);
         return battleReader.getList(player, page);
     }
