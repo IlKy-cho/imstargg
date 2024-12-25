@@ -24,6 +24,9 @@ public class BrawlerRepositoryWithCache {
 
     @Cacheable(key = "'brawlers:v1:' + #language.name() + ':' + #id.value()")
     public Optional<Brawler> find(@Nullable BrawlStarsId id, Language language) {
+        if (id == null) {
+            return Optional.empty();
+        }
         return brawlerRepository.find(id, language);
     }
 }

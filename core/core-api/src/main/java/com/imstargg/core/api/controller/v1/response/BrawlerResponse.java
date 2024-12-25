@@ -2,6 +2,7 @@ package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.brawlstars.Brawler;
 import com.imstargg.core.enums.BrawlerRarity;
+import jakarta.annotation.Nullable;
 
 import java.util.List;
 
@@ -11,7 +12,8 @@ public record BrawlerResponse(
         BrawlerRarity rarity,
         List<GadgetResponse> gadgets,
         List<GearResponse> gears,
-        List<StarPowerResponse> starPowers
+        List<StarPowerResponse> starPowers,
+        @Nullable String imageUrl
 ) {
 
     public static BrawlerResponse from(Brawler brawler) {
@@ -21,7 +23,8 @@ public record BrawlerResponse(
                 brawler.rarity(),
                 brawler.gadgets().stream().map(GadgetResponse::from).toList(),
                 brawler.gears().stream().map(GearResponse::from).toList(),
-                brawler.starPowers().stream().map(StarPowerResponse::from).toList()
+                brawler.starPowers().stream().map(StarPowerResponse::from).toList(),
+                brawler.imageUrl()
         );
     }
 }
