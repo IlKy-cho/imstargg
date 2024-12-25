@@ -23,8 +23,7 @@ public class CacheConfig {
 
         cacheManager.setCacheNames(List.of(
                 CacheNames.BATTLE_EVENT,
-                CacheNames.BRAWLER,
-                CacheNames.BRAWL_STARS_NEWS
+                CacheNames.BRAWLER
         ));
 
         return cacheManager;
