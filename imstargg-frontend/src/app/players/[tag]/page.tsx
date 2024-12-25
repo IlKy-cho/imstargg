@@ -1,10 +1,11 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import PlayerBattleList from './_components/PlayerBattleList';
 import {getPlayer} from "@/lib/api/getPlayer";
 import React from "react";
 import PlayerProfile from "@/components/player-profile";
 import PlayerSearchForm from '@/components/player-search-form';
+import PlayerBattleList from "@/components/player-battle-list";
+import {getBrawlers} from "@/lib/api/brawler";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -34,18 +35,15 @@ type Props = {
   }
 };
 
-// <div
-//   className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat p-4"
-//   style={{backgroundImage: "url('/brawl_stars_lobby.jpg')"}}
-// >
-
 export default async function PlayerPage({params}: Readonly<Props>) {
-  const playerResponse = await getPlayer(params.tag);
+  const { tag } = await params;
+  const playerResponse = await getPlayer(tag);
 
   if (!playerResponse.player) {
-    return <PlayerNotFound tag={params.tag}/>;
+    return <PlayerNotFound tag={tag}/>;
   }
   const player = playerResponse.player;
+  const brawlers = await getBrawlers();
 
   return (
     <div className="space-y-4">
@@ -54,7 +52,7 @@ export default async function PlayerPage({params}: Readonly<Props>) {
           <PlayerProfile player={player}/>
         </div>
       </div>
-      <PlayerBattleList tag={params.tag}/>
+      <PlayerBattleList tag={tag} brawlerList={brawlers}/>
     </div>
   );
 }
