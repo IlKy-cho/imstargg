@@ -1,5 +1,6 @@
 package com.imstargg.core.api.controller.v1.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.imstargg.core.domain.PlayerBattle;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
@@ -12,10 +13,10 @@ public record PlayerBattleResponse(
         LocalDateTime battleTime,
         @Nullable BattleEventResponse event,
         BattleType type,
-        BattleResult result,
-        @Nullable Integer duration,
-        @Nullable Integer rank,
-        @Nullable Integer trophyChange,
+        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable BattleResult result,
+        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer duration,
+        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer rank,
+        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer trophyChange,
         @Nullable String starPlayerTag,
         List<List<BattlePlayerResponse>> teams
 ) {

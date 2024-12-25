@@ -5,6 +5,7 @@ import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Language;
+import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityTeamPlayer;
@@ -50,6 +51,7 @@ public class BattleRepository {
     }
 
     private PlayerBattle mapBattle(BattleEntity battleEntity) {
+        BattleType battleType = BattleType.find(battleEntity.getType());
         return new PlayerBattle(
                 battleEntity.getBattleTime(),
                 battleEventRepository.find(
@@ -57,36 +59,50 @@ public class BattleRepository {
                                         ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
                                 Language.KOREAN)
                         .orElse(null),
-                BattleType.find(battleEntity.getType()),
+                battleType,
                 battleEntity.getResult() != null ? BattleResult.map(battleEntity.getResult()) : null,
                 battleEntity.getDuration(),
                 battleEntity.getPlayer().getRank(),
                 battleEntity.getPlayer().getTrophyChange(),
                 new BrawlStarsTag(battleEntity.getStarPlayerBrawlStarsTag()),
-                mapTeams(battleEntity.getTeams())
+                mapTeams(battleType, battleEntity.getTeams())
         );
     }
 
-    private List<List<BattlePlayer>> mapTeams(List<List<BattleEntityTeamPlayer>> teams) {
+    private List<List<BattlePlayer>> mapTeams(
+            BattleType battleType, List<List<BattleEntityTeamPlayer>> teams) {
         return teams.stream()
                 .map(team -> team.stream()
-                        .map(this::mapPlayer).toList()
+                        .map(player -> mapPlayer(battleType, player)).toList()
                 ).toList();
     }
 
-    private BattlePlayer mapPlayer(BattleEntityTeamPlayer player) {
+    private BattlePlayer mapPlayer(BattleType battleType, BattleEntityTeamPlayer player) {
         return new BattlePlayer(
                 new BrawlStarsTag(player.getBrawlStarsTag()),
                 player.getName(),
-                new BattlePlayerBrawler(
-                        brawlerRepository.find(
-                                new BrawlStarsId(player.getBrawler().getBrawlStarsId()),
-                                Language.KOREAN
-                        ).orElse(null),
-                        player.getBrawler().getPower(),
-                        player.getBrawler().getTrophies(),
-                        player.getBrawler().getTrophyChange()
-                )
+                getSoloRankTier(battleType, player),
+                mapBattlePlayerBrawler(battleType, player)
+        );
+    }
+
+    private SoloRankTier getSoloRankTier(BattleType battleType, BattleEntityTeamPlayer player) {
+        if (BattleType.SOLO_RANKED.equals(battleType) && player.getBrawler().getTrophies() != null) {
+            return SoloRankTier.of(player.getBrawler().getTrophies());
+        }
+        return null;
+    }
+
+    private BattlePlayerBrawler mapBattlePlayerBrawler(BattleType battleType, BattleEntityTeamPlayer player) {
+        boolean isSoloRanked = BattleType.SOLO_RANKED.equals(battleType);
+        return new BattlePlayerBrawler(
+                brawlerRepository.find(
+                        new BrawlStarsId(player.getBrawler().getBrawlStarsId()),
+                        Language.KOREAN
+                ).orElse(null),
+                player.getBrawler().getPower(),
+                isSoloRanked ? null : player.getBrawler().getTrophies(),
+                isSoloRanked ? null : player.getBrawler().getTrophyChange()
         );
     }
 }
