@@ -1,4 +1,4 @@
 export interface BattleMap {
-  code: string;
   name: string;
+  imageUrl: string | null;
 }

@@ -1,4 +1,4 @@
-import BattleMap from "@/model/BattleMap";
+import {BattleMap} from "@/model/BattleMap";
 import {BattleEventModeType} from "@/model/enums/BattleEventMode";
 
 export interface BattleEvent {
