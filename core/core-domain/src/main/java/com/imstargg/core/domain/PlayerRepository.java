@@ -1,7 +1,7 @@
 package com.imstargg.core.domain;
 
 import com.imstargg.core.domain.brawlstars.Brawler;
-import com.imstargg.core.domain.brawlstars.BrawlerRepository;
+import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.core.enums.SoloRankTier;
@@ -28,14 +28,14 @@ public class PlayerRepository {
     private final PlayerJpaRepository playerJpaRepository;
     private final UnknownPlayerJpaRepository unknownPlayerJpaRepository;
     private final PlayerBrawlerJpaRepository playerBrawlerJpaRepository;
-    private final BrawlerRepository brawlerRepository;
+    private final BrawlerRepositoryWithCache brawlerRepository;
 
     public PlayerRepository(
             Clock clock,
             PlayerJpaRepository playerJpaRepository,
             UnknownPlayerJpaRepository unknownPlayerJpaRepository,
             PlayerBrawlerJpaRepository playerBrawlerJpaRepository,
-            BrawlerRepository brawlerRepository
+            BrawlerRepositoryWithCache brawlerRepository
     ) {
         this.clock = clock;
         this.playerJpaRepository = playerJpaRepository;

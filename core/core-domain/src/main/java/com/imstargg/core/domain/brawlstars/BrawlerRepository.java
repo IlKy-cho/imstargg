@@ -1,10 +1,12 @@
 package com.imstargg.core.domain.brawlstars;
 
-import com.imstargg.core.config.CacheNames;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
+import com.imstargg.core.enums.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlerEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlerGearEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlerGearJpaRepository;
@@ -16,8 +18,6 @@ import com.imstargg.storage.db.core.brawlstars.GearJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.StarPowerEntity;
 import com.imstargg.storage.db.core.brawlstars.StarPowerJpaRepository;
 import jakarta.annotation.Nullable;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Component
-@CacheConfig(cacheNames = CacheNames.BRAWLER)
 public class BrawlerRepository {
 
     private final BrawlerJpaRepository brawlerJpaRepository;
@@ -37,6 +36,7 @@ public class BrawlerRepository {
     private final GearJpaRepository gearJpaRepository;
     private final StarPowerJpaRepository starPowerJpaRepository;
     private final GadgetJpaRepository gadgetJpaRepository;
+    private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
     private final MessageRepository messageRepository;
 
     public BrawlerRepository(
@@ -45,6 +45,7 @@ public class BrawlerRepository {
             GearJpaRepository gearJpaRepository,
             StarPowerJpaRepository starPowerJpaRepository,
             GadgetJpaRepository gadgetJpaRepository,
+            BrawlStarsImageJpaRepository brawlStarsImageJpaRepository,
             MessageRepository messageRepository
     ) {
         this.brawlerJpaRepository = brawlerJpaRepository;
@@ -52,76 +53,40 @@ public class BrawlerRepository {
         this.gearJpaRepository = gearJpaRepository;
         this.starPowerJpaRepository = starPowerJpaRepository;
         this.gadgetJpaRepository = gadgetJpaRepository;
+        this.brawlStarsImageJpaRepository = brawlStarsImageJpaRepository;
         this.messageRepository = messageRepository;
     }
 
-    @Cacheable(key = "'brawlers:v1:' + #language.name() + ':' + #id.value()")
     public Optional<Brawler> find(@Nullable BrawlStarsId id, Language language) {
         if (id == null) {
             return Optional.empty();
         }
 
-        Optional<BrawlerEntity> brawlerEntityOpt = brawlerJpaRepository.findByBrawlStarsId(id.value());
-        if (brawlerEntityOpt.isEmpty()) {
-            return Optional.empty();
-        }
+        return brawlerJpaRepository.findByBrawlStarsId(id.value()).map(brawlerEntity -> {
+                    List<GearEntity> gearEntities = gearJpaRepository.findAllById(
+                            brawlerGearJpaRepository.findAllByBrawlerId(brawlerEntity.getId()).stream()
+                                    .map(BrawlerGearEntity::getGearId)
+                                    .toList()
+                    );
+                    List<StarPowerEntity> starPowerEntities = starPowerJpaRepository.findAllByBrawlerId(brawlerEntity.getId());
+                    List<GadgetEntity> gadgetEntities = gadgetJpaRepository.findAllByBrawlerId(brawlerEntity.getId());
+                    Map<String, MessageCollection> codeToMessageCollection = getCodeToMessageCollection(
+                            brawlerEntity,
+                            gearEntities,
+                            starPowerEntities,
+                            gadgetEntities
+                    );
 
-        BrawlerEntity brawlerEntity = brawlerEntityOpt.get();
-        List<GearEntity> gearEntities = gearJpaRepository.findAllById(
-                brawlerGearJpaRepository.findAllByBrawlerId(brawlerEntity.getId()).stream()
-                        .map(BrawlerGearEntity::getGearId)
-                        .toList()
+                    return mapToBrawler(
+                            brawlerEntity,
+                            gadgetEntities,
+                            gearEntities,
+                            starPowerEntities,
+                            language,
+                            codeToMessageCollection
+                    );
+                }
         );
-        List<StarPowerEntity> starPowerEntities = starPowerJpaRepository.findAllByBrawlerId(brawlerEntity.getId());
-        List<GadgetEntity> gadgetEntities = gadgetJpaRepository.findAllByBrawlerId(brawlerEntity.getId());
-        Map<String, MessageCollection> codeToMessageCollection = getCodeToMessageCollection(
-                List.of(brawlerEntity),
-                gearEntities,
-                starPowerEntities,
-                gadgetEntities
-        );
-
-        return Optional.of(
-                mapToBrawler(
-                        brawlerEntity,
-                        gadgetEntities,
-                        gearEntities,
-                        starPowerEntities,
-                        language,
-                        codeToMessageCollection
-                )
-        );
-    }
-
-    @Cacheable(key = "'brawlers:v1:' + #language.name()")
-    public List<Brawler> findAll(Language language) {
-        List<BrawlerEntity> brawlerEntities = brawlerJpaRepository.findAll();
-        Map<Long, List<BrawlerGearEntity>> brawlerIdToBrawlerGearEntities = brawlerGearJpaRepository.findAll().stream()
-                .collect(Collectors.groupingBy(BrawlerGearEntity::getBrawlerId));
-        Map<Long, GearEntity> idToGearEntities = gearJpaRepository.findAll().stream()
-                .collect(Collectors.toMap(GearEntity::getId, Function.identity()));
-        Map<Long, List<StarPowerEntity>> brawlerIdToStarPowerEntities = starPowerJpaRepository.findAll().stream()
-                .collect(Collectors.groupingBy(StarPowerEntity::getBrawlerId));
-        Map<Long, List<GadgetEntity>> brawlerIdToGadgetEntities = gadgetJpaRepository.findAll().stream()
-                .collect(Collectors.groupingBy(GadgetEntity::getBrawlerId));
-        Map<String, MessageCollection> codeToMessageCollection = getCodeToMessageCollection(
-                brawlerEntities,
-                idToGearEntities.values(),
-                brawlerIdToStarPowerEntities.values().stream().flatMap(List::stream).toList(),
-                brawlerIdToGadgetEntities.values().stream().flatMap(List::stream).toList()
-        );
-
-        return brawlerEntities.stream()
-                .map(brawlerEntity -> mapToBrawler(
-                        brawlerEntity,
-                        brawlerIdToGadgetEntities.get(brawlerEntity.getId()),
-                        brawlerIdToBrawlerGearEntities.get(brawlerEntity.getId()).stream()
-                                .map(brawlerGear -> idToGearEntities.get(brawlerGear.getGearId()))
-                                .toList(),
-                        brawlerIdToStarPowerEntities.get(brawlerEntity.getId()),
-                        language,
-                        codeToMessageCollection
-                )).toList();
     }
 
     private Brawler mapToBrawler(
@@ -144,7 +109,10 @@ public class BrawlerRepository {
                 gearEntities.stream().map(gearEntity ->
                         mapToGear(language, gearEntity, codeToMessageCollection)).toList(),
                 starPowerEntities.stream().map(starPowerEntity ->
-                        mapToStarPower(language, starPowerEntity, codeToMessageCollection)).toList()
+                        mapToStarPower(language, starPowerEntity, codeToMessageCollection)).toList(),
+                brawlStarsImageJpaRepository.findByCode(BrawlStarsImageType.BRAWLER_PROFILE.code(
+                        String.valueOf(brawlerEntity.getBrawlStarsId())
+                )).map(BrawlStarsImageEntity::getUrl).orElse(null)
         );
     }
 
@@ -192,12 +160,12 @@ public class BrawlerRepository {
     }
 
     private Map<String, MessageCollection> getCodeToMessageCollection(
-            Collection<BrawlerEntity> brawlerEntities,
+            BrawlerEntity brawlerEntity,
             Collection<GearEntity> gearEntities,
             Collection<StarPowerEntity> starPowerEntities,
             Collection<GadgetEntity> gadgetEntities) {
         List<String> codes = Stream.of(
-                brawlerEntities.stream().map(BrawlerEntity::getNameMessageCode).toList(),
+                List.of(brawlerEntity.getNameMessageCode()),
                 gearEntities.stream().map(GearEntity::getNameMessageCode).toList(),
                 starPowerEntities.stream().map(StarPowerEntity::getNameMessageCode).toList(),
                 gadgetEntities.stream().map(GadgetEntity::getNameMessageCode).toList()
