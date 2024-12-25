@@ -1,6 +1,9 @@
 import {Player} from "@/model/Player";
-import 'dayjs/locale/ko';
+import Image from "next/image";
+import {BrawlStarsIconSrc, soloRankTierIconSrc} from "@/components/icon";
+import {soloRankTierColor, soloRankTierNumber, SoloRankTierType} from "@/model/enums/SoloRankTier";
 import dayjs from "dayjs";
+import 'dayjs/locale/ko';
 import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.locale('ko');
@@ -10,50 +13,83 @@ type Props = {
   player: Player;
 }
 
-export default async function PlayerProfile({player}: Readonly<Props>) {
+const TrophyIcon = () => (
+  <Image
+    src={BrawlStarsIconSrc.TROPHY}
+    alt="trophy icon"
+    width={20}
+    height={20}
+  />
+);
 
-  return (
-    <div className="p-6 bg-white rounded-lg shadow-sm border border-gray-100">
-      <div className="flex items-start gap-6">
-        <div className="w-24 h-24 relative flex items-center justify-center bg-gray-50 rounded-lg border border-gray-200">
-          <span className="text-gray-600 text-sm">아이콘 ID: {player.iconId}</span>
+const SoloRankTierIcon = ({tier}: { tier: SoloRankTierType }) => (
+  <Image
+    src={soloRankTierIconSrc(tier)}
+    alt="rank tier icon"
+    width={24}
+    height={24}
+  />
+);
+
+const PlayerInfoContainer = ({label, children}: { label: string, children: React.ReactNode }) => (
+  <div className="flex justify-between items-center">
+    <span className="text-zinc-500">{label}</span>
+    {children}
+  </div>
+);
+
+const PlayerInfo = ({player}: Readonly<Props>) => (
+  <div className="p-6 rounded-lg shadow-md border bg-zinc-100 bg-opacity-90 m-2 max-w-screen-sm">
+    <div className="space-y-">
+      <PlayerInfoContainer label="이름">
+        <span>{player.name}</span>
+      </PlayerInfoContainer>
+
+      <PlayerInfoContainer label="태그">
+        <span>{player.tag}</span>
+      </PlayerInfoContainer>
+
+      <PlayerInfoContainer label="클럽 태그">
+        {player.clubTag ?
+          <span>{player.clubTag}</span>
+          : <span className="text-gray-400">❌</span>
+        }
+      </PlayerInfoContainer>
+
+      <PlayerInfoContainer label="트로피">
+        <div className="flex items-center gap-2">
+          <TrophyIcon/>
+          <span className="text-amber-500">{player.trophies.toLocaleString()}</span>
         </div>
+      </PlayerInfoContainer>
 
-        <div className="flex flex-col gap-3">
-          <div>
-            <h2 className="text-2xl font-bold" style={{color: player.nameColor}}>
-              {player.name}
-            </h2>
-            <p className="text-gray-500">#{player.tag}</p>
-          </div>
+      <PlayerInfoContainer label="최고 트로피">
+        <div className="flex items-center gap-2">
+          <TrophyIcon/>
+          <span className="text-amber-500">{player.highestTrophies.toLocaleString()}</span>
+        </div>
+      </PlayerInfoContainer>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div>
-              <p className="text-gray-500 text-sm">트로피</p>
-              <p className="text-lg font-semibold text-amber-500">
-                �� {player.trophies.toLocaleString()}
-              </p>
-            </div>
-            <div>
-              <p className="text-gray-500 text-sm">최고 트로피</p>
-              <p className="text-lg font-semibold text-amber-500">
-                🏆 {player.highestTrophies.toLocaleString()}
-              </p>
-            </div>
-          </div>
-
-          {player.clubTag && (
-            <div>
-              <p className="text-gray-500 text-sm">클럽</p>
-              <p className="text-blue-500 font-medium">#{player.clubTag}</p>
-            </div>
+      <PlayerInfoContainer label="경쟁전">
+        <div className="flex items-center gap-2">
+          <SoloRankTierIcon tier={player.soloRankTier}/>
+          {player.soloRankTier && (
+            <span className={'text-[' + soloRankTierColor(player.soloRankTier) + ']'}>
+              {soloRankTierNumber(player.soloRankTier)}
+            </span>
           )}
-
-          <div className="text-sm text-gray-400">
-            마지막 업데이트: {dayjs(player.updatedAt).fromNow()}
-          </div>
         </div>
+      </PlayerInfoContainer>
+
+      <div className="text-sm text-gray-400">
+        마지막 업데이트: {dayjs(player.updatedAt).fromNow()}
       </div>
     </div>
+  </div>
+);
+
+export default function PlayerProfile({player}: Readonly<Props>) {
+  return (
+    <PlayerInfo player={player}/>
   );
 }
