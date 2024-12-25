@@ -71,7 +71,7 @@ export async function fetchGetBattles(tag: string, page: number = 1, options?: C
 }
 
 export async function fetchGetBrawlers(options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/brawlers`);
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/brawlers`);
   console.log(`Fetch from ${url}`);
   if (!options) {
     return await fetch(url);
@@ -80,6 +80,23 @@ export async function fetchGetBrawlers(options?: CacheOptions): Promise<Response
   return await fetch(url, {
     next: {
       tags: ['brawlers'],
+      revalidate: options.revalidate
+    }
+  });
+}
+
+export async function fetchGetBrawlStarsNews(page: number, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/news`);
+  url.searchParams.append('language', 'KOREAN');
+  url.searchParams.append('page', page.toString());
+  console.log(`Fetch from ${url}`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlstars', 'news', url.searchParams.toString()],
       revalidate: options.revalidate
     }
   });
