@@ -39,15 +39,13 @@ public class BattleRepository {
         this.brawlerRepository = brawlerRepository;
     }
 
-    public List<PlayerBattle> find(Player player, int page) {
+    public Slice<PlayerBattle> find(Player player, int page) {
         PlayerEntity playerEntity = playerJpaRepository.findByBrawlStarsTagAndDeletedFalse(player.tag().value())
                 .orElseThrow(() -> new CoreException("Player not found: " + player.tag()));
-        List<BattleEntity> battleEntities = battleJpaRepository.findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
-                playerEntity.getId(), PageRequest.of(page, PAGE_SIZE));
-
-        return battleEntities.stream()
-                .map(this::mapBattle)
-                .toList();
+        var battleEntities = battleJpaRepository
+                .findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
+                        playerEntity.getId(), PageRequest.of(page, PAGE_SIZE));
+        return new Slice<>(battleEntities.map(this::mapBattle).toList(), battleEntities.hasNext());
     }
 
     private PlayerBattle mapBattle(BattleEntity battleEntity) {
