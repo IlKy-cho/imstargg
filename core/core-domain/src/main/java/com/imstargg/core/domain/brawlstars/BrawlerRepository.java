@@ -17,7 +17,6 @@ import com.imstargg.storage.db.core.brawlstars.GearEntity;
 import com.imstargg.storage.db.core.brawlstars.GearJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.StarPowerEntity;
 import com.imstargg.storage.db.core.brawlstars.StarPowerJpaRepository;
-import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
@@ -57,11 +56,13 @@ public class BrawlerRepository {
         this.messageRepository = messageRepository;
     }
 
-    public Optional<Brawler> find(@Nullable BrawlStarsId id, Language language) {
-        if (id == null) {
-            return Optional.empty();
-        }
+    public List<BrawlStarsId> findAllIds() {
+        return brawlerJpaRepository.findAll().stream()
+                .map(brawlerEntity -> new BrawlStarsId(brawlerEntity.getBrawlStarsId()))
+                .toList();
+    }
 
+    public Optional<Brawler> find(BrawlStarsId id, Language language) {
         return brawlerJpaRepository.findByBrawlStarsId(id.value()).map(brawlerEntity -> {
                     List<GearEntity> gearEntities = gearJpaRepository.findAllById(
                             brawlerGearJpaRepository.findAllByBrawlerId(brawlerEntity.getId()).stream()
