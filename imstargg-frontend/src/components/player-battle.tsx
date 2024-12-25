@@ -23,11 +23,11 @@ export default function PlayerBattle({battle}: PlayerBattleProps) {
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-sm">
-            {battle.teams[0][0].brawler.name || '알 수 없음'}
+            브롤러 이름
           </div>
           <div>
             <div className="text-sm text-gray-600">
-              {dayjs(battle.battleTime).fromNow(true)}
+              {dayjs(battle.battleTime).fromNow()}
             </div>
             <div className="font-medium">
               {battle.event?.map?.name || battle.type}
@@ -59,4 +59,4 @@ export default function PlayerBattle({battle}: PlayerBattleProps) {
       </div>
     </div>
   );
-} 
+}

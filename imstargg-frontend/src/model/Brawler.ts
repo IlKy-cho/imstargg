@@ -14,3 +14,26 @@ export interface Brawler {
   starPowers: StarPower[];
   imageUrl: string | null;
 }
+
+export interface Brawlers {
+  find(id: number): Brawler | null;
+  all(): Brawler[];
+}
+
+export class BrawlersImpl implements Brawlers {
+  private readonly brawlers: Record<number, Brawler>;
+
+  constructor(brawlers: Brawler[]) {
+    this.brawlers = Object.fromEntries(
+      brawlers.map(brawler => [brawler.id, brawler])
+    );
+  }
+
+  find(id: number): Brawler | null {
+    return this.brawlers[id] || null;
+  }
+
+  all(): Brawler[] {
+    return Object.values(this.brawlers);
+  }
+}
