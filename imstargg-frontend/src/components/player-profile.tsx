@@ -1,10 +1,11 @@
 import {Player} from "@/model/Player";
 import Image from "next/image";
 import {BrawlStarsIconSrc, soloRankTierIconSrc} from "@/components/icon";
-import {soloRankTierColor, soloRankTierNumber, SoloRankTierType} from "@/model/enums/SoloRankTier";
+import {soloRankTierNumber, SoloRankTierType} from "@/model/enums/SoloRankTier";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from "dayjs/plugin/relativeTime";
+import {soloRankTierColor} from "@/components/color";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
