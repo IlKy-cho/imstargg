@@ -4,15 +4,19 @@ import {PlayerBattle as IPlayerBattle} from "@/model/PlayerBattle";
 import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import {Brawler, BrawlersImpl} from "@/model/Brawler";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime)
 
-interface PlayerBattleProps {
+type Props = {
   battle: IPlayerBattle;
+  brawlerList: Brawler[];
 }
 
-export default function PlayerBattle({battle}: PlayerBattleProps) {
+export default function PlayerBattle({battle, brawlerList}: Readonly<Props>) {
+  const brawlers = new BrawlersImpl(brawlerList);
+
   return (
     <div
       className={`flex items-center p-4 rounded-lg ${

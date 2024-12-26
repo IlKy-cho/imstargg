@@ -3,7 +3,6 @@ import {BattleEventModeType} from "@/model/enums/BattleEventMode";
 import {BattleResultType} from "@/model/enums/BattleResult";
 import {BattleTypeType} from "@/model/enums/BattleType";
 import {fetchGetBattles} from "@/lib/api/api";
-import {ListResponse} from "@/model/response/ListResponse";
 import {SoloRankTierType} from "@/model/enums/SoloRankTier";
 import {SliceResponse} from "@/model/response/SliceResponse";
 
@@ -11,6 +10,7 @@ import {SliceResponse} from "@/model/response/SliceResponse";
 interface PlayerBattleResponse {
   battleTime: Date;
   event: BattleEventResponse | null;
+  mode: BattleEventModeType;
   type: BattleTypeType;
   result?: BattleResultType;
   duration?: number;

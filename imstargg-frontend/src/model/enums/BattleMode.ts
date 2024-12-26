@@ -1,5 +1,6 @@
 export const BattleMode = {
   NOT_FOUND: 'NOT_FOUND',
+
   KNOCKOUT: 'KNOCKOUT',
   GEM_GRAB: 'GEM_GRAB',
   HEIST: 'HEIST',
@@ -20,6 +21,8 @@ export const BattleMode = {
   PAYLOAD: 'PAYLOAD',
   TAKEDOWN: 'TAKEDOWN',
   HUNTERS: 'HUNTERS',
+  BOT_DROP: 'BOT_DROP',
+  HOLD_THE_TROPHY: 'HOLD_THE_TROPHY',
 } as const;
 
 export type BattleModeType = typeof BattleMode[keyof typeof BattleMode];
