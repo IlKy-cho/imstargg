@@ -29,7 +29,10 @@ export class BrawlersImpl implements Brawlers {
     );
   }
 
-  find(id: number): Brawler | null {
+  find(id: number | null): Brawler | null {
+    if (id === null) {
+      return null;
+    }
     return this.brawlers[id] || null;
   }
 
