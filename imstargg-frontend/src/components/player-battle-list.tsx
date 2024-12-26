@@ -45,6 +45,7 @@ export default function PlayerBattleList({tag, brawlerList}: Readonly<Props>) {
           key={index}
           battle={battle}
           brawlerList={brawlerList}
+          myTag={tag}
         />
       ))}
       <LoadingButton loading={loading} disabled={!hasMore} onClick={fetchBattles} variant='outline'>

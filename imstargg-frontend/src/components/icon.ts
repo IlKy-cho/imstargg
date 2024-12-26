@@ -2,9 +2,13 @@ import {SoloRankTier, SoloRankTierType} from '@/model/enums/SoloRankTier';
 import {BattleMode, BattleModeType} from "@/model/enums/BattleMode";
 import {BattleEventMode, BattleEventModeType} from "@/model/enums/BattleEventMode";
 import {PlayerBattle} from "@/model/PlayerBattle";
+import {BattleType, BattleTypeType} from "@/model/enums/BattleType";
 
 export const BrawlStarsIconSrc = {
-  TROPHY: '/icon_trophy.png',
+  CLUB_LEAGUE_MASTERS: '/icon/icon_club_league_masters.png',
+  FAMILY_FRIENDLY: '/icon/icon_family_friendly.png',
+  RANKED_FRONT: '/icon/icon_ranked_front.png',
+  TROPHY: '/icon/icon_trophy.png',
 } as const;
 
 export const soloRankTierIconSrc = (tier: SoloRankTierType) => {
@@ -16,7 +20,7 @@ export const soloRankTierIconSrc = (tier: SoloRankTierType) => {
     case SoloRankTier.SILVER_1:
     case SoloRankTier.SILVER_2:
     case SoloRankTier.SILVER_3:
-      return '/icon_ranked_silver.png';
+      return '/icon_ranke d_silver.png';
     case SoloRankTier.GOLD_1:
     case SoloRankTier.GOLD_2:
     case SoloRankTier.GOLD_3:
@@ -200,7 +204,22 @@ export const battleEventModeIconSrc = (mode: BattleEventModeType) => {
   }
 }
 
-const playerBattleIconSrc = (battle: PlayerBattle)=> {
+export const playerBattleIconSrc = (battle: PlayerBattle)=> {
   const eventModeIcon = battle.event ? battleEventModeIconSrc(battle.event.mode) : null;
   return eventModeIcon || battleModeIconSrc(battle.mode);
+}
+
+export const battleTypeIconSrc = (type: BattleTypeType) => {
+  switch (type) {
+    case BattleType.NOT_FOUND:
+      return null;
+    case BattleType.RANKED:
+      return BrawlStarsIconSrc.TROPHY;
+    case BattleType.SOLO_RANKED:
+      return BrawlStarsIconSrc.RANKED_FRONT;
+    case BattleType.FRIENDLY:
+      return BrawlStarsIconSrc.FAMILY_FRIENDLY;
+    case BattleType.CHALLENGE:
+      return null;
+  }
 }

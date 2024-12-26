@@ -5,12 +5,13 @@ import {BattleTypeType} from "@/model/enums/BattleType";
 import {fetchGetBattles} from "@/lib/api/api";
 import {SoloRankTierType} from "@/model/enums/SoloRankTier";
 import {SliceResponse} from "@/model/response/SliceResponse";
+import {BattleModeType} from "@/model/enums/BattleMode";
 
 
 interface PlayerBattleResponse {
   battleTime: Date;
   event: BattleEventResponse | null;
-  mode: BattleEventModeType;
+  mode: BattleModeType;
   type: BattleTypeType;
   result?: BattleResultType;
   duration?: number;
@@ -49,7 +50,7 @@ export async function getBattles(tag: string, page: number = 1): Promise<SliceRe
     return {
       hasNext: slice.hasNext,
       content: slice.content.map(battle => ({
-          ...battle,
+          battleTime: battle.battleTime,
           event: battle.event ? {
             id: battle.event.id,
             mode: battle.event.mode,
@@ -58,11 +59,23 @@ export async function getBattles(tag: string, page: number = 1): Promise<SliceRe
               imageUrl: battle.event.mapImageUrl
             }
           } : null,
+          mode: battle.mode,
+          type: battle.type,
+          result: battle.result,
+          duration: battle.duration,
+          rank: battle.rank,
+          trophyChange: battle.trophyChange,
+          starPlayerTag: battle.starPlayerTag,
           teams: battle.teams.map(team =>
             team.map(player => ({
-              ...player,
+              tag: player.tag,
+              name: player.name,
+              soloRankTier: player.soloRankTier,
               brawler: {
-                ...player.brawler,
+                id: player.brawler.id,
+                power: player.brawler.power,
+                trophies: player.brawler.trophies,
+                trophyChange: player.brawler.trophyChange
               }
             }))
           ),
