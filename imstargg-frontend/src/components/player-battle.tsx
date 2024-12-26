@@ -129,25 +129,6 @@ const BattleEventMapImage = ({battle}: { battle: IPlayerBattle }) => {
   );
 }
 
-const BattleEventInfo = ({battle}: { battle: IPlayerBattle }) => {
-  const modeTitle = playerBattleModeTitle(battle);
-  const mapName = battle.event ? battle.event.map.name : '알 수 없음';
-  return (
-    <div className="flex flex-col items-center">
-      <div className="text-center">
-        <div className="flex items-center justify-center gap-1">
-          <BattleModeIcon battle={battle}/>
-          <span>{modeTitle}</span>
-        </div>
-        <div className="text-sm text-zinc-600">
-          <span>{mapName}</span>
-        </div>
-      </div>
-      <BattleEventMapImage battle={battle}/>
-    </div>
-  );
-}
-
 const battleBackgroundColor = (battle: IPlayerBattle) => {
   if (battle.result) {
     switch (battle.result) {
@@ -256,11 +237,15 @@ const BattleTeamPlayer = (
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex w-full justify-between">
-        <PowerLevel value={player.brawler.power}/>
-        <PlayerTier player={player}/>
+      <div className="relative">
+        <div className="absolute top-0 w-full flex justify-between z-10 bg-gray-100/50">
+          <PowerLevel value={player.brawler.power}/>
+          <span className="px-1">
+            <PlayerTier player={player}/>
+          </span>
+        </div>
+        <BrawlerProfileImage brawler={brawler} size={20}/>
       </div>
-      <BrawlerProfileImage brawler={brawler} size={20}/>
       <div className="w-full">
         <div className="flex gap-1">
           <Link
