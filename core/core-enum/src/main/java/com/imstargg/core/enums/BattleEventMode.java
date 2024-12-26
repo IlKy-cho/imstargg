@@ -1,58 +1,69 @@
 package com.imstargg.core.enums;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public enum BattleEventMode {
 
     NOT_FOUND("notFound"),
 
     SOLO_SHOWDOWN("soloShowdown"),
     DUO_SHOWDOWN("duoShowdown"),
-    HEIST("heist"),
-    BOUNTY("bounty"),
-    SIEGE("siege"),
-    GEM_GRAB("gemGrab"),
-    BRAWL_BALL("brawlBall"),
+    TRIO_SHOWDOWN("trioShowdown"),
+    BASKET_BRAWL("basketBrawl"),
     BIG_GAME("bigGame"),
     BOSS_FIGHT("bossFight"),
-    ROBO_RUMBLE("roboRumble"),
-    TAKE_DOWN("takedown"),
-    LONE_STAR("loneStar"),
-    PRESENT_PLUNDER("presentPlunder"),
+    BOT_DROP("botDrop"),
+    BOUNTY("bounty"),
+    BRAWL_BALL("brawlBall"),
+    BRAWL_BALL_5V5("brawlBall5V5"),
+    DUELS("duels"),
+    GEM_GRAB("gemGrab"),
+    GEM_GRAB_5V5("gemGrab5V5"),
     HOT_ZONE("hotZone"),
-    SUPER_CITY_RAMPAGE("superCityRampage"),
+    HUNTERS("hunters"),
+    HEIST("heist"),
+    JELLYFISHING("jellyfishing"),
+    SIEGE("siege"),
     KNOCKOUT("knockout"),
+    KNOCKOUT_5V5("knockout5V5"),
+    PAINT_BRAWL("paintBrawl"),
+    PAYLOAD("payload"),
+    PRESENT_PLUNDER("presentPlunder"),
+    ROBO_RUMBLE("roboRumble"),
+    TAKEDOWN("takedown"),
+    TROPHY_ESCAPE("trophyEscape"),
     VOLLEY_BRAWL("volleyBrawl"),
-    BASKET_BRAWL("basketBrawl"),
+    WIPEOUT("wipeout"),
+    WIPEOUT_5V5("wipeout5V5"),
+    LONE_STAR("loneStar"),
+    SUPER_CITY_RAMPAGE("superCityRampage"),
     HOLD_THE_TROPHY("holdTheTrophy"),
     TROPHY_THIEVES("trophyThieves"),
-    DUELS("duels"),
-    WIPEOUT("wipeout"),
-    PAYLOAD("payload"),
-    BOT_DROP("botDrop"),
-    HUNTERS("hunters"),
     LAST_STAND("lastStand"),
     SNOWTEL_THIEVES("snowtelThieves"),
     PUMPKIN_PLUNDER("pumpkinPlunder"),
-    TROPHY_ESCAPE("trophyEscape"),
-    WIPEOUT_5V5("wipeout5V5"),
-    KNOCKOUT_5V5("knockout5V5"),
-    GEM_GRAB_5V5("gemGrab5V5"),
-    BRAWL_BALL_5V5("brawlBall5V5"),
     GODZILLA_CITY_SMASH("godzillaCitySmash"),
-    PAINT_BRAWL("paintBrawl"),
-    TRIO_SHOWDOWN("trioShowdown"),
     ZOMBIE_PLUNDER("zombiePlunder"),
-    JELLYFISHING("jellyfishing"),
-    TAKEDOWN("takedown"),
     UNKNOWN("unknown"),
     ;
 
-    private final String name;
-
-    BattleEventMode(String name) {
-        this.name = name;
+    static {
+        Set<String> codes = new HashSet<>();
+        for (BattleEventMode mode : values()) {
+            if (!codes.add(mode.getCode())) {
+                throw new IllegalStateException("Duplicate code: " + mode.getCode());
+            }
+        }
     }
 
-    public String getName() {
-        return name;
+    private final String code;
+
+    BattleEventMode(String code) {
+        this.code = code;
+    }
+
+    public String getCode() {
+        return code;
     }
 }

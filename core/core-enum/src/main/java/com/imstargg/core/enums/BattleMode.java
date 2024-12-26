@@ -1,7 +1,9 @@
 package com.imstargg.core.enums;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -29,7 +31,18 @@ public enum BattleMode {
     PAYLOAD("payload"),
     TAKEDOWN("takedown"),
     HUNTERS("hunters"),
+    BOT_DROP("botDrop"),
+    HOLD_THE_TROPHY("holdTheTrophy"),
     ;
+
+    static {
+        Set<String> codes = new HashSet<>();
+        for (BattleMode mode : values()) {
+            if (!codes.add(mode.getCode())) {
+                throw new IllegalStateException("Duplicate code: " + mode.getCode());
+            }
+        }
+    }
 
     private final String code;
 

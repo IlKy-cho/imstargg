@@ -174,7 +174,7 @@ public class BattleCollectionEntityFixture {
         if (event == null) {
             event = new BattleCollectionEntityEvent(
                     fillKey,
-                    BattleEventMode.GEM_GRAB.getName(),
+                    BattleEventMode.GEM_GRAB.getCode(),
                     "map-" + fillKey
             );
         }
