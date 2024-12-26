@@ -67,6 +67,7 @@ const ModeIconSrc = {
   HOT_ZONE: '/mode/핫존.webp',
   JELLYFISHING: '/mode/해파리사냥.webp',
   HUNTERS: '/mode/헌터스.webp',
+  TRIO_SHOWDOWN: '/mode/트리오 쇼다운.webp',
 } as const;
 
 export const battleModeIconSrc = (mode: BattleModeType) => {
@@ -127,7 +128,7 @@ export const battleEventModeIconSrc = (mode: BattleEventModeType) => {
     case BattleEventMode.DUO_SHOWDOWN:
       return ModeIconSrc.DUO_SHOWDOWN;
     case BattleEventMode.TRIO_SHOWDOWN:
-      return ModeIconSrc.DUO_SHOWDOWN;
+      return ModeIconSrc.TRIO_SHOWDOWN;
     case BattleEventMode.BASKET_BRAWL:
       return ModeIconSrc.BASKET_BRAWL;
     case BattleEventMode.BIG_GAME:
