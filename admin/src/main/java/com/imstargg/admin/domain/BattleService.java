@@ -128,7 +128,7 @@ public class BattleService {
                 .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
                         "맵이 존재하지 않습니다. code: " + newBattleEvent.mapCode()));
         BattleEventMode battleEventMode = Arrays.stream(BattleEventMode.values())
-                .filter(mode -> mode.getName().equals(battle.getEvent().getMode()))
+                .filter(mode -> mode.getCode().equals(battle.getEvent().getMode()))
                 .findAny()
                 .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
                         "모드가 존재하지 않습니다. mode: " + battle.getEvent().getMode()));

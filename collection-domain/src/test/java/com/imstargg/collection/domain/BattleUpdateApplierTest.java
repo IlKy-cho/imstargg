@@ -99,7 +99,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.KNOCKOUT.getName(),
+                                BattleEventMode.KNOCKOUT.getCode(),
                                 BattleType.SOLO_RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 117,
@@ -195,7 +195,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.KNOCKOUT.getName(),
+                                BattleEventMode.KNOCKOUT.getCode(),
                                 BattleType.SOLO_RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 117,
@@ -291,7 +291,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.KNOCKOUT.getName(),
+                                BattleEventMode.KNOCKOUT.getCode(),
                                 BattleType.SOLO_RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 117,
@@ -408,7 +408,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.KNOCKOUT.getName(),
+                                BattleEventMode.KNOCKOUT.getCode(),
                                 BattleType.SOLO_RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 117,
@@ -529,7 +529,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.DUO_SHOWDOWN.getName(),
+                                BattleEventMode.DUO_SHOWDOWN.getCode(),
                                 BattleType.RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 117,
@@ -703,7 +703,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.SOLO_SHOWDOWN.getName(),
+                                BattleEventMode.SOLO_SHOWDOWN.getCode(),
                                 BattleType.RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 117,
@@ -867,7 +867,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.SOLO_SHOWDOWN.getName(),
+                                BattleEventMode.SOLO_SHOWDOWN.getCode(),
                                 BattleType.RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 117,
@@ -968,7 +968,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.TRIO_SHOWDOWN.getName(),
+                                BattleEventMode.TRIO_SHOWDOWN.getCode(),
                                 BattleType.RANKED.getCode(),
                                 null,
                                 null,
@@ -1165,7 +1165,7 @@ class BattleUpdateApplierTest {
                                 BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.map()
                         ),
                         new BattleResultResponse(
-                                BattleEventMode.KNOCKOUT.getName(),
+                                BattleEventMode.KNOCKOUT.getCode(),
                                 BattleType.RANKED.getCode(),
                                 BattleResult.VICTORY.getCode(),
                                 144,

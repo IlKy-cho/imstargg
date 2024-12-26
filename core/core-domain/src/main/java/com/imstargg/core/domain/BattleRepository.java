@@ -2,6 +2,7 @@ package com.imstargg.core.domain;
 
 import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
 import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
+import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Language;
@@ -57,6 +58,7 @@ public class BattleRepository {
                                         ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
                                 Language.KOREAN)
                         .orElse(null),
+                BattleMode.find(battleEntity.getMode()),
                 battleType,
                 battleEntity.getResult() != null ? BattleResult.map(battleEntity.getResult()) : null,
                 battleEntity.getDuration(),
