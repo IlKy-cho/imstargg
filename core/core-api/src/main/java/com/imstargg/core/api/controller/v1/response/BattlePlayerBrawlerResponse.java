@@ -6,9 +6,9 @@ import jakarta.annotation.Nullable;
 
 public record BattlePlayerBrawlerResponse(
         @Nullable Long id,
-        int brawlerPower,
-        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer brawlerTrophies,
-        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer brawlerTrophyChange
+        int power,
+        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer trophies,
+        @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer trophyChange
 ) {
 
     public static BattlePlayerBrawlerResponse from(BattlePlayerBrawler brawler) {
