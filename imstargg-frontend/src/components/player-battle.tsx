@@ -87,9 +87,7 @@ const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
           <span>{mapName}</span>
         </div>
       </div>
-      <div>
-        {/*<BattleEventMapImage battleEvent={battle.event} size={16}/>*/}
-      </div>
+      <BattleEventMapImage battleEvent={battle.event}/>
     </div>
   );
 }

@@ -41,7 +41,7 @@ export default function BrawlerProfileImage({brawler, className, size}: Readonly
             className="h-full w-full object-cover rounded-[1px]"
           />
           :
-          <div className="flex items-center justify-center text-gray-500 text-sm">
+          <div className="flex items-center justify-center h-full w-full bg-gray-200 text-gray-500 text-sm">
             이미지 없음
           </div>
         }
