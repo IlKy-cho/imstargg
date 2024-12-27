@@ -8,7 +8,7 @@ import {Brawler, BrawlersImpl} from "@/model/Brawler";
 import {battleResultTitle, battleTypeTitle, playerBattleModeTitle} from "./title";
 import {BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
-import {battleTypeIconSrc, BrawlStarsIconSrc, playerBattleIconSrc} from "@/components/icon";
+import {battleTypeIconSrc, playerBattleIconSrc} from "@/components/icon";
 import Image from "next/image";
 import {Separator} from "@/components/ui/separator";
 import {BattlePlayer} from "@/model/BattlePlayer";
@@ -182,7 +182,8 @@ const BattleTeamPlayer = (
     starPlayerTag: string | null
   }
 ) => {
-  const nameStyle = player.tag === myTag ? 'font-bold text-black' : 'text-zinc-700';
+  const nameStyle = player.tag === myTag
+    ? 'font-bold text-zinc-800' : 'text-zinc-500';
 
   return (
     <div className="flex flex-col items-center">

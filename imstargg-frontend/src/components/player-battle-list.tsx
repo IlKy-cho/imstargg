@@ -39,7 +39,7 @@ export default function PlayerBattleList({tag, brawlerList}: Readonly<Props>) {
   }, []);
 
   return (
-    <div className="flex flex-col gap-2 p-4">
+    <div className="flex flex-col gap-2 p-1">
       {battles.map((battle, index) => (
         <PlayerBattle
           key={index}
