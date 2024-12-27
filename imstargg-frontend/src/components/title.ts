@@ -1,165 +1,165 @@
-import {BattleResult, BattleResultType} from "@/model/enums/BattleResult";
-import {BattleType, BattleTypeType} from "@/model/enums/BattleType";
-import {BattleEventMode, BattleEventModeType} from "@/model/enums/BattleEventMode";
-import {BattleMode, BattleModeType} from "@/model/enums/BattleMode";
+import {BattleResultValue, BattleResult} from "@/model/enums/BattleResult";
+import {BattleTypeValue, BattleType} from "@/model/enums/BattleType";
+import {BattleEventModeValue, BattleEventMode} from "@/model/enums/BattleEventMode";
+import {BattleModeValue, BattleMode} from "@/model/enums/BattleMode";
 import { PlayerBattle } from "@/model/PlayerBattle";
 
-export const battleResultTitle = (result: BattleResultType) => {
+export const battleResultTitle = (result: BattleResult) => {
   switch (result) {
-    case BattleResult.VICTORY:
+    case BattleResultValue.VICTORY:
       return '승리';
-    case BattleResult.DEFEAT:
+    case BattleResultValue.DEFEAT:
       return '패배';
-    case BattleResult.DRAW:
+    case BattleResultValue.DRAW:
       return '무승부';
   }
 }
 
-export const battleTypeTitle = (type: BattleTypeType) => {
+export const battleTypeTitle = (type: BattleType) => {
   switch (type) {
-    case BattleType.RANKED:
+    case BattleTypeValue.RANKED:
       return '트로피전';
-    case BattleType.SOLO_RANKED:
+    case BattleTypeValue.SOLO_RANKED:
       return '경쟁전';
-    case BattleType.FRIENDLY:
+    case BattleTypeValue.FRIENDLY:
       return '친선전';
-    case BattleType.CHALLENGE:
+    case BattleTypeValue.CHALLENGE:
       return '챌린지';
     default:
       return null;
   }
 }
 
-export const battleEventModeTitle = (mode: BattleEventModeType) => {
+export const battleEventModeTitle = (mode: BattleEventMode) => {
   switch (mode) {
-    case BattleEventMode.NOT_FOUND:
+    case BattleEventModeValue.NOT_FOUND:
       return '알 수 없음';
-    case BattleEventMode.UNKNOWN:
+    case BattleEventModeValue.UNKNOWN:
       return '알 수 없음';
-    case BattleEventMode.SOLO_SHOWDOWN:
+    case BattleEventModeValue.SOLO_SHOWDOWN:
       return '솔로 쇼다운';
-    case BattleEventMode.DUO_SHOWDOWN:
+    case BattleEventModeValue.DUO_SHOWDOWN:
       return '듀오 쇼다운';
-    case BattleEventMode.TRIO_SHOWDOWN:
+    case BattleEventModeValue.TRIO_SHOWDOWN:
       return '트리오 쇼다운';
-    case BattleEventMode.BASKET_BRAWL:
+    case BattleEventModeValue.BASKET_BRAWL:
       return '바스켓 브롤';
-    case BattleEventMode.BIG_GAME:
+    case BattleEventModeValue.BIG_GAME:
       return '빅 게임';
-    case BattleEventMode.BOSS_FIGHT:
+    case BattleEventModeValue.BOSS_FIGHT:
       return '보스전';
-    case BattleEventMode.BOT_DROP:
+    case BattleEventModeValue.BOT_DROP:
       return '봇드롭';
-    case BattleEventMode.BOUNTY:
+    case BattleEventModeValue.BOUNTY:
       return '바운티';
-    case BattleEventMode.BRAWL_BALL:
+    case BattleEventModeValue.BRAWL_BALL:
       return '브롤볼';
-    case BattleEventMode.BRAWL_BALL_5V5:
+    case BattleEventModeValue.BRAWL_BALL_5V5:
       return '브롤볼 5VS5';
-    case BattleEventMode.DUELS:
+    case BattleEventModeValue.DUELS:
       return '듀얼';
-    case BattleEventMode.GEM_GRAB:
+    case BattleEventModeValue.GEM_GRAB:
       return '젬그랩';
-    case BattleEventMode.GEM_GRAB_5V5:
+    case BattleEventModeValue.GEM_GRAB_5V5:
       return '젬그랩 5VS5';
-    case BattleEventMode.HOT_ZONE:
+    case BattleEventModeValue.HOT_ZONE:
       return '핫존';
-    case BattleEventMode.HUNTERS:
+    case BattleEventModeValue.HUNTERS:
       return '헌터즈';
-    case BattleEventMode.HEIST:
+    case BattleEventModeValue.HEIST:
       return '하이스트';
-    case BattleEventMode.JELLYFISHING:
+    case BattleEventModeValue.JELLYFISHING:
       return '해파리사냥'
-    case BattleEventMode.KNOCKOUT:
+    case BattleEventModeValue.KNOCKOUT:
       return '녹아웃';
-    case BattleEventMode.KNOCKOUT_5V5:
+    case BattleEventModeValue.KNOCKOUT_5V5:
       return '녹아웃 5VS5';
-    case BattleEventMode.PAINT_BRAWL:
+    case BattleEventModeValue.PAINT_BRAWL:
       return '페인트 브롤';
-    case BattleEventMode.PAYLOAD:
+    case BattleEventModeValue.PAYLOAD:
       return '페이로드';
-    case BattleEventMode.PRESENT_PLUNDER:
+    case BattleEventModeValue.PRESENT_PLUNDER:
       return '선물 훔치기';
-    case BattleEventMode.ROBO_RUMBLE:
+    case BattleEventModeValue.ROBO_RUMBLE:
       return '로보럼블';
-    case BattleEventMode.TAKEDOWN:
+    case BattleEventModeValue.TAKEDOWN:
       return '테이크다운';
-    case BattleEventMode.TROPHY_ESCAPE:
+    case BattleEventModeValue.TROPHY_ESCAPE:
       return '트로피 탈출';
-    case BattleEventMode.VOLLEY_BRAWL:
+    case BattleEventModeValue.VOLLEY_BRAWL:
       return '발리 브롤';
-    case BattleEventMode.WIPEOUT:
+    case BattleEventModeValue.WIPEOUT:
       return '클린 아웃';
-    case BattleEventMode.WIPEOUT_5V5:
+    case BattleEventModeValue.WIPEOUT_5V5:
       return '클린 아웃 5VS5';
-    case BattleEventMode.LONE_STAR:
+    case BattleEventModeValue.LONE_STAR:
       return '론스타';
-    case BattleEventMode.SUPER_CITY_RAMPAGE:
+    case BattleEventModeValue.SUPER_CITY_RAMPAGE:
       return '슈퍼시티 램피지';
-    case BattleEventMode.HOLD_THE_TROPHY:
+    case BattleEventModeValue.HOLD_THE_TROPHY:
       return '트로피를 잡아라'
-    case BattleEventMode.TROPHY_THIEVES:
+    case BattleEventModeValue.TROPHY_THIEVES:
       return '트로피 도둑';
-    case BattleEventMode.LAST_STAND:
+    case BattleEventModeValue.LAST_STAND:
       return '최후의 저항';
-    case BattleEventMode.SNOWTEL_THIEVES:
+    case BattleEventModeValue.SNOWTEL_THIEVES:
       return '스노텔 도둑';
-    case BattleEventMode.PUMPKIN_PLUNDER:
+    case BattleEventModeValue.PUMPKIN_PLUNDER:
       return '호박 훔치기';
-    case BattleEventMode.GODZILLA_CITY_SMASH:
+    case BattleEventModeValue.GODZILLA_CITY_SMASH:
       return '고질라 시티 스매시';
-    case BattleEventMode.ZOMBIE_PLUNDER:
+    case BattleEventModeValue.ZOMBIE_PLUNDER:
       return '좀비 훔치기';
   }
 }
 
-export const battleModeTitle = (mode: BattleModeType) => {
+export const battleModeTitle = (mode: BattleMode) => {
   switch (mode) {
-    case BattleMode.NOT_FOUND:
+    case BattleModeValue.NOT_FOUND:
       return '알 수 없음';
-    case BattleMode.KNOCKOUT:
+    case BattleModeValue.KNOCKOUT:
       return '녹아웃';
-    case BattleMode.GEM_GRAB:
+    case BattleModeValue.GEM_GRAB:
       return '젬그랩';
-    case BattleMode.HEIST:
+    case BattleModeValue.HEIST:
       return '하이스트';
-    case BattleMode.HOT_ZONE:
+    case BattleModeValue.HOT_ZONE:
       return '핫존';
-    case BattleMode.SIEGE:
+    case BattleModeValue.SIEGE:
       return '시즈';
-    case BattleMode.BOUNTY:
+    case BattleModeValue.BOUNTY:
       return '바운티';
-    case BattleMode.BRAWL_BALL:
+    case BattleModeValue.BRAWL_BALL:
       return '브롤볼';
-    case BattleMode.DUELS:
+    case BattleModeValue.DUELS:
       return '듀얼';
-    case BattleMode.SOLO_SHOWDOWN:
+    case BattleModeValue.SOLO_SHOWDOWN:
       return '솔로 쇼다운';
-    case BattleMode.DUO_SHOWDOWN:
+    case BattleModeValue.DUO_SHOWDOWN:
       return '듀오 쇼다운';
-    case BattleMode.WIPEOUT:
+    case BattleModeValue.WIPEOUT:
       return '클린 아웃';
-    case BattleMode.VOLLEY_BRAWL:
+    case BattleModeValue.VOLLEY_BRAWL:
       return '발리 브롤';
-    case BattleMode.TROPHY_THIEVES:
+    case BattleModeValue.TROPHY_THIEVES:
       return '트로피 도둑';
-    case BattleMode.BOSS_FIGHT:
+    case BattleModeValue.BOSS_FIGHT:
       return '보스전';
-    case BattleMode.BIG_GAME:
+    case BattleModeValue.BIG_GAME:
       return '빅 게임';
-    case BattleMode.BASKET_BRAWL:
+    case BattleModeValue.BASKET_BRAWL:
       return '바스켓 브롤';
-    case BattleMode.ROBO_RUMBLE:
+    case BattleModeValue.ROBO_RUMBLE:
       return '로보럼블';
-    case BattleMode.PAYLOAD:
+    case BattleModeValue.PAYLOAD:
       return '페이로드';
-    case BattleMode.TAKEDOWN:
+    case BattleModeValue.TAKEDOWN:
       return '테이크다운';
-    case BattleMode.HUNTERS:
+    case BattleModeValue.HUNTERS:
       return '헌터즈';
-    case BattleMode.BOT_DROP:
+    case BattleModeValue.BOT_DROP:
       return '봇드롭';
-    case BattleMode.HOLD_THE_TROPHY:
+    case BattleModeValue.HOLD_THE_TROPHY:
       return '트로피를 잡아라';
   }
 }

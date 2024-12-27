@@ -1,4 +1,4 @@
-export const BrawlerRole = {
+export const BrawlerRoleValue = {
   TANK: 'TANK',
   ASSASSIN: 'ASSASSIN',
   SUPPORT: 'SUPPORT',
@@ -9,6 +9,6 @@ export const BrawlerRole = {
 
 } as const;
 
-export type BrawlerRoleType = typeof BrawlerRole[keyof typeof BrawlerRole];
+export type BrawlerRole = typeof BrawlerRoleValue[keyof typeof BrawlerRoleValue];
 
-export const BrawlerRoleValues = Object.keys(BrawlerRole) as BrawlerRoleType[];
+export const BrawlerRoleValues = Object.keys(BrawlerRoleValue) as BrawlerRole[];

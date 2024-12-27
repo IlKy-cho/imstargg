@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Player } from "@/model/Player";
 import { useRouter } from "next/navigation";
 import { BrawlStarsIconSrc, soloRankTierIconSrc } from "@/components/icon";
-import { SoloRankTier, soloRankTierNumber } from "@/model/enums/SoloRankTier";
+import { SoloRankTierValue, soloRankTierNumber } from "@/model/enums/SoloRankTier";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -18,7 +18,7 @@ interface SearchedPlayerProps {
 
 export default function SearchedPlayer({ player }: SearchedPlayerProps) {
   const router = useRouter();
-  console.log(`text-[${soloRankTierColor(SoloRankTier.BRONZE_1)}]`);
+  console.log(`text-[${soloRankTierColor(SoloRankTierValue.BRONZE_1)}]`);
 
   return (
     <div

@@ -1,4 +1,4 @@
-export const SoloRankTier = {
+export const SoloRankTierValue = {
   BRONZE_1: 'BRONZE_1',
   BRONZE_2: 'BRONZE_2',
   BRONZE_3: 'BRONZE_3',
@@ -20,30 +20,30 @@ export const SoloRankTier = {
   MASTER: 'MASTER',
 } as const;
 
-export type SoloRankTierType = typeof SoloRankTier[keyof typeof SoloRankTier];
+export type SoloRankTier = typeof SoloRankTierValue[keyof typeof SoloRankTierValue];
 
-export const soloRankTierNumber = (tier: SoloRankTierType) => {
+export const soloRankTierNumber = (tier: SoloRankTier) => {
   switch (tier) {
-    case SoloRankTier.BRONZE_1:
-    case SoloRankTier.SILVER_1:
-    case SoloRankTier.GOLD_1:
-    case SoloRankTier.DIAMOND_1:
-    case SoloRankTier.MYTHIC_1:
-    case SoloRankTier.LEGENDARY_1:
+    case SoloRankTierValue.BRONZE_1:
+    case SoloRankTierValue.SILVER_1:
+    case SoloRankTierValue.GOLD_1:
+    case SoloRankTierValue.DIAMOND_1:
+    case SoloRankTierValue.MYTHIC_1:
+    case SoloRankTierValue.LEGENDARY_1:
       return 'I';
-    case SoloRankTier.BRONZE_2:
-    case SoloRankTier.SILVER_2:
-    case SoloRankTier.GOLD_2:
-    case SoloRankTier.DIAMOND_2:
-    case SoloRankTier.MYTHIC_2:
-    case SoloRankTier.LEGENDARY_2:
+    case SoloRankTierValue.BRONZE_2:
+    case SoloRankTierValue.SILVER_2:
+    case SoloRankTierValue.GOLD_2:
+    case SoloRankTierValue.DIAMOND_2:
+    case SoloRankTierValue.MYTHIC_2:
+    case SoloRankTierValue.LEGENDARY_2:
       return 'II';
-    case SoloRankTier.BRONZE_3:
-    case SoloRankTier.SILVER_3:
-    case SoloRankTier.GOLD_3:
-    case SoloRankTier.DIAMOND_3:
-    case SoloRankTier.MYTHIC_3:
-    case SoloRankTier.LEGENDARY_3:
+    case SoloRankTierValue.BRONZE_3:
+    case SoloRankTierValue.SILVER_3:
+    case SoloRankTierValue.GOLD_3:
+    case SoloRankTierValue.DIAMOND_3:
+    case SoloRankTierValue.MYTHIC_3:
+    case SoloRankTierValue.LEGENDARY_3:
       return 'III';
     default:
       return null;

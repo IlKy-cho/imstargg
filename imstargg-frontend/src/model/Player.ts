@@ -1,4 +1,4 @@
-import { SoloRankTierType } from "./enums/SoloRankTier";
+import { SoloRankTier } from "./enums/SoloRankTier";
 
 export interface Player {
   tag: string;
@@ -7,7 +7,7 @@ export interface Player {
   iconId: number;
   trophies: number;
   highestTrophies: number;
-  soloRankTier: SoloRankTierType;
+  soloRankTier: SoloRankTier;
   clubTag: string | null;
   updatedAt: Date;
 }
