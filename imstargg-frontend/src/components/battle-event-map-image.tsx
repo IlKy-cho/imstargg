@@ -34,8 +34,8 @@ export default function BattleEventMapImage({battleEvent, className, size}: Read
         <Image
           src={mapIconSrc}
           alt={`${battleEvent?.map.name} 이미지`}
-          width={100}
-          height={100}
+          width={200}
+          height={200}
           className="h-full w-auto object-contain"
         />
         :

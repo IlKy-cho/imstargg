@@ -1,11 +1,10 @@
 import {Player} from "@/model/Player";
 import Image from "next/image";
-import {BrawlStarsIconSrc, soloRankTierIconSrc} from "@/components/icon";
-import {soloRankTierNumber, SoloRankTier} from "@/model/enums/SoloRankTier";
+import {BrawlStarsIconSrc} from "@/components/icon";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from "dayjs/plugin/relativeTime";
-import {soloRankTierColor} from "@/components/color";
+import SoloRankTier from "@/components/solo-rank-tier";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -20,15 +19,6 @@ const TrophyIcon = () => (
     alt="trophy icon"
     width={20}
     height={20}
-  />
-);
-
-const SoloRankTierIcon = ({tier}: { tier: SoloRankTier }) => (
-  <Image
-    src={soloRankTierIconSrc(tier)}
-    alt="rank tier icon"
-    width={24}
-    height={24}
   />
 );
 
@@ -72,14 +62,10 @@ const PlayerInfo = ({player}: Readonly<Props>) => (
       </PlayerInfoContainer>
 
       <PlayerInfoContainer label="경쟁전">
-        <div className="flex items-center gap-2">
-          <SoloRankTierIcon tier={player.soloRankTier}/>
-          {player.soloRankTier && (
-            <span className={'text-[' + soloRankTierColor(player.soloRankTier) + ']'}>
-              {soloRankTierNumber(player.soloRankTier)}
-            </span>
-          )}
-        </div>
+        {player.soloRankTier ?
+          <SoloRankTier tier={player.soloRankTier}/>
+          : <span className="text-gray-400">❓</span>
+        }
       </PlayerInfoContainer>
 
       <div className="text-sm text-gray-400">
