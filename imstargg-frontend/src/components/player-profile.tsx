@@ -1,7 +1,7 @@
 import {Player} from "@/model/Player";
 import Image from "next/image";
 import {BrawlStarsIconSrc, soloRankTierIconSrc} from "@/components/icon";
-import {soloRankTierNumber, SoloRankTierType} from "@/model/enums/SoloRankTier";
+import {soloRankTierNumber, SoloRankTier} from "@/model/enums/SoloRankTier";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -23,7 +23,7 @@ const TrophyIcon = () => (
   />
 );
 
-const SoloRankTierIcon = ({tier}: { tier: SoloRankTierType }) => (
+const SoloRankTierIcon = ({tier}: { tier: SoloRankTier }) => (
   <Image
     src={soloRankTierIconSrc(tier)}
     alt="rank tier icon"

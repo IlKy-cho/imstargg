@@ -1,19 +1,19 @@
 import {PlayerBattle} from "@/model/PlayerBattle";
-import {BattleEventModeType} from "@/model/enums/BattleEventMode";
-import {BattleResultType} from "@/model/enums/BattleResult";
-import {BattleTypeType} from "@/model/enums/BattleType";
+import {BattleEventMode} from "@/model/enums/BattleEventMode";
+import {BattleResult} from "@/model/enums/BattleResult";
+import {BattleType} from "@/model/enums/BattleType";
 import {fetchGetBattles} from "@/lib/api/api";
-import {SoloRankTierType} from "@/model/enums/SoloRankTier";
+import {SoloRankTier} from "@/model/enums/SoloRankTier";
 import {SliceResponse} from "@/model/response/SliceResponse";
-import {BattleModeType} from "@/model/enums/BattleMode";
+import {BattleMode} from "@/model/enums/BattleMode";
 
 
 interface PlayerBattleResponse {
   battleTime: Date;
   event: BattleEventResponse | null;
-  mode: BattleModeType;
-  type: BattleTypeType;
-  result?: BattleResultType;
+  mode: BattleMode;
+  type: BattleType;
+  result?: BattleResult;
   duration?: number;
   rank?: number;
   trophyChange?: number;
@@ -23,7 +23,7 @@ interface PlayerBattleResponse {
 
 interface BattleEventResponse {
   id: number;
-  mode: BattleEventModeType;
+  mode: BattleEventMode;
   mapName: string;
   mapImageUrl: string | null;
 }
@@ -31,7 +31,7 @@ interface BattleEventResponse {
 interface BattlePlayerResponse {
   tag: string;
   name: string;
-  soloRankTier?: SoloRankTierType;
+  soloRankTier?: SoloRankTier;
   brawler: BattlePlayerBrawlerResponse;
 }
 

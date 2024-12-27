@@ -1,4 +1,4 @@
-export const BattleMode = {
+export const BattleModeValue = {
   NOT_FOUND: 'NOT_FOUND',
 
   KNOCKOUT: 'KNOCKOUT',
@@ -25,6 +25,6 @@ export const BattleMode = {
   HOLD_THE_TROPHY: 'HOLD_THE_TROPHY',
 } as const;
 
-export type BattleModeType = typeof BattleMode[keyof typeof BattleMode];
+export type BattleMode = typeof BattleModeValue[keyof typeof BattleModeValue];
 
-export const BattleModeValues = Object.keys(BattleMode) as BattleModeType[];
+export const BattleModeValues = Object.keys(BattleModeValue) as BattleMode[];

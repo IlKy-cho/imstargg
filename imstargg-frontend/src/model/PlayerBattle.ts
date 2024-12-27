@@ -1,15 +1,15 @@
 import {BattlePlayer} from "@/model/BattlePlayer";
 import {BattleEvent} from "@/model/BattleEvent";
-import {BattleTypeType} from "@/model/enums/BattleType";
-import {BattleResultType} from "@/model/enums/BattleResult";
-import {BattleModeType} from "@/model/enums/BattleMode";
+import {BattleType} from "@/model/enums/BattleType";
+import {BattleResult} from "@/model/enums/BattleResult";
+import {BattleMode} from "@/model/enums/BattleMode";
 
 export interface PlayerBattle {
   battleTime: Date;
   event: BattleEvent | null;
-  mode: BattleModeType;
-  type: BattleTypeType;
-  result?: BattleResultType;
+  mode: BattleMode;
+  type: BattleType;
+  result?: BattleResult;
   duration?: number;
   rank?: number;
   trophyChange?: number;

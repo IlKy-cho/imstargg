@@ -1,9 +1,9 @@
-export const BattleResult = {
+export const BattleResultValue = {
   DEFEAT: 'DEFEAT',
   VICTORY: 'VICTORY',
   DRAW: 'DRAW',
 } as const;
 
-export type BattleResultType = typeof BattleResult[keyof typeof BattleResult];
+export type BattleResult = typeof BattleResultValue[keyof typeof BattleResultValue];
 
-export const BattleResultValues = Object.keys(BattleResult) as BattleResultType[];
+export const BattleResultValues = Object.keys(BattleResultValue) as BattleResult[];

@@ -1,4 +1,4 @@
-export const BattleType = {
+export const BattleTypeValue = {
   NOT_FOUND: 'NOT_FOUND',
 
   RANKED: 'RANKED',
@@ -7,9 +7,9 @@ export const BattleType = {
   CHALLENGE: 'CHALLENGE',
 } as const;
 
-export type BattleTypeType = typeof BattleType[keyof typeof BattleType];
+export type BattleType = typeof BattleTypeValue[keyof typeof BattleTypeValue];
 
-export const BattleTypeValues = Object.keys(BattleType) as BattleTypeType[];
+export const BattleTypeValues = Object.keys(BattleTypeValue) as BattleType[];
 
 
 

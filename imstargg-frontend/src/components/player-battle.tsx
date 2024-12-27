@@ -6,14 +6,14 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {Brawler, BrawlersImpl} from "@/model/Brawler";
 import {battleResultTitle, battleTypeTitle, playerBattleModeTitle} from "./title";
-import {BattleResult} from "@/model/enums/BattleResult";
-import {BattleTypeType} from "@/model/enums/BattleType";
+import {BattleResultValue} from "@/model/enums/BattleResult";
+import {BattleType} from "@/model/enums/BattleType";
 import {battleTypeIconSrc, BrawlStarsIconSrc, playerBattleIconSrc, soloRankTierIconSrc} from "@/components/icon";
 import Image from "next/image";
 import {Separator} from "@/components/ui/separator";
 import {BattlePlayer} from "@/model/BattlePlayer";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
-import {soloRankTierNumber, SoloRankTierType} from "@/model/enums/SoloRankTier";
+import {soloRankTierNumber, SoloRankTier} from "@/model/enums/SoloRankTier";
 import {soloRankTierColor} from "@/components/color";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
@@ -40,7 +40,7 @@ const BattleResultInfo = ({battle}: { battle: IPlayerBattle }) => {
   return <div></div>;
 }
 
-const BattleTypeIcon = ({type}: { type: BattleTypeType }) => {
+const BattleTypeIcon = ({type}: { type: BattleType }) => {
   const iconSrc = battleTypeIconSrc(type);
   if (!iconSrc) {
     return null;
@@ -106,11 +106,11 @@ const BattleModeIcon = ({battle}: { battle: IPlayerBattle }) => {
 const battleBackgroundColor = (battle: IPlayerBattle) => {
   if (battle.result) {
     switch (battle.result) {
-      case BattleResult.VICTORY:
+      case BattleResultValue.VICTORY:
         return 'bg-blue-100/50';
-      case BattleResult.DEFEAT:
+      case BattleResultValue.DEFEAT:
         return 'bg-red-100/50';
-      case BattleResult.DRAW:
+      case BattleResultValue.DRAW:
         return 'bg-amber-100/50';
     }
   }
@@ -121,11 +121,11 @@ const battleBackgroundColor = (battle: IPlayerBattle) => {
 const battleBorderColor = (battle: IPlayerBattle) => {
   if (battle.result) {
     switch (battle.result) {
-      case BattleResult.VICTORY:
+      case BattleResultValue.VICTORY:
         return 'border-l-4 border-blue-500';
-      case BattleResult.DEFEAT:
+      case BattleResultValue.DEFEAT:
         return 'border-l-4 border-red-500';
-      case BattleResult.DRAW:
+      case BattleResultValue.DRAW:
         return 'border-l-4 border-amber-500';
     }
   }
@@ -158,7 +158,7 @@ const TrophyIcon = () => {
   />);
 };
 
-const SoloRankTierIcon = ({tier}: { tier: SoloRankTierType }) => {
+const SoloRankTierIcon = ({tier}: { tier: SoloRankTier }) => {
   return (<Image
     src={soloRankTierIconSrc(tier)}
     alt="rank tier icon"

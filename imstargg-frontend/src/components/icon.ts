@@ -1,8 +1,8 @@
-import {SoloRankTier, SoloRankTierType} from '@/model/enums/SoloRankTier';
-import {BattleMode, BattleModeType} from "@/model/enums/BattleMode";
-import {BattleEventMode, BattleEventModeType} from "@/model/enums/BattleEventMode";
+import {SoloRankTierValue, SoloRankTier} from '@/model/enums/SoloRankTier';
+import {BattleModeValue, BattleMode} from "@/model/enums/BattleMode";
+import {BattleEventModeValue, BattleEventMode} from "@/model/enums/BattleEventMode";
 import {PlayerBattle} from "@/model/PlayerBattle";
-import {BattleType, BattleTypeType} from "@/model/enums/BattleType";
+import {BattleTypeValue, BattleType} from "@/model/enums/BattleType";
 
 export const BrawlStarsIconSrc = {
   CLUB_LEAGUE_MASTERS: '/icon/icon_club_league_masters.png',
@@ -11,33 +11,33 @@ export const BrawlStarsIconSrc = {
   TROPHY: '/icon/icon_trophy.png',
 } as const;
 
-export const soloRankTierIconSrc = (tier: SoloRankTierType) => {
+export const soloRankTierIconSrc = (tier: SoloRankTier) => {
   switch (tier) {
-    case SoloRankTier.BRONZE_1:
-    case SoloRankTier.BRONZE_2:
-    case SoloRankTier.BRONZE_3:
+    case SoloRankTierValue.BRONZE_1:
+    case SoloRankTierValue.BRONZE_2:
+    case SoloRankTierValue.BRONZE_3:
       return '/icon_ranked_bronze.png';
-    case SoloRankTier.SILVER_1:
-    case SoloRankTier.SILVER_2:
-    case SoloRankTier.SILVER_3:
+    case SoloRankTierValue.SILVER_1:
+    case SoloRankTierValue.SILVER_2:
+    case SoloRankTierValue.SILVER_3:
       return '/icon_ranke d_silver.png';
-    case SoloRankTier.GOLD_1:
-    case SoloRankTier.GOLD_2:
-    case SoloRankTier.GOLD_3:
+    case SoloRankTierValue.GOLD_1:
+    case SoloRankTierValue.GOLD_2:
+    case SoloRankTierValue.GOLD_3:
       return '/icon_ranked_gold.png';
-    case SoloRankTier.DIAMOND_1:
-    case SoloRankTier.DIAMOND_2:
-    case SoloRankTier.DIAMOND_3:
+    case SoloRankTierValue.DIAMOND_1:
+    case SoloRankTierValue.DIAMOND_2:
+    case SoloRankTierValue.DIAMOND_3:
       return '/icon_ranked_diamond.png';
-    case SoloRankTier.MYTHIC_1:
-    case SoloRankTier.MYTHIC_2:
-    case SoloRankTier.MYTHIC_3:
+    case SoloRankTierValue.MYTHIC_1:
+    case SoloRankTierValue.MYTHIC_2:
+    case SoloRankTierValue.MYTHIC_3:
       return '/icon_ranked_mythic.png';
-    case SoloRankTier.LEGENDARY_1:
-    case SoloRankTier.LEGENDARY_2:
-    case SoloRankTier.LEGENDARY_3:
+    case SoloRankTierValue.LEGENDARY_1:
+    case SoloRankTierValue.LEGENDARY_2:
+    case SoloRankTierValue.LEGENDARY_3:
       return '/icon_ranked_legendary.png';
-    case SoloRankTier.MASTER:
+    case SoloRankTierValue.MASTER:
       return '/icon_ranked_masters.png';
   }
 }
@@ -74,132 +74,132 @@ const ModeIconSrc = {
   TRIO_SHOWDOWN: '/mode/트리오 쇼다운.webp',
 } as const;
 
-export const battleModeIconSrc = (mode: BattleModeType) => {
+export const battleModeIconSrc = (mode: BattleMode) => {
   switch (mode) {
-    case BattleMode.NOT_FOUND:
+    case BattleModeValue.NOT_FOUND:
       return null;
-    case BattleMode.KNOCKOUT:
+    case BattleModeValue.KNOCKOUT:
       return ModeIconSrc.KNOCKOUT;
-    case BattleMode.GEM_GRAB:
+    case BattleModeValue.GEM_GRAB:
       return ModeIconSrc.GEM_GRAB;
-    case BattleMode.HEIST:
+    case BattleModeValue.HEIST:
       return ModeIconSrc.HEIST;
-    case BattleMode.HOT_ZONE:
+    case BattleModeValue.HOT_ZONE:
       return ModeIconSrc.HOT_ZONE;
-    case BattleMode.SIEGE:
+    case BattleModeValue.SIEGE:
       return ModeIconSrc.SIEGE;
-    case BattleMode.BOUNTY:
+    case BattleModeValue.BOUNTY:
       return ModeIconSrc.BOUNTY;
-    case BattleMode.BRAWL_BALL:
+    case BattleModeValue.BRAWL_BALL:
       return ModeIconSrc.BRAWL_BALL;
-    case BattleMode.DUELS:
+    case BattleModeValue.DUELS:
       return ModeIconSrc.DUELS;
-    case BattleMode.SOLO_SHOWDOWN:
+    case BattleModeValue.SOLO_SHOWDOWN:
       return ModeIconSrc.SOLO_SHOWDOWN;
-    case BattleMode.DUO_SHOWDOWN:
+    case BattleModeValue.DUO_SHOWDOWN:
       return ModeIconSrc.DUO_SHOWDOWN;
-    case BattleMode.WIPEOUT:
+    case BattleModeValue.WIPEOUT:
       return ModeIconSrc.WIPEOUT;
-    case BattleMode.VOLLEY_BRAWL:
+    case BattleModeValue.VOLLEY_BRAWL:
       return ModeIconSrc.VOLLEY_BRAWL;
-    case BattleMode.TROPHY_THIEVES:
+    case BattleModeValue.TROPHY_THIEVES:
       return ModeIconSrc.TROPHY_THIEVES;
-    case BattleMode.BOSS_FIGHT:
+    case BattleModeValue.BOSS_FIGHT:
       return ModeIconSrc.BOSS_FIGHT;
-    case BattleMode.BIG_GAME:
+    case BattleModeValue.BIG_GAME:
       return ModeIconSrc.BIG_GAME;
-    case BattleMode.BASKET_BRAWL:
+    case BattleModeValue.BASKET_BRAWL:
       return ModeIconSrc.BASKET_BRAWL;
-    case BattleMode.ROBO_RUMBLE:
+    case BattleModeValue.ROBO_RUMBLE:
       return ModeIconSrc.ROBO_RUMBLE;
-    case BattleMode.PAYLOAD:
+    case BattleModeValue.PAYLOAD:
       return ModeIconSrc.PAYLOAD;
-    case BattleMode.TAKEDOWN:
+    case BattleModeValue.TAKEDOWN:
       return ModeIconSrc.TAKEDOWN;
-    case BattleMode.HUNTERS:
+    case BattleModeValue.HUNTERS:
       return ModeIconSrc.HUNTERS;
   }
 }
 
-export const battleEventModeIconSrc = (mode: BattleEventModeType) => {
+export const battleEventModeIconSrc = (mode: BattleEventMode) => {
   switch (mode) {
-    case BattleEventMode.NOT_FOUND:
+    case BattleEventModeValue.NOT_FOUND:
       return null;
-    case BattleEventMode.UNKNOWN:
+    case BattleEventModeValue.UNKNOWN:
       return null;
-    case BattleEventMode.SOLO_SHOWDOWN:
+    case BattleEventModeValue.SOLO_SHOWDOWN:
       return ModeIconSrc.SOLO_SHOWDOWN;
-    case BattleEventMode.DUO_SHOWDOWN:
+    case BattleEventModeValue.DUO_SHOWDOWN:
       return ModeIconSrc.DUO_SHOWDOWN;
-    case BattleEventMode.TRIO_SHOWDOWN:
+    case BattleEventModeValue.TRIO_SHOWDOWN:
       return ModeIconSrc.TRIO_SHOWDOWN;
-    case BattleEventMode.BASKET_BRAWL:
+    case BattleEventModeValue.BASKET_BRAWL:
       return ModeIconSrc.BASKET_BRAWL;
-    case BattleEventMode.BIG_GAME:
+    case BattleEventModeValue.BIG_GAME:
       return ModeIconSrc.BIG_GAME;
-    case BattleEventMode.BOSS_FIGHT:
+    case BattleEventModeValue.BOSS_FIGHT:
       return ModeIconSrc.BOSS_FIGHT;
-    case BattleEventMode.BOT_DROP:    
+    case BattleEventModeValue.BOT_DROP:
       return ModeIconSrc.BOT_DROP;
-    case BattleEventMode.BOUNTY:
+    case BattleEventModeValue.BOUNTY:
       return ModeIconSrc.BOUNTY;
-    case BattleEventMode.BRAWL_BALL:
+    case BattleEventModeValue.BRAWL_BALL:
       return ModeIconSrc.BRAWL_BALL;
-    case BattleEventMode.BRAWL_BALL_5V5:
+    case BattleEventModeValue.BRAWL_BALL_5V5:
       return ModeIconSrc.BRAWL_BALL;
-    case BattleEventMode.DUELS:
+    case BattleEventModeValue.DUELS:
       return ModeIconSrc.DUELS;
-    case BattleEventMode.GEM_GRAB:
+    case BattleEventModeValue.GEM_GRAB:
       return ModeIconSrc.GEM_GRAB;
-    case BattleEventMode.GEM_GRAB_5V5:
+    case BattleEventModeValue.GEM_GRAB_5V5:
       return ModeIconSrc.GEM_GRAB;
-    case BattleEventMode.HOT_ZONE:
+    case BattleEventModeValue.HOT_ZONE:
       return ModeIconSrc.HOT_ZONE;
-    case BattleEventMode.HUNTERS:
+    case BattleEventModeValue.HUNTERS:
       return ModeIconSrc.HUNTERS;
-    case BattleEventMode.HEIST:
+    case BattleEventModeValue.HEIST:
       return ModeIconSrc.HEIST;
-    case BattleEventMode.JELLYFISHING:
+    case BattleEventModeValue.JELLYFISHING:
       return ModeIconSrc.JELLYFISHING;
-    case BattleEventMode.KNOCKOUT:
+    case BattleEventModeValue.KNOCKOUT:
       return ModeIconSrc.KNOCKOUT;
-    case BattleEventMode.KNOCKOUT_5V5:
+    case BattleEventModeValue.KNOCKOUT_5V5:
       return ModeIconSrc.KNOCKOUT;
-    case BattleEventMode.PAINT_BRAWL:
+    case BattleEventModeValue.PAINT_BRAWL:
       return null;
-    case BattleEventMode.PAYLOAD:
+    case BattleEventModeValue.PAYLOAD:
       return ModeIconSrc.PAYLOAD;
-    case BattleEventMode.PRESENT_PLUNDER:
+    case BattleEventModeValue.PRESENT_PLUNDER:
       return ModeIconSrc.PRESENT_PLUNDER;
-    case BattleEventMode.ROBO_RUMBLE:
+    case BattleEventModeValue.ROBO_RUMBLE:
       return ModeIconSrc.ROBO_RUMBLE;
-    case BattleEventMode.TAKEDOWN:
+    case BattleEventModeValue.TAKEDOWN:
       return ModeIconSrc.TAKEDOWN;
-    case BattleEventMode.TROPHY_ESCAPE:
+    case BattleEventModeValue.TROPHY_ESCAPE:
       return null;
-    case BattleEventMode.VOLLEY_BRAWL:
+    case BattleEventModeValue.VOLLEY_BRAWL:
       return ModeIconSrc.VOLLEY_BRAWL;
-    case BattleEventMode.WIPEOUT:
+    case BattleEventModeValue.WIPEOUT:
       return ModeIconSrc.WIPEOUT;
-    case BattleEventMode.WIPEOUT_5V5:
+    case BattleEventModeValue.WIPEOUT_5V5:
       return ModeIconSrc.WIPEOUT;
-    case BattleEventMode.LONE_STAR:
+    case BattleEventModeValue.LONE_STAR:
       return ModeIconSrc.LONE_STAR;
-    case BattleEventMode.SUPER_CITY_RAMPAGE:
+    case BattleEventModeValue.SUPER_CITY_RAMPAGE:
       return ModeIconSrc.SUPER_CITY_RAMPAGE;
-    case BattleEventMode.HOLD_THE_TROPHY:
+    case BattleEventModeValue.HOLD_THE_TROPHY:
       return ModeIconSrc.HOLD_THE_TROPHY;
-    case BattleEventMode.TROPHY_THIEVES:
+    case BattleEventModeValue.TROPHY_THIEVES:
       return ModeIconSrc.TROPHY_THIEVES;
-    case BattleEventMode.LAST_STAND:
+    case BattleEventModeValue.LAST_STAND:
       return ModeIconSrc.LAST_STAND;
-    case BattleEventMode.SNOWTEL_THIEVES:
+    case BattleEventModeValue.SNOWTEL_THIEVES:
       return null;
-    case BattleEventMode.PUMPKIN_PLUNDER:
+    case BattleEventModeValue.PUMPKIN_PLUNDER:
       return null;
-    case BattleEventMode.GODZILLA_CITY_SMASH:
+    case BattleEventModeValue.GODZILLA_CITY_SMASH:
       return ModeIconSrc.GODZILLA_CITY_SMASH;
-    case BattleEventMode.ZOMBIE_PLUNDER:
+    case BattleEventModeValue.ZOMBIE_PLUNDER:
       return null;
   }
 }
@@ -209,17 +209,17 @@ export const playerBattleIconSrc = (battle: PlayerBattle)=> {
   return eventModeIcon || battleModeIconSrc(battle.mode);
 }
 
-export const battleTypeIconSrc = (type: BattleTypeType) => {
+export const battleTypeIconSrc = (type: BattleType) => {
   switch (type) {
-    case BattleType.NOT_FOUND:
+    case BattleTypeValue.NOT_FOUND:
       return null;
-    case BattleType.RANKED:
+    case BattleTypeValue.RANKED:
       return BrawlStarsIconSrc.TROPHY;
-    case BattleType.SOLO_RANKED:
+    case BattleTypeValue.SOLO_RANKED:
       return BrawlStarsIconSrc.RANKED_FRONT;
-    case BattleType.FRIENDLY:
+    case BattleTypeValue.FRIENDLY:
       return BrawlStarsIconSrc.FAMILY_FRIENDLY;
-    case BattleType.CHALLENGE:
+    case BattleTypeValue.CHALLENGE:
       return null;
   }
 }
