@@ -17,6 +17,7 @@ import Link from "next/link";
 import {cn} from "@/lib/utils";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import SoloRankTier from "@/components/solo-rank-tier";
+import Trophy from "@/components/trophy";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -148,15 +149,6 @@ const PowerLevel = ({value}: { value: number }) => {
   );
 }
 
-const TrophyIcon = () => {
-  return (<Image
-    src={BrawlStarsIconSrc.TROPHY}
-    alt="trophy icon"
-    width={20}
-    height={20}
-  />);
-};
-
 
 const PlayerTierContainer = ({children}: { children: React.ReactNode }) => (
   <div className="flex items-center gap-1">
@@ -174,10 +166,7 @@ const PlayerTier = ({player}: { player: BattlePlayer }) => {
   } else if (player.brawler.trophies) {
     return (
       <PlayerTierContainer>
-        <TrophyIcon/>
-        <span className="text-amber-500">
-          {player.brawler.trophies.toLocaleString()}
-        </span>
+        <Trophy value={player.brawler.trophies}/>
       </PlayerTierContainer>
     );
   }

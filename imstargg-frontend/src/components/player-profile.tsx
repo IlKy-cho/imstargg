@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from "dayjs/plugin/relativeTime";
 import SoloRankTier from "@/components/solo-rank-tier";
+import Trophy from "@/components/trophy";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -12,15 +13,6 @@ dayjs.extend(relativeTime);
 type Props = {
   player: Player;
 }
-
-const TrophyIcon = () => (
-  <Image
-    src={BrawlStarsIconSrc.TROPHY}
-    alt="trophy icon"
-    width={20}
-    height={20}
-  />
-);
 
 const PlayerInfoContainer = ({label, children}: { label: string, children: React.ReactNode }) => (
   <div className="flex justify-between items-center">
@@ -48,17 +40,11 @@ const PlayerInfo = ({player}: Readonly<Props>) => (
       </PlayerInfoContainer>
 
       <PlayerInfoContainer label="트로피">
-        <div className="flex items-center gap-2">
-          <TrophyIcon/>
-          <span className="text-amber-500">{player.trophies.toLocaleString()}</span>
-        </div>
+        <Trophy value={player.trophies}/>
       </PlayerInfoContainer>
 
       <PlayerInfoContainer label="최고 트로피">
-        <div className="flex items-center gap-2">
-          <TrophyIcon/>
-          <span className="text-amber-500">{player.highestTrophies.toLocaleString()}</span>
-        </div>
+        <Trophy value={player.highestTrophies}/>
       </PlayerInfoContainer>
 
       <PlayerInfoContainer label="경쟁전">

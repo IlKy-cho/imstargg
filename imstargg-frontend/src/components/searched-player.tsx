@@ -1,13 +1,12 @@
-import Image from "next/image";
 import {Player} from "@/model/Player";
 import {useRouter} from "next/navigation";
-import {BrawlStarsIconSrc} from "@/components/icon";
 import {SoloRankTierValue} from "@/model/enums/SoloRankTier";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {soloRankTierColor} from "@/components/color";
 import SoloRankTier from "@/components/solo-rank-tier";
+import Trophy from "@/components/trophy";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -32,13 +31,7 @@ export default function SearchedPlayer({player}: SearchedPlayerProps) {
       </div>
       <div className="text-sm text-gray-600 flex items-center justify-between">
         <div className="flex items-center gap-1">
-          <Image
-            src={BrawlStarsIconSrc.TROPHY}
-            alt="trophy logo"
-            width={16}
-            height={16}
-          />
-          {player.trophies}
+          <Trophy value={player.trophies}/>
           {player.soloRankTier ?
             <SoloRankTier tier={player.soloRankTier}/>
             : <span className="text-gray-400">❓</span>
