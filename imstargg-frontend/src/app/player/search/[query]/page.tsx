@@ -7,7 +7,7 @@ import {useParams, useRouter} from "next/navigation";
 import SearchedPlayer from "@/components/searched-player";
 import PlayerSearchForm from "@/components/player-search-form";
 
-export default function SearchPage() {
+export default function PlayerSearchResultPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [players, setPlayers] = useState<Player[]>([]);
   const params = useParams<{ query: string; }>();

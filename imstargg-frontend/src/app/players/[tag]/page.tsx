@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {getPlayer} from "@/lib/api/getPlayer";
 import React from "react";
 import PlayerProfile from "@/components/player-profile";
 import PlayerSearchForm from '@/components/player-search-form';
 import PlayerBattleList from "@/components/player-battle-list";
 import {getBrawlers} from "@/lib/api/brawler";
+import {getPlayer} from "@/lib/api/player";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
