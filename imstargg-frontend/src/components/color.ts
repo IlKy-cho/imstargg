@@ -1,5 +1,5 @@
 import {SoloRankTier, SoloRankTierType} from "@/model/enums/SoloRankTier";
-import {BrawlerRarity, BrawlerRarityType} from "@/model/enums/BrawlerRarity";
+import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
 import {Brawler} from "@/model/Brawler";
 
 export const soloRankTierColor = (tier: SoloRankTierType) => {
@@ -35,21 +35,21 @@ export const soloRankTierColor = (tier: SoloRankTierType) => {
 
 export const brawlerBackgroundColor = (brawler: Brawler) => {
   if (brawler.id === 16000088) {
-    return '#163df6';
+    return 'bg-[#163df6]';
   }
 
   switch (brawler.rarity) {
     case BrawlerRarity.STARTING_BRAWLER:
-      return '#A1D5F1';
+      return 'bg-[#A1D5F1]';
     case BrawlerRarity.RARE:
-      return '#6DDB47';
+      return 'bg-[#6DDB47]';
     case BrawlerRarity.SUPER_RARE:
-      return '#0087fa';
+      return 'bg-[#0087fa]';
     case BrawlerRarity.EPIC:
-      return '#AA15E4';
+      return 'bg-[#AA15E4]';
     case BrawlerRarity.MYTHIC:
-      return '#EA3330';
+      return 'bg-[#EA3330]';
     case BrawlerRarity.LEGENDARY:
-      return '#FDF255';
+      return 'bg-[#FDF255]';
   }
 }
