@@ -17,6 +17,7 @@ import {soloRankTierNumber, SoloRankTierType} from "@/model/enums/SoloRankTier";
 import {soloRankTierColor} from "@/components/color";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
+import BattleEventMapImage from "@/components/battle-event-map-image";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -87,7 +88,7 @@ const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
         </div>
       </div>
       <div>
-        <BattleEventMapImage battle={battle}/>
+        {/*<BattleEventMapImage battleEvent={battle.event} size={16}/>*/}
       </div>
     </div>
   );
@@ -101,31 +102,6 @@ const BattleModeIcon = ({battle}: { battle: IPlayerBattle }) => {
 
   return (
     <Image src={iconSrc} alt="battle event icon" width={24} height={24}/>
-  );
-}
-
-const BattleEventMapImage = ({battle}: { battle: IPlayerBattle }) => {
-  const mapIconSrc = battle.event ? battle.event.map.imageUrl : null;
-  if (!mapIconSrc) {
-    return (
-      <div className="w-20 h-32 bg-gray-200 flex items-center justify-center text-gray-500 text-sm">
-        <div>
-          맵 이미지
-        </div>
-        <div>
-          없음
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <Image
-      src={mapIconSrc}
-      alt="battle event map"
-      width={100}
-      height={100}
-    />
   );
 }
 
@@ -244,7 +220,7 @@ const BattleTeamPlayer = (
             <PlayerTier player={player}/>
           </span>
         </div>
-        <BrawlerProfileImage brawler={brawler} size={20}/>
+        <BrawlerProfileImage brawler={brawler}/>
       </div>
       <div className="w-full">
         <div className="flex gap-1">

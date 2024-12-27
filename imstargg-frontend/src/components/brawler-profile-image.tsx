@@ -3,18 +3,35 @@ import Image from "next/image";
 import {brawlerBackgroundColor} from "@/components/color";
 import {AspectRatio} from "@/components/ui/aspect-ratio";
 import {cn} from "@/lib/utils";
+import {cva, VariantProps} from "class-variance-authority";
+import React from "react";
 
-type Props = {
+const imageVariants = cva(
+  "rounded-[1px] border-[0.5px] border-black",
+  {
+    variants: {
+      size: {
+        default: 'w-20',
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  },
+);
+
+interface ImageProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof imageVariants> {
   brawler: Brawler | null;
-  size: number | string;
 }
 
-export default function BrawlerProfileImage({brawler, size}: Readonly<Props>) {
+export default function BrawlerProfileImage({brawler, className, size}: Readonly<ImageProps>) {
 
-  const backgroundColor = brawler ? `bg-[${brawlerBackgroundColor(brawler)}]` : "bg-gray-200";
+  const backgroundColor = brawler ? brawlerBackgroundColor(brawler) : "bg-gray-200";
 
   return (
-    <div className={cn(`w-${size}`, backgroundColor, "rounded-[1px] border-[0.5px] border-black")}>
+    <div className={cn(imageVariants({ className, size }), backgroundColor)}>
       <AspectRatio ratio={4 / 3}>
         {brawler && brawler.imageUrl ?
           <Image
