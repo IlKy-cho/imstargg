@@ -1,12 +1,13 @@
 import Image from "next/image";
-import { Player } from "@/model/Player";
-import { useRouter } from "next/navigation";
-import { BrawlStarsIconSrc, soloRankTierIconSrc } from "@/components/icon";
-import { SoloRankTierValue, soloRankTierNumber } from "@/model/enums/SoloRankTier";
+import {Player} from "@/model/Player";
+import {useRouter} from "next/navigation";
+import {BrawlStarsIconSrc} from "@/components/icon";
+import {SoloRankTierValue} from "@/model/enums/SoloRankTier";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {soloRankTierColor} from "@/components/color";
+import SoloRankTier from "@/components/solo-rank-tier";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -16,7 +17,7 @@ interface SearchedPlayerProps {
   player: Player;
 }
 
-export default function SearchedPlayer({ player }: SearchedPlayerProps) {
+export default function SearchedPlayer({player}: SearchedPlayerProps) {
   const router = useRouter();
   console.log(`text-[${soloRankTierColor(SoloRankTierValue.BRONZE_1)}]`);
 
@@ -26,7 +27,7 @@ export default function SearchedPlayer({ player }: SearchedPlayerProps) {
       onClick={() => router.push(`/players/${encodeURIComponent(player.tag)}`)}
     >
       <div className="flex items-center gap-2">
-        <span style={{ color: player.nameColor }}>{player.name}</span>
+        <span style={{color: player.nameColor}}>{player.name}</span>
         <span className="text-gray-500">{player.tag}</span>
       </div>
       <div className="text-sm text-gray-600 flex items-center justify-between">
@@ -39,17 +40,9 @@ export default function SearchedPlayer({ player }: SearchedPlayerProps) {
           />
           {player.trophies}
           {player.soloRankTier ?
-            <Image
-              src={soloRankTierIconSrc(player.soloRankTier)}
-              alt="trophy logo"
-              width={16}
-              height={16}
-            /> : null}
-          {player.soloRankTier ?
-            <span className={`font-bold text-[${soloRankTierColor(player.soloRankTier)}]`}>
-              {soloRankTierNumber(player.soloRankTier)}
-            </span>
-            : null}
+            <SoloRankTier tier={player.soloRankTier}/>
+            : <span className="text-gray-400">❓</span>
+          }
         </div>
         <div>
           최근 업데이트: {dayjs(player.updatedAt).fromNow()}

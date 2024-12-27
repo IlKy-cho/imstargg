@@ -1,8 +1,7 @@
-import {SoloRankTierValue, SoloRankTier} from '@/model/enums/SoloRankTier';
-import {BattleModeValue, BattleMode} from "@/model/enums/BattleMode";
-import {BattleEventModeValue, BattleEventMode} from "@/model/enums/BattleEventMode";
+import {BattleMode, BattleModeValue} from "@/model/enums/BattleMode";
+import {BattleEventMode, BattleEventModeValue} from "@/model/enums/BattleEventMode";
 import {PlayerBattle} from "@/model/PlayerBattle";
-import {BattleTypeValue, BattleType} from "@/model/enums/BattleType";
+import {BattleType, BattleTypeValue} from "@/model/enums/BattleType";
 
 export const BrawlStarsIconSrc = {
   CLUB_LEAGUE_MASTERS: '/icon/icon_club_league_masters.png',
@@ -10,37 +9,6 @@ export const BrawlStarsIconSrc = {
   RANKED_FRONT: '/icon/icon_ranked_front.png',
   TROPHY: '/icon/icon_trophy.png',
 } as const;
-
-export const soloRankTierIconSrc = (tier: SoloRankTier) => {
-  switch (tier) {
-    case SoloRankTierValue.BRONZE_1:
-    case SoloRankTierValue.BRONZE_2:
-    case SoloRankTierValue.BRONZE_3:
-      return '/icon_ranked_bronze.png';
-    case SoloRankTierValue.SILVER_1:
-    case SoloRankTierValue.SILVER_2:
-    case SoloRankTierValue.SILVER_3:
-      return '/icon_ranke d_silver.png';
-    case SoloRankTierValue.GOLD_1:
-    case SoloRankTierValue.GOLD_2:
-    case SoloRankTierValue.GOLD_3:
-      return '/icon_ranked_gold.png';
-    case SoloRankTierValue.DIAMOND_1:
-    case SoloRankTierValue.DIAMOND_2:
-    case SoloRankTierValue.DIAMOND_3:
-      return '/icon_ranked_diamond.png';
-    case SoloRankTierValue.MYTHIC_1:
-    case SoloRankTierValue.MYTHIC_2:
-    case SoloRankTierValue.MYTHIC_3:
-      return '/icon_ranked_mythic.png';
-    case SoloRankTierValue.LEGENDARY_1:
-    case SoloRankTierValue.LEGENDARY_2:
-    case SoloRankTierValue.LEGENDARY_3:
-      return '/icon_ranked_legendary.png';
-    case SoloRankTierValue.MASTER:
-      return '/icon_ranked_masters.png';
-  }
-}
 
 const ModeIconSrc = {
   GODZILLA_CITY_SMASH: '/mode/고질라 시티 스매시.webp',

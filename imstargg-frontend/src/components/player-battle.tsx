@@ -8,16 +8,15 @@ import {Brawler, BrawlersImpl} from "@/model/Brawler";
 import {battleResultTitle, battleTypeTitle, playerBattleModeTitle} from "./title";
 import {BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
-import {battleTypeIconSrc, BrawlStarsIconSrc, playerBattleIconSrc, soloRankTierIconSrc} from "@/components/icon";
+import {battleTypeIconSrc, BrawlStarsIconSrc, playerBattleIconSrc} from "@/components/icon";
 import Image from "next/image";
 import {Separator} from "@/components/ui/separator";
 import {BattlePlayer} from "@/model/BattlePlayer";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
-import {soloRankTierNumber, SoloRankTier} from "@/model/enums/SoloRankTier";
-import {soloRankTierColor} from "@/components/color";
 import Link from "next/link";
 import {cn} from "@/lib/utils";
 import BattleEventMapImage from "@/components/battle-event-map-image";
+import SoloRankTier from "@/components/solo-rank-tier";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -158,14 +157,6 @@ const TrophyIcon = () => {
   />);
 };
 
-const SoloRankTierIcon = ({tier}: { tier: SoloRankTier }) => {
-  return (<Image
-    src={soloRankTierIconSrc(tier)}
-    alt="rank tier icon"
-    width={24}
-    height={24}
-  />);
-};
 
 const PlayerTierContainer = ({children}: { children: React.ReactNode }) => (
   <div className="flex items-center gap-1">
@@ -177,12 +168,7 @@ const PlayerTier = ({player}: { player: BattlePlayer }) => {
   if (player.soloRankTier) {
     return (
       <PlayerTierContainer>
-        <SoloRankTierIcon tier={player.soloRankTier}/>
-        {player.soloRankTier && (
-          <span className={'text-[' + soloRankTierColor(player.soloRankTier) + ']'}>
-            {soloRankTierNumber(player.soloRankTier)}
-          </span>
-        )}
+        <SoloRankTier tier={player.soloRankTier}/>
       </PlayerTierContainer>
     );
   } else if (player.brawler.trophies) {
