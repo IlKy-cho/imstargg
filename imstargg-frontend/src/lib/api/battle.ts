@@ -50,7 +50,7 @@ export async function getBattles(tag: string, page: number = 1): Promise<SliceRe
     return {
       hasNext: slice.hasNext,
       content: slice.content.map(battle => ({
-          battleTime: battle.battleTime,
+          battleTime: new Date(battle.battleTime),
           event: battle.event ? {
             id: battle.event.id,
             mode: battle.event.mode,

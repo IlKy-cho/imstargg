@@ -1,7 +1,13 @@
-import {ApiErrorType, ApiErrorTypeType} from "@/model/response/ApiErrorType";
+export const ApiErrorTypeValue = {
+    PLAYER_NOT_FOUND : 'PLAYER_NOT_FOUND',
+    PLAYER_ALREADY_RENEWED : 'PLAYER_ALREADY_RENEWED',
+    PLAYER_RENEW_UNAVAILABLE : 'PLAYER_RENEW_UNAVAILABLE',
+} as const;
+
+export type ApiErrorType = typeof ApiErrorTypeValue[keyof typeof ApiErrorTypeValue];
 
 export interface ErrorResponse {
-    type: ApiErrorTypeType;
+    type: ApiErrorType;
     message: string;
 }
 
@@ -17,13 +23,13 @@ export interface ProblemDetail {
 export interface ApiResponse<T> {
     ok: boolean;
     status: number;
-    data: T | null;
-    error: ErrorResponse | null;
-    problemDetail: ProblemDetail | null;
+    data?: T;
+    error?: ErrorResponse;
+    problemDetail?: ProblemDetail;
 }
 
-function isApiErrorType(type: unknown): type is ApiErrorTypeType {
-    return typeof type === 'string' && (type as ApiErrorTypeType) in ApiErrorType;
+function isApiErrorType(type: unknown): type is ApiErrorType {
+    return typeof type === 'string' && (type as ApiErrorType) in ApiErrorTypeValue;
 }
 
 export async function createApiResponse<T>(response: Response): Promise<ApiResponse<T>> {
@@ -33,8 +39,6 @@ export async function createApiResponse<T>(response: Response): Promise<ApiRespo
             ok: response.ok,
             status: response.status,
             data: json as T,
-            error: null,
-            problemDetail: null
         };
     }
     
@@ -42,26 +46,22 @@ export async function createApiResponse<T>(response: Response): Promise<ApiRespo
         return {
             ok: false,
             status: response.status,
-            data: null,
             error: json as ErrorResponse,
-            problemDetail: null
         };
     }
+    
+    const { type, title, status, detail, instance, ...remainingProperties } = json;
     
     return {
         ok: false,
         status: response.status,
-        data: null,
-        error: null,
         problemDetail: {
-            type: new URL(json.type),
-            title: json.title,
-            status: json.status,
-            detail: json.detail,
-            instance: json.instance ? new URL(json.instance) : null,
-            properties: {
-                ...json
-            }
+            type: new URL(type),
+            title,
+            status,
+            detail,
+            instance: instance ? new URL(instance) : null,
+            properties: remainingProperties
         }
     };
 }

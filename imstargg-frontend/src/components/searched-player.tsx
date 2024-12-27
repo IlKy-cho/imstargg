@@ -1,10 +1,8 @@
 import {Player} from "@/model/Player";
 import {useRouter} from "next/navigation";
-import {SoloRankTierValue} from "@/model/enums/SoloRankTier";
 import dayjs from "dayjs";
 import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {soloRankTierColor} from "@/components/color";
 import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
 
@@ -18,7 +16,6 @@ interface SearchedPlayerProps {
 
 export default function SearchedPlayer({player}: SearchedPlayerProps) {
   const router = useRouter();
-  console.log(`text-[${soloRankTierColor(SoloRankTierValue.BRONZE_1)}]`);
 
   return (
     <div
