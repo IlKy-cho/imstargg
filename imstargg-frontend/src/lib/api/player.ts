@@ -2,6 +2,8 @@ import {fetchGetRenewalStatus, fetchRenewPlayer} from "@/lib/api/api";
 import {ApiResponse, createApiResponse} from "@/model/response/ApiResponse";
 import {Player} from "@/model/Player";
 import {fetchGetPlayer} from "@/lib/api/api";
+import {fetchSearchPlayer} from "@/lib/api/api";
+import {ListResponse} from "@/model/response/ListResponse";
 
 export interface PlayerResponse {
   player: Player | null;
@@ -45,4 +47,15 @@ export async function getPlayerRenewalStatus(tag: string): Promise<PlayerRenewal
 export async function renewPlayer(tag: string): Promise<ApiResponse<void>> {
   const response = await fetchRenewPlayer(encodeURIComponent(tag));
   return createApiResponse(response);
+}
+
+export async function searchPlayer(query: string): Promise<Player[]> {
+  const response = await fetchSearchPlayer(query);
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch player data');
+  }
+
+  const data = await response.json() as ListResponse<Player>;
+  return data.content;
 }

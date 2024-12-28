@@ -1,20 +1,19 @@
 "use client";
 
-import React, {useEffect, useState} from "react";
-import {Player} from "@/model/Player";
-import {searchPlayer} from "@/lib/api/searchPlayer";
-import {useParams, useRouter} from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { Player } from "@/model/Player";
+import { useParams, useRouter } from "next/navigation";
 import SearchedPlayer from "@/components/searched-player";
 import PlayerSearchForm from "@/components/player-search-form";
+import { searchPlayer } from "@/lib/api/player";
 
 export default function PlayerSearchResultPage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [players, setPlayers] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<Player[] | null>(null);
   const params = useParams<{ query: string; }>();
+  const query = decodeURIComponent(params.query);
   const router = useRouter();
 
   useEffect(() => {
-    const query = decodeURIComponent(params.query);
     document.title = `${query}의 검색결과 - ImStarGG`;
 
     const fetchPlayers = async () => {
@@ -29,33 +28,34 @@ export default function PlayerSearchResultPage() {
         setPlayers(results);
       } catch (error) {
         console.error('검색 결과를 불러오는 중 오류가 발생했습니다:', error);
-      } finally {
-        setIsLoading(false);
+        setPlayers([]);
       }
     };
 
     fetchPlayers();
   }, [params.query, router]);
 
-  if (isLoading) {
-    return <div>로딩 중...</div>;
-  }
-
   return (
-    <div className="w-full max-w-xl mx-auto">
-      <PlayerSearchForm/>
-      {players.length === 0 ? (
-        <div className="w-full max-w-xl mx-auto text-center py-8">
-          검색 결과가 없습니다.
-        </div>
-      ) : (<>
-        <h2 className="text-xl font-bold mb-4">검색 결과</h2>
-        <div className="space-y-2">
-          {players.map((player) => (
-            <SearchedPlayer key={player.tag} player={player}/>
-          ))}
-        </div>
-      </>)}
+    <div className="w-full max-w-xl mx-auto p-1">
+      {players === null ?
+        <div>검색 중...</div>
+        :
+        <>
+          <PlayerSearchForm />
+          {players.length === 0 ? (
+            <div className="w-full max-w-xl mx-auto text-center py-8">
+              &#39;<span className="font-bold">{query}</span>&#39;의 검색 결과가 없습니다.
+            </div>
+          ) : (<>
+            <h2 className="text-xl font-bold mb-4">&#39;<span className="font-bold">{query}</span>&#39; 검색 결과</h2>
+            <div className="space-y-2">
+              {players.map((player) => (
+                <SearchedPlayer key={player.tag} player={player} />
+              ))}
+            </div>
+          </>)}
+        </>
+      }
     </div>
   );
 } 
