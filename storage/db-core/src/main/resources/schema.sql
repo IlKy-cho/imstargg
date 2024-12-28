@@ -129,13 +129,13 @@ create index ix_player__trophies
 
 create table unknown_player
 (
-    unknown_player_id   bigint       not null auto_increment,
-    brawlstars_tag      varchar(45)  not null,
-    status              varchar(45)  not null,
-    not_found_count     int          not null,
-    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    deleted             boolean      not null default false,
+    unknown_player_id bigint       not null auto_increment,
+    brawlstars_tag    varchar(45)  not null,
+    status            varchar(45)  not null,
+    not_found_count   int          not null,
+    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted           boolean      not null default false,
     primary key (unknown_player_id)
 ) engine = innodb;
 
@@ -177,6 +177,57 @@ create table brawlstars_image
 
 alter table brawlstars_image
     add constraint uk_brawlstars_image__code unique (code);
+
+-- Statistics
+
+create table brawler_rank
+(
+    brawler_rank_id       bigint       not null auto_increment,
+    battle_event_id       bigint       not null,
+    battle_date           date         not null,
+    brawler_brawlstars_id bigint       not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
+    primary key (brawler_rank_id)
+) engine = innodb;
+
+
+create table brawler_winning
+(
+    brawler_winning_id             bigint       not null auto_increment,
+    battle_event_id             bigint       not null,
+    battle_date                 date         not null,
+    brawler_brawlstars_id       bigint       not null,
+    solo_rank_tier_range        varchar(25)  not null,
+    trophy_range                varchar(25)  not null,
+    total_count                 int          not null,
+    win_count                   int          not null,
+    evemy_brawler_brawlstars_id bigint       not null,
+    created_at                  timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                  timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted                     boolean      not null default false,
+    primary key (brawler_winning_id)
+) engine = innodb;
+
+
+create table brawlers_winning
+(
+    brawlers_winning_id           bigint       not null auto_increment,
+    battle_event_id            bigint       not null,
+    battle_date                date         not null,
+    brawler_brawlstars_id      bigint       not null,
+    solo_rank_tier_range       varchar(25)  not null,
+    trophy_range               varchar(25)  not null,
+    total_count                int          not null,
+    win_count                  int          not null,
+    brawler_num                int          not null,
+    brawler_brawlstars_id_hash varchar(60)  not null,
+    created_at                 timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                 timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted                    boolean      not null default false,
+    primary key (brawlers_winning_id)
+) engine = innodb;
 
 -- BrawlStars
 

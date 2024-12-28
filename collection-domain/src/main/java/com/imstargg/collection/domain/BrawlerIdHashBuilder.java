@@ -1,8 +1,8 @@
 package com.imstargg.collection.domain;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BrawlerIdHashBuilder {
 
@@ -14,8 +14,11 @@ public class BrawlerIdHashBuilder {
     }
 
     public BrawlerIdHash build() {
-        ByteBuffer buffer = ByteBuffer.allocate(brawlerIds.size() * Long.BYTES);
-        brawlerIds.stream().distinct().sorted().forEach(buffer::putLong);
-        return new BrawlerIdHash(brawlerIds, buffer.array());
+        String hashValue = brawlerIds.stream()
+                .distinct()
+                .sorted()
+                .map(String::valueOf)
+                .collect(Collectors.joining());
+        return new BrawlerIdHash(brawlerIds, hashValue);
     }
 }
