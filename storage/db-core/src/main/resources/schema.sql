@@ -24,11 +24,8 @@ create table battle
 create index ix_battle__playerid_battletime
     on battle (player_id, battle_time desc);
 
-create index ix_battle__eventbrawlstarsid
-    on battle (event_brawlstars_id);
-
-create index ix_battle__battletime
-    on battle (battle_time desc);
+create index ix_battle__createdat
+    on battle (created_at desc);
 
 
 create table club
