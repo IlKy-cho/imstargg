@@ -43,7 +43,7 @@ interface BattlePlayerBrawlerResponse {
 }
 
 export async function getBattles(tag: string, page: number = 1): Promise<SliceResponse<PlayerBattle>> {
-  const response = await fetchGetBattles(tag, page);
+  const response = await fetchGetBattles(encodeURIComponent(tag), page);
 
   if (response.ok) {
     const slice = await response.json() as SliceResponse<PlayerBattleResponse>;
