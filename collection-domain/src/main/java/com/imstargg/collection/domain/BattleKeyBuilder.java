@@ -26,14 +26,15 @@ public class BattleKeyBuilder {
     }
 
     public String build() {
-        byte[] keySeed = createKeySeed(battleTime, playerTags);
+        byte[] keySeed = createKeySeed();
         MessageDigest md = createMessageDigest();
         byte[] hash = md.digest(keySeed);
         return bytesToHex(hash);
     }
 
-    private byte[] createKeySeed(LocalDateTime battleTime, List<String> playerTags) {
+    private byte[] createKeySeed() {
         byte[] joinedPlayerTagBytes = (playerTags.stream()
+                .distinct()
                 .sorted()
                 .collect(Collectors.joining()))
                 .getBytes(StandardCharsets.UTF_8);
