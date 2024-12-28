@@ -38,7 +38,7 @@ type Props = {
 export default async function PlayerPage({params}: Readonly<Props>) {
   const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
-  const playerResponse = await getPlayer(tag);
+  const playerResponse = await getPlayer(decodedTag);
 
   if (!playerResponse.player) {
     return <PlayerNotFound tag={decodedTag}/>;

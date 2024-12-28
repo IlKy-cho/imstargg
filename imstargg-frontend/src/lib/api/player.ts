@@ -8,7 +8,7 @@ export interface PlayerResponse {
 }
 
 export async function getPlayer(tag: string): Promise<PlayerResponse> {
-  const response = await fetchGetPlayer(tag);
+  const response = await fetchGetPlayer(encodeURIComponent(tag));
 
   if (response.ok) {
     const player = await response.json() as Player;
@@ -31,7 +31,7 @@ export interface PlayerRenewalStatusResponse {
 }
 
 export async function getPlayerRenewalStatus(tag: string): Promise<PlayerRenewalStatusResponse> {
-  const response = await fetchGetRenewalStatus(tag);
+  const response = await fetchGetRenewalStatus(encodeURIComponent(tag));
 
   if (!response.ok) {
     console.log(`Error status: ${response.status}`);
@@ -43,6 +43,6 @@ export async function getPlayerRenewalStatus(tag: string): Promise<PlayerRenewal
 }
 
 export async function renewPlayer(tag: string): Promise<ApiResponse<void>> {
-  const response = await fetchRenewPlayer(tag);
+  const response = await fetchRenewPlayer(encodeURIComponent(tag));
   return createApiResponse(response);
 }
