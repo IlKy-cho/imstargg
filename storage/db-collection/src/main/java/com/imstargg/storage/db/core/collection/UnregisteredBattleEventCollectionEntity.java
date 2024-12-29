@@ -8,10 +8,19 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "unregistered_battle_event")
-public class UnRegisteredBattleEventCollectionEntity {
+@Table(
+        name = "unregistered_battle_event",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_unregistered_battle_event__eventbrawlstarsid",
+                        columnNames = "event_brawlstars_id"
+                )
+        }
+)
+public class UnregisteredBattleEventCollectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,10 +30,10 @@ public class UnRegisteredBattleEventCollectionEntity {
     @Embedded
     private BattleCollectionEntityEvent event;
 
-    protected UnRegisteredBattleEventCollectionEntity() {
+    protected UnregisteredBattleEventCollectionEntity() {
     }
 
-    public UnRegisteredBattleEventCollectionEntity(BattleCollectionEntityEvent event) {
+    public UnregisteredBattleEventCollectionEntity(BattleCollectionEntityEvent event) {
         this.event = event;
     }
 

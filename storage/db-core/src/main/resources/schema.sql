@@ -386,3 +386,6 @@ create table unregistered_battle_event
     deleted                      boolean      not null default false,
     primary key (unregistered_battle_event_id)
 ) engine = innodb;
+
+alter table unregistered_battle_event
+    add constraint uk_unregistered_battle_event__eventbrawlstarsid unique (event_brawlstars_id);
