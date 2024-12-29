@@ -1,8 +1,7 @@
-import Image from 'next/image';
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import getMapList from "@/lib/api/getMapList";
 import getNotRegisteredEventList from "@/lib/api/getNotRegisteredEventList";
-import EventAdd from "@/app/events/event-add";
+import EventAdd from "./event-add";
 
 export async function NotRegisteredEventList() {
   const battleMaps = await getMapList();

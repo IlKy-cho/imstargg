@@ -21,29 +21,29 @@ import {
 } from "@/components/ui/select"
 import { useState, useEffect } from "react"
 import registerBrawler from "@/lib/api/registerBrawler"
-import { LanguageType, LanguageValues } from "@/model/enums/Language"
-import {BrawlerRole, BrawlerRoleType, BrawlerRoleValues} from "@/model/enums/BrawlerRole"
-import {BrawlerRarity, BrawlerRarityType, BrawlerRarityValues} from "@/model/enums/BrawlerRarity";
 import { XIcon } from "lucide-react"
 import getGearList from "@/lib/api/getGearList"
 import Gear from "@/model/Gear"
+import {Language, LanguageValues} from "@/model/enums/Language";
+import {BrawlerRarity, BrawlerRarityValue, BrawlerRarityValues} from "@/model/enums/BrawlerRarity";
+import {BrawlerRole, BrawlerRoleValue, BrawlerRoleValues} from "@/model/enums/BrawlerRole";
 
 interface GadgetForm {
   brawlStarsId: string;
-  names: Record<LanguageType, string>;
+  names: Record<Language, string>;
 }
 
 interface StarPowerForm {
   brawlStarsId: string;
-  names: Record<LanguageType, string>;
+  names: Record<Language, string>;
 }
 
 export function BrawlerAdd() {
   const [brawlStarsId, setBrawlStarsId] = useState<string>("");
-  const [rarity, setRarity] = useState<BrawlerRarityType>(BrawlerRarity.STARTING_BRAWLER);
-  const [role, setRole] = useState<BrawlerRoleType>(BrawlerRole.DAMAGE_DEALER);
-  const [names, setNames] = useState<Record<LanguageType, string>>(
-    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
+  const [rarity, setRarity] = useState<BrawlerRarity>(BrawlerRarityValue.STARTING_BRAWLER);
+  const [role, setRole] = useState<BrawlerRole>(BrawlerRoleValue.DAMAGE_DEALER);
+  const [names, setNames] = useState<Record<Language, string>>(
+    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
   );
   const [gadgets, setGadgets] = useState<GadgetForm[]>([]);
   const [starPowers, setStarPowers] = useState<StarPowerForm[]>([]);
@@ -89,14 +89,14 @@ export function BrawlerAdd() {
   const addGadget = () => {
     setGadgets([...gadgets, {
       brawlStarsId: "",
-      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
+      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
     }]);
   };
 
   const addStarPower = () => {
     setStarPowers([...starPowers, {
       brawlStarsId: "",
-      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
+      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
     }]);
   };
 
@@ -136,7 +136,7 @@ export function BrawlerAdd() {
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right">희귀도</Label>
-            <Select value={rarity} onValueChange={(value) => setRarity(value as BrawlerRarityType)}>
+            <Select value={rarity} onValueChange={(value) => setRarity(value as BrawlerRarity)}>
               <SelectTrigger className="col-span-3">
                 <SelectValue />
               </SelectTrigger>
@@ -150,7 +150,7 @@ export function BrawlerAdd() {
 
           <div className="grid grid-cols-4 items-center gap-4">
             <Label className="text-right">분류</Label>
-            <Select value={role} onValueChange={(value) => setRole(value as BrawlerRoleType)}>
+            <Select value={role} onValueChange={(value) => setRole(value as BrawlerRole)}>
               <SelectTrigger className="col-span-3">
                 <SelectValue />
               </SelectTrigger>

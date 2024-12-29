@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,10 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import getNotRegisteredEventList from "@/lib/api/getNotRegisteredEventList";
 import BattleMap from "@/model/BattleMap";
-import { useEffect, useState } from "react";
+import {useEffect, useState} from "react";
 
 type Props = {
   battleMaps: BattleMap[];
