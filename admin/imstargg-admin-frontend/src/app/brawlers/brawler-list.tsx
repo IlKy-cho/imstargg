@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/popover"
 import getBrawlerList from "@/lib/api/getBrawlerList";
 import { BrawlerImageUpload } from './brawler-image-upload';
+import {messagesToTitle} from "@/components/title";
 
 export async function BrawlerList() {
   const brawlers = await getBrawlerList();
@@ -52,10 +53,7 @@ export async function BrawlerList() {
               )}
             </TableCell>
             <TableCell>
-              {brawler.names
-                .sort((a, b) => a.lang.localeCompare(b.lang))
-                .map(message => `${message.lang}(${message.content})`)
-                .join(' ')}
+              {messagesToTitle(brawler.names)}
             </TableCell>
             <TableCell>{brawler.entity.rarity}</TableCell>
             <TableCell>{brawler.entity.role}</TableCell>
@@ -71,10 +69,7 @@ export async function BrawlerList() {
                         key={gadget.entity.brawlStarsId} 
                         className={`items-center block py-2 ${index !== array.length - 1 ? 'border-b' : ''}`}
                       >
-                        {gadget.names
-                          .sort((a, b) => a.lang.localeCompare(b.lang))
-                          .map(message => `${message.lang}(${message.content})`)
-                          .join(' ')}
+                        {messagesToTitle(gadget.names)}
                       </div>
                     ))
                   }
@@ -93,10 +88,7 @@ export async function BrawlerList() {
                         key={gear.entity.brawlStarsId} 
                         className={`items-center block py-2 ${index !== array.length - 1 ? 'border-b' : ''}`}
                       >
-                        {gear.names
-                          .sort((a, b) => a.lang.localeCompare(b.lang))
-                          .map(message => `${message.lang}(${message.content})`)
-                          .join(' ')}
+                        {messagesToTitle(gear.names)}
                       </div>
                     ))
                   }
