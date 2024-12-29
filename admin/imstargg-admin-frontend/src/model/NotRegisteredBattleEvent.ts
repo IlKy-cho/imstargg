@@ -1,5 +1,5 @@
 export default interface NotRegisteredBattleEvent {
   brawlStarsId: number;
-  mode: string;
-  map: string;
+  mode: string | null;
+  map: string | null;
 }
