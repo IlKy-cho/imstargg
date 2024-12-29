@@ -2,6 +2,7 @@ import Image from 'next/image';
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import {MapImageUpload} from './map-image-upload';
 import BattleMap from '@/model/BattleMap';
+import {messagesToTitle} from "@/components/title";
 
 type Props = {
   battleMaps: BattleMap[];
@@ -37,10 +38,7 @@ export async function MapList({ battleMaps }: Props) {
               )}
             </TableCell>
             <TableCell>
-              {battleMap.names
-                .sort((a, b) => a.lang.localeCompare(b.lang))
-                .map(message => `${message.lang}(${message.content})`)
-                .join(' ')}
+              {messagesToTitle(battleMap.names)}
             </TableCell>
             <TableCell>
               {battleMap.events
