@@ -101,4 +101,9 @@ public class BrawlStarsController {
     public void registerEvent(@Validated @RequestBody NewBattleEventRequest request) {
         battleService.registerEvent(request.toNewBattleEvent());
     }
+
+    @PutMapping("/admin/api/events/{eventId}/seasoned")
+    public void eventSeasoned(@PathVariable long eventId) {
+        battleService.eventSeasoned(eventId);
+    }
 }

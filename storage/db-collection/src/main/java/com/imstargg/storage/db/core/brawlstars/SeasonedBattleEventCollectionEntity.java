@@ -24,6 +24,10 @@ public class SeasonedBattleEventCollectionEntity extends BaseEntity {
     protected SeasonedBattleEventCollectionEntity() {
     }
 
+    public SeasonedBattleEventCollectionEntity(BattleEventCollectionEntity battleEvent) {
+        this.battleEvent = battleEvent;
+    }
+
     public Long getId() {
         return id;
     }

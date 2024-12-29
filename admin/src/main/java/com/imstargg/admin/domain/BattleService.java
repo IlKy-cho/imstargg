@@ -14,6 +14,8 @@ import com.imstargg.storage.db.core.brawlstars.BattleMapCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleMapCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.SeasonedBattleEventCollectionEntity;
+import com.imstargg.storage.db.core.brawlstars.SeasonedBattleEventCollectionJpaRepository;
 import com.imstargg.storage.db.core.collection.UnregisteredBattleEventCollectionJpaRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -34,6 +38,7 @@ public class BattleService {
     private final BrawlStarsImageUploader brawlStarsImageUploader;
     private final BattleMapCollectionJpaRepository battleMapRepository;
     private final BattleEventCollectionJpaRepository battleEventRepository;
+    private final SeasonedBattleEventCollectionJpaRepository seasonedBattleEventRepository;
     private final UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
@@ -42,6 +47,7 @@ public class BattleService {
             BrawlStarsImageUploader brawlStarsImageUploader,
             BattleMapCollectionJpaRepository battleMapRepository,
             BattleEventCollectionJpaRepository battleEventRepository,
+            SeasonedBattleEventCollectionJpaRepository seasonedBattleEventRepository,
             UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
             MessageCollectionJpaRepository messageRepository
@@ -49,6 +55,7 @@ public class BattleService {
         this.brawlStarsImageUploader = brawlStarsImageUploader;
         this.battleMapRepository = battleMapRepository;
         this.battleEventRepository = battleEventRepository;
+        this.seasonedBattleEventRepository = seasonedBattleEventRepository;
         this.unregisteredBattleEventRepository = unregisteredBattleEventRepository;
         this.brawlStarsImageRepository = brawlStarsImageRepository;
         this.messageRepository = messageRepository;
@@ -97,8 +104,15 @@ public class BattleService {
                 .collect(toMap(BattleMapCollectionEntity::getId, Function.identity()));
         List<MessageCollectionEntity> mapNameCodeToMessage = messageRepository.findAllByCodeIn(
                 idToMap.values().stream().map(BattleMapCollectionEntity::getNameMessageCode).toList());
-        Map<String, BrawlStarsImageCollectionEntity> mapImageCodeToImage = brawlStarsImageRepository.findAllByType(BrawlStarsImageType.BATTLE_MAP).stream()
+        Map<String, BrawlStarsImageCollectionEntity> mapImageCodeToImage = brawlStarsImageRepository
+                .findAllByType(BrawlStarsImageType.BATTLE_MAP)
+                .stream()
                 .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
+        Set<Long> seasonedEventIds = seasonedBattleEventRepository.findAll().stream()
+                .filter(BaseEntity::isActive)
+                .map(SeasonedBattleEventCollectionEntity::getBattleEvent)
+                .map(BattleEventCollectionEntity::getId)
+                .collect(Collectors.toSet());
 
         return events.stream()
                 .map(event -> new BattleEvent(
@@ -106,10 +120,12 @@ public class BattleService {
                         new BattleEventMap(
                                 idToMap.get(event.getMapId()),
                                 mapNameCodeToMessage.stream()
-                                        .filter(message -> message.getCode().equals(idToMap.get(event.getMapId()).getNameMessageCode()))
+                                        .filter(message -> message.getCode()
+                                                .equals(idToMap.get(event.getMapId()).getNameMessageCode()))
                                         .toList(),
                                 mapImageCodeToImage.get(idToMap.get(event.getMapId()).getCode())
-                        )
+                        ),
+                        seasonedEventIds.contains(event.getId())
                 )).toList();
     }
 
@@ -154,5 +170,19 @@ public class BattleService {
                     unregisteredEvent.delete();
                     unregisteredBattleEventRepository.save(unregisteredEvent);
                 });
+    }
+
+    public void eventSeasoned(long eventId) {
+        BattleEventCollectionEntity event = battleEventRepository.findById(eventId)
+                .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
+                        "이벤트가 존재하지 않습니다. eventId: " + eventId));
+        seasonedBattleEventRepository.save(
+                seasonedBattleEventRepository.findByBattleEvent(event)
+                        .map(seasonedEvent -> {
+                            seasonedEvent.restore();
+                            return seasonedEvent;
+                        })
+                        .orElseGet(() -> new SeasonedBattleEventCollectionEntity(event))
+        );
     }
 }
