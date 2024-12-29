@@ -4,6 +4,7 @@ import com.imstargg.admin.support.error.AdminErrorKind;
 import com.imstargg.admin.support.error.AdminException;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BrawlStarsImageType;
+import com.imstargg.storage.db.core.BaseEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionJpaRepository;
@@ -13,6 +14,7 @@ import com.imstargg.storage.db.core.brawlstars.BattleMapCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleMapCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
+import com.imstargg.storage.db.core.collection.UnregisteredBattleEventCollectionJpaRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +34,7 @@ public class BattleService {
     private final BrawlStarsImageUploader brawlStarsImageUploader;
     private final BattleMapCollectionJpaRepository battleMapRepository;
     private final BattleEventCollectionJpaRepository battleEventRepository;
+    private final UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
 
@@ -39,12 +42,14 @@ public class BattleService {
             BrawlStarsImageUploader brawlStarsImageUploader,
             BattleMapCollectionJpaRepository battleMapRepository,
             BattleEventCollectionJpaRepository battleEventRepository,
+            UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
             MessageCollectionJpaRepository messageRepository
     ) {
         this.brawlStarsImageUploader = brawlStarsImageUploader;
         this.battleMapRepository = battleMapRepository;
         this.battleEventRepository = battleEventRepository;
+        this.unregisteredBattleEventRepository = unregisteredBattleEventRepository;
         this.brawlStarsImageRepository = brawlStarsImageRepository;
         this.messageRepository = messageRepository;
     }
@@ -109,7 +114,10 @@ public class BattleService {
     }
 
     public List<NotRegisteredBattleEvent> getNotRegisteredEventList() {
-        return battleEventRepository.findAllNotRegisteredEventBattle().stream()
+        return unregisteredBattleEventRepository.findAll().stream()
+                .filter(BaseEntity::isActive)
+                .filter(entity -> entity.getEvent().getBrawlStarsId() != null)
+                .filter(entity -> entity.getEvent().getBrawlStarsId() != 0)
                 .map(battle -> new NotRegisteredBattleEvent(
                         battle.getEvent().getBrawlStarsId(),
                         battle.getEvent().getMode(),
@@ -117,6 +125,7 @@ public class BattleService {
                 )).toList();
     }
 
+    @Transactional
     public void registerEvent(NewBattleEvent newBattleEvent) {
         BattleCollectionEntity battle = battleEventRepository.findAllNotRegisteredEventBattle().stream()
                 .filter(b -> Objects.equals(
@@ -139,5 +148,11 @@ public class BattleService {
                         battleMap.getId()
                 )
         );
+
+        unregisteredBattleEventRepository.findByEventBrawlStarsId(newBattleEvent.brawlStarsId())
+                .ifPresent(unregisteredEvent -> {
+                    unregisteredEvent.delete();
+                    unregisteredBattleEventRepository.save(unregisteredEvent);
+                });
     }
 }
