@@ -371,3 +371,18 @@ create table star_power
 
 alter table star_power
     add constraint uk_starpower__brawlstarsid unique (brawlstars_id);
+
+
+-- Collection
+
+create table unregistered_battle_event
+(
+    unregistered_battle_event_id bigint       not null auto_increment,
+    event_brawlstars_id          bigint,
+    event_mode                   varchar(65),
+    event_map                    varchar(65),
+    created_at                   timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                   timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    deleted                      boolean      not null default false,
+    primary key (unregistered_battle_event_id)
+) engine = innodb;
