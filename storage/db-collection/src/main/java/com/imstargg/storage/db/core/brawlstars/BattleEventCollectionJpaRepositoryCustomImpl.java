@@ -21,12 +21,12 @@ public class BattleEventCollectionJpaRepositoryCustomImpl implements BattleEvent
 
     @Override
     public List<BattleCollectionEntity> findAllNotRegisteredEventBattle() {
-        List<Long> eventBrawlStarsIds = queryFactory.select(battleCollectionEntity.event.eventBrawlStarsId)
+        List<Long> eventBrawlStarsIds = queryFactory.select(battleCollectionEntity.event.brawlStarsId)
                 .distinct()
                 .from(battleCollectionEntity)
                 .where(
-                        battleCollectionEntity.event.eventBrawlStarsId.isNotNull(),
-                        battleCollectionEntity.event.eventBrawlStarsId.gt(0)
+                        battleCollectionEntity.event.brawlStarsId.isNotNull(),
+                        battleCollectionEntity.event.brawlStarsId.gt(0)
                 )
                 .fetch();
         Set<Long> registeredEventBrawlStarsIds = queryFactory.selectFrom(battleEventCollectionEntity)
@@ -37,7 +37,7 @@ public class BattleEventCollectionJpaRepositoryCustomImpl implements BattleEvent
                 .map(id ->
                         queryFactory
                                 .selectFrom(battleCollectionEntity)
-                                .where(battleCollectionEntity.event.eventBrawlStarsId.eq(id))
+                                .where(battleCollectionEntity.event.brawlStarsId.eq(id))
                                 .fetchFirst()
                 ).toList();
     }

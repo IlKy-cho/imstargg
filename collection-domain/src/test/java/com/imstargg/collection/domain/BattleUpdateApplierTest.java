@@ -1343,7 +1343,7 @@ class BattleUpdateApplierTest {
                 battleKeyBuilder.build()
         );
         assertThat(actual.getBattleTime()).isEqualTo(expected.battleTime());
-        assertThat(actual.getEvent().getEventBrawlStarsId()).isEqualTo(expected.event().id());
+        assertThat(actual.getEvent().getBrawlStarsId()).isEqualTo(expected.event().id());
         assertThat(actual.getEvent().getMode()).isEqualTo(expected.event().mode());
         assertThat(actual.getEvent().getMap()).isEqualTo(expected.event().map());
         assertThat(actual.getMode()).isEqualTo(expected.battle().mode());

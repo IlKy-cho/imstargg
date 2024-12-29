@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.collection;
 
+import com.imstargg.storage.db.core.BaseEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityEvent;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -20,7 +21,7 @@ import jakarta.persistence.UniqueConstraint;
                 )
         }
 )
-public class UnregisteredBattleEventCollectionEntity {
+public class UnregisteredBattleEventCollectionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

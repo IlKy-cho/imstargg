@@ -111,7 +111,7 @@ public class BattleService {
     public List<NotRegisteredBattleEvent> getNotRegisteredEventList() {
         return battleEventRepository.findAllNotRegisteredEventBattle().stream()
                 .map(battle -> new NotRegisteredBattleEvent(
-                        battle.getEvent().getEventBrawlStarsId(),
+                        battle.getEvent().getBrawlStarsId(),
                         battle.getEvent().getMode(),
                         battle.getEvent().getMap()
                 )).toList();
@@ -120,7 +120,7 @@ public class BattleService {
     public void registerEvent(NewBattleEvent newBattleEvent) {
         BattleCollectionEntity battle = battleEventRepository.findAllNotRegisteredEventBattle().stream()
                 .filter(b -> Objects.equals(
-                        b.getEvent().getEventBrawlStarsId(), newBattleEvent.brawlStarsId()))
+                        b.getEvent().getBrawlStarsId(), newBattleEvent.brawlStarsId()))
                 .findAny()
                 .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
                         "이벤트가 존재하지 않습니다. brawlStarsId: " + newBattleEvent.brawlStarsId()));
