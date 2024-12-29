@@ -1,7 +1,6 @@
 import Image from 'next/image';
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import getMapList from "@/lib/api/getMapList";
-import { MapImageUpload } from './map-image-upload';
+import {MapImageUpload} from './map-image-upload';
 import BattleMap from '@/model/BattleMap';
 
 type Props = {

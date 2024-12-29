@@ -10,7 +10,7 @@ export default async function getNotRegisteredEventList(): Promise<NotRegistered
     
     const response = await fetch(url, {
         next: {
-            tags: ['not-registered-events']
+            tags: ['not-registered-event']
         }
     });
 

@@ -3,7 +3,7 @@
 import NotRegisteredBattleEvent from "@/model/NotRegisteredBattleEvent";
 import BattleMap from "@/model/BattleMap";
 
-import { Button } from "@/components/ui/button"
+import {Button} from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,9 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {useEffect, useState} from "react"
+import {Input} from "@/components/ui/input"
+import {useState} from "react"
 import registerEvent from "@/lib/api/registerEvent"
 import Image from "next/image"
 

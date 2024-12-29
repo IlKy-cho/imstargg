@@ -19,11 +19,9 @@ export default function SiteHeader() {
         <NavigationMenu>
           <NavigationMenuList>
             {menuItems.map((item) => {
-              const Icon = item.icon;
               return (
                 <Link key={item.href} href={item.href} legacyBehavior passHref>
                   <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                    <Icon className="mr-2 h-4 w-4" />
                     {item.label}
                   </NavigationMenuLink>
                 </Link>

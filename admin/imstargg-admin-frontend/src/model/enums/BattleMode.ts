@@ -1,0 +1,30 @@
+export const BattleModeValue = {
+  NOT_FOUND: 'NOT_FOUND',
+
+  KNOCKOUT: 'KNOCKOUT',
+  GEM_GRAB: 'GEM_GRAB',
+  HEIST: 'HEIST',
+  HOT_ZONE: 'HOT_ZONE',
+  SIEGE: 'SIEGE',
+  BOUNTY: 'BOUNTY',
+  BRAWL_BALL: 'BRAWL_BALL',
+  DUELS: 'DUELS',
+  SOLO_SHOWDOWN: 'SOLO_SHOWDOWN',
+  DUO_SHOWDOWN: 'DUO_SHOWDOWN',
+  WIPEOUT: 'WIPEOUT',
+  VOLLEY_BRAWL: 'VOLLEY_BRAWL',
+  TROPHY_THIEVES: 'TROPHY_THIEVES',
+  BOSS_FIGHT: 'BOSS_FIGHT',
+  BIG_GAME: 'BIG_GAME',
+  BASKET_BRAWL: 'BASKET_BRAWL',
+  ROBO_RUMBLE: 'ROBO_RUMBLE',
+  PAYLOAD: 'PAYLOAD',
+  TAKEDOWN: 'TAKEDOWN',
+  HUNTERS: 'HUNTERS',
+  BOT_DROP: 'BOT_DROP',
+  HOLD_THE_TROPHY: 'HOLD_THE_TROPHY',
+} as const;
+
+export type BattleMode = typeof BattleModeValue[keyof typeof BattleModeValue];
+
+export const BattleModeValues = Object.keys(BattleModeValue) as BattleMode[];
