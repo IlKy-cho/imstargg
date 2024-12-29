@@ -2,10 +2,10 @@ dependencies {
 
     implementation(project(":core:core-enum"))
     implementation(project(":client:brawlstars-client"))
-    implementation(project(":storage:db-core-collection"))
+    implementation(project(":storage:db-collection"))
 
     // Test
-    testImplementation(testFixtures(project(":storage:db-core-collection")))
+    testImplementation(testFixtures(project(":storage:db-collection")))
 }
 
 

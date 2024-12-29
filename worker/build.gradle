@@ -4,7 +4,7 @@ dependencies {
     implementation(project(":client:brawlstars-client"))
     implementation(project(":collection-domain"))
 
-    implementation(project(":storage:db-core-collection"))
+    implementation(project(":storage:db-collection"))
 
     implementation(project(":support:alert-manager"))
     implementation(project(":support:logging"))
@@ -15,6 +15,6 @@ dependencies {
 
     // Test
     testImplementation(testFixtures(project(":storage:db-core")))
-    testImplementation(testFixtures(project(":storage:db-core-collection")))
+    testImplementation(testFixtures(project(":storage:db-collection")))
     testImplementation(project(":tests:java-test-util"))
 }

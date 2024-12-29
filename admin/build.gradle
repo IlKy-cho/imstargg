@@ -3,12 +3,12 @@ bootJar.enabled = true
 dependencies {
 
     implementation(project(":core:core-enum"))
-    implementation(project(":storage:db-core-collection"))
+    implementation(project(":storage:db-collection"))
     implementation(project(":support:aws-s3"))
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
 
     testImplementation(testFixtures(project(":storage:db-core")))
-    testImplementation(testFixtures(project(":storage:db-core-collection")))
+    testImplementation(testFixtures(project(":storage:db-collection")))
 }
