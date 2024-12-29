@@ -378,6 +378,7 @@ alter table star_power
 create table unregistered_battle_event
 (
     unregistered_battle_event_id bigint       not null auto_increment,
+    battle_id                    bigint       not null,
     event_brawlstars_id          bigint,
     event_mode                   varchar(65),
     event_map                    varchar(65),

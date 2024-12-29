@@ -111,7 +111,7 @@ public class UnregisteredBattleEventFindJobConfig {
                         .fetch()
         );
         eventBrawlStarsIdSet.addAll(
-                queryFactory.select(unregisteredBattleEventCollectionEntity.event.brawlStarsId)
+                queryFactory.select(unregisteredBattleEventCollectionEntity.battle.event.brawlStarsId)
                         .from(unregisteredBattleEventCollectionEntity)
                         .fetch()
         );
@@ -122,7 +122,7 @@ public class UnregisteredBattleEventFindJobConfig {
             }
 
             eventBrawlStarsIdSet.add(battle.getEvent().getBrawlStarsId());
-            return new UnregisteredBattleEventCollectionEntity(battle.getEvent());
+            return new UnregisteredBattleEventCollectionEntity(battle);
         };
     }
 
