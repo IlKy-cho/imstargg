@@ -9,7 +9,7 @@ public class BattleCollectionEntityEvent {
 
     @Nullable
     @Column(name = "event_brawlstars_id", updatable = false)
-    private Long eventBrawlStarsId;
+    private Long brawlStarsId;
 
     @Nullable
     @Column(name = "event_mode", length = 65, updatable = false)
@@ -22,15 +22,15 @@ public class BattleCollectionEntityEvent {
     protected BattleCollectionEntityEvent() {
     }
 
-    public BattleCollectionEntityEvent(long eventBrawlStarsId, String mode, String map) {
-        this.eventBrawlStarsId = eventBrawlStarsId;
+    public BattleCollectionEntityEvent(long brawlStarsId, String mode, String map) {
+        this.brawlStarsId = brawlStarsId;
         this.mode = mode;
         this.map = map;
     }
 
     @Nullable
-    public Long getEventBrawlStarsId() {
-        return eventBrawlStarsId;
+    public Long getBrawlStarsId() {
+        return brawlStarsId;
     }
 
     public String getMode() {
