@@ -8,8 +8,8 @@ import java.time.LocalDate;
 @MappedSuperclass
 abstract class BrawlerStatisticsBaseCollectionEntity {
 
-    @Column(name = "battle_event_id", updatable = false, nullable = false)
-    private long battleEventId;
+    @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
+    private long eventBrawlStarsId;
 
     @Column(name = "battle_date", updatable = false, nullable = false)
     private LocalDate battleDate;
@@ -21,17 +21,17 @@ abstract class BrawlerStatisticsBaseCollectionEntity {
     }
 
     protected BrawlerStatisticsBaseCollectionEntity(
-            long battleEventId,
+            long eventBrawlStarsId,
             LocalDate battleDate,
             long brawlerBrawlStarsId
     ) {
-        this.battleEventId = battleEventId;
+        this.eventBrawlStarsId = eventBrawlStarsId;
         this.battleDate = battleDate;
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
     }
 
-    public long getBattleEventId() {
-        return battleEventId;
+    public long getEventBrawlStarsId() {
+        return eventBrawlStarsId;
     }
 
     public LocalDate getBattleDate() {
