@@ -1,5 +1,15 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+export class ApiError extends Error {
+  constructor(public response: Response, message = `Failed to fetch from ${response.url}`) {
+    super(message);
+  }
+
+  log() {
+    console.log(`Failed to fetch from ${this.response.url}. status: ${this.response.status}, body: ${this.response.body} ex: ${this.message}`);
+  }
+}
+
 interface CacheOptions {
   revalidate?: number | false;
 }

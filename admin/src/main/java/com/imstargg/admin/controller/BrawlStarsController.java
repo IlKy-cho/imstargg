@@ -14,6 +14,7 @@ import com.imstargg.admin.domain.BrawlerService;
 import com.imstargg.admin.domain.Gear;
 import com.imstargg.admin.domain.NotRegisteredBattleEvent;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -102,8 +103,13 @@ public class BrawlStarsController {
         battleService.registerEvent(request.toNewBattleEvent());
     }
 
-    @PutMapping("/admin/api/events/{eventId}/seasoned")
+    @PutMapping("/admin/api/events/{eventId}/season")
     public void eventSeasoned(@PathVariable long eventId) {
         battleService.eventSeasoned(eventId);
+    }
+
+    @DeleteMapping("/admin/api/events/{eventId}/season")
+    public void eventUnseasoned(@PathVariable long eventId) {
+        battleService.eventUnseasoned(eventId);
     }
 }
