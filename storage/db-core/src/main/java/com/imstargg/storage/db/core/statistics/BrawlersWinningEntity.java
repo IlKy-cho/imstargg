@@ -11,11 +11,11 @@ import jakarta.persistence.Table;
         name = "brawlers_winning",
         indexes = {
                 @Index(
-                        name = "ix_brawlers_winning__brawlerbrawlstarsid_battleeventid_battledate",
-                        columnList = "brawler_brawlstars_id, battle_event_id, battle_date desc"
+                        name = "ix__brawler_event_battledate",
+                        columnList = "brawler_brawlstars_id, event_brawlstars_id, battle_date desc"
                 ),
                 @Index(
-                        name = "ix_brawlers_winning__battledate_brawlerbrawlstarsidhash",
+                        name = "ix___battledate_brawlerhash",
                         columnList = "battle_date desc, brawler_brawlstars_id_hash"
                 )
         }

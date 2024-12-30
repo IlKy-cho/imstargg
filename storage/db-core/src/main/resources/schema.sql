@@ -183,7 +183,7 @@ alter table brawlstars_image
 create table brawler_rank
 (
     brawler_rank_id       bigint       not null auto_increment,
-    battle_event_id       bigint       not null,
+    event_brawlstars_id   bigint       not null,
     battle_date           date         not null,
     brawler_brawlstars_id bigint       not null,
     created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
@@ -192,11 +192,14 @@ create table brawler_rank
     primary key (brawler_rank_id)
 ) engine = innodb;
 
+create index ix__brawler_event_battledate
+    on brawler_rank (brawler_brawlstars_id, event_brawlstars_id, battle_date desc);
+
 
 create table brawler_winning
 (
     brawler_winning_id          bigint       not null auto_increment,
-    battle_event_id             bigint       not null,
+    event_brawlstars_id         bigint       not null,
     battle_date                 date         not null,
     brawler_brawlstars_id       bigint       not null,
     solo_rank_tier_range        varchar(25)  not null,
@@ -210,11 +213,14 @@ create table brawler_winning
     primary key (brawler_winning_id)
 ) engine = innodb;
 
+create index ix__brawler_event_battledate
+    on brawler_winning (brawler_brawlstars_id, event_brawlstars_id, battle_date desc);
+
 
 create table brawlers_winning
 (
     brawlers_winning_id        bigint       not null auto_increment,
-    battle_event_id            bigint       not null,
+    event_brawlstars_id        bigint       not null,
     battle_date                date         not null,
     brawler_brawlstars_id      bigint       not null,
     solo_rank_tier_range       varchar(25)  not null,
@@ -228,6 +234,12 @@ create table brawlers_winning
     deleted                    boolean      not null default false,
     primary key (brawlers_winning_id)
 ) engine = innodb;
+
+create index ix__brawler_event_battledate
+    on brawlers_winning (brawler_brawlstars_id, event_brawlstars_id, battle_date desc);
+
+create index ix___battledate_brawlerhash
+    on brawlers_winning (battle_date desc, brawler_brawlstars_id_hash);
 
 -- BrawlStars
 
