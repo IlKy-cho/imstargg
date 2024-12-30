@@ -123,7 +123,8 @@ public class BattleService {
                                         .filter(message -> message.getCode()
                                                 .equals(idToMap.get(event.getMapId()).getNameMessageCode()))
                                         .toList(),
-                                mapImageCodeToImage.get(idToMap.get(event.getMapId()).getCode())
+                                mapImageCodeToImage.get(
+                                        BrawlStarsImageType.BATTLE_MAP.code(idToMap.get(event.getMapId()).getCode()))
                         ),
                         seasonedEventIds.contains(event.getId())
                 )).toList();
@@ -184,5 +185,14 @@ public class BattleService {
                         })
                         .orElseGet(() -> new SeasonedBattleEventCollectionEntity(event))
         );
+    }
+
+    @Transactional
+    public void eventUnseasoned(long eventId) {
+        var event = battleEventRepository.findById(eventId)
+                .orElseThrow(() -> new AdminException(AdminErrorKind.VALIDATION_FAILED,
+                        "이벤트가 존재하지 않습니다. eventId: " + eventId));
+        seasonedBattleEventRepository.findByBattleEvent(event)
+                .ifPresent(BaseEntity::delete);
     }
 }

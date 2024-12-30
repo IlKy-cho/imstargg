@@ -25,8 +25,10 @@ export default function RootLayout({children,}: Readonly<{ children: React.React
     <body
       className={`${geistSans.variable} ${geistMono.variable} antialiased h-full`}
     >
-    <SiteHeader />
-    {children}
+    <SiteHeader/>
+    <main>
+      {children}
+    </main>
     </body>
     </html>
   );

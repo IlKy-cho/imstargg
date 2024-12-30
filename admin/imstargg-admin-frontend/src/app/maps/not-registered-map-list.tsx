@@ -28,6 +28,7 @@ export function NotRegisteredMapList({ battleMaps }: Props) {
       const uniqueMapNames = new Set(
         notRegisteredEventList
           .map(event => event.map)
+          .filter(mapName => mapName !== null)
           .filter(mapName => !battleMapNames.has(mapName))
       );
       
