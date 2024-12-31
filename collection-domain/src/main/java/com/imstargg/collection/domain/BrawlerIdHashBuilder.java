@@ -15,7 +15,6 @@ public class BrawlerIdHashBuilder {
 
     public BrawlerIdHash build() {
         String hashValue = brawlerIds.stream()
-                .distinct()
                 .sorted()
                 .map(String::valueOf)
                 .collect(Collectors.joining());
