@@ -95,6 +95,16 @@ public class BattleCollectionEntity extends BaseEntity {
                 ).findFirst();
     }
 
+    public Optional<List<BattleCollectionEntityTeamPlayer>> findMyTeam() {
+        return teams.stream()
+                .filter(team -> team.stream()
+                        .anyMatch(teamPlayer -> Objects.equals(
+                                teamPlayer.getBrawlStarsTag(),
+                                this.getPlayer().getPlayer().getBrawlStarsTag())
+                        )
+                ).findFirst();
+    }
+
     public Long getId() {
         return id;
     }

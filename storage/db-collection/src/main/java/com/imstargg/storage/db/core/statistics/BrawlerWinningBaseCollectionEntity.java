@@ -11,7 +11,7 @@ import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDate;
 
 @MappedSuperclass
-abstract class BrawlerWinningBaseCollectionEntity extends BrawlerStatisticsBaseCollectionEntity {
+abstract class BrawlerWinningBaseCollectionEntity extends BattleStatisticsBaseCollectionEntity {
 
     @Nullable
     @Enumerated(EnumType.STRING)
@@ -22,6 +22,9 @@ abstract class BrawlerWinningBaseCollectionEntity extends BrawlerStatisticsBaseC
     @Enumerated(EnumType.STRING)
     @Column(name = "trophy_range", length = 25, updatable = false)
     private TrophyRange trophyRange;
+
+    @Column(name = "duplicate_brawler", nullable = false, updatable = false)
+    private boolean duplicateBrawler;
 
     @Column(name = "total_count", nullable = false)
     private int totalCount;
@@ -37,11 +40,15 @@ abstract class BrawlerWinningBaseCollectionEntity extends BrawlerStatisticsBaseC
             @Nullable TrophyRange trophyRange,
             long battleEventId,
             LocalDate battleDate,
-            long brawlerBrawlStarsId
+            long brawlerBrawlStarsId,
+            boolean duplicateBrawler
     ) {
         super(battleEventId, battleDate, brawlerBrawlStarsId);
+        this.soloRankTierRange = soloRankTierRange;
+        this.trophyRange = trophyRange;
         this.totalCount = 0;
         this.winCount = 0;
+        this.duplicateBrawler = duplicateBrawler;
     }
 
     public void win() {
@@ -61,6 +68,10 @@ abstract class BrawlerWinningBaseCollectionEntity extends BrawlerStatisticsBaseC
     @Nullable
     public TrophyRange getTrophyRange() {
         return trophyRange;
+    }
+
+    public boolean isDuplicateBrawler() {
+        return duplicateBrawler;
     }
 
     public int getTotalCount() {

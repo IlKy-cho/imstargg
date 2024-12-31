@@ -1,22 +1,23 @@
 package com.imstargg.storage.db.core.statistics;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
         name = "brawlers_winning",
-        indexes = {
-                @Index(
-                        name = "ix__brawler_event_battledate",
-                        columnList = "brawler_brawlstars_id, event_brawlstars_id, battle_date desc"
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_brawlerhash_event_battledate_trophy_duplicate",
+                        columnNames = {"brawler_brawlstars_id_hash", "event_brawlstars_id", "battle_date", "trophy_range", "duplicate_brawler"}
                 ),
-                @Index(
-                        name = "ix___battledate_brawlerhash",
-                        columnList = "battle_date desc, brawler_brawlstars_id_hash"
+                @UniqueConstraint(
+                        name = "uk_brawlerhash_event_battledate_ranktier_duplicate",
+                        columnNames = {"brawler_brawlstars_id_hash", "event_brawlstars_id", "battle_date", "solo_rank_tier_range", "duplicate_brawler"}
                 )
         }
 )
@@ -26,11 +27,8 @@ public class BrawlersWinningEntity extends BrawlerWinningBaseEntity {
     @Column(name = "brawlers_winning_id")
     private Long id;
 
-    @Column(name = "brawler_num", updatable = false, nullable = false)
-    private int brawlerNum;
-
-    @Column(name = "brawler_brawlstars_id_hash", length = 60, updatable = false, nullable = false)
-    private String brawlerBrawlStarsIdHash;
+    @Embedded
+    private BattleStatisticsEntityBrawlers brawlers;
 
     protected BrawlersWinningEntity() {
     }

@@ -4,6 +4,7 @@ import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -18,11 +19,8 @@ public class BrawlersWinningCollectionEntity extends BrawlerWinningBaseCollectio
     @Column(name = "brawlers_winning_id")
     private Long id;
 
-    @Column(name = "brawler_num", updatable = false, nullable = false)
-    private int brawlerNum;
-
-    @Column(name = "brawler_brawlstars_id_hash", length = 60, updatable = false, nullable = false)
-    private String brawlerBrawlStarsIdHash;
+    @Embedded
+    private BattleStatisticsCollectionEntityBrawlers brawlers;
 
     protected BrawlersWinningCollectionEntity() {
     }
@@ -33,11 +31,18 @@ public class BrawlersWinningCollectionEntity extends BrawlerWinningBaseCollectio
             long battleEventId,
             LocalDate battleDate,
             long brawlerBrawlStarsId,
-            int brawlerNum,
-            String brawlerBrawlStarsIdHash
+            boolean duplicateBrawler,
+            BattleStatisticsCollectionEntityBrawlers brawlers
     ) {
-        super(soloRankTierRange, trophyRange, battleEventId, battleDate, brawlerBrawlStarsId);
-        this.brawlerNum = brawlerNum;
-        this.brawlerBrawlStarsIdHash = brawlerBrawlStarsIdHash;
+        super(soloRankTierRange, trophyRange, battleEventId, battleDate, brawlerBrawlStarsId, duplicateBrawler);
+        this.brawlers = brawlers;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public BattleStatisticsCollectionEntityBrawlers getBrawlers() {
+        return brawlers;
     }
 }

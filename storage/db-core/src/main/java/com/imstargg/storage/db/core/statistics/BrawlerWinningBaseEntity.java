@@ -9,7 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 
 @MappedSuperclass
-abstract class BrawlerWinningBaseEntity extends BrawlerStatisticsBaseEntity {
+abstract class BrawlerWinningBaseEntity extends BattleStatisticsBaseEntity {
 
     @Nullable
     @Enumerated(EnumType.STRING)
@@ -20,6 +20,9 @@ abstract class BrawlerWinningBaseEntity extends BrawlerStatisticsBaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "trophy_range", length = 25, updatable = false)
     private TrophyRange trophyRange;
+
+    @Column(name = "duplicate_brawler", nullable = false, updatable = false)
+    private boolean duplicateBrawler;
 
     @Column(name = "total_count", updatable = false, nullable = false)
     private int totalCount;

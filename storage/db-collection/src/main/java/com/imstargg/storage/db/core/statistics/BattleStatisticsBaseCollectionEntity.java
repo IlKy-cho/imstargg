@@ -1,12 +1,13 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
 import java.time.LocalDate;
 
 @MappedSuperclass
-abstract class BrawlerStatisticsBaseCollectionEntity {
+abstract class BattleStatisticsBaseCollectionEntity extends BaseEntity {
 
     @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
     private long eventBrawlStarsId;
@@ -17,10 +18,10 @@ abstract class BrawlerStatisticsBaseCollectionEntity {
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    protected BrawlerStatisticsBaseCollectionEntity() {
+    protected BattleStatisticsBaseCollectionEntity() {
     }
 
-    protected BrawlerStatisticsBaseCollectionEntity(
+    protected BattleStatisticsBaseCollectionEntity(
             long eventBrawlStarsId,
             LocalDate battleDate,
             long brawlerBrawlStarsId

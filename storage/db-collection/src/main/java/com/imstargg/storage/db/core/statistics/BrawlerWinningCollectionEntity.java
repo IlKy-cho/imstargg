@@ -18,8 +18,11 @@ public class BrawlerWinningCollectionEntity extends BrawlerWinningBaseCollection
     @Column(name = "brawler_winning_id")
     private Long id;
 
-    @Column(name = "enemy_brawler_brawlstars_id", updatable = false, nullable = false)
+    @Column(name = "enemy_brawler_brawlstars_id", nullable = false, updatable = false)
     private long enemyBrawlerBrawlStarsId;
+
+    @Column(name = "star_player_count", nullable = false)
+    private int starPlayerCount;
 
     protected BrawlerWinningCollectionEntity() {
     }
@@ -30,10 +33,16 @@ public class BrawlerWinningCollectionEntity extends BrawlerWinningBaseCollection
             long battleEventId,
             LocalDate battleDate,
             long brawlerBrawlStarsId,
+            boolean duplicateBrawler,
             long enemyBrawlerBrawlStarsId
     ) {
-        super(soloRankTierRange, trophyRange, battleEventId, battleDate, brawlerBrawlStarsId);
+        super(soloRankTierRange, trophyRange, battleEventId, battleDate, brawlerBrawlStarsId, duplicateBrawler);
         this.enemyBrawlerBrawlStarsId = enemyBrawlerBrawlStarsId;
+        this.starPlayerCount = 0;
+    }
+
+    public void starPlayer() {
+        starPlayerCount++;
     }
 
     public Long getId() {
@@ -42,5 +51,9 @@ public class BrawlerWinningCollectionEntity extends BrawlerWinningBaseCollection
 
     public long getEnemyBrawlerBrawlStarsId() {
         return enemyBrawlerBrawlStarsId;
+    }
+
+    public int getStarPlayerCount() {
+        return starPlayerCount;
     }
 }
