@@ -1,7 +1,11 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.core.enums.TrophyRange;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -11,17 +15,24 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "brawler_rank")
-public class BrawlerRankCollectionEntity extends BrawlerStatisticsBaseCollectionEntity {
+public class BrawlerRankCollectionEntity extends BattleStatisticsBaseCollectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "brawler_rank_id")
     private Long id;
 
-    @Column(name = "rank", updatable = false, nullable = false)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "trophy_range", length = 25, updatable = false, nullable = false)
+    private TrophyRange trophyRange;
+
+    @Embedded
+    private BattleStatisticsCollectionEntityBrawlers brawlers;
+
+    @Column(name = "rank_value", updatable = false, nullable = false)
     private int rank;
 
-    @Column(name = "count", nullable = false)
+    @Column(name = "rank_count", nullable = false)
     private int count;
 
     protected BrawlerRankCollectionEntity() {
@@ -31,10 +42,15 @@ public class BrawlerRankCollectionEntity extends BrawlerStatisticsBaseCollection
             long battleEventId,
             LocalDate battleDate,
             long brawlerBrawlStarsId,
+            TrophyRange trophyRange,
+            BattleStatisticsCollectionEntityBrawlers brawlers,
             int rank
     ) {
         super(battleEventId, battleDate, brawlerBrawlStarsId);
+        this.trophyRange = trophyRange;
+        this.brawlers = brawlers;
         this.rank = rank;
+        this.count = 0;
     }
 
     public void countUp() {
@@ -43,6 +59,14 @@ public class BrawlerRankCollectionEntity extends BrawlerStatisticsBaseCollection
 
     public Long getId() {
         return id;
+    }
+
+    public TrophyRange getTrophyRange() {
+        return trophyRange;
+    }
+
+    public BattleStatisticsCollectionEntityBrawlers getBrawlers() {
+        return brawlers;
     }
 
     public int getRank() {
