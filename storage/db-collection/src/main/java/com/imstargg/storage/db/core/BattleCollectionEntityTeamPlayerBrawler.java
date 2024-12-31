@@ -10,8 +10,7 @@ public class BattleCollectionEntityTeamPlayerBrawler {
 
     private int power;
 
-    @Nullable
-    private Integer trophies;
+    private int trophies;
 
     @Nullable
     private Integer trophyChange;
@@ -23,7 +22,7 @@ public class BattleCollectionEntityTeamPlayerBrawler {
             long brawlStarsId,
             String name,
             int power,
-            @Nullable Integer trophies,
+            int trophies,
             @Nullable Integer trophyChange
     ) {
         this.brawlStarsId = brawlStarsId;
@@ -45,8 +44,7 @@ public class BattleCollectionEntityTeamPlayerBrawler {
         return power;
     }
 
-    @Nullable
-    public Integer getTrophies() {
+    public int getTrophies() {
         return trophies;
     }
 

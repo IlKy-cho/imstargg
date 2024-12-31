@@ -10,8 +10,7 @@ public class BattleEntityTeamPlayerBrawler {
 
     private int power;
 
-    @Nullable
-    private Integer trophies;
+    private int trophies;
 
     @Nullable
     private Integer trophyChange;
@@ -31,8 +30,7 @@ public class BattleEntityTeamPlayerBrawler {
         return power;
     }
 
-    @Nullable
-    public Integer getTrophies() {
+    public int getTrophies() {
         return trophies;
     }
 
