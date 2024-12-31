@@ -222,12 +222,12 @@ create table brawler_winning
 ) engine = innodb;
 
 alter table brawler_winning
-    add constraint uk_brawler_event_battledate_trophy_duplicate
-        unique (brawler_brawlstars_id, event_brawlstars_id, battle_date desc, trophy_range, duplicate_brawler);
+    add constraint uk_event_battledate_brawler_trophy_duplicate
+        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, trophy_range, duplicate_brawler);
 
 alter table brawler_winning
-    add constraint uk_brawler_event_battledate_ranktier_duplicate
-        unique (brawler_brawlstars_id, event_brawlstars_id, battle_date desc, solo_rank_tier_range, duplicate_brawler);
+    add constraint uk_event_battledate_brawler_ranktier_duplicate
+        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, solo_rank_tier_range, duplicate_brawler);
 
 
 
