@@ -34,7 +34,6 @@ public class BattleKeyBuilder {
 
     private byte[] createKeySeed() {
         byte[] joinedPlayerTagBytes = (playerTags.stream()
-                .distinct()
                 .sorted()
                 .collect(Collectors.joining()))
                 .getBytes(StandardCharsets.UTF_8);
