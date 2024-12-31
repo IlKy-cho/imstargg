@@ -87,12 +87,12 @@ public class BattleCollectionEntity extends BaseEntity {
         this.teams = teams;
     }
 
-    public Optional<BattleCollectionEntityTeamPlayer> findMe() {
+    public List<BattleCollectionEntityTeamPlayer> findMe() {
         return teams.stream()
                 .flatMap(List::stream)
                 .filter(teamPlayer -> Objects.equals(
                         teamPlayer.getBrawlStarsTag(), this.getPlayer().getPlayer().getBrawlStarsTag())
-                ).findFirst();
+                ).toList();
     }
 
     public Optional<List<BattleCollectionEntityTeamPlayer>> findMyTeam() {
@@ -103,6 +103,26 @@ public class BattleCollectionEntity extends BaseEntity {
                                 this.getPlayer().getPlayer().getBrawlStarsTag())
                         )
                 ).findFirst();
+    }
+
+    public List<List<BattleCollectionEntityTeamPlayer>> findEnemyTeams() {
+        return teams.stream()
+                .filter(team -> team.stream()
+                        .noneMatch(teamPlayer -> Objects.equals(
+                                teamPlayer.getBrawlStarsTag(),
+                                this.getPlayer().getPlayer().getBrawlStarsTag())
+                        )
+                ).toList();
+    }
+
+    public boolean containsDuplicateBrawler() {
+        List<Long> brawlerIds = teams.stream()
+                .flatMap(List::stream)
+                .map(BattleCollectionEntityTeamPlayer::getBrawler)
+                .map(BattleCollectionEntityTeamPlayerBrawler::getBrawlStarsId)
+                .toList();
+
+        return brawlerIds.size() != brawlerIds.stream().distinct().count();
     }
 
     public Long getId() {

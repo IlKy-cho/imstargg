@@ -59,12 +59,9 @@ public class BattleUpdateApplier {
                 .stream()
                 .filter(battle -> Objects.equals(battle.getType(), BattleType.SOLO_RANKED.getCode()))
                 .max(Comparator.comparing(BattleCollectionEntity::getBattleTime))
-                .flatMap(BattleCollectionEntity::findMe)
-                .ifPresent(latestSoloRankBattlePlayer -> {
-                    Integer soloRankTier = latestSoloRankBattlePlayer.getBrawler().getTrophies();
-                    if (soloRankTier != null) {
-                        playerEntity.updateSoloRankTier(soloRankTier);
-                    }
-                });
+                .map(battle -> battle.findMe().getFirst())
+                .ifPresent(latestSoloRankBattlePlayer ->
+                        playerEntity.updateSoloRankTier(latestSoloRankBattlePlayer.getBrawler().getTrophies())
+                );
     }
 }
