@@ -3,6 +3,8 @@ package com.imstargg.storage.db.core.statistics;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
+import java.util.List;
+
 @Embeddable
 public class BattleStatisticsEntityBrawlers {
 
@@ -13,6 +15,10 @@ public class BattleStatisticsEntityBrawlers {
     private byte[] idHash;
 
     protected BattleStatisticsEntityBrawlers() {
+    }
+
+    public List<Long> getBrawlerBrawlStarsIds() {
+        return new BrawlerIdHash(idHash).ids();
     }
 
     public int getNum() {

@@ -24,8 +24,11 @@ import jakarta.persistence.UniqueConstraint;
 public class BrawlersBattleResultEntity extends BrawlerBattleResultBaseEntity {
 
     @Id
-    @Column(name = "brawlers_winning_id")
+    @Column(name = "brawlers_battle_result_id")
     private Long id;
+
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Embedded
     private BattleStatisticsEntityBrawlers brawlers;
@@ -33,4 +36,15 @@ public class BrawlersBattleResultEntity extends BrawlerBattleResultBaseEntity {
     protected BrawlersBattleResultEntity() {
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
+    }
+
+    public BattleStatisticsEntityBrawlers getBrawlers() {
+        return brawlers;
+    }
 }

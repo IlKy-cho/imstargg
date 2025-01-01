@@ -2,7 +2,6 @@ package com.imstargg.storage.db.core.statistics;
 
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -30,8 +29,8 @@ public class BrawlerRankEntity extends BattleStatisticsBaseEntity {
     @Column(name = "trophy_range", length = 25, updatable = false, nullable = false)
     private TrophyRange trophyRange;
 
-    @Embedded
-    private BattleStatisticsEntityBrawlers brawlers;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "rank_value", updatable = false, nullable = false)
     private int rank;
@@ -44,6 +43,14 @@ public class BrawlerRankEntity extends BattleStatisticsBaseEntity {
 
     public Long getId() {
         return id;
+    }
+
+    public TrophyRange getTrophyRange() {
+        return trophyRange;
+    }
+
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
     public int getRank() {

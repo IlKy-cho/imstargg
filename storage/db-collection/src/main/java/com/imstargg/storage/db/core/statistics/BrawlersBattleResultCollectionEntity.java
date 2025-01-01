@@ -16,8 +16,11 @@ import java.time.LocalDate;
 public class BrawlersBattleResultCollectionEntity extends BrawlerBattleResultBaseCollectionEntity {
 
     @Id
-    @Column(name = "brawlers_winning_id")
+    @Column(name = "brawlers_battle_result_id")
     private Long id;
+
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Embedded
     private BattleStatisticsCollectionEntityBrawlers brawlers;
@@ -26,15 +29,17 @@ public class BrawlersBattleResultCollectionEntity extends BrawlerBattleResultBas
     }
 
     public BrawlersBattleResultCollectionEntity(
-            @Nullable SoloRankTierRange soloRankTierRange,
-            @Nullable TrophyRange trophyRange,
             long battleEventId,
             LocalDate battleDate,
-            long brawlerBrawlStarsId,
+            @Nullable SoloRankTierRange soloRankTierRange,
+            @Nullable TrophyRange trophyRange,
             boolean duplicateBrawler,
+            long brawlerBrawlStarsId,
             BattleStatisticsCollectionEntityBrawlers brawlers
     ) {
-        super(soloRankTierRange, trophyRange, battleEventId, battleDate, brawlerBrawlStarsId, duplicateBrawler);
+
+        super(battleEventId, battleDate, soloRankTierRange, trophyRange, duplicateBrawler);
+        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.brawlers = brawlers;
     }
 

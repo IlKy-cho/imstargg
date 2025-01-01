@@ -40,30 +40,19 @@ abstract class BrawlerBattleResultBaseCollectionEntity extends BattleStatisticsB
     }
 
     protected BrawlerBattleResultBaseCollectionEntity(
-            @Nullable SoloRankTierRange soloRankTierRange,
-            @Nullable TrophyRange trophyRange,
             long battleEventId,
             LocalDate battleDate,
-            long brawlerBrawlStarsId,
+            @Nullable SoloRankTierRange soloRankTierRange,
+            @Nullable TrophyRange trophyRange,
             boolean duplicateBrawler
     ) {
-        super(battleEventId, battleDate, brawlerBrawlStarsId);
+        super(battleEventId, battleDate);
         this.soloRankTierRange = soloRankTierRange;
         this.trophyRange = trophyRange;
         this.duplicateBrawler = duplicateBrawler;
         this.victoryCount = 0;
         this.defeatCount = 0;
         this.drawCount = 0;
-    }
-
-    @Nullable
-    public SoloRankTierRange getSoloRankTierRange() {
-        return soloRankTierRange;
-    }
-
-    @Nullable
-    public TrophyRange getTrophyRange() {
-        return trophyRange;
     }
 
     public void countUp(BattleResult result) {
@@ -78,6 +67,16 @@ abstract class BrawlerBattleResultBaseCollectionEntity extends BattleStatisticsB
                 drawCount++;
                 break;
         }
+    }
+
+    @Nullable
+    public SoloRankTierRange getSoloRankTierRange() {
+        return soloRankTierRange;
+    }
+
+    @Nullable
+    public TrophyRange getTrophyRange() {
+        return trophyRange;
     }
 
     public boolean isDuplicateBrawler() {

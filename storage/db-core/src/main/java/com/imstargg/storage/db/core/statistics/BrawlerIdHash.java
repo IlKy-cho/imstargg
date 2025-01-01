@@ -1,7 +1,9 @@
 package com.imstargg.storage.db.core.statistics;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,6 +21,15 @@ public record BrawlerIdHash(
 
     public int num() {
         return value.length / Long.BYTES;
+    }
+
+    public List<Long> ids() {
+        ByteBuffer buffer = ByteBuffer.wrap(value);
+        List<Long> ids = new ArrayList<>();
+        while (buffer.hasRemaining()) {
+            ids.add(buffer.getLong());
+        }
+        return Collections.unmodifiableList(ids);
     }
 
     @Override

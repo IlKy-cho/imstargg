@@ -61,12 +61,12 @@ public class BrawlerBattleResultStatisticsProcessorWithCache {
 
         loadCache(key);
         return cache.computeIfAbsent(key, k -> new BrawlerBattleResultCollectionEntity(
-                k.soloRankTierRange(),
-                k.trophyRange(),
                 k.eventBrawlStarsId(),
                 k.battleDate(),
-                k.brawlerBrawlStarsId(),
+                k.soloRankTierRange(),
+                k.trophyRange(),
                 k.duplicateBrawler(),
+                k.brawlerBrawlStarsId(),
                 k.enemyBrawlerBrawlStarsId()
         ));
     }
