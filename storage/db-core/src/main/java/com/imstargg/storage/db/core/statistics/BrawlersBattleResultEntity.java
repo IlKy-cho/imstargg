@@ -9,7 +9,7 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawlers_winning",
+        name = "brawlers_battle_result",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_brawlerhash_event_battledate_trophy_duplicate",
@@ -21,7 +21,7 @@ import jakarta.persistence.UniqueConstraint;
                 )
         }
 )
-public class BrawlersWinningEntity extends BrawlerWinningBaseEntity {
+public class BrawlersBattleResultEntity extends BrawlerBattleResultBaseEntity {
 
     @Id
     @Column(name = "brawlers_winning_id")
@@ -30,7 +30,7 @@ public class BrawlersWinningEntity extends BrawlerWinningBaseEntity {
     @Embedded
     private BattleStatisticsEntityBrawlers brawlers;
 
-    protected BrawlersWinningEntity() {
+    protected BrawlersBattleResultEntity() {
     }
 
 }
