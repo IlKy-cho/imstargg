@@ -10,7 +10,7 @@ public class BattleStatisticsEntityBrawlers {
     private int num;
 
     @Column(name = "brawler_brawlstars_id_hash", length = 60, updatable = false, nullable = false)
-    private String idHash;
+    private byte[] idHash;
 
     protected BattleStatisticsEntityBrawlers() {
     }
@@ -19,7 +19,7 @@ public class BattleStatisticsEntityBrawlers {
         return num;
     }
 
-    public String getIdHash() {
+    public byte[] getIdHash() {
         return idHash;
     }
 }

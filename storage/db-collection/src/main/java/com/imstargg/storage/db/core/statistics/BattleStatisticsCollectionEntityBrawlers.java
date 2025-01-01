@@ -10,12 +10,12 @@ public class BattleStatisticsCollectionEntityBrawlers {
     private int num;
 
     @Column(name = "brawler_brawlstars_id_hash", length = 60, updatable = false, nullable = false)
-    private String idHash;
+    private byte[] idHash;
 
     protected BattleStatisticsCollectionEntityBrawlers() {
     }
 
-    public BattleStatisticsCollectionEntityBrawlers(int num, String idHash) {
+    public BattleStatisticsCollectionEntityBrawlers(int num, byte[] idHash) {
         this.num = num;
         this.idHash = idHash;
     }
@@ -24,7 +24,7 @@ public class BattleStatisticsCollectionEntityBrawlers {
         return num;
     }
 
-    public String getIdHash() {
+    public byte[] getIdHash() {
         return idHash;
     }
 }

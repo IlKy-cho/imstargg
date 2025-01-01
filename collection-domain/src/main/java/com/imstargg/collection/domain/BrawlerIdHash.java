@@ -4,7 +4,7 @@ import java.util.List;
 
 public record BrawlerIdHash(
         List<Long> brawlerIds,
-        String value
+        byte[] value
 ) {
 
     public int num() {
