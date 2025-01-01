@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.imstargg.storage.db.core.statistics.QBrawlerWinningCollectionEntity.brawlerWinningCollectionEntity;
+import static com.imstargg.storage.db.core.statistics.QBrawlerBattleResultCollectionEntity.brawlerBattleResultCollectionEntity;
 
 public class BrawlerBattleResultStatisticsProcessorWithCache {
 
@@ -73,13 +73,15 @@ public class BrawlerBattleResultStatisticsProcessorWithCache {
 
     private void loadCache(BrawlerBattleResultKey key) {
         JPAQueryFactoryUtils.getQueryFactory(emf)
-                .selectFrom(brawlerWinningCollectionEntity)
+                .selectFrom(brawlerBattleResultCollectionEntity)
                 .where(
-                        brawlerWinningCollectionEntity.eventBrawlStarsId.eq(key.eventBrawlStarsId()),
-                        brawlerWinningCollectionEntity.battleDate.eq(key.battleDate())
+                        brawlerBattleResultCollectionEntity.eventBrawlStarsId.eq(key.eventBrawlStarsId()),
+                        brawlerBattleResultCollectionEntity.battleDate.eq(key.battleDate())
                 )
                 .fetch()
-                .forEach(brawlerWinning -> cache.put(BrawlerBattleResultKey.of(brawlerWinning), brawlerWinning));
+                .forEach(brawlerBattleResult ->
+                        cache.put(BrawlerBattleResultKey.of(brawlerBattleResult), brawlerBattleResult)
+                );
     }
 
 }
