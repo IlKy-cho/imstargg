@@ -15,8 +15,11 @@ import java.time.LocalDate;
 public class BrawlerBattleResultCollectionEntity extends BrawlerBattleResultBaseCollectionEntity {
 
     @Id
-    @Column(name = "brawler_winning_id")
+    @Column(name = "brawler_battle_result_id")
     private Long id;
+
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "enemy_brawler_brawlstars_id", nullable = false, updatable = false)
     private long enemyBrawlerBrawlStarsId;
@@ -28,15 +31,16 @@ public class BrawlerBattleResultCollectionEntity extends BrawlerBattleResultBase
     }
 
     public BrawlerBattleResultCollectionEntity(
-            @Nullable SoloRankTierRange soloRankTierRange,
-            @Nullable TrophyRange trophyRange,
             long battleEventId,
             LocalDate battleDate,
-            long brawlerBrawlStarsId,
+            @Nullable SoloRankTierRange soloRankTierRange,
+            @Nullable TrophyRange trophyRange,
             boolean duplicateBrawler,
+            long brawlerBrawlStarsId,
             long enemyBrawlerBrawlStarsId
     ) {
-        super(soloRankTierRange, trophyRange, battleEventId, battleDate, brawlerBrawlStarsId, duplicateBrawler);
+        super(battleEventId, battleDate, soloRankTierRange, trophyRange, duplicateBrawler);
+        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.enemyBrawlerBrawlStarsId = enemyBrawlerBrawlStarsId;
         this.starPlayerCount = 0;
     }
@@ -47,6 +51,10 @@ public class BrawlerBattleResultCollectionEntity extends BrawlerBattleResultBase
 
     public Long getId() {
         return id;
+    }
+
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
     public long getEnemyBrawlerBrawlStarsId() {

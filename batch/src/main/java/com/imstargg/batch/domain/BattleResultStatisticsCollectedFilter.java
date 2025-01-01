@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import static com.imstargg.storage.db.core.statistics.QBattleStatisticsCollectedCollectionEntity.battleStatisticsCollectedCollectionEntity;
+import static com.imstargg.storage.db.core.statistics.QBattleResultStatisticsCollectedCollectionEntity.battleResultStatisticsCollectedCollectionEntity;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.orm.jpa.EntityManagerFactoryUtils.getTransactionalEntityManager;
 
@@ -44,9 +44,9 @@ public class BattleResultStatisticsCollectedFilter {
     private Set<String> getExistingBattleKeys(Map<String, BattleCollectionEntity> battleKeyToBattle) {
         return new HashSet<>(
                 getQueryFactory()
-                        .select(battleStatisticsCollectedCollectionEntity.battleKey)
-                        .from(battleStatisticsCollectedCollectionEntity)
-                        .where(battleStatisticsCollectedCollectionEntity.battleKey.in(battleKeyToBattle.keySet()))
+                        .select(battleResultStatisticsCollectedCollectionEntity.battleKey)
+                        .from(battleResultStatisticsCollectedCollectionEntity)
+                        .where(battleResultStatisticsCollectedCollectionEntity.battleKey.in(battleKeyToBattle.keySet()))
                         .fetch()
         );
     }

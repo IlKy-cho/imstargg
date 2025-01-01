@@ -14,9 +14,6 @@ abstract class BattleStatisticsBaseEntity {
     @Column(name = "battle_date", updatable = false, nullable = false)
     private LocalDate battleDate;
 
-    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
-    private long brawlerBrawlStarsId;
-
     protected BattleStatisticsBaseEntity() {
     }
 }

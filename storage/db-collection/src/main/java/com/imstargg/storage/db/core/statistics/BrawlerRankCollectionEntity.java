@@ -2,7 +2,6 @@ package com.imstargg.storage.db.core.statistics;
 
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -26,8 +25,8 @@ public class BrawlerRankCollectionEntity extends BattleStatisticsBaseCollectionE
     @Column(name = "trophy_range", length = 25, updatable = false, nullable = false)
     private TrophyRange trophyRange;
 
-    @Embedded
-    private BattleStatisticsCollectionEntityBrawlers brawlers;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     @Column(name = "rank_value", updatable = false, nullable = false)
     private int rank;
@@ -43,12 +42,11 @@ public class BrawlerRankCollectionEntity extends BattleStatisticsBaseCollectionE
             LocalDate battleDate,
             long brawlerBrawlStarsId,
             TrophyRange trophyRange,
-            BattleStatisticsCollectionEntityBrawlers brawlers,
             int rank
     ) {
-        super(battleEventId, battleDate, brawlerBrawlStarsId);
+        super(battleEventId, battleDate);
         this.trophyRange = trophyRange;
-        this.brawlers = brawlers;
+        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.rank = rank;
         this.count = 0;
     }
@@ -65,8 +63,8 @@ public class BrawlerRankCollectionEntity extends BattleStatisticsBaseCollectionE
         return trophyRange;
     }
 
-    public BattleStatisticsCollectionEntityBrawlers getBrawlers() {
-        return brawlers;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
     public int getRank() {

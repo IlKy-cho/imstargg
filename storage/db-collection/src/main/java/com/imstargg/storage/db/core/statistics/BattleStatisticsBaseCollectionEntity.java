@@ -15,20 +15,15 @@ abstract class BattleStatisticsBaseCollectionEntity extends BaseEntity {
     @Column(name = "battle_date", updatable = false, nullable = false)
     private LocalDate battleDate;
 
-    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
-    private long brawlerBrawlStarsId;
-
     protected BattleStatisticsBaseCollectionEntity() {
     }
 
     protected BattleStatisticsBaseCollectionEntity(
             long eventBrawlStarsId,
-            LocalDate battleDate,
-            long brawlerBrawlStarsId
+            LocalDate battleDate
     ) {
         this.eventBrawlStarsId = eventBrawlStarsId;
         this.battleDate = battleDate;
-        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
     }
 
     public long getEventBrawlStarsId() {
@@ -39,7 +34,4 @@ abstract class BattleStatisticsBaseCollectionEntity extends BaseEntity {
         return battleDate;
     }
 
-    public long getBrawlerBrawlStarsId() {
-        return brawlerBrawlStarsId;
-    }
 }
