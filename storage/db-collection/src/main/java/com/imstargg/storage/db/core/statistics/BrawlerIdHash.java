@@ -1,4 +1,4 @@
-package com.imstargg.collection.domain;
+package com.imstargg.storage.db.core.statistics;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
