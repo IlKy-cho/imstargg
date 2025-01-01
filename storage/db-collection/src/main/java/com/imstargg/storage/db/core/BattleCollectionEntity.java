@@ -95,14 +95,23 @@ public class BattleCollectionEntity extends BaseEntity {
                 ).toList();
     }
 
-    public Optional<List<BattleCollectionEntityTeamPlayer>> findMyTeam() {
+    public Optional<BattleCollectionEntityTeamPlayer> findStarPlayer() {
+        return teams.stream()
+                .flatMap(List::stream)
+                .filter(teamPlayer -> Objects.equals(
+                        teamPlayer.getBrawlStarsTag(), this.getStarPlayerBrawlStarsTag())
+                ).findFirst();
+    }
+
+    public List<BattleCollectionEntityTeamPlayer> findMyTeam() {
         return teams.stream()
                 .filter(team -> team.stream()
                         .anyMatch(teamPlayer -> Objects.equals(
                                 teamPlayer.getBrawlStarsTag(),
                                 this.getPlayer().getPlayer().getBrawlStarsTag())
                         )
-                ).findFirst();
+                ).findFirst()
+                .orElseThrow(() -> new IllegalStateException("내 팀이 없습니다. battleId: " + id));
     }
 
     public List<List<BattleCollectionEntityTeamPlayer>> findEnemyTeams() {
@@ -113,6 +122,15 @@ public class BattleCollectionEntity extends BaseEntity {
                                 this.getPlayer().getPlayer().getBrawlStarsTag())
                         )
                 ).toList();
+    }
+
+    public List<BattleCollectionEntityTeamPlayer> findEnemyTeam() {
+        List<List<BattleCollectionEntityTeamPlayer>> enemyTeams = findEnemyTeams();
+        if (enemyTeams.size() != 1) {
+            throw new IllegalStateException("적 팀이 1개가 아닙니다. battleId: " + id);
+        }
+
+        return enemyTeams.getFirst();
     }
 
     public boolean containsDuplicateBrawler() {

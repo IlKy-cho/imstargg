@@ -25,6 +25,14 @@ public enum BattleResult {
         this.code = code;
     }
 
+    public BattleResult opposite() {
+        return switch (this) {
+            case DEFEAT -> VICTORY;
+            case VICTORY -> DEFEAT;
+            case DRAW -> DRAW;
+        };
+    }
+
     public String getCode() {
         return code;
     }

@@ -25,6 +25,14 @@ public enum BattleType {
         return ENUM_BY_CODE.getOrDefault(code, NOT_FOUND);
     }
 
+    public static boolean statisticsCollected(BattleType battleType) {
+        return battleType == RANKED || battleType == SOLO_RANKED;
+    }
+
+    public static boolean statisticsCollected(String code) {
+        return statisticsCollected(find(code));
+    }
+
     BattleType(String code) {
         this.code = code;
     }
