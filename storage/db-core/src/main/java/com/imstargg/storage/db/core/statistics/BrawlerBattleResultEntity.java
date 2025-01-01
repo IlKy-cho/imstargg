@@ -8,19 +8,19 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_winning",
+        name = "brawler_battle_result",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_event_battledate_brawler_trophy_duplicate",
-                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "trophy_range", "duplicate_brawler"}
+                        name = "uk_event_battledate_brawler_trophy_enemybrawler_duplicate",
+                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "trophy_range", "enemy_brawler_brawlstars_id", "duplicate_brawler"}
                 ),
                 @UniqueConstraint(
-                        name = "uk_event_battledate_brawler_ranktier_duplicate",
-                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "solo_rank_tier_range", "duplicate_brawler"}
+                        name = "uk_event_battledate_brawler_ranktier_enemybrawler_duplicate",
+                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "solo_rank_tier_range", "enemy_brawler_brawlstars_id", "duplicate_brawler"}
                 )
         }
 )
-public class BrawlerWinningEntity extends BrawlerWinningBaseEntity {
+public class BrawlerBattleResultEntity extends BrawlerBattleResultBaseEntity {
 
     @Id
     @Column(name = "brawler_winning_id")
@@ -32,7 +32,7 @@ public class BrawlerWinningEntity extends BrawlerWinningBaseEntity {
     @Column(name = "star_player_count", nullable = false)
     private int starPlayerCount;
 
-    protected BrawlerWinningEntity() {
+    protected BrawlerBattleResultEntity() {
     }
 
 }

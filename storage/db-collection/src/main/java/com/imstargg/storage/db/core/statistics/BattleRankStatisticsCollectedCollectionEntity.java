@@ -9,12 +9,12 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "statistics_collected",
+        name = "battle_rank_statistics_collected",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_battlekey", columnNames = {"battle_key"})
+                @UniqueConstraint(name = "uk_battlekey_rank", columnNames = {"battle_key", "rank_value"})
         }
 )
-public class BattleStatisticsCollectedCollectionEntity extends BaseEntity {
+public class BattleRankStatisticsCollectedCollectionEntity extends BaseEntity {
 
     @Id
     @Column(name = "statistics_collected_id")
@@ -23,11 +23,15 @@ public class BattleStatisticsCollectedCollectionEntity extends BaseEntity {
     @Column(name = "battle_key", updatable = false, nullable = false)
     private String battleKey;
 
-    protected BattleStatisticsCollectedCollectionEntity() {
+    @Column(name = "rank_value", updatable = false, nullable = false)
+    private int rank;
+
+    protected BattleRankStatisticsCollectedCollectionEntity() {
     }
 
-    public BattleStatisticsCollectedCollectionEntity(String battleKey) {
+    public BattleRankStatisticsCollectedCollectionEntity(String battleKey, int rank) {
         this.battleKey = battleKey;
+        this.rank = rank;
     }
 
     public Long getId() {
@@ -36,5 +40,9 @@ public class BattleStatisticsCollectedCollectionEntity extends BaseEntity {
 
     public String getBattleKey() {
         return battleKey;
+    }
+
+    public int getRank() {
+        return rank;
     }
 }

@@ -11,8 +11,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "brawler_winning")
-public class BrawlerWinningCollectionEntity extends BrawlerWinningBaseCollectionEntity {
+@Table(name = "brawler_battle_result")
+public class BrawlerBattleResultCollectionEntity extends BrawlerBattleResultBaseCollectionEntity {
 
     @Id
     @Column(name = "brawler_winning_id")
@@ -24,10 +24,10 @@ public class BrawlerWinningCollectionEntity extends BrawlerWinningBaseCollection
     @Column(name = "star_player_count", nullable = false)
     private int starPlayerCount;
 
-    protected BrawlerWinningCollectionEntity() {
+    protected BrawlerBattleResultCollectionEntity() {
     }
 
-    public BrawlerWinningCollectionEntity(
+    public BrawlerBattleResultCollectionEntity(
             @Nullable SoloRankTierRange soloRankTierRange,
             @Nullable TrophyRange trophyRange,
             long battleEventId,

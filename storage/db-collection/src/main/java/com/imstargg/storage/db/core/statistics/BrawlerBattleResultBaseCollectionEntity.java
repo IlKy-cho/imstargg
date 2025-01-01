@@ -11,7 +11,7 @@ import jakarta.persistence.MappedSuperclass;
 import java.time.LocalDate;
 
 @MappedSuperclass
-abstract class BrawlerWinningBaseCollectionEntity extends BattleStatisticsBaseCollectionEntity {
+abstract class BrawlerBattleResultBaseCollectionEntity extends BattleStatisticsBaseCollectionEntity {
 
     @Nullable
     @Enumerated(EnumType.STRING)
@@ -26,16 +26,19 @@ abstract class BrawlerWinningBaseCollectionEntity extends BattleStatisticsBaseCo
     @Column(name = "duplicate_brawler", nullable = false, updatable = false)
     private boolean duplicateBrawler;
 
-    @Column(name = "total_count", nullable = false)
-    private int totalCount;
+    @Column(name = "victory_count", nullable = false)
+    private int victoryCount;
 
-    @Column(name = "win_count", nullable = false)
-    private int winCount;
+    @Column(name = "defeat_count", nullable = false)
+    private int defeatCount;
 
-    protected BrawlerWinningBaseCollectionEntity() {
+    @Column(name = "draw_count", nullable = false)
+    private int drawCount;
+
+    protected BrawlerBattleResultBaseCollectionEntity() {
     }
 
-    protected BrawlerWinningBaseCollectionEntity(
+    protected BrawlerBattleResultBaseCollectionEntity(
             @Nullable SoloRankTierRange soloRankTierRange,
             @Nullable TrophyRange trophyRange,
             long battleEventId,
@@ -46,18 +49,10 @@ abstract class BrawlerWinningBaseCollectionEntity extends BattleStatisticsBaseCo
         super(battleEventId, battleDate, brawlerBrawlStarsId);
         this.soloRankTierRange = soloRankTierRange;
         this.trophyRange = trophyRange;
-        this.totalCount = 0;
-        this.winCount = 0;
         this.duplicateBrawler = duplicateBrawler;
-    }
-
-    public void win() {
-        winCount++;
-        totalCount++;
-    }
-
-    public void lose() {
-        totalCount++;
+        this.victoryCount = 0;
+        this.defeatCount = 0;
+        this.drawCount = 0;
     }
 
     @Nullable
@@ -74,11 +69,15 @@ abstract class BrawlerWinningBaseCollectionEntity extends BattleStatisticsBaseCo
         return duplicateBrawler;
     }
 
-    public int getTotalCount() {
-        return totalCount;
+    public int getVictoryCount() {
+        return victoryCount;
     }
 
-    public int getWinCount() {
-        return winCount;
+    public int getDefeatCount() {
+        return defeatCount;
+    }
+
+    public int getDrawCount() {
+        return drawCount;
     }
 }
