@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.annotation.Nullable;
@@ -63,6 +64,20 @@ abstract class BrawlerBattleResultBaseCollectionEntity extends BattleStatisticsB
     @Nullable
     public TrophyRange getTrophyRange() {
         return trophyRange;
+    }
+
+    public void countUp(BattleResult result) {
+        switch (result) {
+            case VICTORY:
+                victoryCount++;
+                break;
+            case DEFEAT:
+                defeatCount++;
+                break;
+            case DRAW:
+                drawCount++;
+                break;
+        }
     }
 
     public boolean isDuplicateBrawler() {
