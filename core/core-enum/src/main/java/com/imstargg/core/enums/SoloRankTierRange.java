@@ -1,5 +1,7 @@
 package com.imstargg.core.enums;
 
+import javax.annotation.Nullable;
+
 public enum SoloRankTierRange {
 
     BRONZE,
@@ -25,5 +27,12 @@ public enum SoloRankTierRange {
 
     public static SoloRankTierRange of(int value) {
         return SoloRankTierRange.of(SoloRankTier.of(value));
+    }
+
+    @Nullable
+    public static SoloRankTierRange of(BattleType battleType, int value) {
+        return battleType == BattleType.SOLO_RANKED
+                ? SoloRankTierRange.of(value)
+                : null;
     }
 }
