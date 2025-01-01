@@ -1,5 +1,7 @@
 package com.imstargg.core.enums;
 
+import javax.annotation.Nullable;
+
 public enum TrophyRange {
 
     TROPHY_0_500,
@@ -21,5 +23,12 @@ public enum TrophyRange {
         } else {
             return TROPHY_2000_OVER;
         }
+    }
+
+    @Nullable
+    public static TrophyRange of(BattleType battleType, int trophy) {
+        return battleType == BattleType.RANKED
+                ? TrophyRange.of(trophy)
+                : null;
     }
 }

@@ -1,6 +1,5 @@
 package com.imstargg.batch.domain;
 
-import com.imstargg.batch.util.BattleUtils;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
@@ -32,8 +31,8 @@ public record BrawlerBattleResultKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().toLocalDate(),
                 myPlayer.getBrawler().getBrawlStarsId(),
-                BattleUtils.trophyRange(battleType, myPlayer.getBrawler().getTrophies()),
-                BattleUtils.soloRankTierRange(battleType, myPlayer.getBrawler().getTrophies()),
+                TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies()),
+                SoloRankTierRange.of(battleType, myPlayer.getBrawler().getTrophies()),
                 enemyPlayer.getBrawler().getBrawlStarsId(),
                 battle.containsDuplicateBrawler()
         );
