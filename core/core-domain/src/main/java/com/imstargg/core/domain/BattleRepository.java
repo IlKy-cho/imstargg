@@ -81,16 +81,9 @@ public class BattleRepository {
         return new BattlePlayer(
                 new BrawlStarsTag(player.getBrawlStarsTag()),
                 player.getName(),
-                getSoloRankTier(battleType, player),
+                SoloRankTier.of(battleType, player.getBrawler().getTrophies()),
                 mapBattlePlayerBrawler(battleType, player)
         );
-    }
-
-    private SoloRankTier getSoloRankTier(BattleType battleType, BattleEntityTeamPlayer player) {
-        if (BattleType.SOLO_RANKED.equals(battleType) && player.getBrawler().getTrophies() != null) {
-            return SoloRankTier.of(player.getBrawler().getTrophies());
-        }
-        return null;
     }
 
     private BattlePlayerBrawler mapBattlePlayerBrawler(BattleType battleType, BattleEntityTeamPlayer player) {
