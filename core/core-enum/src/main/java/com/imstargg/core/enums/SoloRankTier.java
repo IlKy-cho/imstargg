@@ -1,5 +1,7 @@
 package com.imstargg.core.enums;
 
+import javax.annotation.Nullable;
+
 public enum SoloRankTier {
 
     BRONZE_1,
@@ -51,5 +53,13 @@ public enum SoloRankTier {
             case 19 -> MASTER;
             default -> throw new IllegalArgumentException("알 수 없는 티어입니다. value=" + value);
         };
+    }
+
+    @Nullable
+    public static SoloRankTier of(BattleType battleType, int value) {
+        if (battleType == BattleType.SOLO_RANKED) {
+            return of(value);
+        }
+        return null;
     }
 }
