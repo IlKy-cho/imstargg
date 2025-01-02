@@ -32,7 +32,7 @@ class UpdatedUnknownPlayerDeleteJobConfig {
 
     private static final String JOB_NAME = "updatedUnknownPlayerDeleteJob";
     private static final String STEP_NAME = "updatedUnknownPlayerDeleteStep";
-    private static final int CHUNK_SIZE = 100;
+    private static final int CHUNK_SIZE = 1000;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
