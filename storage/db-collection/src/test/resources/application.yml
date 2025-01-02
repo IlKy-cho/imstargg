@@ -1,6 +1,6 @@
 spring:
   config.import:
-    - db-core.yml
+    - db-core-test.yml
 
 #logging.level:
 #  org.hibernate:

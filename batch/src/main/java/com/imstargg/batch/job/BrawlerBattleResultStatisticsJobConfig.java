@@ -1,9 +1,9 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BrawlerBattleResultStatisticsProcessorWithCache;
-import com.imstargg.batch.domain.BrawlersBattleResultStatisticsProcessorWithCache;
+import com.imstargg.batch.domain.BrawlerBattleResultStatisticsProcessor;
+import com.imstargg.batch.domain.BrawlersBattleResultStatisticsProcessor;
+import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.job.support.PeriodDateTimeJobParameter;
 import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
@@ -21,6 +21,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.Objects;
 
 import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
@@ -55,14 +57,14 @@ class BrawlerBattleResultStatisticsJobConfig {
         return jobBuilder
                 .start(step())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
-                .validator(new DefaultJobParametersValidator(new String[]{"period.from", "period.to"}, new String[]{}))
+                .validator(new DefaultJobParametersValidator(new String[]{"date"}, new String[]{}))
                 .build();
     }
 
-    @Bean(JOB_NAME + "PeriodDateTimeJobParameter")
+    @Bean(JOB_NAME + "DateJobParameter")
     @JobScope
-    PeriodDateTimeJobParameter periodDateTimeJobParameter() {
-        return new PeriodDateTimeJobParameter();
+    DateJobParameter dateJobParameter() {
+        return new DateJobParameter();
     }
 
     @Bean(STEP_NAME)
@@ -82,14 +84,19 @@ class BrawlerBattleResultStatisticsJobConfig {
     QuerydslPagingItemReader<BattleCollectionEntity> reader() {
         var reader = new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
                 .selectFrom(battleCollectionEntity)
+                .join(battleCollectionEntity.player.player).fetchJoin()
                 .where(
-                        battleCollectionEntity.createdAt.goe(periodDateTimeJobParameter().getFrom()),
-                        battleCollectionEntity.createdAt.lt(periodDateTimeJobParameter().getTo())
+                        battleCollectionEntity.battleTime.goe(
+                                Objects.requireNonNull(dateJobParameter().getDate()).atStartOfDay()
+                        ),
+                        battleCollectionEntity.battleTime.lt(
+                                Objects.requireNonNull(dateJobParameter().getDate()).plusDays(1).atStartOfDay()
+                        )
                 )
-                .orderBy(battleCollectionEntity.createdAt.desc())
+                .orderBy(battleCollectionEntity.battleTime.desc())
         );
         reader.setTransacted(false);
-        reader.setSaveState(true);
+        reader.setSaveState(false);
         return reader;
     }
 
@@ -120,8 +127,8 @@ class BrawlerBattleResultStatisticsJobConfig {
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    BrawlerResultStatisticsJobItemWriter writer() {
-        return new BrawlerResultStatisticsJobItemWriter(
+    BrawlerBattleResultStatisticsJobItemWriter writer() {
+        return new BrawlerBattleResultStatisticsJobItemWriter(
                 emf,
                 brawlerBattleResultStatisticsProcessor(),
                 brawlersBattleResultStatisticsProcessor()
@@ -131,14 +138,14 @@ class BrawlerBattleResultStatisticsJobConfig {
 
     @Bean
     @StepScope
-    BrawlerBattleResultStatisticsProcessorWithCache brawlerBattleResultStatisticsProcessor() {
-        return new BrawlerBattleResultStatisticsProcessorWithCache(emf);
+    BrawlerBattleResultStatisticsProcessor brawlerBattleResultStatisticsProcessor() {
+        return new BrawlerBattleResultStatisticsProcessor();
     }
 
     @Bean
     @StepScope
-    BrawlersBattleResultStatisticsProcessorWithCache brawlersBattleResultStatisticsProcessor() {
-        return new BrawlersBattleResultStatisticsProcessorWithCache(emf);
+    BrawlersBattleResultStatisticsProcessor brawlersBattleResultStatisticsProcessor() {
+        return new BrawlersBattleResultStatisticsProcessor();
     }
 
 }
