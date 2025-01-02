@@ -16,6 +16,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.job.builder.JobBuilder;
+import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.builder.TaskletStepBuilder;
@@ -67,6 +68,7 @@ class BrawlStarsNewsUpdateJobConfig {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
                 .start(step())
+                .incrementer(new RunIdIncrementer())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .build();
     }

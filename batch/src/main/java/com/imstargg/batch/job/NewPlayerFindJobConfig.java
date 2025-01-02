@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.Clock;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,7 +38,6 @@ class NewPlayerFindJobConfig {
     private static final String STEP_NAME = "newPlayerFindStep";
     private static final int CHUNK_SIZE = 100;
 
-    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
@@ -47,13 +45,11 @@ class NewPlayerFindJobConfig {
     private final AlertManager alertManager;
 
     NewPlayerFindJobConfig(
-            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             AlertManager alertManager
     ) {
-        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
