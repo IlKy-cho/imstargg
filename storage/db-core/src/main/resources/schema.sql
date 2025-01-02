@@ -180,9 +180,9 @@ alter table brawlstars_image
 
 -- Statistics
 
-create table brawler_rank
+create table brawler_rank_stats
 (
-    brawler_rank_id       bigint       not null auto_increment,
+    brawler_rank_stats_id       bigint       not null auto_increment,
     event_brawlstars_id   bigint       not null,
     battle_date           date         not null,
     trophy_range          varchar(25)  not null,
@@ -192,17 +192,17 @@ create table brawler_rank
     created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted               boolean      not null default false,
-    primary key (brawler_rank_id)
+    primary key (brawler_rank_stats_id)
 ) engine = innodb;
 
-alter table brawler_rank
-    add constraint uk_brawlerhash_event_battledate_trophy_rank
-        unique (brawler_brawlstars_id_hash, event_brawlstars_id, battle_date desc, trophy_range, rank_value);
+alter table brawler_rank_stats
+    add constraint uk_event_battledate_brawler_trophy_rank
+        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, trophy_range, rank_value);
 
 
-create table brawler_battle_result
+create table brawler_battle_result_stats
 (
-    brawler_battle_result_id    bigint       not null auto_increment,
+    brawler_battle_result_stats_id    bigint       not null auto_increment,
     event_brawlstars_id         bigint       not null,
     battle_date                 date         not null,
     brawler_brawlstars_id       bigint       not null,
@@ -217,15 +217,15 @@ create table brawler_battle_result
     created_at                  timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at                  timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted                     boolean      not null default false,
-    primary key (brawler_battle_result_id)
+    primary key (brawler_battle_result_stats_id)
 ) engine = innodb;
 
-alter table brawler_battle_result
+alter table brawler_battle_result_stats
     add constraint uk_event_battledate_brawler_enemybrawler_trophy_duplicate
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, enemy_brawler_brawlstars_id, trophy_range,
                 duplicate_brawler);
 
-alter table brawler_battle_result
+alter table brawler_battle_result_stats
     add constraint uk_event_battledate_brawler_enemybrawler_ranktier_duplicate
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, enemy_brawler_brawlstars_id,
                 solo_rank_tier_range,
@@ -233,9 +233,9 @@ alter table brawler_battle_result
 
 
 
-create table brawlers_battle_result
+create table brawlers_battle_result_stats
 (
-    brawlers_battle_result_id  bigint        not null auto_increment,
+    brawlers_battle_result_stats_id  bigint        not null auto_increment,
     event_brawlstars_id        bigint        not null,
     battle_date                date          not null,
     brawler_num                int           not null,
@@ -250,47 +250,47 @@ create table brawlers_battle_result
     created_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6),
     updated_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted                    boolean       not null default false,
-    primary key (brawlers_battle_result_id)
+    primary key (brawlers_battle_result_stats_id)
 ) engine = innodb;
 
-alter table brawlers_battle_result
+alter table brawlers_battle_result_stats
     add constraint uk_event_battledate_brawler_trophy_duplicate
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range,
                 duplicate_brawler);
 
-alter table brawlers_battle_result
+alter table brawlers_battle_result_stats
     add constraint uk_event_battledate_brawler_ranktier_duplicate
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash,
                 solo_rank_tier_range, duplicate_brawler);
 
 
 
-create table battle_result_statistics_collected
+create table stats_collected_battle_result
 (
-    battle_result_statistics_collected_id bigint       not null auto_increment,
+    stats_collected_battle_result_id bigint       not null auto_increment,
     battle_key                            varchar(255) not null,
     created_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted                               boolean      not null default false,
-    primary key (battle_result_statistics_collected_id)
+    primary key (stats_collected_battle_result_id)
 ) engine = innodb;
 
-alter table battle_result_statistics_collected
+alter table stats_collected_battle_result
     add constraint uk_battlekey unique (battle_key);
 
 
-create table battle_rank_statistics_collected
+create table stats_collected_battle_rank
 (
-    battle_rank_statistics_collected_id bigint       not null auto_increment,
+    stats_collected_battle_rank_id bigint       not null auto_increment,
     battle_key                          varchar(255) not null,
     rank_value                          int          not null,
     created_at                          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at                          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted                             boolean      not null default false,
-    primary key (battle_rank_statistics_collected_id)
+    primary key (stats_collected_battle_rank_id)
 ) engine = innodb;
 
-alter table battle_rank_statistics_collected
+alter table stats_collected_battle_rank
     add constraint uk_battlekey_rank unique (battle_key, rank_value);
 
 

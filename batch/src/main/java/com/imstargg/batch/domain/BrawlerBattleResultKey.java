@@ -5,7 +5,7 @@ import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
@@ -38,7 +38,7 @@ public record BrawlerBattleResultKey(
         );
     }
 
-    public static BrawlerBattleResultKey of(BrawlerBattleResultCollectionEntity brawlerBattleResult) {
+    public static BrawlerBattleResultKey of(BrawlerBattleResultStatisticsCollectionEntity brawlerBattleResult) {
         return new BrawlerBattleResultKey(
                 brawlerBattleResult.getEventBrawlStarsId(),
                 brawlerBattleResult.getBattleDate(),
