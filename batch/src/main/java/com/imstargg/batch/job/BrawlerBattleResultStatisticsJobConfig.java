@@ -56,7 +56,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
         return jobBuilder
                 .start(step())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
-                .validator(new DefaultJobParametersValidator(new String[]{"date"}, new String[]{}))
+                .validator(new DefaultJobParametersValidator(new String[]{"period.from", "period.to"}, new String[]{}))
                 .build();
     }
 

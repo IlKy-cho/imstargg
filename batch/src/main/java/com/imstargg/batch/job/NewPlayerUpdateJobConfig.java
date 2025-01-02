@@ -31,7 +31,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.Clock;
 import java.util.concurrent.Future;
 
 import static com.imstargg.storage.db.core.QUnknownPlayerCollectionEntity.unknownPlayerCollectionEntity;
@@ -46,7 +45,6 @@ class NewPlayerUpdateJobConfig {
     private static final String STEP_NAME = "newPlayerUpdateStep";
 
     private final NewPlayerUpdateJobConfig.Properties properties;
-    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
@@ -57,7 +55,6 @@ class NewPlayerUpdateJobConfig {
 
     NewPlayerUpdateJobConfig(
             NewPlayerUpdateJobConfig.Properties properties,
-            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
@@ -66,7 +63,6 @@ class NewPlayerUpdateJobConfig {
             BrawlStarsClient brawlStarsClient
     ) {
         this.properties = properties;
-        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
