@@ -74,7 +74,7 @@ public class BrawlerResultStatisticsJobItemWriter implements ItemWriter<BattleCo
 
         var brawlerBattleResultList = brawlerBattleResultStatisticsProcessor.process(battles);
         var brawlersBattleResultList = brawlersBattleResultStatisticsProcessor.process(battles);
-        var collectedBattleList = chunk.getItems().stream()
+        var collectedBattleList = battles.stream()
                 .map(battle -> new StatisticsCollectedBattleResultCollectionEntity(battle.getBattleKey()))
                 .toList();
 
