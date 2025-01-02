@@ -1,6 +1,5 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BattleResultStatisticsCollectedFilter;
 import com.imstargg.batch.domain.BrawlerBattleResultStatisticsProcessorWithCache;
 import com.imstargg.batch.domain.BrawlersBattleResultStatisticsProcessorWithCache;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
@@ -26,7 +25,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
-public class BrawlerBattleResultStatisticsJobConfig {
+class BrawlerBattleResultStatisticsJobConfig {
 
     private static final String JOB_NAME = "brawlerBattleResultStatisticsJob";
     private static final String STEP_NAME = "brawlerBattleResultStatisticsStep";
@@ -38,7 +37,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
 
     private final AlertManager alertManager;
 
-    public BrawlerBattleResultStatisticsJobConfig(
+    BrawlerBattleResultStatisticsJobConfig(
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
@@ -124,17 +123,11 @@ public class BrawlerBattleResultStatisticsJobConfig {
     BrawlerResultStatisticsJobItemWriter writer() {
         return new BrawlerResultStatisticsJobItemWriter(
                 emf,
-                battleResultStatisticsCollectedFilter(),
                 brawlerBattleResultStatisticsProcessor(),
                 brawlersBattleResultStatisticsProcessor()
         );
     }
 
-    @Bean
-    @StepScope
-    BattleResultStatisticsCollectedFilter battleResultStatisticsCollectedFilter() {
-        return new BattleResultStatisticsCollectedFilter(emf);
-    }
 
     @Bean
     @StepScope
