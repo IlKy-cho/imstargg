@@ -264,36 +264,6 @@ alter table brawlers_battle_result_stats
                 solo_rank_tier_range, duplicate_brawler);
 
 
-
-create table stats_collected_battle_result
-(
-    stats_collected_battle_result_id bigint       not null auto_increment,
-    battle_key                            varchar(255) not null,
-    created_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at                            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                               boolean      not null default false,
-    primary key (stats_collected_battle_result_id)
-) engine = innodb;
-
-alter table stats_collected_battle_result
-    add constraint uk_battlekey unique (battle_key);
-
-
-create table stats_collected_battle_rank
-(
-    stats_collected_battle_rank_id bigint       not null auto_increment,
-    battle_key                          varchar(255) not null,
-    rank_value                          int          not null,
-    created_at                          timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at                          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                             boolean      not null default false,
-    primary key (stats_collected_battle_rank_id)
-) engine = innodb;
-
-alter table stats_collected_battle_rank
-    add constraint uk_battlekey_rank unique (battle_key, rank_value);
-
-
 -- BrawlStars
 
 create table brawlstars_news
