@@ -36,7 +36,7 @@ class NewPlayerFindJobConfig {
 
     private static final String JOB_NAME = "newPlayerFindJob";
     private static final String STEP_NAME = "newPlayerFindStep";
-    private static final int CHUNK_SIZE = 100;
+    private static final int CHUNK_SIZE = 1000;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;

@@ -30,7 +30,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
 
     private static final String JOB_NAME = "brawlerBattleResultStatisticsJob";
     private static final String STEP_NAME = "brawlerBattleResultStatisticsStep";
-    private static final int CHUNK_SIZE = 100;
+    private static final int CHUNK_SIZE = 1000;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
