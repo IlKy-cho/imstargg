@@ -1,16 +1,14 @@
-package com.imstargg.batch.domain;
-
-import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
+package com.imstargg.storage.db.core;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerCombinationBuilder {
+public class BattlePlayerCombinationBuilder {
 
     private final List<BattleCollectionEntityTeamPlayer> players;
     private final List<List<BattleCollectionEntityTeamPlayer>> result = new ArrayList<>();
 
-    public PlayerCombinationBuilder(List<BattleCollectionEntityTeamPlayer> players) {
+    public BattlePlayerCombinationBuilder(List<BattleCollectionEntityTeamPlayer> players) {
         if (players.size() < 2) {
             throw new IllegalArgumentException("플레이어가 2명 이상이어야 합니다.");
         }

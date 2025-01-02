@@ -1,35 +1,34 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BrawlerBattleResultStatisticsProcessorWithCache;
-import com.imstargg.batch.domain.BrawlersBattleResultStatisticsProcessorWithCache;
+import com.imstargg.batch.domain.BrawlerBattleResultStatisticsProcessor;
+import com.imstargg.batch.domain.BrawlersBattleResultStatisticsProcessor;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
+import jakarta.annotation.PreDestroy;
 import jakarta.persistence.EntityManagerFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.List;
-
-public class BrawlerResultStatisticsJobItemWriter implements ItemWriter<BattleCollectionEntity>, InitializingBean {
-
-    private static final Logger log = LoggerFactory.getLogger(BrawlerResultStatisticsJobItemWriter.class);
+/**
+ * 업데이트 로직이 필요할 경우, job 의 date 를 통해 해당 날짜의 데이터 삭제하고 다시 insert 하는 방식으로 처리 해야함
+ * 인덱스도 필요함
+ */
+public class BrawlerBattleResultStatisticsJobItemWriter implements ItemWriter<BattleCollectionEntity>, InitializingBean {
 
     private final JpaItemWriter<BrawlerBattleResultStatisticsCollectionEntity> brawlerBattleResultItemWriter;
     private final JpaItemWriter<BrawlersBattleResultStatisticsCollectionEntity> brawlersBattleResultItemWriter;
-    private final BrawlerBattleResultStatisticsProcessorWithCache brawlerBattleResultStatisticsProcessor;
-    private final BrawlersBattleResultStatisticsProcessorWithCache brawlersBattleResultStatisticsProcessor;
+    private final BrawlerBattleResultStatisticsProcessor brawlerBattleResultStatisticsProcessor;
+    private final BrawlersBattleResultStatisticsProcessor brawlersBattleResultStatisticsProcessor;
 
-    public BrawlerResultStatisticsJobItemWriter(
+    public BrawlerBattleResultStatisticsJobItemWriter(
             JpaItemWriter<BrawlerBattleResultStatisticsCollectionEntity> brawlerBattleResultItemWriter,
             JpaItemWriter<BrawlersBattleResultStatisticsCollectionEntity> brawlersBattleResultItemWriter,
-            BrawlerBattleResultStatisticsProcessorWithCache brawlerBattleResultStatisticsProcessor,
-            BrawlersBattleResultStatisticsProcessorWithCache brawlersBattleResultStatisticsProcessor
+            BrawlerBattleResultStatisticsProcessor brawlerBattleResultStatisticsProcessor,
+            BrawlersBattleResultStatisticsProcessor brawlersBattleResultStatisticsProcessor
     ) {
         this.brawlerBattleResultItemWriter = brawlerBattleResultItemWriter;
         this.brawlersBattleResultItemWriter = brawlersBattleResultItemWriter;
@@ -37,19 +36,19 @@ public class BrawlerResultStatisticsJobItemWriter implements ItemWriter<BattleCo
         this.brawlersBattleResultStatisticsProcessor = brawlersBattleResultStatisticsProcessor;
     }
 
-    public BrawlerResultStatisticsJobItemWriter(
+    public BrawlerBattleResultStatisticsJobItemWriter(
             EntityManagerFactory emf,
-            BrawlerBattleResultStatisticsProcessorWithCache brawlerBattleResultStatisticsProcessor,
-            BrawlersBattleResultStatisticsProcessorWithCache brawlersBattleResultStatisticsProcessor
+            BrawlerBattleResultStatisticsProcessor brawlerBattleResultStatisticsProcessor,
+            BrawlersBattleResultStatisticsProcessor brawlersBattleResultStatisticsProcessor
     ) {
         this(
                 new JpaItemWriterBuilder<BrawlerBattleResultStatisticsCollectionEntity>()
                         .entityManagerFactory(emf)
-                        .usePersist(false)
+                        .usePersist(true)
                         .build(),
                 new JpaItemWriterBuilder<BrawlersBattleResultStatisticsCollectionEntity>()
                         .entityManagerFactory(emf)
-                        .usePersist(false)
+                        .usePersist(true)
                         .build(),
                 brawlerBattleResultStatisticsProcessor,
                 brawlersBattleResultStatisticsProcessor
@@ -58,13 +57,20 @@ public class BrawlerResultStatisticsJobItemWriter implements ItemWriter<BattleCo
 
     @Override
     public void write(Chunk<? extends BattleCollectionEntity> chunk) throws Exception {
-        List<? extends BattleCollectionEntity> battles = chunk.getItems();
+        chunk.getItems().forEach(battle -> {
+            brawlerBattleResultStatisticsProcessor.process(battle);
+            brawlersBattleResultStatisticsProcessor.process(battle);
+        });
+    }
 
-        var brawlerBattleResultList = brawlerBattleResultStatisticsProcessor.process(battles);
-        var brawlersBattleResultList = brawlersBattleResultStatisticsProcessor.process(battles);
-
-        brawlerBattleResultItemWriter.write(new Chunk<>(brawlerBattleResultList));
-        brawlersBattleResultItemWriter.write(new Chunk<>(brawlersBattleResultList));
+    @PreDestroy
+    void writeStats() {
+        brawlerBattleResultItemWriter.write(
+                new Chunk<>(brawlerBattleResultStatisticsProcessor.result())
+        );
+        brawlersBattleResultItemWriter.write(
+                new Chunk<>(brawlersBattleResultStatisticsProcessor.result())
+        );
     }
 
     @Override

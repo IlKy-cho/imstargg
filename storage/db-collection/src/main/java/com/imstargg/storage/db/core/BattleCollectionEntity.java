@@ -88,6 +88,13 @@ public class BattleCollectionEntity extends BaseEntity {
         this.teams = teams;
     }
 
+    public boolean amIStarPlayer() {
+        return Objects.equals(
+                this.getStarPlayerBrawlStarsTag(),
+                this.getPlayer().getPlayer().getBrawlStarsTag()
+        );
+    }
+
     public List<BattleCollectionEntityTeamPlayer> findMe() {
         return teams.stream()
                 .flatMap(List::stream)
@@ -140,6 +147,12 @@ public class BattleCollectionEntity extends BaseEntity {
                         .flatMap(Collection::stream)
                         .map(enemy -> new BattlePlayerCombination(me, enemy))
                 ).toList();
+    }
+
+    public List<BattleMyTeamCombination> myTeamCombinations() {
+        return new BattlePlayerCombinationBuilder(findMyTeam()).build().stream()
+                .map(BattleMyTeamCombination::new)
+                .toList();
     }
 
     public boolean containsDuplicateBrawler() {
