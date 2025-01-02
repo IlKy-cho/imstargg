@@ -47,6 +47,10 @@ public class BrawlersBattleResultCollectionEntity extends BrawlerBattleResultBas
         return id;
     }
 
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
+    }
+
     public BattleStatisticsCollectionEntityBrawlers getBrawlers() {
         return brawlers;
     }
