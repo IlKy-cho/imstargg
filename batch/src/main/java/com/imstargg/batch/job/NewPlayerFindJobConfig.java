@@ -109,14 +109,14 @@ class NewPlayerFindJobConfig {
         return new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
                 .selectFrom(battleCollectionEntity)
                 .where(
-                        battleCollectionEntity.createdAt.goe(
+                        battleCollectionEntity.battleTime.goe(
                                 Objects.requireNonNull(dateJobParameter().getDate()).atStartOfDay()
                         ),
-                        battleCollectionEntity.createdAt.lt(
+                        battleCollectionEntity.battleTime.lt(
                                 Objects.requireNonNull(dateJobParameter().getDate()).plusDays(1).atStartOfDay()
                         )
                 )
-                .orderBy(battleCollectionEntity.createdAt.desc())
+                .orderBy(battleCollectionEntity.battleTime.desc())
         );
     }
 
