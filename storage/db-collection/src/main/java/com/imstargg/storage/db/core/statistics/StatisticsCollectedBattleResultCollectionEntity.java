@@ -9,24 +9,24 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "battle_result_statistics_collected",
+        name = "stats_collected_battle_result",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_battlekey", columnNames = {"battle_key"})
         }
 )
-public class BattleResultStatisticsCollectedCollectionEntity extends BaseEntity {
+public class StatisticsCollectedBattleResultCollectionEntity extends BaseEntity {
 
     @Id
-    @Column(name = "statistics_collected_id")
+    @Column(name = "stats_collected_battle_result_id")
     private Long id;
 
     @Column(name = "battle_key", updatable = false, nullable = false)
     private String battleKey;
 
-    protected BattleResultStatisticsCollectedCollectionEntity() {
+    protected StatisticsCollectedBattleResultCollectionEntity() {
     }
 
-    public BattleResultStatisticsCollectedCollectionEntity(String battleKey) {
+    public StatisticsCollectedBattleResultCollectionEntity(String battleKey) {
         this.battleKey = battleKey;
     }
 

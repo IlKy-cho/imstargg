@@ -5,20 +5,24 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import java.time.LocalDate;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "brawler_rank")
-public class BrawlerRankCollectionEntity extends BattleStatisticsBaseCollectionEntity {
+@Table(
+        name = "brawler_rank_stats",
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_brawlerhash_event_battledate_trophy_rank",
+                        columnNames = {"brawler_brawlstars_id_hash", "event_brawlstars_id", "battle_date", "trophy_range", "rank_value"}
+                )
+        }
+)
+public class BrawlerRankStatisticsEntity extends BattleStatisticsBaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brawler_rank_id")
+    @Column(name = "brawler_rank_stats_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -31,28 +35,10 @@ public class BrawlerRankCollectionEntity extends BattleStatisticsBaseCollectionE
     @Column(name = "rank_value", updatable = false, nullable = false)
     private int rank;
 
-    @Column(name = "rank_count", nullable = false)
+    @Column(name = "rank_count", updatable = false, nullable = false)
     private int count;
 
-    protected BrawlerRankCollectionEntity() {
-    }
-
-    public BrawlerRankCollectionEntity(
-            long battleEventId,
-            LocalDate battleDate,
-            long brawlerBrawlStarsId,
-            TrophyRange trophyRange,
-            int rank
-    ) {
-        super(battleEventId, battleDate);
-        this.trophyRange = trophyRange;
-        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
-        this.rank = rank;
-        this.count = 0;
-    }
-
-    public void countUp() {
-        count++;
+    protected BrawlerRankStatisticsEntity() {
     }
 
     public Long getId() {

@@ -4,9 +4,9 @@ import com.imstargg.batch.domain.BattleResultStatisticsCollectedFilter;
 import com.imstargg.batch.domain.BrawlerBattleResultStatisticsProcessorWithCache;
 import com.imstargg.batch.domain.BrawlersBattleResultStatisticsProcessorWithCache;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.statistics.BattleResultStatisticsCollectedCollectionEntity;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultCollectionEntity;
-import com.imstargg.storage.db.core.statistics.BrawlersBattleResultCollectionEntity;
+import com.imstargg.storage.db.core.statistics.StatisticsCollectedBattleResultCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,17 +20,17 @@ public class BrawlerResultStatisticsJobItemWriter implements ItemWriter<BattleCo
 
     private static final Logger log = LoggerFactory.getLogger(BrawlerResultStatisticsJobItemWriter.class);
 
-    private final JpaItemWriter<BattleResultStatisticsCollectedCollectionEntity> battleStatisticsCollectedItemWriter;
-    private final JpaItemWriter<BrawlerBattleResultCollectionEntity> brawlerBattleResultItemWriter;
-    private final JpaItemWriter<BrawlersBattleResultCollectionEntity> brawlersBattleResultItemWriter;
+    private final JpaItemWriter<StatisticsCollectedBattleResultCollectionEntity> battleStatisticsCollectedItemWriter;
+    private final JpaItemWriter<BrawlerBattleResultStatisticsCollectionEntity> brawlerBattleResultItemWriter;
+    private final JpaItemWriter<BrawlersBattleResultStatisticsCollectionEntity> brawlersBattleResultItemWriter;
     private final BattleResultStatisticsCollectedFilter battleResultStatisticsCollectedFilter;
     private final BrawlerBattleResultStatisticsProcessorWithCache brawlerBattleResultStatisticsProcessor;
     private final BrawlersBattleResultStatisticsProcessorWithCache brawlersBattleResultStatisticsProcessor;
 
     public BrawlerResultStatisticsJobItemWriter(
-            JpaItemWriter<BattleResultStatisticsCollectedCollectionEntity> battleStatisticsCollectedItemWriter,
-            JpaItemWriter<BrawlerBattleResultCollectionEntity> brawlerBattleResultItemWriter,
-            JpaItemWriter<BrawlersBattleResultCollectionEntity> brawlersBattleResultItemWriter,
+            JpaItemWriter<StatisticsCollectedBattleResultCollectionEntity> battleStatisticsCollectedItemWriter,
+            JpaItemWriter<BrawlerBattleResultStatisticsCollectionEntity> brawlerBattleResultItemWriter,
+            JpaItemWriter<BrawlersBattleResultStatisticsCollectionEntity> brawlersBattleResultItemWriter,
             BattleResultStatisticsCollectedFilter battleResultStatisticsCollectedFilter,
             BrawlerBattleResultStatisticsProcessorWithCache brawlerBattleResultStatisticsProcessor,
             BrawlersBattleResultStatisticsProcessorWithCache brawlersBattleResultStatisticsProcessor
@@ -50,15 +50,15 @@ public class BrawlerResultStatisticsJobItemWriter implements ItemWriter<BattleCo
             BrawlersBattleResultStatisticsProcessorWithCache brawlersBattleResultStatisticsProcessor
     ) {
         this(
-                new JpaItemWriterBuilder<BattleResultStatisticsCollectedCollectionEntity>()
+                new JpaItemWriterBuilder<StatisticsCollectedBattleResultCollectionEntity>()
                         .entityManagerFactory(emf)
                         .usePersist(true)
                         .build(),
-                new JpaItemWriterBuilder<BrawlerBattleResultCollectionEntity>()
+                new JpaItemWriterBuilder<BrawlerBattleResultStatisticsCollectionEntity>()
                         .entityManagerFactory(emf)
                         .usePersist(false)
                         .build(),
-                new JpaItemWriterBuilder<BrawlersBattleResultCollectionEntity>()
+                new JpaItemWriterBuilder<BrawlersBattleResultStatisticsCollectionEntity>()
                         .entityManagerFactory(emf)
                         .usePersist(false)
                         .build(),
@@ -75,7 +75,7 @@ public class BrawlerResultStatisticsJobItemWriter implements ItemWriter<BattleCo
         var brawlerBattleResultList = brawlerBattleResultStatisticsProcessor.process(battles);
         var brawlersBattleResultList = brawlersBattleResultStatisticsProcessor.process(battles);
         var collectedBattleList = chunk.getItems().stream()
-                .map(battle -> new BattleResultStatisticsCollectedCollectionEntity(battle.getBattleKey()))
+                .map(battle -> new StatisticsCollectedBattleResultCollectionEntity(battle.getBattleKey()))
                 .toList();
 
         battleStatisticsCollectedItemWriter.write(new Chunk<>(collectedBattleList));

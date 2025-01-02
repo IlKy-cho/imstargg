@@ -4,7 +4,7 @@ import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Collection;
@@ -13,20 +13,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.imstargg.storage.db.core.statistics.QBrawlerBattleResultCollectionEntity.brawlerBattleResultCollectionEntity;
+import static com.imstargg.storage.db.core.statistics.QBrawlerBattleResultStatisticsCollectionEntity.brawlerBattleResultStatisticsCollectionEntity;
+
 
 public class BrawlerBattleResultStatisticsProcessorWithCache {
 
     private final EntityManagerFactory emf;
-    private final ConcurrentHashMap<BrawlerBattleResultKey, BrawlerBattleResultCollectionEntity> cache;
+    private final ConcurrentHashMap<BrawlerBattleResultKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
 
     public BrawlerBattleResultStatisticsProcessorWithCache(EntityManagerFactory emf) {
         this.emf = emf;
         this.cache = new ConcurrentHashMap<>();
     }
 
-    public List<BrawlerBattleResultCollectionEntity> process(Collection<BattleCollectionEntity> battles) {
-        Map<BrawlerBattleResultKey, BrawlerBattleResultCollectionEntity> result = new HashMap<>();
+    public List<BrawlerBattleResultStatisticsCollectionEntity> process(Collection<BattleCollectionEntity> battles) {
+        Map<BrawlerBattleResultKey, BrawlerBattleResultStatisticsCollectionEntity> result = new HashMap<>();
         battles.forEach(battle -> {
             List<BattleCollectionEntityTeamPlayer> myTeam = battle.findMyTeam();
             List<BattleCollectionEntityTeamPlayer> enemyTeam = battle.findEnemyTeam();
@@ -34,7 +35,7 @@ public class BrawlerBattleResultStatisticsProcessorWithCache {
 
             myTeam.forEach(myPlayer -> enemyTeam.forEach(enemyPlayer -> {
                 BrawlerBattleResultKey myPlayerKey = BrawlerBattleResultKey.of(battle, myPlayer, enemyPlayer);
-                BrawlerBattleResultCollectionEntity myPlayerResult = getBrawlerBattleResult(myPlayerKey);
+                BrawlerBattleResultStatisticsCollectionEntity myPlayerResult = getBrawlerBattleResult(myPlayerKey);
                 myPlayerResult.countUp(battleResult);
                 if (myPlayer.getBrawlStarsTag().equals(battle.getStarPlayerBrawlStarsTag())) {
                     myPlayerResult.starPlayer();
@@ -42,7 +43,7 @@ public class BrawlerBattleResultStatisticsProcessorWithCache {
                 result.put(myPlayerKey, myPlayerResult);
 
                 BrawlerBattleResultKey enemyPlayerKey = BrawlerBattleResultKey.of(battle, enemyPlayer, myPlayer);
-                BrawlerBattleResultCollectionEntity enemyPlayerResult = getBrawlerBattleResult(enemyPlayerKey);
+                BrawlerBattleResultStatisticsCollectionEntity enemyPlayerResult = getBrawlerBattleResult(enemyPlayerKey);
                 enemyPlayerResult.countUp(battleResult.opposite());
                 if (enemyPlayer.getBrawlStarsTag().equals(battle.getStarPlayerBrawlStarsTag())) {
                     enemyPlayerResult.starPlayer();
@@ -54,13 +55,13 @@ public class BrawlerBattleResultStatisticsProcessorWithCache {
         return List.copyOf(result.values());
     }
 
-    private BrawlerBattleResultCollectionEntity getBrawlerBattleResult(BrawlerBattleResultKey key) {
+    private BrawlerBattleResultStatisticsCollectionEntity getBrawlerBattleResult(BrawlerBattleResultKey key) {
         if (cache.containsKey(key)) {
             return cache.get(key);
         }
 
         loadCache(key);
-        return cache.computeIfAbsent(key, k -> new BrawlerBattleResultCollectionEntity(
+        return cache.computeIfAbsent(key, k -> new BrawlerBattleResultStatisticsCollectionEntity(
                 k.eventBrawlStarsId(),
                 k.battleDate(),
                 k.soloRankTierRange(),
@@ -73,10 +74,10 @@ public class BrawlerBattleResultStatisticsProcessorWithCache {
 
     private void loadCache(BrawlerBattleResultKey key) {
         JPAQueryFactoryUtils.getQueryFactory(emf)
-                .selectFrom(brawlerBattleResultCollectionEntity)
+                .selectFrom(brawlerBattleResultStatisticsCollectionEntity)
                 .where(
-                        brawlerBattleResultCollectionEntity.eventBrawlStarsId.eq(key.eventBrawlStarsId()),
-                        brawlerBattleResultCollectionEntity.battleDate.eq(key.battleDate())
+                        brawlerBattleResultStatisticsCollectionEntity.eventBrawlStarsId.eq(key.eventBrawlStarsId()),
+                        brawlerBattleResultStatisticsCollectionEntity.battleDate.eq(key.battleDate())
                 )
                 .fetch()
                 .forEach(brawlerBattleResult ->

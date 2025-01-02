@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.annotation.Nullable;
@@ -8,8 +9,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 
+import java.time.LocalDate;
+
 @MappedSuperclass
-abstract class BrawlerBattleResultBaseEntity extends BattleStatisticsBaseEntity {
+abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleStatisticsBaseCollectionEntity {
 
     @Nullable
     @Enumerated(EnumType.STRING)
@@ -33,7 +36,37 @@ abstract class BrawlerBattleResultBaseEntity extends BattleStatisticsBaseEntity 
     @Column(name = "draw_count", nullable = false)
     private int drawCount;
 
-    protected BrawlerBattleResultBaseEntity() {
+    protected BrawlerBattleResultStatisticsBaseCollectionEntity() {
+    }
+
+    protected BrawlerBattleResultStatisticsBaseCollectionEntity(
+            long battleEventId,
+            LocalDate battleDate,
+            @Nullable SoloRankTierRange soloRankTierRange,
+            @Nullable TrophyRange trophyRange,
+            boolean duplicateBrawler
+    ) {
+        super(battleEventId, battleDate);
+        this.soloRankTierRange = soloRankTierRange;
+        this.trophyRange = trophyRange;
+        this.duplicateBrawler = duplicateBrawler;
+        this.victoryCount = 0;
+        this.defeatCount = 0;
+        this.drawCount = 0;
+    }
+
+    public void countUp(BattleResult result) {
+        switch (result) {
+            case VICTORY:
+                victoryCount++;
+                break;
+            case DEFEAT:
+                defeatCount++;
+                break;
+            case DRAW:
+                drawCount++;
+                break;
+        }
     }
 
     @Nullable
