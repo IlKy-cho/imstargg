@@ -21,11 +21,14 @@ create table battle
     primary key (battle_id)
 ) engine = innodb;
 
+create index ix_battle__battletime
+    on battle (battle_time desc);
+
 create index ix_battle__playerid_battletime
     on battle (player_id, battle_time desc);
 
-create index ix_battle__battletime
-    on battle (battle_time desc);
+create index ix_event_battletime
+    on battle (event_brawlstars_id, battle_time desc);
 
 
 create table club
@@ -183,15 +186,15 @@ alter table brawlstars_image
 create table brawler_battle_rank_stats
 (
     brawler_battle_rank_stats_id bigint       not null auto_increment,
-    event_brawlstars_id   bigint       not null,
-    battle_date           date         not null,
-    rank_value            int          not null,
-    rank_count            int          not null,
-    trophy_range          varchar(25)  not null,
-    brawler_brawlstars_id bigint       not null,
-    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted               boolean      not null default false,
+    event_brawlstars_id          bigint       not null,
+    battle_date                  date         not null,
+    rank_value                   int          not null,
+    rank_count                   int          not null,
+    trophy_range                 varchar(25)  not null,
+    brawler_brawlstars_id        bigint       not null,
+    created_at                   timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                   timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                      boolean      not null default false,
     primary key (brawler_battle_rank_stats_id)
 ) engine = innodb;
 
@@ -202,18 +205,18 @@ alter table brawler_battle_rank_stats
 
 create table brawlers_battle_rank_stats
 (
-    brawlers_battle_rank_stats_id     bigint        not null auto_increment,
-    event_brawlstars_id        bigint        not null,
-    battle_date                date          not null,
-    rank_value                 int           not null,
-    rank_count                 int           not null,
-    trophy_range               varchar(25)   not null,
-    brawler_brawlstars_id      bigint        not null,
-    brawler_num                int           not null,
-    brawler_brawlstars_id_hash varbinary(60) not null,
-    created_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6),
-    updated_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                    boolean       not null default false,
+    brawlers_battle_rank_stats_id bigint        not null auto_increment,
+    event_brawlstars_id           bigint        not null,
+    battle_date                   date          not null,
+    rank_value                    int           not null,
+    rank_count                    int           not null,
+    trophy_range                  varchar(25)   not null,
+    brawler_brawlstars_id         bigint        not null,
+    brawler_num                   int           not null,
+    brawler_brawlstars_id_hash    varbinary(60) not null,
+    created_at                    timestamp(6)  not null default CURRENT_TIMESTAMP(6),
+    updated_at                    timestamp(6)  not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                       boolean       not null default false,
     primary key (brawlers_battle_rank_stats_id)
 ) engine = innodb;
 
@@ -328,10 +331,10 @@ alter table battle_event
 create table season_battle_event
 (
     season_battle_event_id bigint       not null auto_increment,
-    battle_event_id          bigint       not null,
-    created_at               timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at               timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                  boolean      not null default false,
+    battle_event_id        bigint       not null,
+    created_at             timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at             timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                boolean      not null default false,
     primary key (season_battle_event_id)
 ) engine = innodb;
 
