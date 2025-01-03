@@ -1,14 +1,18 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BrawlerBattleResultStatisticsProcessor;
-import com.imstargg.batch.domain.BrawlersBattleResultStatisticsProcessor;
+import com.imstargg.batch.domain.BrawlerBattleResultStatisticsCollector;
+import com.imstargg.batch.domain.BrawlersBattleResultStatisticsCollector;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
+import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -17,17 +21,24 @@ import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.ItemProcessor;
+import org.springframework.batch.core.step.builder.TaskletStepBuilder;
+import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Objects;
 
 import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
 class BrawlerBattleResultStatisticsJobConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(BrawlerBattleResultStatisticsJobConfig.class);
 
     private static final String JOB_NAME = "brawlerBattleResultStatisticsJob";
     private static final String STEP_NAME = "brawlerBattleResultStatisticsStep";
@@ -70,19 +81,66 @@ class BrawlerBattleResultStatisticsJobConfig {
     @Bean(STEP_NAME)
     @JobScope
     Step step() {
-        StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
-        return stepBuilder
-                .<BattleCollectionEntity, BattleCollectionEntity>chunk(CHUNK_SIZE, txManager)
-                .reader(reader())
-                .processor(processor())
-                .writer(writer())
-                .build();
+        TaskletStepBuilder taskletStepBuilder = new TaskletStepBuilder(new StepBuilder(STEP_NAME, jobRepository));
+        return taskletStepBuilder
+                .tasklet((contribution, chunkContext) -> {
+                    int page = 0;
+                    boolean hasNext = true;
+                    while (hasNext) {
+                        List<BattleCollectionEntity> battles = read(page);
+                        if (battles.size() < CHUNK_SIZE) {
+                            hasNext = false;
+                        }
+
+                        for (BattleCollectionEntity battle : battles) {
+                            if (!validate(battle)) {
+                                continue;
+                            }
+                            brawlerBattleResultStatisticsCollector().collect(battle);
+                            brawlersBattleResultStatisticsCollector().collect(battle);
+                        }
+                        page++;
+                    }
+
+                    EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
+                    if (em == null) {
+                        throw new DataAccessResourceFailureException("Unable to obtain a transactional EntityManager");
+                    }
+
+                    brawlerBattleResultStatisticsCollector().result().forEach(em::persist);
+                    brawlersBattleResultStatisticsCollector().result().forEach(em::persist);
+
+                    return RepeatStatus.FINISHED;
+                }, txManager).build();
     }
 
-    @Bean(STEP_NAME + "ItemReader")
-    @StepScope
-    QuerydslPagingItemReader<BattleCollectionEntity> reader() {
-        var reader = new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
+    private boolean validate(@Nullable BattleCollectionEntity battle) {
+        if (battle == null) {
+            return false;
+        }
+        if (battle.getResult() == null) {
+            return false;
+        }
+        if (battle.getEvent().getBrawlStarsId() == null || battle.getEvent().getBrawlStarsId() == 0L) {
+            return false;
+        }
+        if (!BattleType.statisticsCollected(battle.getType())) {
+            return false;
+        }
+        if (battle.getResult() == null) {
+            return false;
+        }
+        if (battle.getTeams().size() != 2) {
+            throw new IllegalStateException(
+                    "Invalid teams size: " + battle.getTeams().size() + ", battleId: " + battle.getId());
+        }
+        return true;
+    }
+
+    private List<BattleCollectionEntity> read(int page) {
+        JPAQueryFactory queryFactory = JPAQueryFactoryUtils.getQueryFactory(emf);
+        log.debug("Reading page: {}", page);
+        return queryFactory
                 .selectFrom(battleCollectionEntity)
                 .join(battleCollectionEntity.player.player).fetchJoin()
                 .where(
@@ -94,58 +152,22 @@ class BrawlerBattleResultStatisticsJobConfig {
                         )
                 )
                 .orderBy(battleCollectionEntity.battleTime.desc())
-        );
-        reader.setTransacted(false);
-        reader.setSaveState(false);
-        return reader;
-    }
-
-    @Bean(STEP_NAME + "ItemProcessor")
-    @StepScope
-    ItemProcessor<BattleCollectionEntity, BattleCollectionEntity> processor() {
-        return item -> {
-            if (item.getResult() == null) {
-                return null;
-            }
-            if (item.getEvent().getBrawlStarsId() == null || item.getEvent().getBrawlStarsId() == 0L) {
-                return null;
-            }
-            if (!BattleType.statisticsCollected(item.getType())) {
-                return null;
-            }
-            if (item.getResult() == null) {
-                return null;
-            }
-            if (item.getTeams().size() != 2) {
-                throw new IllegalStateException(
-                        "Invalid teams size: " + item.getTeams().size() + ", battleId: " + item.getId());
-            }
-
-            return item;
-        };
-    }
-
-    @Bean(STEP_NAME + "ItemWriter")
-    @StepScope
-    BrawlerBattleResultStatisticsJobItemWriter writer() {
-        return new BrawlerBattleResultStatisticsJobItemWriter(
-                emf,
-                brawlerBattleResultStatisticsProcessor(),
-                brawlersBattleResultStatisticsProcessor()
-        );
+                .offset((long) page * CHUNK_SIZE)
+                .limit(CHUNK_SIZE)
+                .fetch();
     }
 
 
     @Bean
     @StepScope
-    BrawlerBattleResultStatisticsProcessor brawlerBattleResultStatisticsProcessor() {
-        return new BrawlerBattleResultStatisticsProcessor();
+    BrawlerBattleResultStatisticsCollector brawlerBattleResultStatisticsCollector() {
+        return new BrawlerBattleResultStatisticsCollector();
     }
 
     @Bean
     @StepScope
-    BrawlersBattleResultStatisticsProcessor brawlersBattleResultStatisticsProcessor() {
-        return new BrawlersBattleResultStatisticsProcessor();
+    BrawlersBattleResultStatisticsCollector brawlersBattleResultStatisticsCollector() {
+        return new BrawlersBattleResultStatisticsCollector();
     }
 
 }

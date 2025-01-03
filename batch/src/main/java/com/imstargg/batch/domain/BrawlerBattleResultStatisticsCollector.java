@@ -8,18 +8,18 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class BrawlerBattleResultStatisticsProcessor {
+public class BrawlerBattleResultStatisticsCollector {
 
-    private final ConcurrentHashMap<BrawlerBattleResultKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
+    private final ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
 
-    public BrawlerBattleResultStatisticsProcessor() {
+    public BrawlerBattleResultStatisticsCollector() {
         this.cache = new ConcurrentHashMap<>();
     }
 
-    public void process(BattleCollectionEntity battle) {
+    public void collect(BattleCollectionEntity battle) {
         boolean isStarPlayer = battle.amIStarPlayer();
         battle.playerCombinations().forEach(playerCombination -> {
-            var key = BrawlerBattleResultKey.of(battle, playerCombination.me(), playerCombination.enemy());
+            var key = BrawlerBattleResultStatisticsKey.of(battle, playerCombination.me(), playerCombination.enemy());
             var brawlerBattleResultStats = getBrawlerBattleResultStats(key);
             brawlerBattleResultStats.countUp(BattleResult.map(battle.getResult()));
             if (isStarPlayer) {
@@ -29,11 +29,11 @@ public class BrawlerBattleResultStatisticsProcessor {
     }
 
     public List<BrawlerBattleResultStatisticsCollectionEntity> result() {
-        return cache.values().stream().toList();
+        return List.copyOf(cache.values());
     }
 
 
-    private BrawlerBattleResultStatisticsCollectionEntity getBrawlerBattleResultStats(BrawlerBattleResultKey key) {
+    private BrawlerBattleResultStatisticsCollectionEntity getBrawlerBattleResultStats(BrawlerBattleResultStatisticsKey key) {
         return cache.computeIfAbsent(key, k -> new BrawlerBattleResultStatisticsCollectionEntity(
                 k.eventBrawlStarsId(),
                 k.battleDate(),
