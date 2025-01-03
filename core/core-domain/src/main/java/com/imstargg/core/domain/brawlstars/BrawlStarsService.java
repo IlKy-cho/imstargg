@@ -9,9 +9,11 @@ import java.util.List;
 public class BrawlStarsService {
 
     private final BrawlerReader brawlerReader;
+    private final BattleEventReader battleEventReader;
 
-    public BrawlStarsService(BrawlerReader brawlerReader) {
+    public BrawlStarsService(BrawlerReader brawlerReader, BattleEventReader battleEventReader) {
         this.brawlerReader = brawlerReader;
+        this.battleEventReader = battleEventReader;
     }
 
     public List<Brawler> getAllBrawlers() {
@@ -19,6 +21,6 @@ public class BrawlStarsService {
     }
 
     public List<BattleEvent> getSeasonEvents() {
-
+        return battleEventReader.getSeasonEvents(Language.KOREAN);
     }
 }

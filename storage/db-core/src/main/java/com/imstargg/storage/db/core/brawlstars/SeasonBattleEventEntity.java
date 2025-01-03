@@ -28,4 +28,12 @@ public class SeasonBattleEventEntity extends BaseEntity {
 
     protected SeasonBattleEventEntity() {
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public long getBattleEventId() {
+        return battleEventId;
+    }
 }
