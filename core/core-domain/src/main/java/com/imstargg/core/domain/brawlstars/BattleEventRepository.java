@@ -22,6 +22,7 @@ public class BattleEventRepository {
     private final BattleEventJpaRepository battleEventJpaRepository;
     private final BattleMapJpaRepository battleMapJpaRepository;
     private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
+    private final Season
     private final MessageRepository messageRepository;
 
     public BattleEventRepository(

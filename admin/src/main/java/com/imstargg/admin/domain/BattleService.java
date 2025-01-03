@@ -14,8 +14,8 @@ import com.imstargg.storage.db.core.brawlstars.BattleMapCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleMapCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
-import com.imstargg.storage.db.core.brawlstars.SeasonedBattleEventCollectionEntity;
-import com.imstargg.storage.db.core.brawlstars.SeasonedBattleEventCollectionJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.SeasonBattleEventCollectionEntity;
+import com.imstargg.storage.db.core.brawlstars.SeasonBattleEventCollectionJpaRepository;
 import com.imstargg.storage.db.core.collection.UnregisteredBattleEventCollectionJpaRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,7 @@ public class BattleService {
     private final BrawlStarsImageUploader brawlStarsImageUploader;
     private final BattleMapCollectionJpaRepository battleMapRepository;
     private final BattleEventCollectionJpaRepository battleEventRepository;
-    private final SeasonedBattleEventCollectionJpaRepository seasonedBattleEventRepository;
+    private final SeasonBattleEventCollectionJpaRepository seasonedBattleEventRepository;
     private final UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
@@ -47,7 +47,7 @@ public class BattleService {
             BrawlStarsImageUploader brawlStarsImageUploader,
             BattleMapCollectionJpaRepository battleMapRepository,
             BattleEventCollectionJpaRepository battleEventRepository,
-            SeasonedBattleEventCollectionJpaRepository seasonedBattleEventRepository,
+            SeasonBattleEventCollectionJpaRepository seasonedBattleEventRepository,
             UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
             MessageCollectionJpaRepository messageRepository
@@ -110,7 +110,7 @@ public class BattleService {
                 .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
         Set<Long> seasonedEventIds = seasonedBattleEventRepository.findAll().stream()
                 .filter(BaseEntity::isActive)
-                .map(SeasonedBattleEventCollectionEntity::getBattleEvent)
+                .map(SeasonBattleEventCollectionEntity::getBattleEvent)
                 .map(BattleEventCollectionEntity::getId)
                 .collect(Collectors.toSet());
 
@@ -183,7 +183,7 @@ public class BattleService {
                             seasonedEvent.restore();
                             return seasonedEvent;
                         })
-                        .orElseGet(() -> new SeasonedBattleEventCollectionEntity(event))
+                        .orElseGet(() -> new SeasonBattleEventCollectionEntity(event))
         );
     }
 

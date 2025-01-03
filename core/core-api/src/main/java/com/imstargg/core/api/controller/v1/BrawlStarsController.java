@@ -3,6 +3,7 @@ package com.imstargg.core.api.controller.v1;
 import com.imstargg.core.api.controller.response.ListResponse;
 import com.imstargg.core.api.controller.response.SliceResponse;
 import com.imstargg.core.api.controller.v1.request.PageRequest;
+import com.imstargg.core.api.controller.v1.response.BattleEventResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlStarsNewsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerResponse;
 import com.imstargg.core.domain.brawlstars.BrawlStarsNewsPageParam;
@@ -44,6 +45,15 @@ public class BrawlStarsController {
         return new ListResponse<>(
                 brawlStarsService.getAllBrawlers().stream()
                         .map(BrawlerResponse::from)
+                        .toList()
+        );
+    }
+
+    @GetMapping("/api/v1/brawlstars/season-events")
+    public ListResponse<BattleEventResponse> getSeasonEvents() {
+        return new ListResponse<>(
+                brawlStarsService.getSeasonEvents().stream()
+                        .map(BattleEventResponse::from)
                         .toList()
         );
     }

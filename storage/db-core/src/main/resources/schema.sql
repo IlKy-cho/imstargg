@@ -325,18 +325,18 @@ alter table battle_event
     add constraint uk_battle_event__brawlstarsid unique (brawlstars_id);
 
 
-create table seasoned_battle_event
+create table season_battle_event
 (
-    seasoned_battle_event_id bigint       not null auto_increment,
+    season_battle_event_id bigint       not null auto_increment,
     battle_event_id          bigint       not null,
     created_at               timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at               timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted                  boolean      not null default false,
-    primary key (seasoned_battle_event_id)
+    primary key (season_battle_event_id)
 ) engine = innodb;
 
-alter table seasoned_battle_event
-    add constraint uk_seasoned_battle_event__battleeventid unique (battle_event_id);
+alter table season_battle_event
+    add constraint uk_battleeventid unique (battle_event_id);
 
 
 create table battle_map
