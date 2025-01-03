@@ -2,7 +2,6 @@ package com.imstargg.storage.db.core.statistics;
 
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -14,12 +13,12 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "brawlers_rank_stats")
-public class BrawlersRankStatisticsCollectionEntity extends BrawlerBattleRankStatisticsBaseCollectionEntity {
+@Table(name = "brawler_battle_rank_stats")
+public class BrawlerBattleRankStatisticsCollectionEntity extends BrawlerBattleRankStatisticsBaseCollectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brawler_rank_stats_id")
+    @Column(name = "brawler_battle_rank_stats_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -29,25 +28,20 @@ public class BrawlersRankStatisticsCollectionEntity extends BrawlerBattleRankSta
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    @Embedded
-    private BattleStatisticsCollectionEntityBrawlers brawlers;
 
-
-    protected BrawlersRankStatisticsCollectionEntity() {
+    protected BrawlerBattleRankStatisticsCollectionEntity() {
     }
 
-    public BrawlersRankStatisticsCollectionEntity(
+    public BrawlerBattleRankStatisticsCollectionEntity(
             long battleEventId,
             LocalDate battleDate,
             int rank,
             TrophyRange trophyRange,
-            long brawlerBrawlStarsId,
-            BattleStatisticsCollectionEntityBrawlers brawlers
+            long brawlerBrawlStarsId
     ) {
         super(battleEventId, battleDate, rank);
         this.trophyRange = trophyRange;
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
-        this.brawlers = brawlers;
     }
 
     public Long getId() {
@@ -62,7 +56,4 @@ public class BrawlersRankStatisticsCollectionEntity extends BrawlerBattleRankSta
         return brawlerBrawlStarsId;
     }
 
-    public BattleStatisticsCollectionEntityBrawlers getBrawlers() {
-        return brawlers;
-    }
 }

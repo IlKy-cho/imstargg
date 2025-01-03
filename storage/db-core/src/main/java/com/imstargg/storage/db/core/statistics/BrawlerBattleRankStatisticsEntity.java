@@ -11,7 +11,7 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_rank_stats",
+        name = "brawler_battle_rank_stats",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_event_battledate_brawler_trophy_rank",
@@ -19,10 +19,10 @@ import jakarta.persistence.UniqueConstraint;
                 )
         }
 )
-public class BrawlerRankStatisticsEntity extends BrawlerBattleRankStatisticsBaseEntity {
+public class BrawlerBattleRankStatisticsEntity extends BrawlerBattleRankStatisticsBaseEntity {
 
     @Id
-    @Column(name = "brawler_rank_stats_id")
+    @Column(name = "brawler_ra_battlenk_stats_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -32,7 +32,7 @@ public class BrawlerRankStatisticsEntity extends BrawlerBattleRankStatisticsBase
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    protected BrawlerRankStatisticsEntity() {
+    protected BrawlerBattleRankStatisticsEntity() {
     }
 
     public Long getId() {

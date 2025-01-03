@@ -180,9 +180,9 @@ alter table brawlstars_image
 
 -- Statistics
 
-create table brawler_rank_stats
+create table brawler_battle_rank_stats
 (
-    brawler_rank_stats_id bigint       not null auto_increment,
+    brawler_battle_rank_stats_id bigint       not null auto_increment,
     event_brawlstars_id   bigint       not null,
     battle_date           date         not null,
     rank_value            int          not null,
@@ -192,17 +192,17 @@ create table brawler_rank_stats
     created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted               boolean      not null default false,
-    primary key (brawler_rank_stats_id)
+    primary key (brawler_battle_rank_stats_id)
 ) engine = innodb;
 
-alter table brawler_rank_stats
+alter table brawler_battle_rank_stats
     add constraint uk_event_battledate_brawler_trophy_rank
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, trophy_range, rank_value);
 
 
-create table brawlers_rank_stats
+create table brawlers_battle_rank_stats
 (
-    brawlers_rank_stats_id     bigint        not null auto_increment,
+    brawlers_battle_rank_stats_id     bigint        not null auto_increment,
     event_brawlstars_id        bigint        not null,
     battle_date                date          not null,
     rank_value                 int           not null,
@@ -214,11 +214,11 @@ create table brawlers_rank_stats
     created_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6),
     updated_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted                    boolean       not null default false,
-    primary key (brawlers_rank_stats_id)
+    primary key (brawlers_battle_rank_stats_id)
 ) engine = innodb;
 
 
-alter table brawlers_rank_stats
+alter table brawlers_battle_rank_stats
     add constraint uk_event_battledate_brawler_trophy_rank
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range,
                 rank_value);
