@@ -71,7 +71,7 @@ public class BattleService {
                 .stream()
                 .collect(groupingBy(MessageCollectionEntity::getCode));
         Map<Long, List<BattleEventCollectionEntity>> mapIdToEvent = battleEventRepository.findAll().stream()
-                .collect(groupingBy(BattleEventCollectionEntity::getMapId));
+                .collect(groupingBy(event -> event.getMap().getId()));
 
 
         return maps.stream()
@@ -118,13 +118,13 @@ public class BattleService {
                 .map(event -> new BattleEvent(
                         event,
                         new BattleEventMap(
-                                idToMap.get(event.getMapId()),
+                                idToMap.get(event.getMap().getId()),
                                 mapNameCodeToMessage.stream()
                                         .filter(message -> message.getCode()
-                                                .equals(idToMap.get(event.getMapId()).getNameMessageCode()))
+                                                .equals(idToMap.get(event.getMap().getId()).getNameMessageCode()))
                                         .toList(),
                                 mapImageCodeToImage.get(
-                                        BrawlStarsImageType.BATTLE_MAP.code(idToMap.get(event.getMapId()).getCode()))
+                                        BrawlStarsImageType.BATTLE_MAP.code(idToMap.get(event.getMap().getId()).getCode()))
                         ),
                         seasonedEventIds.contains(event.getId())
                 )).toList();
@@ -162,7 +162,7 @@ public class BattleService {
                 new BattleEventCollectionEntity(
                         newBattleEvent.brawlStarsId(),
                         battleEventMode,
-                        battleMap.getId()
+                        battleMap
                 )
         );
 
