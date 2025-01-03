@@ -2,6 +2,7 @@ package com.imstargg.storage.db.core.statistics;
 
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,18 +12,18 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_rank_stats",
+        name = "brawlers_rank_stats",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_event_battledate_brawler_trophy_rank",
-                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "trophy_range", "rank_value"}
+                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "brawler_brawlstars_id_hash", "trophy_range", "rank_value"}
                 )
         }
 )
-public class BrawlerRankStatisticsEntity extends BrawlerBattleRankStatisticsBaseEntity {
+public class BrawlersRankStatisticsEntity extends BrawlerBattleRankStatisticsBaseEntity {
 
     @Id
-    @Column(name = "brawler_rank_stats_id")
+    @Column(name = "brawlers_rank_stats_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -32,7 +33,10 @@ public class BrawlerRankStatisticsEntity extends BrawlerBattleRankStatisticsBase
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    protected BrawlerRankStatisticsEntity() {
+    @Embedded
+    private BattleStatisticsEntityBrawlers brawlers;
+
+    protected BrawlersRankStatisticsEntity() {
     }
 
     public Long getId() {
@@ -47,4 +51,7 @@ public class BrawlerRankStatisticsEntity extends BrawlerBattleRankStatisticsBase
         return brawlerBrawlStarsId;
     }
 
+    public BattleStatisticsEntityBrawlers getBrawlers() {
+        return brawlers;
+    }
 }
