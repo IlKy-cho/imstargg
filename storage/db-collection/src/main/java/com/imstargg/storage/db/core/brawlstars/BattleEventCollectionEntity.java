@@ -6,9 +6,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -27,16 +30,18 @@ public class BattleEventCollectionEntity extends BaseEntity {
     @Column(name = "mode", length = 45, updatable = false, nullable = false)
     private BattleEventMode mode;
 
-    @Column(name = "map_id", updatable = false, nullable = false)
-    private long mapId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "map_id", updatable = false, nullable = false)
+    private BattleMapCollectionEntity map;
 
     protected BattleEventCollectionEntity() {
     }
 
-    public BattleEventCollectionEntity(long brawlStarsId, BattleEventMode mode, long mapId) {
+    public BattleEventCollectionEntity(
+            long brawlStarsId, BattleEventMode mode, BattleMapCollectionEntity map) {
         this.brawlStarsId = brawlStarsId;
         this.mode = mode;
-        this.mapId = mapId;
+        this.map = map;
     }
 
     public Long getId() {
@@ -51,7 +56,7 @@ public class BattleEventCollectionEntity extends BaseEntity {
         return mode;
     }
 
-    public long getMapId() {
-        return mapId;
+    public BattleMapCollectionEntity getMap() {
+        return map;
     }
 }
