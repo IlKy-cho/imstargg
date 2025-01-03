@@ -1,39 +1,38 @@
 package com.imstargg.batch.domain;
 
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
-public record BrawlerBattleResultStatisticsKey(
+public record BrawlerBattleRankStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
         long brawlerBrawlStarsId,
-        long enemyBrawlerBrawlStarsId,
-        @Nullable TrophyRange trophyRange,
-        @Nullable SoloRankTierRange soloRankTierRange,
-        boolean duplicateBrawler
+        TrophyRange trophyRange,
+        int rank
 ) {
 
-    public static BrawlerBattleResultStatisticsKey of(
-            BattleCollectionEntity battle,
-            BattleCollectionEntityTeamPlayer myPlayer,
-            BattleCollectionEntityTeamPlayer enemyPlayer
+    public static BrawlerBattleRankStatisticsKey of(
+            BattleCollectionEntity battle
     ) {
+        List<BattleCollectionEntityTeamPlayer> me = battle.findMe();
+        if (me.size() != 1) {
+            throw new IllegalStateException("me is not found or duplicated. battleId: " + battle.getId());
+        }
+
+        BattleCollectionEntityTeamPlayer myPlayer = me.getFirst();
         BattleType battleType = BattleType.find(battle.getType());
-        return new BrawlerBattleResultStatisticsKey(
+        return new BrawlerBattleRankStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().toLocalDate(),
                 myPlayer.getBrawler().getBrawlStarsId(),
-                enemyPlayer.getBrawler().getBrawlStarsId(),
                 TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies()),
-                SoloRankTierRange.of(battleType, myPlayer.getBrawler().getTrophies()),
-                battle.containsDuplicateBrawler()
+                Objects.requireNonNull(battle.getPlayer().getRank())
         );
     }
 }

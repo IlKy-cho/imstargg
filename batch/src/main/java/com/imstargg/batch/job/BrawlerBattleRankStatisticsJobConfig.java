@@ -1,7 +1,7 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BrawlerBattleResultStatisticsCollector;
-import com.imstargg.batch.domain.BrawlersBattleResultStatisticsCollector;
+import com.imstargg.batch.domain.BrawlerBattleRankStatisticsCollector;
+import com.imstargg.batch.domain.BrawlersBattleRankStatisticsCollector;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.util.JPAQueryFactoryUtils;
@@ -35,12 +35,12 @@ import java.util.Objects;
 import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
-class BrawlerBattleResultStatisticsJobConfig {
+class BrawlerBattleRankStatisticsJobConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(BrawlerBattleResultStatisticsJobConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(BrawlerBattleRankStatisticsJobConfig.class);
 
-    private static final String JOB_NAME = "brawlerBattleResultStatisticsJob";
-    private static final String STEP_NAME = "brawlerBattleResultStatisticsStep";
+    private static final String JOB_NAME = "brawlerBattleRankStatisticsJob";
+    private static final String STEP_NAME = "brawlerBattleRankStatisticsStep";
     private static final int CHUNK_SIZE = 1000;
 
     private final JobRepository jobRepository;
@@ -49,7 +49,7 @@ class BrawlerBattleResultStatisticsJobConfig {
 
     private final AlertManager alertManager;
 
-    BrawlerBattleResultStatisticsJobConfig(
+    BrawlerBattleRankStatisticsJobConfig(
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
@@ -95,8 +95,8 @@ class BrawlerBattleResultStatisticsJobConfig {
                             if (!validate(battle)) {
                                 continue;
                             }
-                            brawlerBattleResultStatisticsCollector().collect(battle);
-                            brawlersBattleResultStatisticsCollector().collect(battle);
+                            brawlerBattleRankStatisticsCollector().collect(battle);
+                            brawlersBattleRankStatisticsCollector().collect(battle);
                         }
                         page++;
                     }
@@ -106,15 +106,15 @@ class BrawlerBattleResultStatisticsJobConfig {
                         throw new DataAccessResourceFailureException("Unable to obtain a transactional EntityManager");
                     }
 
-                    brawlerBattleResultStatisticsCollector().result().forEach(em::persist);
-                    brawlersBattleResultStatisticsCollector().result().forEach(em::persist);
+                    brawlerBattleRankStatisticsCollector().result().forEach(em::persist);
+                    brawlersBattleRankStatisticsCollector().result().forEach(em::persist);
 
                     return RepeatStatus.FINISHED;
                 }, txManager).build();
     }
 
     private boolean validate(BattleCollectionEntity battle) {
-        if (battle.getResult() == null) {
+        if (battle.getPlayer().getRank() == null) {
             return false;
         }
         if (!battle.existsEventId()) {
@@ -122,10 +122,6 @@ class BrawlerBattleResultStatisticsJobConfig {
         }
         if (!BattleType.statisticsCollected(battle.getType())) {
             return false;
-        }
-        if (battle.getTeams().size() != 2) {
-            throw new IllegalStateException(
-                    "Invalid teams size: " + battle.getTeams().size() + ", battleId: " + battle.getId());
         }
         return true;
     }
@@ -153,14 +149,14 @@ class BrawlerBattleResultStatisticsJobConfig {
 
     @Bean
     @StepScope
-    BrawlerBattleResultStatisticsCollector brawlerBattleResultStatisticsCollector() {
-        return new BrawlerBattleResultStatisticsCollector();
+    BrawlerBattleRankStatisticsCollector brawlerBattleRankStatisticsCollector() {
+        return new BrawlerBattleRankStatisticsCollector();
     }
 
     @Bean
     @StepScope
-    BrawlersBattleResultStatisticsCollector brawlersBattleResultStatisticsCollector() {
-        return new BrawlersBattleResultStatisticsCollector();
+    BrawlersBattleRankStatisticsCollector brawlersBattleRankStatisticsCollector() {
+        return new BrawlersBattleRankStatisticsCollector();
     }
 
 }

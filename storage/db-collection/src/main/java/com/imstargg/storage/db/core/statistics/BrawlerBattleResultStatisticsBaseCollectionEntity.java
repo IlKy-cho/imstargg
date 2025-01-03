@@ -47,6 +47,9 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
             boolean duplicateBrawler
     ) {
         super(battleEventId, battleDate);
+        if (soloRankTierRange == null && trophyRange == null) {
+            throw new IllegalArgumentException("Either soloRankTierRange or trophyRange must be set.");
+        }
         this.soloRankTierRange = soloRankTierRange;
         this.trophyRange = trophyRange;
         this.duplicateBrawler = duplicateBrawler;

@@ -88,6 +88,10 @@ public class BattleCollectionEntity extends BaseEntity {
         this.teams = teams;
     }
 
+    public boolean existsEventId() {
+        return event.getBrawlStarsId() != null && event.getBrawlStarsId() > 0;
+    }
+
     public boolean amIStarPlayer() {
         return Objects.equals(
                 this.getStarPlayerBrawlStarsTag(),

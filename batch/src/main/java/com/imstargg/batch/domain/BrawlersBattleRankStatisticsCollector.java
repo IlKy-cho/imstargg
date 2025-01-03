@@ -1,45 +1,43 @@
 package com.imstargg.batch.domain;
 
-import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BattleStatisticsCollectionEntityBrawlers;
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
-import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlersRankStatisticsCollectionEntity;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 
-public class BrawlersBattleResultStatisticsCollector {
+public class BrawlersBattleRankStatisticsCollector {
 
-    private final ConcurrentHashMap<BrawlersBattleResultStatisticsKey, BrawlersBattleResultStatisticsCollectionEntity> cache;
+    private final ConcurrentHashMap<BrawlersBattleRankStatisticsKey, BrawlersRankStatisticsCollectionEntity> cache;
 
-    public BrawlersBattleResultStatisticsCollector() {
+    public BrawlersBattleRankStatisticsCollector() {
         this.cache = new ConcurrentHashMap<>();
     }
 
     public void collect(BattleCollectionEntity battle) {
         battle.myTeamCombinations().forEach(myTeamCombination ->
-                BrawlersBattleResultStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
+                BrawlersBattleRankStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
                     var brawlersBattleResultStats = getBrawlersBattleResult(key);
-                    brawlersBattleResultStats.countUp(BattleResult.map(battle.getResult()));
+                    brawlersBattleResultStats.countUp();
                 })
         );
     }
 
-    public List<BrawlersBattleResultStatisticsCollectionEntity> result() {
+    public List<BrawlersRankStatisticsCollectionEntity> result() {
         return List.copyOf(cache.values());
     }
 
-    private BrawlersBattleResultStatisticsCollectionEntity getBrawlersBattleResult(BrawlersBattleResultStatisticsKey key) {
+    private BrawlersRankStatisticsCollectionEntity getBrawlersBattleResult(BrawlersBattleRankStatisticsKey key) {
         return cache.computeIfAbsent(key, k -> {
             BrawlerIdHash brawlerIdHash = new BrawlerIdHash(k.brawlerBrawlStarsIdHash());
-            return new BrawlersBattleResultStatisticsCollectionEntity(
+            return new BrawlersRankStatisticsCollectionEntity(
                     k.eventBrawlStarsId(),
                     k.battleDate(),
-                    k.soloRankTierRange(),
+                    k.rank(),
                     k.trophyRange(),
-                    k.duplicateBrawler(),
                     k.brawlerBrawlStarsId(),
                     new BattleStatisticsCollectionEntityBrawlers(
                             brawlerIdHash.num(),
