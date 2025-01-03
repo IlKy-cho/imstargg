@@ -185,10 +185,10 @@ create table brawler_rank_stats
     brawler_rank_stats_id bigint       not null auto_increment,
     event_brawlstars_id   bigint       not null,
     battle_date           date         not null,
-    trophy_range          varchar(25)  not null,
-    brawler_brawlstars_id bigint       not null,
     rank_value            int          not null,
     rank_count            int          not null,
+    trophy_range          varchar(25)  not null,
+    brawler_brawlstars_id bigint       not null,
     created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted               boolean      not null default false,
@@ -198,6 +198,30 @@ create table brawler_rank_stats
 alter table brawler_rank_stats
     add constraint uk_event_battledate_brawler_trophy_rank
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, trophy_range, rank_value);
+
+
+create table brawlers_rank_stats
+(
+    brawlers_rank_stats_id     bigint        not null auto_increment,
+    event_brawlstars_id        bigint        not null,
+    battle_date                date          not null,
+    rank_value                 int           not null,
+    rank_count                 int           not null,
+    trophy_range               varchar(25)   not null,
+    brawler_brawlstars_id      bigint        not null,
+    brawler_num                int           not null,
+    brawler_brawlstars_id_hash varbinary(60) not null,
+    created_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6),
+    updated_at                 timestamp(6)  not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                    boolean       not null default false,
+    primary key (brawlers_rank_stats_id)
+) engine = innodb;
+
+
+alter table brawlers_rank_stats
+    add constraint uk_event_battledate_brawler_trophy_rank
+        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range,
+                rank_value);
 
 
 create table brawler_battle_result_stats
@@ -238,8 +262,8 @@ create table brawlers_battle_result_stats
     brawlers_battle_result_stats_id bigint        not null auto_increment,
     event_brawlstars_id             bigint        not null,
     battle_date                     date          not null,
-    brawler_num                     int           not null,
     brawler_brawlstars_id           bigint        not null,
+    brawler_num                     int           not null,
     brawler_brawlstars_id_hash      varbinary(60) not null,
     solo_rank_tier_range            varchar(25),
     trophy_range                    varchar(25),
