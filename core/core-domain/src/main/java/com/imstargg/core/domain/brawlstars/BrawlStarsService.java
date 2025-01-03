@@ -17,4 +17,8 @@ public class BrawlStarsService {
     public List<Brawler> getAllBrawlers() {
         return brawlerReader.getAll(Language.KOREAN);
     }
+
+    public List<BattleEvent> getSeasonEvents() {
+
+    }
 }

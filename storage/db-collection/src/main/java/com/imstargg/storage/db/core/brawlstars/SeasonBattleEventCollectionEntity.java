@@ -12,22 +12,22 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "seasoned_battle_event")
-public class SeasonedBattleEventCollectionEntity extends BaseEntity {
+@Table(name = "season_battle_event")
+public class SeasonBattleEventCollectionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "seasoned_battle_event_id")
+    @Column(name = "season_battle_event_id")
     private Long id;
 
     @JoinColumn(name = "battle_event_id", updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private BattleEventCollectionEntity battleEvent;
 
-    protected SeasonedBattleEventCollectionEntity() {
+    protected SeasonBattleEventCollectionEntity() {
     }
 
-    public SeasonedBattleEventCollectionEntity(BattleEventCollectionEntity battleEvent) {
+    public SeasonBattleEventCollectionEntity(BattleEventCollectionEntity battleEvent) {
         this.battleEvent = battleEvent;
     }
 
