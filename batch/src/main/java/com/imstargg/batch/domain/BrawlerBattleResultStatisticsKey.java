@@ -11,7 +11,7 @@ import jakarta.annotation.Nullable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public record BrawlerBattleResultKey(
+public record BrawlerBattleResultStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
         long brawlerBrawlStarsId,
@@ -21,13 +21,13 @@ public record BrawlerBattleResultKey(
         boolean duplicateBrawler
 ) {
 
-    public static BrawlerBattleResultKey of(
+    public static BrawlerBattleResultStatisticsKey of(
             BattleCollectionEntity battle,
             BattleCollectionEntityTeamPlayer myPlayer,
             BattleCollectionEntityTeamPlayer enemyPlayer
     ) {
         BattleType battleType = BattleType.find(battle.getType());
-        return new BrawlerBattleResultKey(
+        return new BrawlerBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().toLocalDate(),
                 myPlayer.getBrawler().getBrawlStarsId(),
@@ -38,8 +38,8 @@ public record BrawlerBattleResultKey(
         );
     }
 
-    public static BrawlerBattleResultKey of(BrawlerBattleResultStatisticsCollectionEntity brawlerBattleResult) {
-        return new BrawlerBattleResultKey(
+    public static BrawlerBattleResultStatisticsKey of(BrawlerBattleResultStatisticsCollectionEntity brawlerBattleResult) {
+        return new BrawlerBattleResultStatisticsKey(
                 brawlerBattleResult.getEventBrawlStarsId(),
                 brawlerBattleResult.getBattleDate(),
                 brawlerBattleResult.getBrawlerBrawlStarsId(),

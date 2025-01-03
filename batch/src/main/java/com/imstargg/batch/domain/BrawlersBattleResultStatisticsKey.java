@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public record BrawlersBattleResultKey(
+public record BrawlersBattleResultStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
         long brawlerBrawlStarsId,
@@ -24,7 +24,7 @@ public record BrawlersBattleResultKey(
         boolean duplicateBrawler
 ) {
 
-    public static List<BrawlersBattleResultKey> of(
+    public static List<BrawlersBattleResultStatisticsKey> of(
             BattleCollectionEntity battle,
             List<BattleCollectionEntityTeamPlayer> players
     ) {
@@ -34,7 +34,7 @@ public record BrawlersBattleResultKey(
                 .toList();
         BrawlerIdHash brawlerIdHash = BrawlerIdHash.of(brawlerBrawlStarsIds);
         boolean battleContainsDuplicateBrawler = battle.containsDuplicateBrawler();
-        return players.stream().map(player -> new BrawlersBattleResultKey(
+        return players.stream().map(player -> new BrawlersBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().toLocalDate(),
                 player.getBrawler().getBrawlStarsId(),
@@ -45,8 +45,8 @@ public record BrawlersBattleResultKey(
         )).toList();
     }
 
-    public static BrawlersBattleResultKey of(BrawlersBattleResultStatisticsCollectionEntity brawlersBattleResult) {
-        return new BrawlersBattleResultKey(
+    public static BrawlersBattleResultStatisticsKey of(BrawlersBattleResultStatisticsCollectionEntity brawlersBattleResult) {
+        return new BrawlersBattleResultStatisticsKey(
                 brawlersBattleResult.getEventBrawlStarsId(),
                 brawlersBattleResult.getBattleDate(),
                 brawlersBattleResult.getBrawlerBrawlStarsId(),
@@ -60,7 +60,7 @@ public record BrawlersBattleResultKey(
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        BrawlersBattleResultKey that = (BrawlersBattleResultKey) o;
+        BrawlersBattleResultStatisticsKey that = (BrawlersBattleResultStatisticsKey) o;
         return eventBrawlStarsId == that.eventBrawlStarsId
                 && brawlerBrawlStarsId == that.brawlerBrawlStarsId
                 && duplicateBrawler == that.duplicateBrawler
