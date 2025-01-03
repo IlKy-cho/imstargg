@@ -112,4 +112,14 @@ public class BrawlStarsController {
     public void eventUnseasoned(@PathVariable long eventId) {
         battleService.eventUnseasoned(eventId);
     }
+
+    @DeleteMapping("/admin/api/events/{eventId}")
+    public void deleteEvent(@PathVariable long eventId) {
+        battleService.deleteEvent(eventId);
+    }
+
+    @PostMapping("/admin/api/events/{eventId}/restore")
+    public void restoreEvent(@PathVariable long eventId) {
+        battleService.restoreEvent(eventId);
+    }
 }

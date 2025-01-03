@@ -10,7 +10,7 @@ type Props = {
 }
 
 export default function EventSeasonButton({battleEvent}: Readonly<Props>) {
-  const [seasoned, setSeasoned] = useState(battleEvent.seasoned);
+  const [seasoned, setSeasoned] = useState<boolean>(battleEvent.seasoned);
   const handleSeason = !seasoned
     ? async () => {
       await eventSeasoned(battleEvent.entity.id);
@@ -23,7 +23,7 @@ export default function EventSeasonButton({battleEvent}: Readonly<Props>) {
 
   return (
     <Button
-      className="text-xs text-gray-400"
+      className="text-xs"
       onClick={handleSeason}
     >
       {seasoned ? "시즌 취소" : "시즌 추가"}

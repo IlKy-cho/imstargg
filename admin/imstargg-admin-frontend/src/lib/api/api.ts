@@ -21,3 +21,19 @@ export async function fetchEventUnseasoned(eventId: number): Promise<Response> {
     method: 'DELETE'
   });
 }
+
+export async function fetchDeleteEvent(eventId: number): Promise<Response> {
+  const url = new URL(`${BASE_URL}/admin/api/events/${eventId}`);
+  console.log(`Fetch from ${url}`);
+  return await fetch(url,  {
+    method: 'DELETE'
+  });
+}
+
+export async function fetchRestoreEvent(eventId: number): Promise<Response> {
+  const url = new URL(`${BASE_URL}/admin/api/events/${eventId}/restore`);
+  console.log(`Fetch from ${url}`);
+  return await fetch(url,  {
+    method: 'POST'
+  });
+}

@@ -12,6 +12,7 @@ import BattleEvent from "@/model/BattleEvent";
 import {messagesToTitle} from "@/components/title";
 import React from "react";
 import EventSeasonButton from "@/app/events/event-season-button";
+import EventDeleteButton from "@/app/events/event-delete-button";
 
 type Props = {
   battleEvents: BattleEvent[];
@@ -33,40 +34,46 @@ export default function EventList({battleEvents}: Readonly<Props>) {
       <TableBody>
         {
           battleEvents
+            .filter((battleEvent) => !battleEvent.entity.deleted)
             .sort((a, b) => a.entity.brawlStarsId - b.entity.brawlStarsId)
             .map((battleEvent) => (
-            <TableRow key={battleEvent.entity.id}>
-              <TableCell>
-                {battleEvent.entity.brawlStarsId}
-              </TableCell>
-              <TableCell>
-                {battleEvent.map.image ? (
-                  <Image
-                    src={battleEvent.map.image.url}
-                    alt={battleEvent.map.entity.id + " 이미지"}
-                    width={100}
-                    height={100}
-                  />
-                ) : (
-                  <div className="flex items-center justify-center w-[100px] h-[100px] bg-gray-100">
-                    <span className="text-2xl text-gray-400">X</span>
+              <TableRow key={battleEvent.entity.id}>
+                <TableCell>
+                  {battleEvent.entity.brawlStarsId}
+                </TableCell>
+                <TableCell>
+                  {battleEvent.map.image ? (
+                    <Image
+                      src={battleEvent.map.image.url}
+                      alt={battleEvent.map.entity.id + " 이미지"}
+                      width={100}
+                      height={100}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-[100px] h-[100px] bg-gray-100">
+                      <span className="text-2xl text-gray-400">X</span>
+                    </div>
+                  )}
+                </TableCell>
+                <TableCell>
+                  {battleEvent.entity.mode}
+                </TableCell>
+                <TableCell>
+                  {messagesToTitle(battleEvent.map.names)}
+                </TableCell>
+                <TableCell>
+                  {battleEvent.seasoned ? "O" : null}
+                </TableCell>
+                <TableCell>
+                  <div>
+                    <EventSeasonButton battleEvent={battleEvent}/>
                   </div>
-                )}
-              </TableCell>
-              <TableCell>
-                {battleEvent.entity.mode}
-              </TableCell>
-              <TableCell>
-                {messagesToTitle(battleEvent.map.names)}
-              </TableCell>
-              <TableCell>
-                {battleEvent.seasoned ? "O" : null}
-              </TableCell>
-              <TableCell>
-                <EventSeasonButton battleEvent={battleEvent} />
-              </TableCell>
-            </TableRow>
-          ))
+                  <div>
+                    <EventDeleteButton battleEvent={battleEvent}/>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))
         }
       </TableBody>
       <TableFooter>
