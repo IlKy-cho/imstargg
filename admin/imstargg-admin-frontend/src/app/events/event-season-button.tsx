@@ -10,9 +10,13 @@ type Props = {
 
 export default function EventSeasonButton({battleEvent}: Readonly<Props>) {
 
-  const handleSeason = battleEvent.seasoned
-    ? async () => eventSeasoned(battleEvent.entity.id)
-    : async () => eventUnseasoned(battleEvent.entity.id);
+  const handleSeason = !battleEvent.seasoned
+    ? async () => {
+      await eventSeasoned(battleEvent.entity.id);
+    }
+    : async () => {
+      await eventUnseasoned(battleEvent.entity.id);
+    };
 
   return (
     <Button
