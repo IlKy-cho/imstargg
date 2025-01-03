@@ -1,14 +1,13 @@
 package com.imstargg.batch.job;
 
+import com.imstargg.batch.domain.BattleReader;
 import com.imstargg.batch.domain.BrawlerBattleRankStatisticsCollector;
 import com.imstargg.batch.domain.BrawlersBattleRankStatisticsCollector;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
@@ -29,10 +28,9 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
-
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
 class BrawlerBattleRankStatisticsJobConfig {
@@ -83,10 +81,12 @@ class BrawlerBattleRankStatisticsJobConfig {
         TaskletStepBuilder taskletStepBuilder = new TaskletStepBuilder(new StepBuilder(STEP_NAME, jobRepository));
         return taskletStepBuilder
                 .tasklet((contribution, chunkContext) -> {
-                    int page = 0;
                     boolean hasNext = true;
+                    LocalDate date = Objects.requireNonNull(dateJobParameter().getDate());
+                    int page = 0;
                     while (hasNext) {
-                        List<BattleCollectionEntity> battles = read(page);
+                        log.debug("Reading page: {}", page++);
+                        List<BattleCollectionEntity> battles = battleReader().read(date, CHUNK_SIZE);
                         if (battles.size() < CHUNK_SIZE) {
                             hasNext = false;
                         }
@@ -98,7 +98,6 @@ class BrawlerBattleRankStatisticsJobConfig {
                             brawlerBattleRankStatisticsCollector().collect(battle);
                             brawlersBattleRankStatisticsCollector().collect(battle);
                         }
-                        page++;
                     }
 
                     EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
@@ -126,24 +125,10 @@ class BrawlerBattleRankStatisticsJobConfig {
         return true;
     }
 
-    private List<BattleCollectionEntity> read(int page) {
-        JPAQueryFactory queryFactory = JPAQueryFactoryUtils.getQueryFactory(emf);
-        log.debug("Reading page: {}", page);
-        return queryFactory
-                .selectFrom(battleCollectionEntity)
-                .join(battleCollectionEntity.player.player).fetchJoin()
-                .where(
-                        battleCollectionEntity.battleTime.goe(
-                                Objects.requireNonNull(dateJobParameter().getDate()).atStartOfDay()
-                        ),
-                        battleCollectionEntity.battleTime.lt(
-                                Objects.requireNonNull(dateJobParameter().getDate()).plusDays(1).atStartOfDay()
-                        )
-                )
-                .orderBy(battleCollectionEntity.battleTime.desc())
-                .offset((long) page * CHUNK_SIZE)
-                .limit(CHUNK_SIZE)
-                .fetch();
+    @Bean(STEP_NAME + "BattleReader")
+    @StepScope
+    BattleReader battleReader() {
+        return new BattleReader(emf);
     }
 
 
