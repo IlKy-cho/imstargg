@@ -195,4 +195,16 @@ public class BattleService {
         seasonedBattleEventRepository.findByBattleEvent(event)
                 .ifPresent(BaseEntity::delete);
     }
+
+    @Transactional
+    public void deleteEvent(long eventId) {
+        battleEventRepository.findById(eventId)
+                .ifPresent(BaseEntity::delete);
+    }
+
+    @Transactional
+    public void restoreEvent(long eventId) {
+        battleEventRepository.findById(eventId)
+                .ifPresent(BaseEntity::restore);
+    }
 }

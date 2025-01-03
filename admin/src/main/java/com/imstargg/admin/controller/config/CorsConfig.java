@@ -4,32 +4,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
     private static final Logger log = LoggerFactory.getLogger(CorsConfig.class);
 
-    private final String[] allowedOrigins;
+    private final List<String> allowedOrigins;
 
-    public CorsConfig(@Value("${app.cors.allowed-origins:http://localhost:3000}") String allowedOrigins) {
-        this.allowedOrigins = Arrays.stream(allowedOrigins.split(","))
-                .map(String::trim)
-                .toArray(String[]::new);
+    public CorsConfig(@Value("${app.cors.allowed-origins:http://localhost:3000}") List<String> allowedOrigins) {
+        this.allowedOrigins = allowedOrigins;
     }
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        log.info("CORS Allowed-Origin: {}", Arrays.toString(allowedOrigins));
+        log.info("CORS Allowed-Origin: {}", allowedOrigins);
         registry
                 .addMapping("/**")
-                .allowedOrigins(allowedOrigins)
+                .allowedOrigins(allowedOrigins.toArray(String[]::new))
                 .allowCredentials(true)
                 .allowedMethods(
                         HttpMethod.GET.name(),
@@ -40,12 +37,8 @@ public class CorsConfig implements WebMvcConfigurer {
                         HttpMethod.HEAD.name(),
                         HttpMethod.PATCH.name()
                 )
-                .allowedHeaders(
-                        HttpHeaders.ORIGIN,
-                        HttpHeaders.ACCEPT,
-                        HttpHeaders.CONTENT_TYPE,
-                        HttpHeaders.AUTHORIZATION
-                )
+                .allowedHeaders("*")
+                .exposedHeaders("*")
                 .maxAge(1800)
                 ;
     }

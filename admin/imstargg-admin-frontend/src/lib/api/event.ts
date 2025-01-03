@@ -1,4 +1,10 @@
-import {fetchEventSeasoned, fetchEventUnseasoned, fetchGetEvents} from "@/lib/api/api";
+import {
+  fetchDeleteEvent,
+  fetchEventSeasoned,
+  fetchEventUnseasoned,
+  fetchGetEvents,
+  fetchRestoreEvent
+} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
 import BattleEvent from "@/model/BattleEvent";
 
@@ -34,6 +40,22 @@ export async function eventSeasoned(eventId: number): Promise<void> {
 
 export async function eventUnseasoned(eventId: number): Promise<void> {
   const response = await fetchEventUnseasoned(eventId);
+
+  if (!response.ok) {
+    throw new ApiError(response);
+  }
+}
+
+export async function deleteEvent(eventId: number): Promise<void> {
+  const response = await fetchDeleteEvent(eventId);
+
+  if (!response.ok) {
+    throw new ApiError(response);
+  }
+}
+
+export async function restoreEvent(eventId: number): Promise<void> {
+  const response = await fetchRestoreEvent(eventId);
 
   if (!response.ok) {
     throw new ApiError(response);
