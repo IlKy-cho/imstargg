@@ -30,7 +30,7 @@ public class BrawlersRankStatisticsCollectionEntity extends BrawlerBattleRankSta
     private long brawlerBrawlStarsId;
 
     @Embedded
-    private BattleStatisticsEntityBrawlers brawlers;
+    private BattleStatisticsCollectionEntityBrawlers brawlers;
 
 
     protected BrawlersRankStatisticsCollectionEntity() {
@@ -42,7 +42,7 @@ public class BrawlersRankStatisticsCollectionEntity extends BrawlerBattleRankSta
             int rank,
             TrophyRange trophyRange,
             long brawlerBrawlStarsId,
-            BattleStatisticsEntityBrawlers brawlers
+            BattleStatisticsCollectionEntityBrawlers brawlers
     ) {
         super(battleEventId, battleDate, rank);
         this.trophyRange = trophyRange;
@@ -62,4 +62,7 @@ public class BrawlersRankStatisticsCollectionEntity extends BrawlerBattleRankSta
         return brawlerBrawlStarsId;
     }
 
+    public BattleStatisticsCollectionEntityBrawlers getBrawlers() {
+        return brawlers;
+    }
 }

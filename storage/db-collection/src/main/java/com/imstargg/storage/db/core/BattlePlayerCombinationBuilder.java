@@ -9,9 +9,6 @@ public class BattlePlayerCombinationBuilder {
     private final List<List<BattleCollectionEntityTeamPlayer>> result = new ArrayList<>();
 
     public BattlePlayerCombinationBuilder(List<BattleCollectionEntityTeamPlayer> players) {
-        if (players.size() < 2) {
-            throw new IllegalArgumentException("플레이어가 2명 이상이어야 합니다.");
-        }
         this.players = players;
     }
 

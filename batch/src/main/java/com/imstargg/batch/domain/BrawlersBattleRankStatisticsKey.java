@@ -1,60 +1,53 @@
 package com.imstargg.batch.domain;
 
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
-import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public record BrawlersBattleResultStatisticsKey(
+public record BrawlersBattleRankStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
         long brawlerBrawlStarsId,
         byte[] brawlerBrawlStarsIdHash,
-        @Nullable TrophyRange trophyRange,
-        @Nullable SoloRankTierRange soloRankTierRange,
-        boolean duplicateBrawler
+        TrophyRange trophyRange,
+        int rank
 ) {
 
-    public static List<BrawlersBattleResultStatisticsKey> of(
-            BattleCollectionEntity battle,
-            List<BattleCollectionEntityTeamPlayer> players
+    public static List<BrawlersBattleRankStatisticsKey> of(
+            BattleCollectionEntity battle, List<BattleCollectionEntityTeamPlayer> players
     ) {
         BattleType battleType = BattleType.find(battle.getType());
         List<Long> brawlerBrawlStarsIds = players.stream()
                 .map(player -> player.getBrawler().getBrawlStarsId())
                 .toList();
         BrawlerIdHash brawlerIdHash = BrawlerIdHash.of(brawlerBrawlStarsIds);
-        boolean battleContainsDuplicateBrawler = battle.containsDuplicateBrawler();
-        return players.stream().map(player -> new BrawlersBattleResultStatisticsKey(
+        return players.stream().map(player -> new BrawlersBattleRankStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().toLocalDate(),
                 player.getBrawler().getBrawlStarsId(),
                 brawlerIdHash.value(),
                 TrophyRange.of(battleType, player.getBrawler().getTrophies()),
-                SoloRankTierRange.of(battleType, player.getBrawler().getTrophies()),
-                battleContainsDuplicateBrawler
+                Objects.requireNonNull(battle.getPlayer().getRank())
         )).toList();
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        BrawlersBattleResultStatisticsKey that = (BrawlersBattleResultStatisticsKey) o;
-        return eventBrawlStarsId == that.eventBrawlStarsId
+        BrawlersBattleRankStatisticsKey that = (BrawlersBattleRankStatisticsKey) o;
+        return rank == that.rank
+                && eventBrawlStarsId == that.eventBrawlStarsId
                 && brawlerBrawlStarsId == that.brawlerBrawlStarsId
-                && duplicateBrawler == that.duplicateBrawler
                 && Objects.equals(battleDate, that.battleDate)
-                && Objects.deepEquals(brawlerBrawlStarsIdHash, that.brawlerBrawlStarsIdHash)
                 && trophyRange == that.trophyRange
-                && soloRankTierRange == that.soloRankTierRange;
+                && Objects.deepEquals(brawlerBrawlStarsIdHash, that.brawlerBrawlStarsIdHash);
     }
 
     @Override
@@ -65,21 +58,19 @@ public record BrawlersBattleResultStatisticsKey(
                 brawlerBrawlStarsId,
                 Arrays.hashCode(brawlerBrawlStarsIdHash),
                 trophyRange,
-                soloRankTierRange,
-                duplicateBrawler
+                rank
         );
     }
 
     @Override
     public String toString() {
-        return "BrawlersBattleResultKey{" +
+        return "BrawlersBattleRankStatisticsKey{" +
                 "eventBrawlStarsId=" + eventBrawlStarsId +
                 ", battleDate=" + battleDate +
                 ", brawlerBrawlStarsId=" + brawlerBrawlStarsId +
                 ", brawlerBrawlStarsIdHash=" + Arrays.toString(brawlerBrawlStarsIdHash) +
                 ", trophyRange=" + trophyRange +
-                ", soloRankTierRange=" + soloRankTierRange +
-                ", duplicateBrawler=" + duplicateBrawler +
+                ", rank=" + rank +
                 '}';
     }
 }
