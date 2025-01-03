@@ -22,6 +22,7 @@ export default function EventList({battleEvents}: Readonly<Props>) {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className="w-12">ID</TableHead>
           <TableHead className="w-[100px]">이미지</TableHead>
           <TableHead>모드</TableHead>
           <TableHead>맵 이름</TableHead>
@@ -31,8 +32,13 @@ export default function EventList({battleEvents}: Readonly<Props>) {
       </TableHeader>
       <TableBody>
         {
-          battleEvents.map((battleEvent) => (
+          battleEvents
+            .sort((a, b) => a.entity.brawlStarsId - b.entity.brawlStarsId)
+            .map((battleEvent) => (
             <TableRow key={battleEvent.entity.id}>
+              <TableCell>
+                {battleEvent.entity.brawlStarsId}
+              </TableCell>
               <TableCell>
                 {battleEvent.map.image ? (
                   <Image
