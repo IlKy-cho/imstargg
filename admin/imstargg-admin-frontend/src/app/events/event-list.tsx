@@ -27,6 +27,7 @@ export default function EventList({battleEvents}: Readonly<Props>) {
           <TableHead className="w-[100px]">이미지</TableHead>
           <TableHead>모드</TableHead>
           <TableHead>맵 이름</TableHead>
+          <TableHead>최근 전투 일시</TableHead>
           <TableHead>시즌</TableHead>
           <TableHead className="text-right">메뉴</TableHead>
         </TableRow>
@@ -60,6 +61,12 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                 </TableCell>
                 <TableCell>
                   {messagesToTitle(battleEvent.map.names)}
+                </TableCell>
+                <TableCell>
+                  {battleEvent.battleTime !== null
+                    ? battleEvent.battleTime.toLocaleString()
+                    : "X"
+                  }
                 </TableCell>
                 <TableCell>
                   {battleEvent.seasoned ? "O" : null}

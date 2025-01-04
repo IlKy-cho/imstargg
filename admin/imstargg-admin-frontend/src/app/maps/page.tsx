@@ -1,7 +1,7 @@
 import { MapList } from "@/app/maps/map-list";
 import { MapAdd } from "./map-add";
-import getMapList from "@/lib/api/getMapList";
 import { NotRegisteredMapList } from "./not-registered-map-list";
+import {getMapList} from "@/lib/api/event";
 
 export default async function MapsPage() {
   const battleMaps = await getMapList();

@@ -16,7 +16,6 @@ import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.SeasonBattleEventCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.SeasonBattleEventCollectionJpaRepository;
-import com.imstargg.storage.db.core.collection.UnregisteredBattleEventCollectionJpaRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +38,6 @@ public class BattleService {
     private final BattleMapCollectionJpaRepository battleMapRepository;
     private final BattleEventCollectionJpaRepository battleEventRepository;
     private final SeasonBattleEventCollectionJpaRepository seasonedBattleEventRepository;
-    private final UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
 
@@ -48,7 +46,6 @@ public class BattleService {
             BattleMapCollectionJpaRepository battleMapRepository,
             BattleEventCollectionJpaRepository battleEventRepository,
             SeasonBattleEventCollectionJpaRepository seasonedBattleEventRepository,
-            UnregisteredBattleEventCollectionJpaRepository unregisteredBattleEventRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
             MessageCollectionJpaRepository messageRepository
     ) {
@@ -56,7 +53,6 @@ public class BattleService {
         this.battleMapRepository = battleMapRepository;
         this.battleEventRepository = battleEventRepository;
         this.seasonedBattleEventRepository = seasonedBattleEventRepository;
-        this.unregisteredBattleEventRepository = unregisteredBattleEventRepository;
         this.brawlStarsImageRepository = brawlStarsImageRepository;
         this.messageRepository = messageRepository;
     }
@@ -126,19 +122,22 @@ public class BattleService {
                                 mapImageCodeToImage.get(
                                         BrawlStarsImageType.BATTLE_MAP.code(idToMap.get(event.getMap().getId()).getCode()))
                         ),
+                        battleEventRepository.findLatestBattle(event)
+                                .map(BattleCollectionEntity::getBattleTime)
+                                .orElse(null),
                         seasonedEventIds.contains(event.getId())
                 )).toList();
     }
 
     public List<NotRegisteredBattleEvent> getNotRegisteredEventList() {
-        return unregisteredBattleEventRepository.findAll().stream()
-                .filter(BaseEntity::isActive)
-                .filter(entity -> entity.getEvent().getBrawlStarsId() != null)
-                .filter(entity -> entity.getEvent().getBrawlStarsId() != 0)
+        return battleEventRepository.findAllNotRegisteredEventBattle()
+                .stream()
+                .filter(BattleCollectionEntity::existsEventId)
                 .map(battle -> new NotRegisteredBattleEvent(
-                        battle.getEvent().getBrawlStarsId(),
+                        Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                         battle.getEvent().getMode(),
-                        battle.getEvent().getMap()
+                        battle.getEvent().getMap(),
+                        battle.getBattleTime()
                 )).toList();
     }
 
@@ -165,12 +164,6 @@ public class BattleService {
                         battleMap
                 )
         );
-
-        unregisteredBattleEventRepository.findByEventBrawlStarsId(newBattleEvent.brawlStarsId())
-                .ifPresent(unregisteredEvent -> {
-                    unregisteredEvent.delete();
-                    unregisteredBattleEventRepository.save(unregisteredEvent);
-                });
     }
 
     public void eventSeasoned(long eventId) {
