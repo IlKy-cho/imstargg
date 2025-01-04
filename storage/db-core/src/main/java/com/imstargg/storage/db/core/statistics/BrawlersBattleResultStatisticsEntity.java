@@ -12,12 +12,8 @@ import jakarta.persistence.UniqueConstraint;
         name = "brawlers_battle_result_stats",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_event_battledate_brawler_trophy_duplicate",
-                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "brawler_brawlstars_id_hash", "trophy_range", "duplicate_brawler"}
-                ),
-                @UniqueConstraint(
-                        name = "uk_event_battledate_brawler_ranktier_duplicate",
-                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "brawler_brawlstars_id_hash", "solo_rank_tier_range", "duplicate_brawler"}
+                        name = "uk_event_battledate_brawler_range_duplicate",
+                        columnNames = {"event_brawlstars_id", "battle_date", "brawler_brawlstars_id", "brawler_brawlstars_id_hash", "trophy_range", "solo_rank_tier_range", "duplicate_brawler"}
                 )
         }
 )
