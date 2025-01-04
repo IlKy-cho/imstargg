@@ -5,5 +5,4 @@ export default interface BattleEventEntity extends BaseEntity {
   id: number;
   brawlStarsId: number;
   mode: BattleEventMode;
-  mapId: number;
 }

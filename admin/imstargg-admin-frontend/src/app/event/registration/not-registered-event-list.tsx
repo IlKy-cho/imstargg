@@ -1,7 +1,7 @@
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import getMapList from "@/lib/api/getMapList";
 import getNotRegisteredEventList from "@/lib/api/getNotRegisteredEventList";
 import EventAdd from "./event-add";
+import {getMapList} from "@/lib/api/event";
 
 export async function NotRegisteredEventList() {
   const battleMaps = await getMapList();
@@ -14,6 +14,7 @@ export async function NotRegisteredEventList() {
           <TableHead className="w-[100px]">아이디</TableHead>
           <TableHead>모드</TableHead>
           <TableHead>맵</TableHead>
+          <TableHead>최근 전투일시</TableHead>
           <TableHead className="text-right">메뉴</TableHead>
         </TableRow>
       </TableHeader>
@@ -23,6 +24,7 @@ export async function NotRegisteredEventList() {
             <TableCell>{event.brawlStarsId}</TableCell>
             <TableCell>{event.mode}</TableCell>
             <TableCell>{event.map}</TableCell>
+            <TableCell>{event.battleTime.toLocaleString()}</TableCell>
             <TableCell className="text-right space-x-2">
               <EventAdd event={event} battleMaps={battleMaps} />
             </TableCell>

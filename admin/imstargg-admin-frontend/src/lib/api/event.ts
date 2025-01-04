@@ -2,11 +2,12 @@ import {
   fetchDeleteEvent,
   fetchEventSeasoned,
   fetchEventUnseasoned,
-  fetchGetEvents,
+  fetchGetEvents, fetchGetMapList,
   fetchRestoreEvent
 } from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
 import BattleEvent from "@/model/BattleEvent";
+import BattleMap from "@/model/BattleMap";
 
 class ApiError extends Error {
   constructor(public response: Response, message = `Failed to fetch from ${response.url}`) {
@@ -60,4 +61,17 @@ export async function restoreEvent(eventId: number): Promise<void> {
   if (!response.ok) {
     throw new ApiError(response);
   }
+}
+
+export async function getMapList(): Promise<BattleMap[]> {
+  const response = await fetchGetMapList();
+
+  if (response.ok) {
+    const data = await response.json() as ListResponse<BattleMap>;
+    return data.content;
+  }
+
+  const apiError = new ApiError(response);
+  apiError.log();
+  throw apiError;
 }

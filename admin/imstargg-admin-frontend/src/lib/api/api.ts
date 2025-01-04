@@ -37,3 +37,9 @@ export async function fetchRestoreEvent(eventId: number): Promise<Response> {
     method: 'POST'
   });
 }
+
+export async function fetchGetMapList(): Promise<Response> {
+  const url = new URL(`${BASE_URL}/admin/api/maps`);
+  console.log(`Fetch from ${url}`);
+  return await fetch(url);
+}
