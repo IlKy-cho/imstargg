@@ -248,13 +248,8 @@ create table brawler_battle_result_stats
 ) engine = innodb;
 
 alter table brawler_battle_result_stats
-    add constraint uk_event_battledate_brawler_enemybrawler_trophy_duplicate
+    add constraint uk_event_battledate_brawler_enemybrawler_range_duplicate
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, enemy_brawler_brawlstars_id, trophy_range,
-                duplicate_brawler);
-
-alter table brawler_battle_result_stats
-    add constraint uk_event_battledate_brawler_enemybrawler_ranktier_duplicate
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, enemy_brawler_brawlstars_id,
                 solo_rank_tier_range,
                 duplicate_brawler);
 
@@ -281,14 +276,10 @@ create table brawlers_battle_result_stats
 ) engine = innodb;
 
 alter table brawlers_battle_result_stats
-    add constraint uk_event_battledate_brawler_trophy_duplicate
+    add constraint uk_event_battledate_brawler_range_duplicate
         unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range,
+                solo_rank_tier_range,
                 duplicate_brawler);
-
-alter table brawlers_battle_result_stats
-    add constraint uk_event_battledate_brawler_ranktier_duplicate
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash,
-                solo_rank_tier_range, duplicate_brawler);
 
 
 -- BrawlStars
