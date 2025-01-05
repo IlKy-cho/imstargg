@@ -24,4 +24,8 @@ public class BattleEventStatisticsService {
     public List<BattleEventBrawlerRankStatistics> getBattleEventBrawlerRankStatistics(BattleEventBrawlerRankStatisticsParam param) {
         return battleEventStatisticsReader.getBattleEventBrawlerRankStatistics(param);
     }
+
+    public List<BattleEventBrawlersRankStatistics> getBattleEventBrawlersRankStatistics(BattleEventBrawlersRankStatisticsParam param) {
+        return battleEventStatisticsReader.getBattleEventBrawlersRankStatistics(param);
+    }
 }
