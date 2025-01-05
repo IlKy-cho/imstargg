@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Map;
 
 @Component
-public class BattleEventStatisticsRepository {
+public class BattleEventResultStatisticsRepository {
 
     private static final int PAGE_SIZE = 1000;
 
     private final BrawlerBattleResultStatisticsJpaRepository brawlerBattleResultStatisticsJpaRepository;
     private final BrawlersBattleResultStatisticsJpaRepository brawlersBattleResultStatisticsJpaRepository;
 
-    public BattleEventStatisticsRepository(
+    public BattleEventResultStatisticsRepository(
             BrawlerBattleResultStatisticsJpaRepository brawlerBattleResultStatisticsJpaRepository,
             BrawlersBattleResultStatisticsJpaRepository brawlersBattleResultStatisticsJpaRepository
     ) {

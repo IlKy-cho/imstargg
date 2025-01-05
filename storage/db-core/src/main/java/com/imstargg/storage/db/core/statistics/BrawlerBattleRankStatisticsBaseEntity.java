@@ -2,24 +2,31 @@ package com.imstargg.storage.db.core.statistics;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import java.util.Map;
 
 @MappedSuperclass
 abstract class BrawlerBattleRankStatisticsBaseEntity extends BattleStatisticsBaseEntity {
 
-    @Column(name = "rank_value", updatable = false, nullable = false)
-    private int rank;
-
-    @Column(name = "rank_count", nullable = false)
-    private int count;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "rank_to_counts", columnDefinition = "json", updatable = false, nullable = false)
+    private Map<Integer, Long> rankToCounts;
 
     protected BrawlerBattleRankStatisticsBaseEntity() {
     }
 
-    public int getRank() {
-        return rank;
+    public long getTotalBattleCount() {
+        return rankToCounts.values().stream().mapToLong(Long::longValue).sum();
     }
 
-    public int getCount() {
-        return count;
+    public long getRankWeightedSum() {
+        return rankToCounts.entrySet().stream()
+                .mapToLong(entry -> entry.getKey() * entry.getValue()).sum();
+    }
+
+    public double getAverageRank() {
+        return (double) getRankWeightedSum() / getTotalBattleCount();
     }
 }
