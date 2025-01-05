@@ -55,4 +55,11 @@ public class BattleEventStatisticsReader {
     ) {
         return battleEventRankStatisticsRepository.findBrawlerRankStatistics(param);
     }
+
+    @Cacheable(key = "'battle-event-brawlers-rank-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")
+    public List<BattleEventBrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
+            BattleEventBrawlersRankStatisticsParam param
+    ) {
+        return battleEventRankStatisticsRepository.findBrawlersRankStatistics(param);
+    }
 }
