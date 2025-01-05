@@ -8,5 +8,6 @@ public enum BrawlerRole {
     DAMAGE_DEALER,  // 대미지 딜러
     MARKSMAN,       // 저격수
     ARTILLERY,      // 투척수
+    NONE,
     ;
 }

@@ -6,6 +6,7 @@ export const BrawlerRoleValue = {
   DAMAGE_DEALER: 'DAMAGE_DEALER',
   MARKSMAN: 'MARKSMAN',
   ARTILLERY: 'ARTILLERY',
+  NONE: 'NONE',
 
 } as const;
 
