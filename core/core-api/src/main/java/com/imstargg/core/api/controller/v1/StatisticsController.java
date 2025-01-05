@@ -1,8 +1,10 @@
 package com.imstargg.core.api.controller.v1;
 
 import com.imstargg.core.api.controller.response.ListResponse;
+import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerRankStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersResultStatisticsRequest;
+import com.imstargg.core.api.controller.v1.response.BattleEventBrawlerRankStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BattleEventBrawlerResultStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BattleEventBrawlersResultStatisticsResponse;
 import com.imstargg.core.domain.statistics.BattleEventStatisticsService;
@@ -44,4 +46,15 @@ public class StatisticsController {
         );
     }
 
+    @GetMapping("/api/v1/statistics/battle-event/rank/brawler")
+    public ListResponse<BattleEventBrawlerRankStatisticsResponse> getBattleEventRankBrawlerStatistics(
+            @ModelAttribute @Validated BattleEventBrawlerRankStatisticsRequest request
+    ) {
+        return new ListResponse<>(
+                battleEventStatisticsService.getBattleEventBrawlerRankStatistics(request.toParam())
+                        .stream()
+                        .map(BattleEventBrawlerRankStatisticsResponse::of)
+                        .toList()
+        );
+    }
 }
