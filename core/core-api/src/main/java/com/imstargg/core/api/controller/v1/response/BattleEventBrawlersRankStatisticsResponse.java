@@ -1,5 +1,6 @@
 package com.imstargg.core.api.controller.v1.response;
 
+import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.statistics.BattleEventBrawlersRankStatistics;
 
 import java.util.List;
@@ -12,7 +13,7 @@ public record BattleEventBrawlersRankStatisticsResponse(
 
     public static BattleEventBrawlersRankStatisticsResponse of(BattleEventBrawlersRankStatistics stats) {
         return new BattleEventBrawlersRankStatisticsResponse(
-                stats.brawlerBrawlStarsIds(),
+                stats.brawlerBrawlStarsIds().stream().map(BrawlStarsId::value).toList(),
                 stats.rankToCounts()
         );
     }

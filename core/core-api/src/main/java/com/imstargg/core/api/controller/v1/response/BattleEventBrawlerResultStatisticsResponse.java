@@ -12,7 +12,7 @@ public record BattleEventBrawlerResultStatisticsResponse(
 
     public static BattleEventBrawlerResultStatisticsResponse of(BattleEventBrawlerResultStatistics statistics) {
         return new BattleEventBrawlerResultStatisticsResponse(
-                statistics.brawlerBrawlStarsId(),
+                statistics.brawlerBrawlStarsId().value(),
                 statistics.victoryCount(),
                 statistics.defeatCount(),
                 statistics.drawCount(),
