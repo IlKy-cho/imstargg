@@ -1,7 +1,6 @@
 import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
-import getNotRegisteredEventList from "@/lib/api/getNotRegisteredEventList";
 import EventAdd from "./event-add";
-import {getMapList} from "@/lib/api/event";
+import {getMapList, getNotRegisteredEventList} from "@/lib/api/event";
 
 export async function NotRegisteredEventList() {
   const battleMaps = await getMapList();
@@ -19,7 +18,10 @@ export async function NotRegisteredEventList() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {eventList.map((event) => (
+        {eventList
+          .sort((a, b) => a.battleTime.getTime() - b.battleTime.getTime())
+          .reverse()
+          .map((event) => (
           <TableRow key={event.brawlStarsId}>
             <TableCell>{event.brawlStarsId}</TableCell>
             <TableCell>{event.mode}</TableCell>

@@ -43,3 +43,9 @@ export async function fetchGetMapList(): Promise<Response> {
   console.log(`Fetch from ${url}`);
   return await fetch(url);
 }
+
+export async function fetchGetNotRegisteredEventList(): Promise<Response> {
+  const url = new URL(`${BASE_URL}/admin/api/not-registered-events`);
+  console.log(`Fetch from ${url}`);
+  return await fetch(url);
+}
