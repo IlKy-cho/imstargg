@@ -11,7 +11,7 @@ public record BattleEventBrawlerRankStatisticsResponse(
 
     public static BattleEventBrawlerRankStatisticsResponse of(BattleEventBrawlerRankStatistics stats) {
         return new BattleEventBrawlerRankStatisticsResponse(
-                stats.brawlerBrawlStarsId(),
+                stats.brawlerBrawlStarsId().value(),
                 stats.rankToCounts()
         );
     }

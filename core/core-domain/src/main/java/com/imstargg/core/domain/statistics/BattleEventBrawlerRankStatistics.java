@@ -1,9 +1,11 @@
 package com.imstargg.core.domain.statistics;
 
+import com.imstargg.core.domain.BrawlStarsId;
+
 import java.util.Map;
 
 public record BattleEventBrawlerRankStatistics(
-        long brawlerBrawlStarsId,
+        BrawlStarsId brawlerBrawlStarsId,
         Map<Integer, Long> rankToCounts
 ) {
 }

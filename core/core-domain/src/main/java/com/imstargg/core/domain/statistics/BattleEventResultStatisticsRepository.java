@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.statistics;
 
+import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
@@ -67,7 +68,7 @@ public class BattleEventResultStatisticsRepository {
 
         return brawlerCounters.entrySet().stream()
                 .map(entry -> new BattleEventBrawlerResultStatistics(
-                        entry.getKey(),
+                        new BrawlStarsId(entry.getKey()),
                         entry.getValue().getVictoryCount(),
                         entry.getValue().getDefeatCount(),
                         entry.getValue().getDrawCount(),
@@ -110,7 +111,7 @@ public class BattleEventResultStatisticsRepository {
 
         return brawlersCounters.entrySet().stream()
                 .map(entry -> new BattleEventBrawlersResultStatistics(
-                        entry.getKey().ids(),
+                        entry.getKey().ids().stream().map(BrawlStarsId::new).toList(),
                         entry.getValue().getVictoryCount() / entry.getKey().num(),
                         entry.getValue().getDefeatCount() / entry.getKey().num(),
                         entry.getValue().getDrawCount() / entry.getKey().num()
