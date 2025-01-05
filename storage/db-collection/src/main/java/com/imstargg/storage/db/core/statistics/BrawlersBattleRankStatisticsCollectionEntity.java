@@ -39,12 +39,11 @@ public class BrawlersBattleRankStatisticsCollectionEntity extends BrawlerBattleR
     public BrawlersBattleRankStatisticsCollectionEntity(
             long battleEventId,
             LocalDate battleDate,
-            int rank,
             TrophyRange trophyRange,
             long brawlerBrawlStarsId,
             BattleStatisticsCollectionEntityBrawlers brawlers
     ) {
-        super(battleEventId, battleDate, rank);
+        super(battleEventId, battleDate);
         this.trophyRange = trophyRange;
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.brawlers = brawlers;

@@ -16,8 +16,7 @@ public record BrawlersBattleRankStatisticsKey(
         LocalDate battleDate,
         long brawlerBrawlStarsId,
         byte[] brawlerBrawlStarsIdHash,
-        TrophyRange trophyRange,
-        int rank
+        TrophyRange trophyRange
 ) {
 
     public static List<BrawlersBattleRankStatisticsKey> of(
@@ -33,8 +32,7 @@ public record BrawlersBattleRankStatisticsKey(
                 battle.getBattleTime().toLocalDate(),
                 player.getBrawler().getBrawlStarsId(),
                 brawlerIdHash.value(),
-                TrophyRange.of(battleType, player.getBrawler().getTrophies()),
-                Objects.requireNonNull(battle.getPlayer().getRank())
+                TrophyRange.of(battleType, player.getBrawler().getTrophies())
         )).toList();
     }
 
@@ -42,8 +40,7 @@ public record BrawlersBattleRankStatisticsKey(
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         BrawlersBattleRankStatisticsKey that = (BrawlersBattleRankStatisticsKey) o;
-        return rank == that.rank
-                && eventBrawlStarsId == that.eventBrawlStarsId
+        return eventBrawlStarsId == that.eventBrawlStarsId
                 && brawlerBrawlStarsId == that.brawlerBrawlStarsId
                 && Objects.equals(battleDate, that.battleDate)
                 && trophyRange == that.trophyRange
@@ -57,8 +54,7 @@ public record BrawlersBattleRankStatisticsKey(
                 battleDate,
                 brawlerBrawlStarsId,
                 Arrays.hashCode(brawlerBrawlStarsIdHash),
-                trophyRange,
-                rank
+                trophyRange
         );
     }
 
@@ -70,7 +66,6 @@ public record BrawlersBattleRankStatisticsKey(
                 ", brawlerBrawlStarsId=" + brawlerBrawlStarsId +
                 ", brawlerBrawlStarsIdHash=" + Arrays.toString(brawlerBrawlStarsIdHash) +
                 ", trophyRange=" + trophyRange +
-                ", rank=" + rank +
                 '}';
     }
 }

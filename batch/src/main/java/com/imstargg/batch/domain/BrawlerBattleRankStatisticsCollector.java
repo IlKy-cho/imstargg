@@ -4,6 +4,7 @@ import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -19,7 +20,7 @@ public class BrawlerBattleRankStatisticsCollector {
         battle.playerCombinations().forEach(playerCombination -> {
             var key = BrawlerBattleRankStatisticsKey.of(battle);
             var brawlerBattleResultStats = getBrawlerBattleResultStats(key);
-            brawlerBattleResultStats.countUp();
+            brawlerBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
         });
     }
 
@@ -32,7 +33,6 @@ public class BrawlerBattleRankStatisticsCollector {
         return cache.computeIfAbsent(key, k -> new BrawlerBattleRankStatisticsCollectionEntity(
                 k.eventBrawlStarsId(),
                 k.battleDate(),
-                k.rank(),
                 k.trophyRange(),
                 k.brawlerBrawlStarsId()
         ));

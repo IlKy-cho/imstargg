@@ -11,17 +11,17 @@ import java.util.List;
 @CacheConfig(cacheNames = CacheNames.STATISTICS)
 public class BattleEventStatisticsReader {
 
-    private final BattleEventStatisticsRepository battleEventStatisticsRepository;
+    private final BattleEventResultStatisticsRepository battleEventResultStatisticsRepository;
 
-    public BattleEventStatisticsReader(BattleEventStatisticsRepository battleEventStatisticsRepository) {
-        this.battleEventStatisticsRepository = battleEventStatisticsRepository;
+    public BattleEventStatisticsReader(BattleEventResultStatisticsRepository battleEventResultStatisticsRepository) {
+        this.battleEventResultStatisticsRepository = battleEventResultStatisticsRepository;
     }
 
     @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTier' + #param.soloRankTier() + ':duplicateBrawler' + #param.duplicateBrawler()")
     public List<BattleEventBrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
             BattleEventBrawlerResultStatisticsParam param
     ) {
-        return battleEventStatisticsRepository.findBrawlerResultStatistics(
+        return battleEventResultStatisticsRepository.findBrawlerResultStatistics(
                 param.eventBrawlStarsId(),
                 param.battleDate(),
                 param.trophyRange(),
@@ -34,7 +34,7 @@ public class BattleEventStatisticsReader {
     public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
             BattleEventBrawlersResultStatisticsParam param
     ) {
-        return battleEventStatisticsRepository.findBrawlersResultStatistics(
+        return battleEventResultStatisticsRepository.findBrawlersResultStatistics(
                 param.eventBrawlStarsId(),
                 param.battleDate(),
                 param.trophyRange(),

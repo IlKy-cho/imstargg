@@ -6,6 +6,7 @@ import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsCollectionEntity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -21,7 +22,7 @@ public class BrawlersBattleRankStatisticsCollector {
         battle.myTeamCombinations().forEach(myTeamCombination ->
                 BrawlersBattleRankStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
                     var brawlersBattleResultStats = getBrawlersBattleResult(key);
-                    brawlersBattleResultStats.countUp();
+                    brawlersBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
                 })
         );
     }
@@ -36,7 +37,6 @@ public class BrawlersBattleRankStatisticsCollector {
             return new BrawlersBattleRankStatisticsCollectionEntity(
                     k.eventBrawlStarsId(),
                     k.battleDate(),
-                    k.rank(),
                     k.trophyRange(),
                     k.brawlerBrawlStarsId(),
                     new BattleStatisticsCollectionEntityBrawlers(
