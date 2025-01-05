@@ -9,9 +9,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import getNotRegisteredEventList from "@/lib/api/getNotRegisteredEventList";
 import BattleMap from "@/model/BattleMap";
 import {useEffect, useState} from "react";
+import {getNotRegisteredEventList} from "@/lib/api/event";
 
 type Props = {
   battleMaps: BattleMap[];
