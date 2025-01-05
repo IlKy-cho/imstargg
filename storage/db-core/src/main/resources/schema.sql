@@ -198,8 +198,8 @@ create table brawler_battle_rank_stats
 ) engine = innodb;
 
 alter table brawler_battle_rank_stats
-    add constraint uk_event_battledate_brawler_trophy_rank
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, trophy_range, rank_value);
+    add constraint uk_event_battledate_brawler_range
+        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, trophy_range);
 
 
 create table brawlers_battle_rank_stats
@@ -220,9 +220,8 @@ create table brawlers_battle_rank_stats
 
 
 alter table brawlers_battle_rank_stats
-    add constraint uk_event_battledate_brawler_trophy_rank
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range,
-                rank_value);
+    add constraint uk_event_battledate_brawler_range
+        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range);
 
 
 create table brawler_battle_result_stats
