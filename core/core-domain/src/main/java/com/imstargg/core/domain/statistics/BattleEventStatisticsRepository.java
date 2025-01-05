@@ -4,6 +4,8 @@ import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsJpaRepository;
+import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
+import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsJpaRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.PageRequest;
@@ -66,11 +68,52 @@ public class BattleEventStatisticsRepository {
         return brawlerCounters.entrySet().stream()
                 .map(entry -> new BattleEventBrawlerResultStatistics(
                         entry.getKey(),
-                        battleDate,
                         entry.getValue().getVictoryCount(),
                         entry.getValue().getDefeatCount(),
                         entry.getValue().getDrawCount(),
                         entry.getValue().getStarPlayerCount()
+                ))
+                .toList();
+    }
+
+    public List<BattleEventBrawlersResultStatistics> findBrawlersResultStatistics(
+            long eventBrawlStarsId, LocalDate battleDate,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTier soloRankTier,
+            int brawlNum, boolean duplicateBrawler
+    ) {
+        Map<BrawlerIdHash, BattleEventBrawlersCounter> brawlersCounters = new HashMap<>();
+        var pageRequest = PageRequest.ofSize(PAGE_SIZE);
+        boolean hasNext = true;
+
+        while (hasNext) {
+            Slice<BrawlersBattleResultStatisticsEntity> brawlersBattleResultStatsSlice = brawlersBattleResultStatisticsJpaRepository
+                    .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlersNumAndDuplicateBrawler(
+                            eventBrawlStarsId, battleDate, trophyRange, soloRankTier,
+                            brawlNum, duplicateBrawler,
+                            pageRequest
+                    );
+
+            hasNext = brawlersBattleResultStatsSlice.hasNext();
+
+            brawlersBattleResultStatsSlice.forEach(stats -> {
+                BattleEventBrawlersCounter brawlersCounter = brawlersCounters.computeIfAbsent(
+                        new BrawlerIdHash(stats.getBrawlers().getIdHash()),
+                        k -> new BattleEventBrawlersCounter()
+                );
+                brawlersCounter.addVictory(stats.getVictoryCount());
+                brawlersCounter.addDefeat(stats.getDefeatCount());
+                brawlersCounter.addDraw(stats.getDrawCount());
+            });
+
+            pageRequest = pageRequest.next();
+        }
+
+        return brawlersCounters.entrySet().stream()
+                .map(entry -> new BattleEventBrawlersResultStatistics(
+                        entry.getKey().ids(),
+                        entry.getValue().getVictoryCount() / entry.getKey().num(),
+                        entry.getValue().getDefeatCount() / entry.getKey().num(),
+                        entry.getValue().getDrawCount() / entry.getKey().num()
                 ))
                 .toList();
     }
@@ -105,24 +148,59 @@ public class BattleEventStatisticsRepository {
             starPlayerCount += count;
         }
 
-        public int getTotalBattleCount() {
-            return victoryCount + defeatCount + drawCount;
-        }
-
-        public int getVictoryCount() {
+        int getVictoryCount() {
             return victoryCount;
         }
 
-        public int getDefeatCount() {
+        int getDefeatCount() {
             return defeatCount;
         }
 
-        public int getDrawCount() {
+        int getDrawCount() {
             return drawCount;
         }
 
-        public int getStarPlayerCount() {
+        int getStarPlayerCount() {
             return starPlayerCount;
         }
+    }
+
+    private static class BattleEventBrawlersCounter {
+
+        private int victoryCount;
+        private int defeatCount;
+        private int drawCount;
+
+        BattleEventBrawlersCounter() {
+            this.victoryCount = 0;
+            this.defeatCount = 0;
+            this.drawCount = 0;
+        }
+
+        void addVictory(int count) {
+            victoryCount += count;
+        }
+
+        void addDefeat(int count) {
+            defeatCount += count;
+        }
+
+        void addDraw(int count) {
+            drawCount += count;
+        }
+
+
+        int getVictoryCount() {
+            return victoryCount;
+        }
+
+        int getDefeatCount() {
+            return defeatCount;
+        }
+
+        int getDrawCount() {
+            return drawCount;
+        }
+
     }
 }
