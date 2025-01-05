@@ -48,7 +48,7 @@ public class BattleUpdateProcessor implements ItemProcessor<PlayerCollectionEnti
 
             return new PlayerBattleUpdateResult(item, updatedBattleEntities);
         } catch (BrawlStarsClientNotFoundException ex) {
-            log.warn("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}",
+            log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}",
                     item.getBrawlStarsTag());
             item.deleted();
             return new PlayerBattleUpdateResult(item, List.of());

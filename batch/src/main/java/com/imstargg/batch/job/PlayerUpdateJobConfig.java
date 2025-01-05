@@ -122,7 +122,7 @@ class PlayerUpdateJobConfig {
                     PlayerCollectionEntity playerEntity = ((PlayerBattleUpdateResult) item).playerEntity();
                     playerEntity.playerUpdated(clock);
                     if (playerEntity.getStatus() == PlayerStatus.DORMANT) {
-                        log.debug("플레이어가 휴면상태 처리됨 playerTag={}", playerEntity.getBrawlStarsTag());
+                        log.info("플레이어가 휴면상태 처리됨 playerTag={}", playerEntity.getBrawlStarsTag());
                     }
                     return item;
                 }
