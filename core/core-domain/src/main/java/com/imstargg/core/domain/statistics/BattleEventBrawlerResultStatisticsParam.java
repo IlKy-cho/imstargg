@@ -6,7 +6,7 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-public record BattleEventResultStatisticsParam(
+public record BattleEventBrawlerResultStatisticsParam(
         long eventBrawlStarsId,
         LocalDate battleDate,
         @Nullable TrophyRange trophyRange,

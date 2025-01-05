@@ -13,7 +13,11 @@ public class BattleEventStatisticsService {
         this.battleEventStatisticsReader = battleEventStatisticsReader;
     }
 
-    public List<BattleEventBrawlerResultStatistics> getBattleEventResultStatistics(BattleEventResultStatisticsParam param) {
-        return battleEventStatisticsReader.getBattleEventResultStatistics(param);
+    public List<BattleEventBrawlerResultStatistics> getBattleEventBrawlerResultStatistics(BattleEventBrawlerResultStatisticsParam param) {
+        return battleEventStatisticsReader.getBattleEventBrawlerResultStatistics(param);
+    }
+
+    public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(BattleEventBrawlersResultStatisticsParam param) {
+        return battleEventStatisticsReader.getBattleEventBrawlersResultStatistics(param);
     }
 }

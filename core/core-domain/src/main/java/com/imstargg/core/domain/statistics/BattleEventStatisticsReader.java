@@ -17,15 +17,29 @@ public class BattleEventStatisticsReader {
         this.battleEventStatisticsRepository = battleEventStatisticsRepository;
     }
 
-    @Cacheable(key = "'battle-event-result-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTier' + #param.soloRankTier() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public List<BattleEventBrawlerResultStatistics> getBattleEventResultStatistics(
-            BattleEventResultStatisticsParam param
+    @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTier' + #param.soloRankTier() + ':duplicateBrawler' + #param.duplicateBrawler()")
+    public List<BattleEventBrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
+            BattleEventBrawlerResultStatisticsParam param
     ) {
         return battleEventStatisticsRepository.findBrawlerResultStatistics(
                 param.eventBrawlStarsId(),
                 param.battleDate(),
                 param.trophyRange(),
                 param.soloRankTier(),
+                param.duplicateBrawler()
+        );
+    }
+
+    @Cacheable(key = "'battle-event-brawlers-result-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTier' + #param.soloRankTier()  + ':brawlersNum' + #param.brawlersNum() + ':duplicateBrawler' + #param.duplicateBrawler()")
+    public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
+            BattleEventBrawlersResultStatisticsParam param
+    ) {
+        return battleEventStatisticsRepository.findBrawlersResultStatistics(
+                param.eventBrawlStarsId(),
+                param.battleDate(),
+                param.trophyRange(),
+                param.soloRankTier(),
+                param.brawlersNum(),
                 param.duplicateBrawler()
         );
     }
