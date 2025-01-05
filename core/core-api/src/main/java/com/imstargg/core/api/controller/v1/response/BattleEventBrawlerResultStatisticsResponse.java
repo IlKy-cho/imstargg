@@ -4,10 +4,10 @@ import com.imstargg.core.domain.statistics.BattleEventBrawlerResultStatistics;
 
 public record BattleEventBrawlerResultStatisticsResponse(
         long brawlerBrawlStarsId,
-        int victoryCount,
-        int defeatCount,
-        int drawCount,
-        int starPlayerCount
+        long victoryCount,
+        long defeatCount,
+        long drawCount,
+        long starPlayerCount
 ) {
 
     public static BattleEventBrawlerResultStatisticsResponse of(BattleEventBrawlerResultStatistics statistics) {

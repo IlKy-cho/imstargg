@@ -120,10 +120,10 @@ public class BattleEventResultStatisticsRepository {
 
     private static class BattleEventBrawlerCounter {
 
-        private int victoryCount;
-        private int defeatCount;
-        private int drawCount;
-        private int starPlayerCount;
+        private long victoryCount;
+        private long defeatCount;
+        private long drawCount;
+        private long starPlayerCount;
 
         BattleEventBrawlerCounter() {
             this.victoryCount = 0;
@@ -132,44 +132,44 @@ public class BattleEventResultStatisticsRepository {
             this.starPlayerCount = 0;
         }
 
-        void addVictory(int count) {
+        void addVictory(long count) {
             victoryCount += count;
         }
 
-        void addDefeat(int count) {
+        void addDefeat(long count) {
             defeatCount += count;
         }
 
-        void addDraw(int count) {
+        void addDraw(long count) {
             drawCount += count;
         }
 
-        void addStarPlayer(int count) {
+        void addStarPlayer(long count) {
             starPlayerCount += count;
         }
 
-        int getVictoryCount() {
+        long getVictoryCount() {
             return victoryCount;
         }
 
-        int getDefeatCount() {
+        long getDefeatCount() {
             return defeatCount;
         }
 
-        int getDrawCount() {
+        long getDrawCount() {
             return drawCount;
         }
 
-        int getStarPlayerCount() {
+        long getStarPlayerCount() {
             return starPlayerCount;
         }
     }
 
     private static class BattleEventBrawlersCounter {
 
-        private int victoryCount;
-        private int defeatCount;
-        private int drawCount;
+        private long victoryCount;
+        private long defeatCount;
+        private long drawCount;
 
         BattleEventBrawlersCounter() {
             this.victoryCount = 0;
@@ -177,28 +177,28 @@ public class BattleEventResultStatisticsRepository {
             this.drawCount = 0;
         }
 
-        void addVictory(int count) {
+        void addVictory(long count) {
             victoryCount += count;
         }
 
-        void addDefeat(int count) {
+        void addDefeat(long count) {
             defeatCount += count;
         }
 
-        void addDraw(int count) {
+        void addDraw(long count) {
             drawCount += count;
         }
 
 
-        int getVictoryCount() {
+        long getVictoryCount() {
             return victoryCount;
         }
 
-        int getDefeatCount() {
+        long getDefeatCount() {
             return defeatCount;
         }
 
-        int getDrawCount() {
+        long getDrawCount() {
             return drawCount;
         }
 
