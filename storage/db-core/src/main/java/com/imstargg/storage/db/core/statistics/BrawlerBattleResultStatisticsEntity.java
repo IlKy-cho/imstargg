@@ -29,7 +29,7 @@ public class BrawlerBattleResultStatisticsEntity extends BrawlerBattleResultStat
     private long enemyBrawlerBrawlStarsId;
 
     @Column(name = "star_player_count", nullable = false)
-    private int starPlayerCount;
+    private long starPlayerCount;
 
     protected BrawlerBattleResultStatisticsEntity() {
     }
@@ -46,7 +46,7 @@ public class BrawlerBattleResultStatisticsEntity extends BrawlerBattleResultStat
         return enemyBrawlerBrawlStarsId;
     }
 
-    public int getStarPlayerCount() {
+    public long getStarPlayerCount() {
         return starPlayerCount;
     }
 }

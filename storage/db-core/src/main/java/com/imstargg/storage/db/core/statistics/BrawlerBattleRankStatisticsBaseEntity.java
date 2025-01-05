@@ -17,6 +17,10 @@ abstract class BrawlerBattleRankStatisticsBaseEntity extends BattleStatisticsBas
     protected BrawlerBattleRankStatisticsBaseEntity() {
     }
 
+    public Map<Integer, Long> getRankToCounts() {
+        return rankToCounts;
+    }
+
     public long getTotalBattleCount() {
         return rankToCounts.values().stream().mapToLong(Long::longValue).sum();
     }

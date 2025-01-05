@@ -6,9 +6,9 @@ import java.util.List;
 
 public record BattleEventBrawlersResultStatisticsResponse(
         List<Long> brawlerBrawlStarsIds,
-        int victoryCount,
-        int defeatCount,
-        int drawCount
+        long victoryCount,
+        long defeatCount,
+        long drawCount
 ) {
 
     public static BattleEventBrawlersResultStatisticsResponse of(BattleEventBrawlersResultStatistics statistics) {

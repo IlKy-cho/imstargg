@@ -28,13 +28,13 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
     private boolean duplicateBrawler;
 
     @Column(name = "victory_count", nullable = false)
-    private int victoryCount;
+    private long victoryCount;
 
     @Column(name = "defeat_count", nullable = false)
-    private int defeatCount;
+    private long defeatCount;
 
     @Column(name = "draw_count", nullable = false)
-    private int drawCount;
+    private long drawCount;
 
     protected BrawlerBattleResultStatisticsBaseCollectionEntity() {
     }
@@ -86,15 +86,15 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
         return duplicateBrawler;
     }
 
-    public int getVictoryCount() {
+    public long getVictoryCount() {
         return victoryCount;
     }
 
-    public int getDefeatCount() {
+    public long getDefeatCount() {
         return defeatCount;
     }
 
-    public int getDrawCount() {
+    public long getDrawCount() {
         return drawCount;
     }
 }
