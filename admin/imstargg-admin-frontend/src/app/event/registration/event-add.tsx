@@ -31,7 +31,7 @@ export default function EventAdd({event, battleMaps}: Props) {
   const handleSearch = () => {
     setSearchedMaps(battleMaps.filter(map =>
       map.names.some(name =>
-        name.content.includes(searchTerm))
+        searchTerm !== null && searchTerm !== '' && name.content.includes(searchTerm))
     ));
   }
 
@@ -63,7 +63,7 @@ export default function EventAdd({event, battleMaps}: Props) {
           <div className="grid grid-cols-4 items-center gap-4">
             <Input
               id="mapSearch"
-              value={searchTerm}
+              value={searchTerm !== null ? searchTerm : ''}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="col-span-3"
               placeholder="맵 이름으로 검색..."
@@ -87,7 +87,8 @@ export default function EventAdd({event, battleMaps}: Props) {
                 onClick={() => setSelectedMap(map)}
               >
                 <div className="flex items-center gap-4 w-full">
-                  <div className="relative w-24 h-24 flex-shrink-0 bg-muted rounded-md flex items-center justify-center">
+                  <div
+                    className="relative w-24 h-24 flex-shrink-0 bg-muted rounded-md flex items-center justify-center">
                     {map.image ? (
                       <Image
                         src={map.image.url}
@@ -102,9 +103,9 @@ export default function EventAdd({event, battleMaps}: Props) {
                   <div className="flex flex-col gap-2 flex-grow">
                     <div className="font-semibold">
                       {map.names
-                      .sort((a, b) => a.lang.localeCompare(b.lang))
-                      .map(name => `${name.lang}: ${name.content}`)
-                      .join(' / ')}
+                        .sort((a, b) => a.lang.localeCompare(b.lang))
+                        .map(name => `${name.lang}: ${name.content}`)
+                        .join(' / ')}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       코드: {map.entity.code}
@@ -117,8 +118,8 @@ export default function EventAdd({event, battleMaps}: Props) {
         </div>
 
         <DialogFooter>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             onClick={handleSubmit}
             disabled={!selectedMap}
           >

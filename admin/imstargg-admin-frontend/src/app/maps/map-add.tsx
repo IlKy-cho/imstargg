@@ -14,17 +14,17 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { useState } from "react"
 import registerMap from "@/lib/api/registerMap"
-import { LanguageType, LanguageValues } from "@/model/enums/Language"
+import { Language, LanguageValues } from "@/model/enums/Language"
 
 export function MapAdd() {
-  const [names, setNames] = useState<Record<LanguageType, string>>(
-    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<LanguageType, string>
+  const [names, setNames] = useState<Record<Language, string>>(
+    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
   )
 
   const handleSubmit = async () => {
     try {
       await registerMap({ names })
-      // 성공 후 다이얼로그 닫기 등의 처리
+      window.location.reload();
     } catch (error) {
       console.error("맵 등록 실패:", error);
     }
