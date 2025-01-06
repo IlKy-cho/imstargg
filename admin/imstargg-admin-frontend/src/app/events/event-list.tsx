@@ -11,8 +11,7 @@ import Image from "next/image"
 import BattleEvent from "@/model/BattleEvent";
 import {messagesToTitle} from "@/components/title";
 import React from "react";
-import EventSeasonButton from "@/app/events/event-season-button";
-import EventDeleteButton from "@/app/events/event-delete-button";
+import {EventMapImageUpload} from "@/app/events/event-map-image-upload";
 
 type Props = {
   battleEvents: BattleEvent[];
@@ -28,17 +27,16 @@ export default function EventList({battleEvents}: Readonly<Props>) {
           <TableHead>모드</TableHead>
           <TableHead>맵 이름</TableHead>
           <TableHead>최근 전투 일시</TableHead>
-          <TableHead>시즌</TableHead>
           <TableHead className="text-right">메뉴</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {
           battleEvents
-            .filter((battleEvent) => !battleEvent.entity.deleted)
-            .sort((a, b) => a.entity.brawlStarsId - b.entity.brawlStarsId)
+            .sort((a, b) => (a.latestBattleTime?.getTime() || 0) - (b.latestBattleTime?.getTime() || 0))
+            .reverse()
             .map((battleEvent) => (
-              <TableRow key={battleEvent.entity.id}>
+              <TableRow key={battleEvent.entity.brawlStarsId}>
                 <TableCell>
                   {battleEvent.entity.brawlStarsId}
                 </TableCell>
@@ -46,7 +44,7 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                   {battleEvent.map.image ? (
                     <Image
                       src={battleEvent.map.image.url}
-                      alt={battleEvent.map.entity.id + " 이미지"}
+                      alt={battleEvent.entity.brawlStarsId + " 이벤트 이미지"}
                       width={100}
                       height={100}
                     />
@@ -60,24 +58,19 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                   {battleEvent.entity.mode}
                 </TableCell>
                 <TableCell>
-                  {messagesToTitle(battleEvent.map.names)}
+                  <span className="font-bold">{battleEvent.entity.map}</span>: {messagesToTitle(battleEvent.map.names)}
                 </TableCell>
                 <TableCell>
-                  {battleEvent.battleTime !== null
-                    ? battleEvent.battleTime.toLocaleString()
+                  {battleEvent.latestBattleTime !== null
+                    ? battleEvent.latestBattleTime.toLocaleString()
                     : "X"
                   }
                 </TableCell>
                 <TableCell>
-                  {battleEvent.seasoned ? "O" : null}
-                </TableCell>
-                <TableCell>
-                  <div>
-                    <EventSeasonButton battleEvent={battleEvent}/>
-                  </div>
-                  <div>
-                    <EventDeleteButton battleEvent={battleEvent}/>
-                  </div>
+                    {battleEvent.entity.brawlStarsId !== null && battleEvent.entity.brawlStarsId !== 0 ?
+                      <EventMapImageUpload battleEvent={battleEvent}/>
+                      : null
+                    }
                 </TableCell>
               </TableRow>
             ))

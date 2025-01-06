@@ -1,9 +1,8 @@
-import BattleEventEntity from "@/model/entity/BattleEventEntity";
 import BattleEventMap from "@/model/BattleEventMap";
+import BattleEventEntity from "@/model/entity/BattleEntityEvent";
 
 export default interface BattleEvent {
   entity: BattleEventEntity;
   map: BattleEventMap;
-  battleTime: Date | null;
-  seasoned: boolean;
+  latestBattleTime: Date | null;
 }
