@@ -3,6 +3,7 @@ spring:
     - db-core-test.yml
     - core-event-test.yml
     - aws-test.yml
+    - brawlstars-news-client.yml
 
   task:
     execution:

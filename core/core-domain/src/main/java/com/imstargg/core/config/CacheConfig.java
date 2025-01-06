@@ -24,7 +24,8 @@ public class CacheConfig {
         cacheManager.setCacheNames(List.of(
                 CacheNames.BATTLE_EVENT,
                 CacheNames.BRAWLER,
-                CacheNames.STATISTICS
+                CacheNames.STATISTICS,
+                CacheNames.BRAWLSTARS_NEWS
         ));
 
         return cacheManager;

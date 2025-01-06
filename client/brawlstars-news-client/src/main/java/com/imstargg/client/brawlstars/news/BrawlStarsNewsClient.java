@@ -41,7 +41,7 @@ public class BrawlStarsNewsClient {
                     matcher.group(1), ArchivePageDataDto.class);
             return pageData.props().pageProps().toResponse().toArticleFullLinkUrl(baseUrl);
         } catch (Exception e) {
-            throw new BrawlStarsNewsClientException(e);
+            throw BrawlStarsNewsClientException.of(e);
         }
     }
 }
