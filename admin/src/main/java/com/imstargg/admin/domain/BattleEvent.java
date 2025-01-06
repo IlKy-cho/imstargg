@@ -1,16 +1,12 @@
 package com.imstargg.admin.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
-import jakarta.annotation.Nullable;
+import com.imstargg.storage.db.core.BattleEntityEvent;
 
 import java.time.LocalDateTime;
 
 public record BattleEvent(
-        @JsonIgnoreProperties("map")
-        BattleEventCollectionEntity entity,
+        BattleEntityEvent event,
         BattleEventMap map,
-        @Nullable LocalDateTime battleTime,
-        boolean seasoned
+        LocalDateTime latestBattleTime
 ) {
 }

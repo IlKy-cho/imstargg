@@ -91,7 +91,7 @@ public class BrawlerService {
                         brawler,
                         codeToMessages.get(brawler.getNameMessageCode()),
                         codeToBrawlerProfileImage.getOrDefault(
-                                BrawlStarsImageType.BRAWLER_PROFILE.code(String.valueOf(brawler.getBrawlStarsId())), null
+                                BrawlStarsImageType.BRAWLER_PROFILE.code(brawler.getBrawlStarsId()), null
                         ),
                         brawlerIdToGadgets.getOrDefault(brawler.getId(), List.of()).stream()
                                 .map(gadget ->

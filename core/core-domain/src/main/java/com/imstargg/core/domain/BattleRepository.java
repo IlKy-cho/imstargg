@@ -54,8 +54,8 @@ public class BattleRepository {
         return new PlayerBattle(
                 battleEntity.getBattleTime(),
                 battleEventRepository.find(
-                                battleEntity.getEvent().getEventBrawlStarsId() != null
-                                        ? new BrawlStarsId(battleEntity.getEvent().getEventBrawlStarsId()) : null,
+                                battleEntity.getEvent().getBrawlStarsId() != null
+                                        ? new BrawlStarsId(battleEntity.getEvent().getBrawlStarsId()) : null,
                                 Language.KOREAN)
                         .orElse(null),
                 BattleMode.find(battleEntity.getMode()),
