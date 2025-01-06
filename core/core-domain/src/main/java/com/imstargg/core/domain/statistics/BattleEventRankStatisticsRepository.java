@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.statistics;
 
+import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsEntity;
@@ -36,7 +37,7 @@ public class BattleEventRankStatisticsRepository {
                         param.eventBrawlStarsId(), param.battleDate(), param.trophyRange()
                 ).stream()
                 .map(statsEntity -> new BattleEventBrawlerRankStatistics(
-                        statsEntity.getBrawlerBrawlStarsId(),
+                        new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
                         statsEntity.getRankToCounts()
                 )).toList();
     }
@@ -75,7 +76,10 @@ public class BattleEventRankStatisticsRepository {
                         rankToCounts.put(rank, count / entry.getKey().num());
                     });
                     return new BattleEventBrawlersRankStatistics(
-                            entry.getKey().ids(),
+                            entry.getKey().ids()
+                                    .stream()
+                                    .map(BrawlStarsId::new)
+                                    .toList(),
                             rankToCounts
                     );
                 }).toList();

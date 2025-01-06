@@ -2,13 +2,13 @@ package com.imstargg.storage.db.core;
 
 import jakarta.annotation.Nullable;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 interface BattleJpaRepositoryCustom {
 
-    List<Long> findAllDistinctEventBrawlStarsIds(@Nullable LocalDate fromDate);
+    List<Long> findAllDistinctEventBrawlStarsIdsByGreaterThanEqualBattleTime(@Nullable LocalDateTime battleTime);
 
     Optional<BattleEntity> findLatestBattle(long eventBrawlStarsId);
 }

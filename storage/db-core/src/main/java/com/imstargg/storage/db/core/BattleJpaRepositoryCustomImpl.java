@@ -4,7 +4,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,16 +19,24 @@ class BattleJpaRepositoryCustomImpl implements BattleJpaRepositoryCustom {
     }
 
     @Override
-    public List<Long> findAllDistinctEventBrawlStarsIds(@Nullable LocalDate fromDate) {
-        return queryFactory.select(battleEntity.event.brawlStarsId)
-                .distinct()
-                .from(battleEntity)
-                .where(
-                        battleEntity.event.brawlStarsId.isNotNull(),
-                        battleEntity.event.brawlStarsId.gt(0),
-                        fromDate != null ? battleEntity.battleTime.goe(fromDate.atStartOfDay()) : null
+    public List<Long> findAllDistinctEventBrawlStarsIdsByGreaterThanEqualBattleTime(@Nullable LocalDateTime battleTime) {
+        return queryFactory
+                .select(
+                        battleEntity.event.brawlStarsId,
+                        battleEntity.battleTime.max()
                 )
-                .fetch();
+                .from(battleEntity)
+                .groupBy(battleEntity.event.brawlStarsId)
+                .having(battleTime == null ? null : battleEntity.battleTime.max().goe(battleTime))
+                .fetch()
+                .stream()
+                .filter(tuple -> {
+                    Long eventBrawlStarsId = tuple.get(battleEntity.event.brawlStarsId);
+                    return eventBrawlStarsId != null && eventBrawlStarsId > 0;
+                })
+                .map(tuple -> tuple.get(battleEntity.event.brawlStarsId))
+                .toList()
+                ;
     }
 
     @Override

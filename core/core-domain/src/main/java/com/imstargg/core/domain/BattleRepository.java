@@ -1,6 +1,5 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
 import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
@@ -17,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class BattleRepository {
@@ -25,18 +25,15 @@ public class BattleRepository {
 
     private final PlayerJpaRepository playerJpaRepository;
     private final BattleJpaRepository battleJpaRepository;
-    private final BattleEventRepositoryWithCache battleEventRepository;
     private final BrawlerRepositoryWithCache brawlerRepository;
 
     public BattleRepository(
             PlayerJpaRepository playerJpaRepository,
             BattleJpaRepository battleJpaRepository,
-            BattleEventRepositoryWithCache battleEventRepository,
             BrawlerRepositoryWithCache brawlerRepository
     ) {
         this.playerJpaRepository = playerJpaRepository;
         this.battleJpaRepository = battleJpaRepository;
-        this.battleEventRepository = battleEventRepository;
         this.brawlerRepository = brawlerRepository;
     }
 
@@ -53,10 +50,9 @@ public class BattleRepository {
         BattleType battleType = BattleType.find(battleEntity.getType());
         return new PlayerBattle(
                 battleEntity.getBattleTime(),
-                battleEventRepository.find(
-                                battleEntity.getEvent().getBrawlStarsId() != null
-                                        ? new BrawlStarsId(battleEntity.getEvent().getBrawlStarsId()) : null,
-                                Language.KOREAN)
+                Optional.ofNullable(battleEntity.getEvent().getBrawlStarsId())
+                        .filter(id -> id > 0)
+                        .map(BrawlStarsId::new)
                         .orElse(null),
                 BattleMode.find(battleEntity.getMode()),
                 battleType,

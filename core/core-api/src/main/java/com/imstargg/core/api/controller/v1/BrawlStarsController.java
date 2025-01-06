@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+
 @RestController
 public class BrawlStarsController {
 
@@ -49,10 +51,10 @@ public class BrawlStarsController {
         );
     }
 
-    @GetMapping("/api/v1/brawlstars/season-events")
-    public ListResponse<BattleEventResponse> getSeasonEvents() {
+    @GetMapping("/api/v1/brawlstars/events")
+    public ListResponse<BattleEventResponse> getEvents(@RequestParam LocalDate date) {
         return new ListResponse<>(
-                brawlStarsService.getSeasonEvents().stream()
+                brawlStarsService.getEvents(date).stream()
                         .map(BattleEventResponse::from)
                         .toList()
         );
