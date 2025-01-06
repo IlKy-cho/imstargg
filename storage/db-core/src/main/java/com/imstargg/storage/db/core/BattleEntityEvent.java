@@ -9,7 +9,7 @@ public class BattleEntityEvent {
 
     @Nullable
     @Column(name = "event_brawlstars_id", updatable = false)
-    private Long eventBrawlStarsId;
+    private Long brawlStarsId;
 
     @Nullable
     @Column(name = "event_mode", length = 65, updatable = false)
@@ -23,14 +23,16 @@ public class BattleEntityEvent {
     }
 
     @Nullable
-    public Long getEventBrawlStarsId() {
-        return eventBrawlStarsId;
+    public Long getBrawlStarsId() {
+        return brawlStarsId;
     }
 
+    @Nullable
     public String getMode() {
         return mode;
     }
 
+    @Nullable
     public String getMap() {
         return map;
     }

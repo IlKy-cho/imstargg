@@ -19,7 +19,7 @@ public class BrawlStarsImageUploader {
     private static final String BRAWLERS_DIR = "brawlers";
     private static final String PROFILE_DIR = "profiles";
     private static final String GEAR_DIR = "gears";
-    private static final String MAPS_DIR = "maps";
+    private static final String MAPS_DIR = "battle-events";
 
     private final ImageUploader imageUploader;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageJpaRepository;
@@ -56,10 +56,10 @@ public class BrawlStarsImageUploader {
         processImageUpload(imageUpload);
     }
 
-    public void uploadMap(String mapCode, Resource resource) {
+    public void uploadMap(long eventBrawlStarsId, Resource resource) {
         ImageUpload imageUpload = ImageUpload.builder()
                 .type(BrawlStarsImageType.BATTLE_MAP)
-                .mapCode(mapCode)
+                .brawlStarsId(eventBrawlStarsId)
                 .image(Image.resource(resource))
                 .directories(MAPS_DIR)
                 .build();
@@ -110,13 +110,13 @@ public class BrawlStarsImageUploader {
     private static class ImageUpload {
 
         private final BrawlStarsImageType type;
-        private final String key;
+        private final long key;
         private final Image image;
         private final String[] directories;
 
         private ImageUpload(
                 BrawlStarsImageType type,
-                String key,
+                long key,
                 Image image,
                 String[] directories
         ) {
@@ -149,17 +149,12 @@ public class BrawlStarsImageUploader {
         static class Builder {
 
             private BrawlStarsImageType type;
-            private String key;
+            private long key;
             private Image image;
             private String[] directories;
 
             Builder brawlStarsId(long brawlStarsId) {
-                this.key = String.valueOf(brawlStarsId);
-                return this;
-            }
-
-            Builder mapCode(String mapCode) {
-                this.key = mapCode;
+                this.key = brawlStarsId;
                 return this;
             }
 
