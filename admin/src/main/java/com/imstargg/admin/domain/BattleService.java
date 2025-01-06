@@ -43,7 +43,7 @@ public class BattleService {
 
 
     public List<BattleEvent> getEventList() {
-        List<BattleEntity> battles = battleJpaRepository.findAllDistinctEventBrawlStarsIds(null)
+        List<BattleEntity> battles = battleJpaRepository.findAllDistinctEventBrawlStarsIdsByGreaterThanEqualBattleTime(null)
                 .stream()
                 .map(battleJpaRepository::findLatestBattle)
                 .filter(Optional::isPresent)

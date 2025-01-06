@@ -3,6 +3,7 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.enums.Language;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -20,7 +21,7 @@ public class BrawlStarsService {
         return brawlerReader.getAll(Language.KOREAN);
     }
 
-    public List<BattleEvent> getSeasonEvents() {
-        return battleEventReader.getSeasonEvents(Language.KOREAN);
+    public List<BattleEvent> getEvents(LocalDate date) {
+        return battleEventReader.getEvents(Language.KOREAN, date);
     }
 }

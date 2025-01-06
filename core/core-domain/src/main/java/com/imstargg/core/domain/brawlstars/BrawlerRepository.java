@@ -112,7 +112,7 @@ public class BrawlerRepository {
                 starPowerEntities.stream().map(starPowerEntity ->
                         mapToStarPower(language, starPowerEntity, codeToMessageCollection)).toList(),
                 brawlStarsImageJpaRepository.findByCode(BrawlStarsImageType.BRAWLER_PROFILE.code(
-                        String.valueOf(brawlerEntity.getBrawlStarsId())
+                        brawlerEntity.getBrawlStarsId()
                 )).map(BrawlStarsImageEntity::getUrl).orElse(null)
         );
     }

@@ -12,7 +12,7 @@ import java.util.List;
 
 public record PlayerBattleResponse(
         LocalDateTime battleTime,
-        @Nullable BattleEventResponse event,
+        @Nullable Long eventId,
         BattleMode mode,
         BattleType type,
         @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable BattleResult result,
@@ -26,7 +26,7 @@ public record PlayerBattleResponse(
     public static PlayerBattleResponse from(PlayerBattle battle) {
         return new PlayerBattleResponse(
                 battle.battleTime(),
-                battle.event() == null ? null : BattleEventResponse.from(battle.event()),
+                battle.eventBrawlStarsId() == null ? null : battle.eventBrawlStarsId().value(),
                 battle.mode(),
                 battle.type(),
                 battle.result(),

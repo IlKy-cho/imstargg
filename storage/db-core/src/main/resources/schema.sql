@@ -300,50 +300,6 @@ alter table brawlstars_news
 create index ix_brawlstars_news__lang_publishdate
     on brawlstars_news (lang, publish_date desc);
 
-create table battle_event
-(
-    battle_event_id bigint       not null auto_increment,
-    brawlstars_id   bigint       not null,
-    mode            varchar(45)  not null,
-    map_id          bigint       not null,
-    created_at      timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at      timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted         boolean      not null default false,
-    primary key (battle_event_id)
-) engine = innodb;
-
-alter table battle_event
-    add constraint uk_battle_event__brawlstarsid unique (brawlstars_id);
-
-
-create table season_battle_event
-(
-    season_battle_event_id bigint       not null auto_increment,
-    battle_event_id        bigint       not null,
-    created_at             timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at             timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                boolean      not null default false,
-    primary key (season_battle_event_id)
-) engine = innodb;
-
-alter table season_battle_event
-    add constraint uk_battleeventid unique (battle_event_id);
-
-
-create table battle_map
-(
-    battle_map_id     bigint       not null auto_increment,
-    code              varchar(45)  not null,
-    name_message_code varchar(105) not null,
-    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted           boolean      not null default false,
-    primary key (battle_map_id)
-) engine = innodb;
-
-alter table battle_map
-    add constraint uk_battle_map__code unique (code);
-
 
 create table brawler
 (
@@ -422,21 +378,3 @@ create table star_power
 alter table star_power
     add constraint uk_starpower__brawlstarsid unique (brawlstars_id);
 
-
--- Collection
-
-create table unregistered_battle_event
-(
-    unregistered_battle_event_id bigint       not null auto_increment,
-    battle_id                    bigint       not null,
-    event_brawlstars_id          bigint,
-    event_mode                   varchar(65),
-    event_map                    varchar(65),
-    created_at                   timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at                   timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                      boolean      not null default false,
-    primary key (unregistered_battle_event_id)
-) engine = innodb;
-
-alter table unregistered_battle_event
-    add constraint uk_unregistered_battle_event__eventbrawlstarsid unique (event_brawlstars_id);
