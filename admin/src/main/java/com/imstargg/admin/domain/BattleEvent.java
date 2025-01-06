@@ -5,7 +5,7 @@ import com.imstargg.storage.db.core.BattleEntityEvent;
 import java.time.LocalDateTime;
 
 public record BattleEvent(
-        BattleEntityEvent event,
+        BattleEntityEvent entity,
         BattleEventMap map,
         LocalDateTime latestBattleTime
 ) {

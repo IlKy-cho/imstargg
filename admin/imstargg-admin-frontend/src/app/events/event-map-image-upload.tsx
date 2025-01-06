@@ -11,14 +11,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import {useState} from "react"
-import uploadMapImage from "@/lib/api/uploadMapImage"
 import Image from "next/image"
+import BattleEvent from "@/model/BattleEvent";
+import {uploadMapImage} from "@/lib/api/event";
 
 interface MapImageUploadProps {
-  mapCode: string;
+  battleEvent: BattleEvent;
 }
 
-export function MapImageUpload({ mapCode }: MapImageUploadProps) {
+export function EventMapImageUpload({ battleEvent }: MapImageUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -35,9 +36,12 @@ export function MapImageUpload({ mapCode }: MapImageUploadProps) {
 
   const handleSubmit = async () => {
     if (!selectedFile) return;
-    
+    if (!battleEvent.entity.brawlStarsId) {
+      throw new Error("이벤트의 Brawl Stars ID가 없습니다.");
+    }
+
     try {
-      await uploadMapImage(mapCode, selectedFile);
+      await uploadMapImage(battleEvent.entity.brawlStarsId, selectedFile);
       window.location.reload();
     } catch (error) {
       console.error("이미지 업로드 실패:", error);
