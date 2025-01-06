@@ -8,7 +8,6 @@ public record BrawlStarsNewsPageParam(
 ) {
 
     private static final int DEFAULT_PAGE = 1;
-    private static final int DEFAULT_SIZE = 6;
 
     public BrawlStarsNewsPageParam(Language language, Integer page) {
         this(
@@ -17,7 +16,4 @@ public record BrawlStarsNewsPageParam(
         );
     }
 
-    public int size() {
-        return DEFAULT_SIZE;
-    }
 }

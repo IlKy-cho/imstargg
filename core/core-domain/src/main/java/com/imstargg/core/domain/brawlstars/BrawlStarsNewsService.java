@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class BrawlStarsNewsService {
 
-    private final BrawlStarsNewsReader brawlStarsNewsReader;
+    private final BrawlStarsNewsReaderWithCache brawlStarsNewsReader;
 
-    public BrawlStarsNewsService(BrawlStarsNewsReader brawlStarsNewsReader) {
+    public BrawlStarsNewsService(BrawlStarsNewsReaderWithCache brawlStarsNewsReader) {
         this.brawlStarsNewsReader = brawlStarsNewsReader;
     }
 

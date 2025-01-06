@@ -281,26 +281,6 @@ alter table brawlers_battle_result_stats
 
 -- BrawlStars
 
-create table brawlstars_news
-(
-    brawlstars_news_id bigint       not null auto_increment,
-    lang               varchar(25)  not null,
-    title              varchar(255) not null,
-    link_url           varchar(255) not null,
-    publish_date       timestamp(6) not null,
-    created_at         timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at         timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted            boolean      not null default false,
-    primary key (brawlstars_news_id)
-) engine = innodb;
-
-alter table brawlstars_news
-    add constraint uk_brawlstars_news__linkurl unique (link_url);
-
-create index ix_brawlstars_news__lang_publishdate
-    on brawlstars_news (lang, publish_date desc);
-
-
 create table brawler
 (
     brawler_id        bigint       not null auto_increment,

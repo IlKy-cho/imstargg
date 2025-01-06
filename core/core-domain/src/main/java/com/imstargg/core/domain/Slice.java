@@ -16,4 +16,8 @@ public record Slice<T>(
     private <U> List<U> getConvertedContent(Function<? super T, ? extends U> converter) {
         return this.content.stream().map(converter).collect(Collectors.toList());
     }
+
+    public static <U> Slice<U> empty() {
+        return new Slice<>(List.of(), false);
+    }
 }
