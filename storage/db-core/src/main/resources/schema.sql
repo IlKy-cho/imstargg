@@ -27,8 +27,8 @@ create index ix_battle__battletime
 create index ix_battle__playerid_battletime
     on battle (player_id, battle_time desc);
 
-create index ix_event_battletime
-    on battle (event_brawlstars_id, battle_time desc);
+create index ix_event_type_battletime
+    on battle (event_brawlstars_id, type, battle_time desc);
 
 
 create table club
@@ -286,7 +286,7 @@ create table battle_event
     brawlstars_id       bigint       not null,
     mode                varchar(45)  not null,
     map_brawlstars_name varchar(105) not null,
-    latest_battle_time  timestamp(6) not null,
+    latest_battle_time  timestamp(6),
     created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false,
