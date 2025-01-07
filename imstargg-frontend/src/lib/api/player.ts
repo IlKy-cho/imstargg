@@ -1,4 +1,4 @@
-import {fetchGetRenewalStatus, fetchRenewPlayer} from "@/lib/api/api";
+import {ApiError, fetchGetRenewalStatus, fetchRenewPlayer} from "@/lib/api/api";
 import {ApiResponse, createApiResponse} from "@/model/response/ApiResponse";
 import {Player} from "@/model/Player";
 import {fetchGetPlayer} from "@/lib/api/api";
@@ -24,8 +24,7 @@ export async function getPlayer(tag: string): Promise<PlayerResponse> {
     return {player: null};
   }
 
-  console.log(`Failed to fetch from ${response.url}. status: ${response.status}, body: ${response.body}`);
-  throw new Error(`Failed to fetch from ${response.url}.`);
+  throw new ApiError(response);
 }
 
 export interface PlayerRenewalStatusResponse {
@@ -36,9 +35,7 @@ export async function getPlayerRenewalStatus(tag: string): Promise<PlayerRenewal
   const response = await fetchGetRenewalStatus(encodeURIComponent(tag));
 
   if (!response.ok) {
-    console.log(`Error status: ${response.status}`);
-    console.log(`Error body: ${await response.json()}`);
-    throw new Error(`Failed to fetch from ${response.url}.`);
+    throw new ApiError(response);
   }
 
   return await response.json() as PlayerRenewalStatusResponse;
@@ -53,7 +50,7 @@ export async function searchPlayer(query: string): Promise<Player[]> {
   const response = await fetchSearchPlayer(query);
 
   if (!response.ok) {
-    throw new Error('Failed to fetch player data');
+    throw new ApiError(response);
   }
 
   const data = await response.json() as ListResponse<Player>;
