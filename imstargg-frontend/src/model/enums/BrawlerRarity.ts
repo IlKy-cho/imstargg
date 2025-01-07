@@ -4,8 +4,8 @@ export const BrawlerRarityValue = {
   SUPER_RARE: 'SUPER_RARE',
   EPIC: 'EPIC',
   MYTHIC: 'MYTHIC',
-  LEGENDARY: 'LEGENDARY',
   TIME_LIMITED_BRAWLER: 'TIME_LIMITED_BRAWLER',
+  LEGENDARY: 'LEGENDARY',
 } as const;
 
 export type BrawlerRarity = typeof BrawlerRarityValue[keyof typeof BrawlerRarityValue];

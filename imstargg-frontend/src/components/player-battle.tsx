@@ -4,7 +4,7 @@ import {PlayerBattle as IPlayerBattle} from "@/model/PlayerBattle";
 import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {Brawler, BrawlersImpl} from "@/model/Brawler";
+import {Brawler, Brawlers} from "@/model/Brawler";
 import {battleResultTitle, battleTypeTitle, playerBattleModeTitle} from "./title";
 import {BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
@@ -216,7 +216,7 @@ const BattleTeamPlayer = (
 const BattleTeams = (
   {battle, myTag, brawlerList}: { battle: IPlayerBattle, myTag: string, brawlerList: Brawler[] }
 ) => {
-  const brawlers = new BrawlersImpl(brawlerList);
+  const brawlers = new Brawlers(brawlerList);
   return (
     <div className="flex flex-col h-full items-center justify-center">
       {battle.teams.map((team, i) => (
