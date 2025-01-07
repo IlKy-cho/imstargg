@@ -119,7 +119,7 @@ class BrawlerBattleResultStatisticsJobConfig {
         if (!battle.existsEventId()) {
             return false;
         }
-        if (!BattleType.statisticsCollected(battle.getType())) {
+        if (!BattleType.find(battle.getType()).isRegular()) {
             return false;
         }
         if (battle.getTeams().size() != 2) {
