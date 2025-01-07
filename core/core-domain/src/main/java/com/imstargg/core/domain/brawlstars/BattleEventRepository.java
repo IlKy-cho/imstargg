@@ -4,6 +4,7 @@ import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.Message;
 import com.imstargg.core.domain.MessageRepository;
 import com.imstargg.core.enums.BattleEventMode;
+import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.NameMessageCodes;
@@ -37,7 +38,10 @@ public class BattleEventRepository {
 
     public List<BrawlStarsId> findAllEventIds(@Nullable LocalDate date) {
         return battleJpaRepository
-                .findAllDistinctEventBrawlStarsIdsByGreaterThanEqualBattleTime(date != null ? date.atStartOfDay() : null)
+                .findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
+                        BattleType.regularTypes(),
+                        date != null ? date.atStartOfDay() : null
+                )
                 .stream()
                 .map(BrawlStarsId::new)
                 .toList();
@@ -48,18 +52,18 @@ public class BattleEventRepository {
             return Optional.empty();
         }
 
-        return battleJpaRepository.findLatestBattle(id.value()).map(battleEntity -> new BattleEvent(
-                id,
-                BattleEventMode.find(battleEntity.getEvent().getMode()),
-                new BattleEventMap(
-                        battleEventMapName(battleEntity.getEvent(), language),
-                        brawlStarsImageJpaRepository.findByCode(BrawlStarsImageType.BATTLE_MAP.code(id.value()))
-                                .map(BrawlStarsImageEntity::getUrl)
-                                .orElse(null)
-                ),
-                battleEntity.getBattleTime()
-        ));
-
+        return battleJpaRepository.findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(id.value(), BattleType.regularTypes())
+                .map(battleEntity -> new BattleEvent(
+                        id,
+                        BattleEventMode.find(battleEntity.getEvent().getMode()),
+                        new BattleEventMap(
+                                battleEventMapName(battleEntity.getEvent(), language),
+                                brawlStarsImageJpaRepository.findByCode(BrawlStarsImageType.BATTLE_MAP.code(id.value()))
+                                        .map(BrawlStarsImageEntity::getUrl)
+                                        .orElse(null)
+                        ),
+                        battleEntity.getBattleTime()
+                ));
     }
 
     private String battleEventMapName(BattleEntityEvent event, Language language) {
