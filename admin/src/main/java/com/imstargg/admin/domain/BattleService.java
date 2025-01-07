@@ -1,5 +1,6 @@
 package com.imstargg.admin.domain;
 
+import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.BrawlStarsImageType;
 import com.imstargg.core.enums.NameMessageCodes;
 import com.imstargg.storage.db.core.BattleEntity;
@@ -43,9 +44,13 @@ public class BattleService {
 
 
     public List<BattleEvent> getEventList() {
-        List<BattleEntity> battles = battleJpaRepository.findAllDistinctEventBrawlStarsIdsByGreaterThanEqualBattleTime(null)
+        List<BattleEntity> battles = battleJpaRepository.findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
+                null,
+                null
+                )
                 .stream()
-                .map(battleJpaRepository::findLatestBattle)
+                .map(eventBrawlStarsId -> battleJpaRepository
+                        .findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(eventBrawlStarsId, BattleType.regularTypes()))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();

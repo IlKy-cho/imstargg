@@ -28,6 +28,10 @@ public enum BattleType {
         return ENUM_BY_CODE.getOrDefault(code, NOT_FOUND);
     }
 
+    public static Set<BattleType> regularTypes() {
+        return REGULAR_TYPES;
+    }
+
     BattleType(String code) {
         this.code = code;
     }
