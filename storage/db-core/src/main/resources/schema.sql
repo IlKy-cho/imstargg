@@ -280,6 +280,22 @@ alter table brawlers_battle_result_stats
 
 
 -- BrawlStars
+create table battle_event
+(
+    battle_event_id     bigint       not null auto_increment,
+    brawlstars_id       bigint       not null,
+    mode                varchar(45)  not null,
+    map_brawlstars_name varchar(105) not null,
+    latest_battle_time  timestamp(6) not null,
+    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted             boolean      not null default false,
+    primary key (battle_event_id)
+) engine = innodb;
+
+alter table battle_event
+    add constraint uk_brawlstarsid unique (brawlstars_id);
+
 
 create table brawler
 (
