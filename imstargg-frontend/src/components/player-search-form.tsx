@@ -29,7 +29,7 @@ export default function PlayerSearchForm() {
     if (value.nameOrTag.trim()) {
       const searchQuery = value.nameOrTag.startsWith('#') ?
         encodeURIComponent(value.nameOrTag) : `${value.nameOrTag}`;
-      router.push(`/player/search/${searchQuery}`);
+      router.push(`/player/search?q=${searchQuery}`);
     }
   }
 
