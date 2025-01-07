@@ -1,7 +1,14 @@
 import {getBrawlers} from "@/lib/api/brawler";
 import BrawlerList from "@/components/brawler-list";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { WrenchIcon } from "lucide-react";
+import {Alert, AlertTitle} from "@/components/ui/alert";
+import {WrenchIcon} from "lucide-react";
+import {Metadata} from "next";
+import {metadataTitle} from "@/config/site";
+
+export const metadata: Metadata = {
+  title: metadataTitle("브롤스타즈 브롤러"),
+  description: "브롤스타즈의 모든 브롤러 정보를 확인해보세요.",
+};
 
 export default async function BrawlersPage() {
   const brawlerList = await getBrawlers();
