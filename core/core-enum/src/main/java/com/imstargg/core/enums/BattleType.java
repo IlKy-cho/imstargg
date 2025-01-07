@@ -2,6 +2,7 @@ package com.imstargg.core.enums;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -21,20 +22,18 @@ public enum BattleType {
             .filter(e -> e != NOT_FOUND)
             .collect(Collectors.toMap(BattleType::getCode, Function.identity()));
 
+    private static final Set<BattleType> REGULAR_TYPES = Set.of(RANKED, SOLO_RANKED);
+
     public static BattleType find(String code) {
         return ENUM_BY_CODE.getOrDefault(code, NOT_FOUND);
     }
 
-    public static boolean statisticsCollected(BattleType battleType) {
-        return battleType == RANKED || battleType == SOLO_RANKED;
-    }
-
-    public static boolean statisticsCollected(String code) {
-        return statisticsCollected(find(code));
-    }
-
     BattleType(String code) {
         this.code = code;
+    }
+
+    public boolean isRegular() {
+        return REGULAR_TYPES.contains(this);
     }
 
     public String getCode() {
