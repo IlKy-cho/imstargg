@@ -27,29 +27,27 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
+                                     children,
+                                   }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
     <html lang="ko">
-      <body className={`${kobrawl40.variable} ${kobrawl60.variable} ${lilitaOne.variable} antialiased`}>
-        <div className="flex flex-col min-h-screen">
-          <SiteHeader />
-          <div className="flex flex-1">
-            <SideArea />
-            
-            <div className="flex-1 flex flex-col">
-              <main className="flex-1">
-                {children}
-              </main>
-            </div>
+    <body className={`${kobrawl40.variable} ${kobrawl60.variable} ${lilitaOne.variable} antialiased`}>
+    <div className="flex flex-col min-h-screen">
+      <SiteHeader/>
+      <div className="flex flex-1">
+        <SideArea/>
 
-            <SideArea />
-          </div>
-          <Footer />
-        </div>
-      </body>
+        <main className="flex-1">
+          {children}
+        </main>
+
+        <SideArea/>
+      </div>
+      <Footer/>
+    </div>
+    </body>
     </html>
   );
 }

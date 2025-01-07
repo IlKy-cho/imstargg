@@ -15,17 +15,13 @@ export interface Brawler {
   imageUrl: string | null;
 }
 
-export interface Brawlers {
-  find(id: number): Brawler | null;
-  all(): Brawler[];
-}
-
-export class BrawlersImpl implements Brawlers {
+export class Brawlers {
   private readonly brawlers: Record<number, Brawler>;
 
   constructor(brawlers: Brawler[]) {
     this.brawlers = Object.fromEntries(
-      brawlers.map(brawler => [brawler.id, brawler])
+      brawlers
+        .map(brawler => [brawler.id, brawler])
     );
   }
 
@@ -37,6 +33,32 @@ export class BrawlersImpl implements Brawlers {
   }
 
   all(): Brawler[] {
-    return Object.values(this.brawlers);
+    return Object.values(this.brawlers)
+      .sort((a, b) => a.id - b.id);
+  }
+
+  allSortedByName(): Brawler[] {
+    return Object.values(this.brawlers)
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  allByRole(): Record<BrawlerRole, Brawler[]> {
+    return this.all().reduce((acc, brawler) => {
+      if (!acc[brawler.role]) {
+        acc[brawler.role] = [];
+      }
+      acc[brawler.role].push(brawler);
+      return acc;
+    }, {} as Record<BrawlerRole, Brawler[]>);
+  }
+
+  allByRarity(): Record<BrawlerRarity, Brawler[]> {
+    return this.all().reduce((acc, brawler) => {
+      if (!acc[brawler.rarity]) {
+        acc[brawler.rarity] = [];
+      }
+      acc[brawler.rarity].push(brawler);
+      return acc;
+    }, {} as Record<BrawlerRarity, Brawler[]>);
   }
 }

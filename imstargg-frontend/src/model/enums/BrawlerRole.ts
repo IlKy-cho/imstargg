@@ -6,7 +6,6 @@ export const BrawlerRoleValue = {
   DAMAGE_DEALER: 'DAMAGE_DEALER',
   MARKSMAN: 'MARKSMAN',
   ARTILLERY: 'ARTILLERY',
-  NONE: 'NONE',
 } as const;
 
 export type BrawlerRole = typeof BrawlerRoleValue[keyof typeof BrawlerRoleValue];
