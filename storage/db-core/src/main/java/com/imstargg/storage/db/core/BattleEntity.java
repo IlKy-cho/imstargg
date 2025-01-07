@@ -21,7 +21,7 @@ import java.util.List;
         indexes = {
                 @Index(name = "ix_battle__battletime", columnList = "battle_time desc"),
                 @Index(name = "ix_battle__playerid_battletime", columnList = "player_id, battle_time desc"),
-                @Index(name = "ix_event_battletime", columnList = "event_brawlstars_id, battle_time desc"),
+                @Index(name = "ix_event_type_battletime", columnList = "event_brawlstars_id, type, battle_time desc"),
         }
 )
 public class BattleEntity extends BaseEntity {
