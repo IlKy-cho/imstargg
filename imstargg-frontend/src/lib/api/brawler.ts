@@ -1,5 +1,5 @@
 import {Brawler} from "@/model/Brawler";
-import {fetchGetBrawlers} from "@/lib/api/api";
+import {ApiError, fetchGetBrawlers} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
 
 export async function getBrawlers() : Promise<Brawler[]> {
@@ -11,6 +11,5 @@ export async function getBrawlers() : Promise<Brawler[]> {
     return data.content;
   }
 
-  console.log(`Failed to fetch from ${response.url}. status: ${response.status}, body: ${response.body}`);
-  throw new Error(`Failed to fetch from ${response.url}.`);
+  throw new ApiError(response);
 }

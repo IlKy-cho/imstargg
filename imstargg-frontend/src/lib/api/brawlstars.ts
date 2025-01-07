@@ -1,6 +1,6 @@
 import {BrawlStarsNews} from "@/model/brawlstars/BrawlStarsNews";
 import {SliceResponse} from "@/model/response/SliceResponse";
-import {fetchGetBrawlStarsNews} from "@/lib/api/api";
+import {ApiError, fetchGetBrawlStarsNews} from "@/lib/api/api";
 
 export async function getBrawlStarsNewsPage(page: number): Promise<SliceResponse<BrawlStarsNews>> {
   const response = await fetchGetBrawlStarsNews(page, {revalidate: 60 * 60});
@@ -9,6 +9,5 @@ export async function getBrawlStarsNewsPage(page: number): Promise<SliceResponse
     return await response.json() as SliceResponse<BrawlStarsNews>;
   }
 
-  console.log(`Failed to fetch from ${response.url}. status: ${response.status}, body: ${response.body}`);
-  throw new Error(`Failed to fetch from ${response.url}.`);
+  throw new ApiError(response);
 }

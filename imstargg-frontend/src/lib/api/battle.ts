@@ -2,7 +2,7 @@ import {PlayerBattle} from "@/model/PlayerBattle";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {BattleResult} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
-import {fetchGetBattles} from "@/lib/api/api";
+import {ApiError, fetchGetBattles} from "@/lib/api/api";
 import {SoloRankTier} from "@/model/enums/SoloRankTier";
 import {SliceResponse} from "@/model/response/SliceResponse";
 import {BattleMode} from "@/model/enums/BattleMode";
@@ -84,6 +84,5 @@ export async function getBattles(tag: string, page: number = 1): Promise<SliceRe
     }
   }
 
-  console.log(`Failed to fetch from ${response.url}. status: ${response.status}, body: ${response.body}`);
-  throw new Error(`Failed to fetch from ${response.url}.`);
+  throw new ApiError(response);
 }

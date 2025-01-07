@@ -1,5 +1,14 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
+export class ApiError extends Error {
+  constructor(
+    public response: Response,
+    message = `Failed to fetch from ${response.url}. status: ${response.status}, body: ${response.body}`
+  ) {
+    super(message);
+  }
+}
+
 interface CacheOptions {
   revalidate?: number | false;
 }
@@ -101,3 +110,4 @@ export async function fetchGetBrawlStarsNews(page: number, options?: CacheOption
     }
   });
 }
+
