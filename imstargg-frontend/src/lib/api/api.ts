@@ -16,7 +16,6 @@ interface CacheOptions {
 export async function fetchSearchPlayer(query: string, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/player/search`);
   url.searchParams.append('query', query);
-  console.log(`Fetch from ${url}`);
   if (!options) {
     return await fetch(url);
   }
@@ -31,7 +30,6 @@ export async function fetchSearchPlayer(query: string, options?: CacheOptions): 
 
 export async function fetchGetRenewalStatus(tag: string): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renewal-status`);
-  console.log(`Fetch from ${url}`);
   return await fetch(url, {
     next: {
       tags: ['players', tag, 'renewal-status']
@@ -41,7 +39,6 @@ export async function fetchGetRenewalStatus(tag: string): Promise<Response> {
 
 export async function fetchRenewPlayer(tag: string): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renew`);
-  console.log(`Fetch from ${url}`);
 
   return await fetch(url, {
     method: 'POST',
@@ -50,7 +47,6 @@ export async function fetchRenewPlayer(tag: string): Promise<Response> {
 
 export async function fetchGetPlayer(tag: string, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}`);
-  console.log(`Fetch from ${url}`);
   if (!options) {
     return await fetch(url);
   }
@@ -66,7 +62,6 @@ export async function fetchGetPlayer(tag: string, options?: CacheOptions): Promi
 export async function fetchGetBattles(tag: string, page: number = 1, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/battles`);
   url.searchParams.append('page', page.toString());
-  console.log(`Fetch from ${url}`);
   if (!options) {
     return await fetch(url);
   }
@@ -81,7 +76,6 @@ export async function fetchGetBattles(tag: string, page: number = 1, options?: C
 
 export async function fetchGetBrawlers(options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/brawlstars/brawlers`);
-  console.log(`Fetch from ${url}`);
   if (!options) {
     return await fetch(url);
   }
@@ -98,7 +92,6 @@ export async function fetchGetBrawlStarsNews(page: number, options?: CacheOption
   const url = new URL(`${BASE_URL}/api/v1/brawlstars/news`);
   url.searchParams.append('language', 'KOREAN');
   url.searchParams.append('page', page.toString());
-  console.log(`Fetch from ${url}`);
   if (!options) {
     return await fetch(url);
   }
