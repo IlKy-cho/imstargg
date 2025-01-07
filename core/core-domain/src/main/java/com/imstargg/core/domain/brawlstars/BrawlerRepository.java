@@ -105,6 +105,7 @@ public class BrawlerRepository {
                                 "브롤러 이름을 찾을 수 없습니다. brawlerId=" + brawlerEntity.getId()))
                         .content(),
                 brawlerEntity.getRarity(),
+                brawlerEntity.getRole(),
                 gadgetEntities.stream().map(gadgetEntity ->
                         mapToGadget(language, gadgetEntity, codeToMessageCollection)).toList(),
                 gearEntities.stream().map(gearEntity ->
