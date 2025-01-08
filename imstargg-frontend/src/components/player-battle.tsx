@@ -8,7 +8,7 @@ import {Brawler, Brawlers} from "@/model/Brawler";
 import {battleResultTitle, battleTypeTitle, playerBattleModeTitle} from "./title";
 import {BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
-import {battleTypeIconSrc, playerBattleIconSrc} from "@/components/icon";
+import {battleTypeIconSrc} from "@/components/icon";
 import Image from "next/image";
 import {Separator} from "@/components/ui/separator";
 import {BattlePlayer} from "@/model/BattlePlayer";
@@ -18,6 +18,7 @@ import {cn} from "@/lib/utils";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
+import {battleEventModeIconSrc, battleModeIconSrc} from "@/components/battle-mode";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -90,6 +91,11 @@ const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
       <BattleEventMapImage battleEventMap={battle.event.map}/>
     </div>
   );
+}
+
+const playerBattleIconSrc = (battle: IPlayerBattle)=> {
+  const eventModeIcon = battle.event.mode ? battleEventModeIconSrc(battle.event.mode) : null;
+  return eventModeIcon || battleModeIconSrc(battle.mode);
 }
 
 const BattleModeIcon = ({battle}: { battle: IPlayerBattle }) => {
