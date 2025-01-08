@@ -10,7 +10,7 @@ import java.util.List;
 
 public record PlayerBattle(
         LocalDateTime battleTime,
-        BrawlStarsId eventBrawlStarsId,
+        PlayerBattleEvent event,
         BattleMode mode,
         BattleType type,
         @Nullable BattleResult result,

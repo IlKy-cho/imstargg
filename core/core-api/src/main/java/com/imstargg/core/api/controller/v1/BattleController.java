@@ -26,7 +26,7 @@ public class BattleController {
             @ModelAttribute @Validated PageRequest pageRequest) {
         return SliceResponse.of(
                 battleService.getPlayerBattles(new BrawlStarsTag(tag), pageRequest.page())
-                        .map(PlayerBattleResponse::from)
+                        .map(PlayerBattleResponse::of)
         );
     }
 }
