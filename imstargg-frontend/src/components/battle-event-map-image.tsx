@@ -10,6 +10,7 @@ const imageVariants = cva(
     variants: {
       size: {
         default: 'h-32',
+        lg: 'h-48',
       },
     },
     defaultVariants: {
