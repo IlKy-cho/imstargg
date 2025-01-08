@@ -31,7 +31,7 @@ function PlayerNotFound({tag}: Readonly<PlayerNotFoundProps>) {
 
 type Props = {
   params: {
-    tag: string
+    tag: string;
   }
 };
 

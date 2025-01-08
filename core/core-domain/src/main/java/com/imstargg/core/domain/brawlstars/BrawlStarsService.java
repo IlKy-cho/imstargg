@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.brawlstars;
 
+import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.enums.Language;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +24,9 @@ public class BrawlStarsService {
 
     public List<BattleEvent> getEvents(LocalDate date) {
         return battleEventReader.getEvents(Language.KOREAN, date);
+    }
+
+    public BattleEvent getEvent(BrawlStarsId brawlStarsId) {
+        return battleEventReader.getEvent(Language.KOREAN, brawlStarsId);
     }
 }

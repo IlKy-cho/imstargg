@@ -9,7 +9,6 @@ import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.NameMessageCodes;
-import com.imstargg.storage.db.core.BattleEntityEvent;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BattleEventEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventJpaRepository;
@@ -107,28 +106,23 @@ public class BattleEventRepository {
             return Optional.empty();
         }
 
-        return battleJpaRepository.findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(id.value(), BattleType.regularTypes())
-                .map(battleEntity -> new BattleEvent(
+        return battleEventJpaRepository.findByBrawlStarsId(id.value()).map(
+                eventEntity -> new BattleEvent(
                         id,
-                        BattleEventMode.find(battleEntity.getEvent().getMode()),
+                        BattleEventMode.find(eventEntity.getMode()),
                         new BattleEventMap(
-                                battleEventMapName(battleEntity.getEvent(), language),
-                                brawlStarsImageJpaRepository.findByCode(BrawlStarsImageType.BATTLE_MAP.code(id.value()))
-                                        .map(BrawlStarsImageEntity::getUrl)
+                                eventEntity.getMapBrawlStarsName() == null ? null :
+                                        messageRepository.getCollection(NameMessageCodes.BATTLE_MAP.code(eventEntity.getMapBrawlStarsName()))
+                                                .find(language)
+                                                .map(Message::content)
+                                                .orElse(eventEntity.getMapBrawlStarsName()),
+                                brawlStarsImageJpaRepository.findByCode(
+                                                BrawlStarsImageType.BATTLE_MAP.code(eventEntity.getBrawlStarsId())
+                                        ).map(BrawlStarsImageEntity::getUrl)
                                         .orElse(null)
                         ),
-                        battleEntity.getBattleTime()
-                ));
-    }
-
-    private String battleEventMapName(BattleEntityEvent event, Language language) {
-        if (event.getMap() == null) {
-            return "";
-        }
-
-        return messageRepository.getCollection(NameMessageCodes.BATTLE_MAP.code(event.getMap()))
-                .find(language)
-                .map(Message::content)
-                .orElse(event.getMap());
+                        eventEntity.getLatestBattleTime()
+                )
+        );
     }
 }
