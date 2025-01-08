@@ -1,4 +1,4 @@
-import {ApiError, fetchGetBattleEvents} from "@/lib/api/api";
+import {ApiError, fetchGetBattleEvent, fetchGetBattleEvents} from "@/lib/api/api";
 import {BattleEvent} from "@/model/BattleEvent";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ListResponse} from "@/model/response/ListResponse";
@@ -27,6 +27,23 @@ export async function getBattleEvents(): Promise<BattleEvent[]> {
         imageUrl: event.mapImageUrl,
       }
     }));
+  }
+
+  throw new ApiError(response);
+}
+
+export async function getBattleEvent(id: number): Promise<BattleEvent> {
+  const response = await fetchGetBattleEvent(id);
+
+  if (response.ok) {
+    const data = await response.json() as BattleEventResponse;
+    return {
+      ...data,
+      map: {
+        name: data.mapName,
+        imageUrl: data.mapImageUrl,
+      }
+    };
   }
 
   throw new ApiError(response);
