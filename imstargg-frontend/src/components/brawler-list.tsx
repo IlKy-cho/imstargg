@@ -7,7 +7,7 @@ interface Props {
 }
 
 function Brawler({brawler}: Readonly<{ brawler: IBrawler }>) {
-  return (<div className="flex gap-1 hover:bg-zinc-100 p-2 rounded-lg transition-colors">
+  return (<div className="flex gap-1 bg-zinc-100 hover:bg-zinc-200 p-2 rounded-lg transition-colors">
     <BrawlerProfileImage brawler={brawler}/>
     <div className="flex-col gap-0.5">
       <div className="flex items-center gap-1">
