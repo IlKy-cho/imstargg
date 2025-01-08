@@ -5,23 +5,17 @@ import {fetchGetPlayer} from "@/lib/api/api";
 import {fetchSearchPlayer} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
 
-export interface PlayerResponse {
-  player: Player | null;
-}
-
-export async function getPlayer(tag: string): Promise<PlayerResponse> {
+export async function getPlayer(tag: string): Promise<Player | null> {
   const response = await fetchGetPlayer(encodeURIComponent(tag));
 
   if (response.ok) {
     const player = await response.json() as Player;
     return {
-      player: {
-        ...player,
-        updatedAt: new Date(player.updatedAt),
-      }
+      ...player,
+      updatedAt: new Date(player.updatedAt),
     };
   } else if (response.status === 404) {
-    return {player: null};
+    return null;
   }
 
   throw new ApiError(response);
