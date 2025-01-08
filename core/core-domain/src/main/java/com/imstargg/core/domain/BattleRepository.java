@@ -1,59 +1,80 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.domain.brawlstars.BattleEvent;
+import com.imstargg.core.domain.brawlstars.BattleEventMap;
+import com.imstargg.core.domain.brawlstars.BattleEventRepository;
 import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
+import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.SoloRankTier;
-import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityTeamPlayer;
 import com.imstargg.storage.db.core.BattleJpaRepository;
-import com.imstargg.storage.db.core.PlayerEntity;
-import com.imstargg.storage.db.core.PlayerJpaRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.toMap;
 
 @Component
 public class BattleRepository {
 
     private static final int PAGE_SIZE = 25;
 
-    private final PlayerJpaRepository playerJpaRepository;
     private final BattleJpaRepository battleJpaRepository;
+    private final BattleEventRepository battleEventRepository;
     private final BrawlerRepositoryWithCache brawlerRepository;
 
     public BattleRepository(
-            PlayerJpaRepository playerJpaRepository,
             BattleJpaRepository battleJpaRepository,
+            BattleEventRepository battleEventRepository,
             BrawlerRepositoryWithCache brawlerRepository
     ) {
-        this.playerJpaRepository = playerJpaRepository;
         this.battleJpaRepository = battleJpaRepository;
+        this.battleEventRepository = battleEventRepository;
         this.brawlerRepository = brawlerRepository;
     }
 
-    public Slice<PlayerBattle> find(Player player, int page) {
-        PlayerEntity playerEntity = playerJpaRepository.findByBrawlStarsTagAndDeletedFalse(player.tag().value())
-                .orElseThrow(() -> new CoreException("Player not found: " + player.tag()));
-        var battleEntities = battleJpaRepository
+    public Slice<PlayerBattle> find(Player player, int page, Language language) {
+        var battleEntitySlice = battleJpaRepository
                 .findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
-                        playerEntity.getId(), PageRequest.of(page, PAGE_SIZE));
-        return new Slice<>(battleEntities.map(this::mapBattle).toList(), battleEntities.hasNext());
+                        player.id().value(), PageRequest.of(page, PAGE_SIZE));
+
+        Map<BrawlStarsId, BattleEvent> eventBrawlStarsIdToEvent = findEventIdToEvent(
+                language, battleEntitySlice.getContent());
+
+        return new Slice<>(
+                battleEntitySlice.map(battle -> mapBattle(battle, eventBrawlStarsIdToEvent)).toList(),
+                battleEntitySlice.hasNext()
+        );
     }
 
-    private PlayerBattle mapBattle(BattleEntity battleEntity) {
+    private Map<BrawlStarsId, BattleEvent> findEventIdToEvent(Language language, List<BattleEntity> battleEntities) {
+        List<BrawlStarsId> eventIds = battleEntities.stream()
+                .map(battle -> battle.getEvent().getBrawlStarsId())
+                .filter(Objects::nonNull)
+                .filter(eventBrawlStarsId -> eventBrawlStarsId > 0)
+                .distinct()
+                .map(BrawlStarsId::new)
+                .toList();
+        return battleEventRepository.findAllEvents(eventIds, language).stream()
+                .collect(toMap(BattleEvent::id, Function.identity()));
+    }
+
+    private PlayerBattle mapBattle(
+            BattleEntity battleEntity, Map<BrawlStarsId, BattleEvent> eventIdToEvent) {
         BattleType battleType = BattleType.find(battleEntity.getType());
         return new PlayerBattle(
                 battleEntity.getBattleTime(),
-                Optional.ofNullable(battleEntity.getEvent().getBrawlStarsId())
-                        .filter(id -> id > 0)
-                        .map(BrawlStarsId::new)
-                        .orElse(null),
+                mapBattleEvent(battleEntity, eventIdToEvent),
                 BattleMode.find(battleEntity.getMode()),
                 battleType,
                 battleEntity.getResult() != null ? BattleResult.map(battleEntity.getResult()) : null,
@@ -62,6 +83,32 @@ public class BattleRepository {
                 battleEntity.getPlayer().getTrophyChange(),
                 new BrawlStarsTag(battleEntity.getStarPlayerBrawlStarsTag()),
                 mapTeams(battleType, battleEntity.getTeams())
+        );
+    }
+
+    private PlayerBattleEvent mapBattleEvent(
+            BattleEntity battleEntity, Map<BrawlStarsId, BattleEvent> eventIdToEvent
+    ) {
+        BrawlStarsId eventId = Optional.ofNullable(battleEntity.getEvent().getBrawlStarsId())
+                .filter(id -> id > 0)
+                .map(BrawlStarsId::new)
+                .orElse(null);
+        if (eventId == null || !eventIdToEvent.containsKey(eventId)) {
+            return new PlayerBattleEvent(
+                    eventId,
+                    BattleEventMode.find(battleEntity.getEvent().getMode()),
+                    new BattleEventMap(
+                            battleEntity.getEvent().getMap(),
+                            null
+                    )
+            );
+        }
+
+        BattleEvent event = eventIdToEvent.get(eventId);
+        return new PlayerBattleEvent(
+                eventId,
+                event.mode(),
+                event.map()
         );
     }
 

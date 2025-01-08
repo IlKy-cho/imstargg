@@ -1,5 +1,6 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.enums.Language;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,6 +16,6 @@ public class BattleService {
 
     public Slice<PlayerBattle> getPlayerBattles(BrawlStarsTag tag, int page) {
         Player player = playerReader.get(tag);
-        return battleReader.getList(player, page);
+        return battleReader.getList(player, page, Language.KOREAN);
     }
 }

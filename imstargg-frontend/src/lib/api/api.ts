@@ -104,3 +104,17 @@ export async function fetchGetBrawlStarsNews(page: number, options?: CacheOption
   });
 }
 
+export async function fetchGetEvents(date: Date, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/events`);
+  url.searchParams.append('date', date.toISOString().split('T')[0]);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlstars', 'events', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
