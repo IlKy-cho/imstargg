@@ -33,9 +33,9 @@ export const battleTypeTitle = (type: BattleType) => {
 export const battleEventModeTitle = (mode: BattleEventMode) => {
   switch (mode) {
     case BattleEventModeValue.NOT_FOUND:
-      return '알 수 없음';
+      return null;
     case BattleEventModeValue.UNKNOWN:
-      return '알 수 없음';
+      return null;
     case BattleEventModeValue.SOLO_SHOWDOWN:
       return '솔로 쇼다운';
     case BattleEventModeValue.DUO_SHOWDOWN:
@@ -116,7 +116,7 @@ export const battleEventModeTitle = (mode: BattleEventMode) => {
 export const battleModeTitle = (mode: BattleMode) => {
   switch (mode) {
     case BattleModeValue.NOT_FOUND:
-      return '알 수 없음';
+      return null;
     case BattleModeValue.KNOCKOUT:
       return '녹아웃';
     case BattleModeValue.GEM_GRAB:

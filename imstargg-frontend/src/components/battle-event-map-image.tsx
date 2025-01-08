@@ -19,9 +19,9 @@ const imageVariants = cva(
 );
 
 interface Props
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof imageVariants> {
+  extends VariantProps<typeof imageVariants> {
   battleEventMap: BattleEventMap;
+  className?: string;
 }
 
 export default function BattleEventMapImage({battleEventMap, className, size}: Readonly<Props>) {
