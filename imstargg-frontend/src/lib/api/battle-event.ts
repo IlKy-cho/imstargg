@@ -32,8 +32,8 @@ export async function getBattleEvents(): Promise<BattleEvent[]> {
   throw new ApiError(response);
 }
 
-export async function getBattleEvent(id: number): Promise<BattleEvent> {
-  const response = await fetchGetBattleEvent(id);
+export async function getBattleEvent(id: number): Promise<BattleEvent | null> {
+  const response = await fetchGetBattleEvent(id, { revalidate: 60 * 60 });
 
   if (response.ok) {
     const data = await response.json() as BattleEventResponse;
@@ -44,6 +44,8 @@ export async function getBattleEvent(id: number): Promise<BattleEvent> {
         imageUrl: data.mapImageUrl,
       }
     };
+  } else if (response.status === 404) {
+    return null;
   }
 
   throw new ApiError(response);
