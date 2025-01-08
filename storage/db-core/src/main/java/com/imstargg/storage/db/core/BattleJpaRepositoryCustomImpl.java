@@ -61,24 +61,37 @@ class BattleJpaRepositoryCustomImpl implements BattleJpaRepositoryCustom {
     }
 
     public Optional<BattleEntity> findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(
-            long eventBrawlStarsId, Collection<BattleType> battleTypes
+            long eventBrawlStarsId, @Nullable Collection<BattleType> battleTypes
     ) {
+        List<String> battleTypeCodes = Optional.ofNullable(battleTypes)
+                .map(types -> types.stream().map(BattleType::getCode).toList())
+                .orElseGet(() -> selectDistinctBattleTypesByEventBrawlStarsId(eventBrawlStarsId));
 
-        return battleTypes
+        return battleTypeCodes
                 .stream()
-                .map(battleType -> selectLatestBattleByEventBrawlStarsIdAndBattleType(eventBrawlStarsId, battleType))
+                .map(battleTypeCode ->
+                        selectLatestBattleByEventBrawlStarsIdAndBattleType(eventBrawlStarsId, battleTypeCode)
+                )
                 .filter(Objects::nonNull)
                 .max(Comparator.comparing(BattleEntity::getBattleTime));
     }
 
+    private List<String> selectDistinctBattleTypesByEventBrawlStarsId(long eventBrawlStarsId) {
+        return queryFactory
+                .select(battleEntity.type).distinct()
+                .from(battleEntity)
+                .where(battleEntity.event.brawlStarsId.eq(eventBrawlStarsId))
+                .fetch();
+    }
+
     private BattleEntity selectLatestBattleByEventBrawlStarsIdAndBattleType(
-            long eventBrawlStarsId, BattleType battleType
+            long eventBrawlStarsId, @Nullable String battleType
     ) {
         return queryFactory
                 .selectFrom(battleEntity)
                 .where(
                         battleEntity.event.brawlStarsId.eq(eventBrawlStarsId),
-                        battleEntity.type.eq(battleType.getCode())
+                        battleType != null ? battleEntity.type.eq(battleType) : battleEntity.type.isNull()
                 )
                 .orderBy(battleEntity.battleTime.desc())
                 .fetchFirst();
