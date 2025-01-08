@@ -6,28 +6,11 @@ import PlayerSearchForm from '@/components/player-search-form';
 import PlayerBattleList from "@/components/player-battle-list";
 import {getBrawlers} from "@/lib/api/brawler";
 import {getPlayer} from "@/lib/api/player";
+import {notFound} from "next/navigation";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
 
-type PlayerNotFoundProps = {
-  tag: string;
-}
-
-function PlayerNotFound({tag}: Readonly<PlayerNotFoundProps>) {
-  return (
-    <div className="space-y-10 my-10">
-      <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">태그 {tag} 플레이어를 찾을 수 없습니다</h1>
-        <p className="text-gray-500">다른 플레이어를 검색해보세요</p>
-      </div>
-
-      <div className="flex justify-center">
-        <PlayerSearchForm/>
-      </div>
-    </div>
-  );
-}
 
 type Props = {
   params: {
@@ -41,7 +24,7 @@ export default async function PlayerPage({params}: Readonly<Props>) {
   const playerResponse = await getPlayer(decodedTag);
 
   if (!playerResponse.player) {
-    return <PlayerNotFound tag={decodedTag}/>;
+    notFound();
   }
   const player = playerResponse.player;
   const brawlers = await getBrawlers();
