@@ -1,8 +1,8 @@
-import {BattleMap} from "@/model/BattleMap";
+import {BattleEventMap} from "@/model/BattleEventMap";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 
 export interface BattleEvent {
   id: number;
   mode: BattleEventMode;
-  map: BattleMap;
+  map: BattleEventMap;
 }

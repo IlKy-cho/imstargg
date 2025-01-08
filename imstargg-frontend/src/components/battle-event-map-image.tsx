@@ -1,8 +1,8 @@
-import {BattleEvent} from "@/model/BattleEvent";
 import Image from "next/image";
 import {cva, VariantProps} from "class-variance-authority";
 import React from "react";
 import {cn} from "@/lib/utils";
+import {BattleEventMap} from "@/model/BattleEventMap";
 
 const imageVariants = cva(
   "",
@@ -21,19 +21,17 @@ const imageVariants = cva(
 interface Props
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof imageVariants> {
-  battleEvent: BattleEvent | null;
+  battleEventMap: BattleEventMap;
 }
 
-export default function BattleEventMapImage({battleEvent, className, size}: Readonly<Props>) {
-
-  const mapIconSrc = battleEvent ? battleEvent.map.imageUrl : null;
+export default function BattleEventMapImage({battleEventMap, className, size}: Readonly<Props>) {
 
   return (
     <div className={cn(imageVariants({className, size}))}>
-      {mapIconSrc ?
+      {battleEventMap.imageUrl ?
         <Image
-          src={mapIconSrc}
-          alt={`${battleEvent?.map.name} 이미지`}
+          src={battleEventMap.imageUrl}
+          alt={`${battleEventMap.name} 이미지`}
           width={200}
           height={200}
           className="h-full w-auto object-contain"

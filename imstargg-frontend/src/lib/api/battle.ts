@@ -10,7 +10,7 @@ import {BattleMode} from "@/model/enums/BattleMode";
 
 interface PlayerBattleResponse {
   battleTime: Date;
-  event: BattleEventResponse | null;
+  event: PlayerBattleEventResponse;
   mode: BattleMode;
   type: BattleType;
   result?: BattleResult;
@@ -21,10 +21,10 @@ interface PlayerBattleResponse {
   teams: BattlePlayerResponse[][];
 }
 
-interface BattleEventResponse {
-  id: number;
-  mode: BattleEventMode;
-  mapName: string;
+interface PlayerBattleEventResponse {
+  id: number | null;
+  mode: BattleEventMode | null;
+  mapName: string | null;
   mapImageUrl: string | null;
 }
 
@@ -50,32 +50,20 @@ export async function getBattles(tag: string, page: number = 1): Promise<SliceRe
     return {
       hasNext: slice.hasNext,
       content: slice.content.map(battle => ({
+          ...battle,
           battleTime: new Date(battle.battleTime),
-          event: battle.event ? {
-            id: battle.event.id,
-            mode: battle.event.mode,
+          event: {
+            ...battle.event,
             map: {
               name: battle.event.mapName,
-              imageUrl: battle.event.mapImageUrl
+              imageUrl: battle.event.mapImageUrl,
             }
-          } : null,
-          mode: battle.mode,
-          type: battle.type,
-          result: battle.result,
-          duration: battle.duration,
-          rank: battle.rank,
-          trophyChange: battle.trophyChange,
-          starPlayerTag: battle.starPlayerTag,
+          },
           teams: battle.teams.map(team =>
             team.map(player => ({
-              tag: player.tag,
-              name: player.name,
-              soloRankTier: player.soloRankTier,
+              ...player,
               brawler: {
-                id: player.brawler.id,
-                power: player.brawler.power,
-                trophies: player.brawler.trophies,
-                trophyChange: player.brawler.trophyChange
+                ...player.brawler,
               }
             }))
           ),

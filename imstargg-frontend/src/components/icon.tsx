@@ -173,7 +173,7 @@ export const battleEventModeIconSrc = (mode: BattleEventMode) => {
 }
 
 export const playerBattleIconSrc = (battle: PlayerBattle)=> {
-  const eventModeIcon = battle.event ? battleEventModeIconSrc(battle.event.mode) : null;
+  const eventModeIcon = battle.event.mode ? battleEventModeIconSrc(battle.event.mode) : null;
   return eventModeIcon || battleModeIconSrc(battle.mode);
 }
 
