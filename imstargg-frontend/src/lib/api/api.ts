@@ -118,3 +118,17 @@ export async function fetchGetBattleEvents(date: Date, options?: CacheOptions): 
     }
   });
 }
+
+export async function fetchGetBattleEvent(id: number, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/events/${id}`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlstars', 'events', id.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
