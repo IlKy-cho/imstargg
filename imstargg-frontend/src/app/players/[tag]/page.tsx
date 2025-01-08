@@ -2,7 +2,6 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import React from "react";
 import PlayerProfile from "@/components/player-profile";
-import PlayerSearchForm from '@/components/player-search-form';
 import PlayerBattleList from "@/components/player-battle-list";
 import {getBrawlers} from "@/lib/api/brawler";
 import {getPlayer} from "@/lib/api/player";
@@ -21,12 +20,12 @@ type Props = {
 export default async function PlayerPage({params}: Readonly<Props>) {
   const { tag } = await params;
   const decodedTag = decodeURIComponent(tag);
-  const playerResponse = await getPlayer(decodedTag);
+  const player = await getPlayer(decodedTag);
 
-  if (!playerResponse.player) {
+  if (!player) {
     notFound();
   }
-  const player = playerResponse.player;
+
   const brawlers = await getBrawlers();
 
   return (
