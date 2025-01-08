@@ -58,7 +58,7 @@ const BattleTypeIcon = ({type}: { type: BattleType }) => {
 
 const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
   const modeTitle = playerBattleModeTitle(battle);
-  const mapName = battle.event ? battle.event.map.name : '알 수 없음';
+  const mapName = battle.event ? battle.event.map.name : '❓';
   return (
     <div className="flex items-center gap-1">
       <div>
@@ -87,7 +87,7 @@ const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
           <span>{mapName}</span>
         </div>
       </div>
-      <BattleEventMapImage battleEvent={battle.event}/>
+      <BattleEventMapImage battleEventMap={battle.event.map}/>
     </div>
   );
 }
@@ -186,13 +186,13 @@ const BattleTeamPlayer = (
     ? 'font-bold text-zinc-800' : 'text-zinc-500';
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center w-20">
       <div className="relative">
-        <div className="absolute top-0 w-full flex justify-between z-10 bg-gray-100/50">
+        <div className="absolute top-0 left-0 z-10 bg-zinc-200/50">
           <PowerLevel value={player.brawler.power}/>
-          <span className="px-1">
-            <PlayerTier player={player}/>
-          </span>
+        </div>
+        <div className="absolute bottom-0 right-0 z-10 bg-zinc-200/50">
+          <PlayerTier player={player}/>
         </div>
         <BrawlerProfileImage brawler={brawler}/>
       </div>
@@ -200,12 +200,12 @@ const BattleTeamPlayer = (
         <div className="flex gap-1">
           <Link
             href={`/players/${encodeURIComponent(player.tag)}`}
-            className={cn(nameStyle, 'text-sm', 'flex-1')}
+            className={cn(nameStyle, 'text-xs', 'flex-1', 'truncate')}
           >
             {player.name}
           </Link>
           {starPlayerTag === player.tag && (
-            <span className="text-sm">⭐️</span>
+            <span className="text-xs">⭐️</span>
           )}
         </div>
       </div>

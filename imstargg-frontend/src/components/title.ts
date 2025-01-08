@@ -165,7 +165,7 @@ export const battleModeTitle = (mode: BattleMode) => {
 }
 
 export const playerBattleModeTitle = (battle: PlayerBattle) => {
-  if (battle.event) {
+  if (battle.event.mode) {
     return battleEventModeTitle(battle.event.mode);
   }
 
