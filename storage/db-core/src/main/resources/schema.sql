@@ -285,7 +285,7 @@ create table battle_event
     battle_event_id     bigint       not null auto_increment,
     brawlstars_id       bigint       not null,
     mode                varchar(45)  not null,
-    map_brawlstars_name varchar(105) not null,
+    map_brawlstars_name varchar(105),
     latest_battle_time  timestamp(6),
     created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),

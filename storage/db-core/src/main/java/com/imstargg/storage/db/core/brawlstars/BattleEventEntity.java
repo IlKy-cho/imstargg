@@ -29,7 +29,8 @@ public class BattleEventEntity extends BaseEntity {
     @Column(name = "mode", length = 45, updatable = false, nullable = false)
     private String mode;
 
-    @Column(name = "map_brawlstars_name", length = 105, updatable = false, nullable = false)
+    @Nullable
+    @Column(name = "map_brawlstars_name", length = 105, updatable = false)
     private String mapBrawlStarsName;
 
     @Nullable
@@ -51,6 +52,7 @@ public class BattleEventEntity extends BaseEntity {
         return mode;
     }
 
+    @Nullable
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
     }

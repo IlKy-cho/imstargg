@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.brawlstars;
 
+import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
@@ -23,10 +24,11 @@ public class BattleEventCollectionEntity extends BaseEntity {
     @Column(name = "brawlstars_id", updatable = false, nullable = false)
     private long brawlStarsId;
 
-    @Column(name = "mode", length = 45, updatable = false)
+    @Column(name = "mode", length = 45, nullable = false)
     private String mode;
 
-    @Column(name = "map_brawlstars_name", length = 105, updatable = false)
+    @Nullable
+    @Column(name = "map_brawlstars_name", length = 105)
     private String mapBrawlStarsName;
 
     @Nullable
@@ -48,6 +50,23 @@ public class BattleEventCollectionEntity extends BaseEntity {
         this.latestBattleTime = latestBattleTime;
     }
 
+    public void update(
+            String mode,
+            @Nullable String mapBrawlStarsName,
+            @Nullable LocalDateTime latestBattleTime
+    ) {
+        if (BattleEventMode.UNKNOWN.getCode().equals(mode)) {
+            this.mode = mode;
+        }
+        if (mapBrawlStarsName != null) {
+            this.mapBrawlStarsName = mapBrawlStarsName;
+        }
+        if (latestBattleTime != null
+                && (this.latestBattleTime == null || latestBattleTime.isAfter(this.latestBattleTime))) {
+            this.latestBattleTime = latestBattleTime;
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -60,6 +79,7 @@ public class BattleEventCollectionEntity extends BaseEntity {
         return mode;
     }
 
+    @Nullable
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
     }
