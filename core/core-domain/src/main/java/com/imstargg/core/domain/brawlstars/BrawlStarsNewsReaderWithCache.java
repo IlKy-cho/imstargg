@@ -48,9 +48,6 @@ public class BrawlStarsNewsReaderWithCache {
             );
         } catch (BrawlStarsNewsClientException.NotFound e) {
             return Slice.empty();
-        } catch (BrawlStarsNewsClientException e) {
-            log.error("브롤스타즈 뉴스를 가져오는데 문제가 있습니다.", e);
-            return Slice.empty();
         }
     }
 }
