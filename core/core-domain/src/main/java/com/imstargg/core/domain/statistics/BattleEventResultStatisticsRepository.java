@@ -34,7 +34,7 @@ public class BattleEventResultStatisticsRepository {
         this.brawlersBattleResultStatisticsJpaRepository = brawlersBattleResultStatisticsJpaRepository;
     }
 
-    public List<BattleEventBrawlerResultStatistics> findBrawlerResultStatistics(
+    public List<BattleEventBrawlerResultCount> findBrawlerResultCounts(
             long eventBrawlStarsId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTier soloRankTier,
             boolean duplicateBrawler
@@ -67,7 +67,7 @@ public class BattleEventResultStatisticsRepository {
         }
 
         return brawlerCounters.entrySet().stream()
-                .map(entry -> new BattleEventBrawlerResultStatistics(
+                .map(entry -> new BattleEventBrawlerResultCount(
                         new BrawlStarsId(entry.getKey()),
                         entry.getValue().getVictoryCount(),
                         entry.getValue().getDefeatCount(),

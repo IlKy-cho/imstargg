@@ -23,10 +23,10 @@ public class BattleEventStatisticsReader {
     }
 
     @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTier' + #param.soloRankTier() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public List<BattleEventBrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
+    public List<BattleEventBrawlerResultCount> getBattleEventBrawlerResultStatistics(
             BattleEventBrawlerResultStatisticsParam param
     ) {
-        return battleEventResultStatisticsRepository.findBrawlerResultStatistics(
+        return battleEventResultStatisticsRepository.findBrawlerResultCounts(
                 param.eventBrawlStarsId(),
                 param.battleDate(),
                 param.trophyRange(),
