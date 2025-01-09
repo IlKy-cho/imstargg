@@ -19,7 +19,7 @@ export default {
         sm: 'calc(var(--radius) - 4px)'
       },
       backgroundImage: {
-        'brawl-stars-lobby': "url('/brawl_stars_lobby.jpg')",
+        'brawl-stars-lobby': "url('/image/lobby/brawl_stars_lobby.jpg')",
       }
     }
   },
