@@ -198,8 +198,8 @@ create table brawler_battle_rank_stats
 ) engine = innodb;
 
 alter table brawler_battle_rank_stats
-    add constraint uk_event_battledate_brawler_range
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, trophy_range);
+    add constraint uk_event_battledate_range_brawler
+        unique (event_brawlstars_id, battle_date desc, trophy_range, brawler_brawlstars_id);
 
 
 create table brawlers_battle_rank_stats
@@ -220,8 +220,8 @@ create table brawlers_battle_rank_stats
 
 
 alter table brawlers_battle_rank_stats
-    add constraint uk_event_battledate_brawler_range
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range);
+    add constraint uk_event_battledate_range_brawler
+        unique (event_brawlstars_id, battle_date desc, trophy_range, brawler_brawlstars_id, brawler_brawlstars_id_hash);
 
 
 create table brawler_battle_result_stats
@@ -245,10 +245,10 @@ create table brawler_battle_result_stats
 ) engine = innodb;
 
 alter table brawler_battle_result_stats
-    add constraint uk_event_battledate_brawler_enemybrawler_range_duplicate
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, enemy_brawler_brawlstars_id, trophy_range,
-                solo_rank_tier_range,
-                duplicate_brawler);
+    add constraint uk_event_battledate_range_duplicate_brawler_enemybrawler
+        unique (event_brawlstars_id, battle_date desc,
+                trophy_range, solo_rank_tier_range, duplicate_brawler,
+                brawler_brawlstars_id, enemy_brawler_brawlstars_id);
 
 
 
@@ -273,10 +273,10 @@ create table brawlers_battle_result_stats
 ) engine = innodb;
 
 alter table brawlers_battle_result_stats
-    add constraint uk_event_battledate_brawler_range_duplicate
-        unique (event_brawlstars_id, battle_date desc, brawler_brawlstars_id, brawler_brawlstars_id_hash, trophy_range,
-                solo_rank_tier_range,
-                duplicate_brawler);
+    add constraint uk_event_battledate_range_duplicate_brawler
+        unique (event_brawlstars_id, battle_date desc,
+                trophy_range, solo_rank_tier_range, duplicate_brawler,
+                brawler_brawlstars_id, brawler_brawlstars_id_hash);
 
 
 -- BrawlStars
