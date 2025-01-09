@@ -3,8 +3,22 @@ import { BattleEventMode } from "@/model/enums/BattleEventMode";
 import { battleEventModeTitle } from "@/components/title";
 import Image from 'next/image';
 import { battleEventModeIconSrc } from "@/components/battle-mode";
-import BattleEvent from "./battle-event";
 import { BattleEventModeValues } from "@/model/enums/BattleEventMode";
+import BattleEventMapImage from "@/components/battle-event-map-image";
+import Link from "next/link";
+
+function BattleEvent({battleEvent}: Readonly<{battleEvent: IBattleEvent}>) {
+  return (
+    <Link href={`/events/${battleEvent.id}`}>
+      <div className="inline-block bg-zinc-100 hover:bg-zinc-200 rounded p-2 transition-colors">
+        <div>
+          {battleEvent.map.name}
+        </div>
+        <BattleEventMapImage battleEventMap={battleEvent.map} size="lg"/>
+      </div>
+    </Link>
+  );
+}
 
 function BattleEventModeHeader({ mode }: Readonly<{ mode: BattleEventMode }>) {
   const iconSrc = battleEventModeIconSrc(mode);
