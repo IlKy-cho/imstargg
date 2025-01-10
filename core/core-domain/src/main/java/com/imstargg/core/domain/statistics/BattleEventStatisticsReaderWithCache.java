@@ -30,7 +30,7 @@ public class BattleEventStatisticsReaderWithCache {
                 param.eventBrawlStarsId(),
                 param.battleDate(),
                 param.trophyRange(),
-                param.soloRankTier(),
+                param.soloRankTierRange(),
                 param.duplicateBrawler()
         );
     }
@@ -43,7 +43,7 @@ public class BattleEventStatisticsReaderWithCache {
                 param.eventBrawlStarsId(),
                 param.battleDate(),
                 param.trophyRange(),
-                param.soloRankTier(),
+                param.soloRankTierRange(),
                 param.brawlersNum(),
                 param.duplicateBrawler()
         );

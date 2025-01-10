@@ -2,6 +2,7 @@ package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.enums.SoloRankTier;
+import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsJpaRepository;
@@ -36,7 +37,7 @@ public class BattleEventResultStatisticsRepository {
 
     public List<BattleEventBrawlerResultCount> findBrawlerResultCounts(
             long eventBrawlStarsId, LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTier soloRankTier,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler
     ) {
         Map<Long, BattleEventBrawlerCounter> brawlerCounters = new HashMap<>();
@@ -46,7 +47,7 @@ public class BattleEventResultStatisticsRepository {
         while (hasNext) {
             Slice<BrawlerBattleResultStatisticsEntity> brawlerBattleResultStatsSlice = brawlerBattleResultStatisticsJpaRepository
                     .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
-                            eventBrawlStarsId, battleDate, trophyRange, soloRankTier,
+                            eventBrawlStarsId, battleDate, trophyRange, soloRankTierRange,
                             duplicateBrawler,
                             pageRequest
                     );
@@ -79,7 +80,7 @@ public class BattleEventResultStatisticsRepository {
 
     public List<BattleEventBrawlersResultStatistics> findBrawlersResultStatistics(
             long eventBrawlStarsId, LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTier soloRankTier,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             int brawlNum, boolean duplicateBrawler
     ) {
         Map<BrawlerIdHash, BattleEventBrawlersCounter> brawlersCounters = new HashMap<>();
@@ -89,7 +90,7 @@ public class BattleEventResultStatisticsRepository {
         while (hasNext) {
             Slice<BrawlersBattleResultStatisticsEntity> brawlersBattleResultStatsSlice = brawlersBattleResultStatisticsJpaRepository
                     .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlersNumAndDuplicateBrawler(
-                            eventBrawlStarsId, battleDate, trophyRange, soloRankTier,
+                            eventBrawlStarsId, battleDate, trophyRange, soloRankTierRange,
                             brawlNum, duplicateBrawler,
                             pageRequest
                     );
