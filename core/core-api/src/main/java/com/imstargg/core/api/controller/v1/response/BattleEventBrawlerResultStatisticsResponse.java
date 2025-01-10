@@ -1,22 +1,22 @@
 package com.imstargg.core.api.controller.v1.response;
 
-import com.imstargg.core.domain.statistics.BattleEventBrawlerResultCount;
+import com.imstargg.core.domain.statistics.BattleEventBrawlerResultStatistics;
 
 public record BattleEventBrawlerResultStatisticsResponse(
         long brawlerBrawlStarsId,
-        long victoryCount,
-        long defeatCount,
-        long drawCount,
-        long starPlayerCount
+        long totalBattleCount,
+        double winRate,
+        double pickRate,
+        double starPlayerRate
 ) {
 
-    public static BattleEventBrawlerResultStatisticsResponse of(BattleEventBrawlerResultCount statistics) {
+    public static BattleEventBrawlerResultStatisticsResponse of(BattleEventBrawlerResultStatistics statistics) {
         return new BattleEventBrawlerResultStatisticsResponse(
-                statistics.brawlerBrawlStarsId().value(),
-                statistics.victoryCount(),
-                statistics.defeatCount(),
-                statistics.drawCount(),
-                statistics.starPlayerCount()
+                statistics.brawlerId().value(),
+                statistics.totalBattleCount(),
+                statistics.winRate(),
+                statistics.pickRate(),
+                statistics.starPlayerRate()
         );
     }
 }
