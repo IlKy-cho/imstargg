@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.statistics;
 
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -7,13 +8,20 @@ import java.util.List;
 @Service
 public class BattleEventStatisticsService {
 
-    private final BattleEventStatisticsReader battleEventStatisticsReader;
+    private final TaskExecutor taskExecutor;
+    private final BattleEventStatisticsReaderWithCache battleEventStatisticsReader;
 
-    public BattleEventStatisticsService(BattleEventStatisticsReader battleEventStatisticsReader) {
+    public BattleEventStatisticsService(
+            TaskExecutor taskExecutor,
+            BattleEventStatisticsReaderWithCache battleEventStatisticsReader
+    ) {
+        this.taskExecutor = taskExecutor;
         this.battleEventStatisticsReader = battleEventStatisticsReader;
     }
 
-    public List<BattleEventBrawlerResultCount> getBattleEventBrawlerResultStatistics(BattleEventBrawlerResultStatisticsParam param) {
+    public List<BattleEventBrawlerResultCount> getBattleEventBrawlerResultStatistics(
+            BattleEventBrawlerResultStatisticsParam param
+    ) {
         return battleEventStatisticsReader.getBattleEventBrawlerResultStatistics(param);
     }
 
