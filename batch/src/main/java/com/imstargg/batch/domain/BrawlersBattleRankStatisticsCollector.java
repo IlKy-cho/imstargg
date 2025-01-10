@@ -19,7 +19,10 @@ public class BrawlersBattleRankStatisticsCollector {
     }
 
     public void collect(BattleCollectionEntity battle) {
-        battle.myTeamCombinations().forEach(myTeamCombination ->
+        battle.myTeamCombinations()
+                .stream()
+                .filter(myTeamCombination -> myTeamCombination.players().size() == 2)
+                .forEach(myTeamCombination ->
                 BrawlersBattleRankStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
                     var brawlersBattleResultStats = getBrawlersBattleResult(key);
                     brawlersBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
