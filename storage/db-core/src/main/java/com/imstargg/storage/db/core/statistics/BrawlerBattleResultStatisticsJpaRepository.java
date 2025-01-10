@@ -1,6 +1,6 @@
 package com.imstargg.storage.db.core.statistics;
 
-import com.imstargg.core.enums.SoloRankTier;
+import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.Pageable;
@@ -13,7 +13,7 @@ public interface BrawlerBattleResultStatisticsJpaRepository extends JpaRepositor
 
     Slice<BrawlerBattleResultStatisticsEntity> findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
             long eventBrawlStarsId, LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTier soloRankTier,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler,
             Pageable pageable
     );
