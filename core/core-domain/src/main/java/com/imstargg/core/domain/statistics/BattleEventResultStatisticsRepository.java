@@ -1,7 +1,6 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
@@ -36,7 +35,7 @@ public class BattleEventResultStatisticsRepository {
     }
 
     public List<BattleEventBrawlerResultCount> findBrawlerResultCounts(
-            long eventBrawlStarsId, LocalDate battleDate,
+            BrawlStarsId eventId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler
     ) {
@@ -47,7 +46,7 @@ public class BattleEventResultStatisticsRepository {
         while (hasNext) {
             Slice<BrawlerBattleResultStatisticsEntity> brawlerBattleResultStatsSlice = brawlerBattleResultStatisticsJpaRepository
                     .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
-                            eventBrawlStarsId, battleDate, trophyRange, soloRankTierRange,
+                            eventId.value(), battleDate, trophyRange, soloRankTierRange,
                             duplicateBrawler,
                             pageRequest
                     );

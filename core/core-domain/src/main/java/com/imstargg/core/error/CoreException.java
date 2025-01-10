@@ -9,6 +9,11 @@ public class CoreException extends RuntimeException {
         this.errorType = CoreErrorType.DEFAULT_ERROR;
     }
 
+    public CoreException(String message, Throwable cause) {
+        super(message, cause);
+        this.errorType = CoreErrorType.DEFAULT_ERROR;
+    }
+
     public CoreException(CoreErrorType errorType) {
         super(errorType.toString());
         this.errorType = errorType;

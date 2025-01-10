@@ -1,28 +1,57 @@
 package com.imstargg.core.domain.statistics;
 
-import org.springframework.core.task.TaskExecutor;
+import com.imstargg.core.error.CoreException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.function.Supplier;
 
 @Service
 public class BattleEventStatisticsService {
 
-    private final TaskExecutor taskExecutor;
     private final BattleEventStatisticsReaderWithCache battleEventStatisticsReader;
+    private final BattleEventStatisticsReaderWithAsync battleEventStatisticsReaderWithAsync;
 
     public BattleEventStatisticsService(
-            TaskExecutor taskExecutor,
-            BattleEventStatisticsReaderWithCache battleEventStatisticsReader
+            BattleEventStatisticsReaderWithCache battleEventStatisticsReader,
+            BattleEventStatisticsReaderWithAsync battleEventStatisticsReaderWithAsync
     ) {
-        this.taskExecutor = taskExecutor;
         this.battleEventStatisticsReader = battleEventStatisticsReader;
+        this.battleEventStatisticsReaderWithAsync = battleEventStatisticsReaderWithAsync;
     }
 
-    public List<BattleEventBrawlerResultCount> getBattleEventBrawlerResultStatistics(
-            BattleEventBrawlerResultStatisticsParam param
+    public List<BattleEventBrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
+            BattleEventBrawlerResultStatisticsParams params
     ) {
-        return battleEventStatisticsReader.getBattleEventBrawlerResultStatistics(param);
+        List<BattleEventBrawlerResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlerResultStatistics)
+                .toList());
+
+        BattleEventBrawlerResultCounts mergedCounts = countsList.stream()
+                .reduce(BattleEventBrawlerResultCounts::merge)
+                .orElseGet(BattleEventBrawlerResultCounts::empty);
+
+        return mergedCounts.toStatistics();
+
+    }
+
+    private <T> List<T> getFutureResults(Supplier<List<Future<T>>> supplier) {
+        List<Future<T>> futures = supplier.get();
+        List<T> results = new ArrayList<>();
+        try {
+            for (Future<T> future : futures) {
+                results.add(future.get());
+            }
+        } catch (ExecutionException e) {
+            throw new CoreException("Failed to get future results", e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new CoreException("Failed to get future results", e);
+        }
+        return results;
     }
 
     public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(BattleEventBrawlersResultStatisticsParam param) {
