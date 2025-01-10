@@ -9,12 +9,12 @@ import java.util.List;
 
 @Component
 @CacheConfig(cacheNames = CacheNames.STATISTICS)
-public class BattleEventStatisticsReader {
+public class BattleEventStatisticsReaderWithCache {
 
     private final BattleEventResultStatisticsRepository battleEventResultStatisticsRepository;
     private final BattleEventRankStatisticsRepository battleEventRankStatisticsRepository;
 
-    public BattleEventStatisticsReader(
+    public BattleEventStatisticsReaderWithCache(
             BattleEventResultStatisticsRepository battleEventResultStatisticsRepository,
             BattleEventRankStatisticsRepository battleEventRankStatisticsRepository
     ) {
