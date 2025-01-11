@@ -53,11 +53,17 @@ public class BattleEventStatisticsReaderWithCache {
         );
     }
 
-    @Cacheable(key = "'battle-event-brawler-rank-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange()")
-    public List<BattleEventBrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
+    @Cacheable(key = "'battle-event-brawler-rank-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange()")
+    public BattleEventBrawlerRankCounts getBattleEventBrawlerRankCounts(
             BattleEventBrawlerRankStatisticsParam param
     ) {
-        return battleEventRankStatisticsRepository.findBrawlerRankStatistics(param);
+        return new BattleEventBrawlerRankCounts(
+                battleEventRankStatisticsRepository.findBrawlerRankCounts(
+                        param.eventId(),
+                        param.battleDate(),
+                        param.trophyRange()
+                )
+        );
     }
 
     @Cacheable(key = "'battle-event-brawlers-rank-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")

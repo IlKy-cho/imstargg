@@ -64,6 +64,21 @@ public class BattleEventStatisticsService {
                 .toList();
     }
 
+    @Cacheable(key = "'battle-event-brawler-rank-stats:v1:events:' + #params.eventId().value() + ':date' + #params.battleDate() + ':trophyRange' + #params.trophyRangeRange()")
+    public List<BattleEventBrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
+            BattleEventBrawlerRankStatisticsParams params
+    ) {
+        List<BattleEventBrawlerRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlerRankCounts)
+                .toList());
+
+        BattleEventBrawlerRankCounts mergedCounts = countsList.stream()
+                .reduce(BattleEventBrawlerRankCounts::merge)
+                .orElseGet(BattleEventBrawlerRankCounts::empty);
+
+        return mergedCounts.toStatistics();
+    }
+
     private <T> List<T> getFutureResults(Supplier<List<Future<T>>> supplier) {
         List<Future<T>> futures = supplier.get();
         List<T> results = new ArrayList<>();
@@ -78,10 +93,6 @@ public class BattleEventStatisticsService {
             throw new CoreException("Failed to get future results", e);
         }
         return results;
-    }
-
-    public List<BattleEventBrawlerRankStatistics> getBattleEventBrawlerRankStatistics(BattleEventBrawlerRankStatisticsParam param) {
-        return battleEventStatisticsReader.getBattleEventBrawlerRankStatistics(param);
     }
 
     public List<BattleEventBrawlersRankStatistics> getBattleEventBrawlersRankStatistics(BattleEventBrawlersRankStatisticsParam param) {

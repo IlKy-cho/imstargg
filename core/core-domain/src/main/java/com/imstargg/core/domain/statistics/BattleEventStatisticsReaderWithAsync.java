@@ -29,4 +29,10 @@ public class BattleEventStatisticsReaderWithAsync {
     ) {
         return CompletableFuture.completedFuture(reader.getBattleEventBrawlersResultCounts(param));
     }
+
+    public Future<BattleEventBrawlerRankCounts> getBattleEventBrawlerRankCounts(
+            BattleEventBrawlerRankStatisticsParam param
+    ) {
+        return CompletableFuture.completedFuture(reader.getBattleEventBrawlerRankCounts(param));
+    }
 }
