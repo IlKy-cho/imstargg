@@ -23,11 +23,11 @@ public class BrawlersBattleRankStatisticsCollector {
                 .stream()
                 .filter(myTeamCombination -> myTeamCombination.players().size() == 2)
                 .forEach(myTeamCombination ->
-                BrawlersBattleRankStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
-                    var brawlersBattleResultStats = getBrawlersBattleResult(key);
-                    brawlersBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
-                })
-        );
+                        BrawlersBattleRankStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
+                            var brawlersBattleResultStats = getBrawlersBattleResult(key);
+                            brawlersBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
+                        })
+                );
     }
 
     public List<BrawlersBattleRankStatisticsCollectionEntity> result() {
