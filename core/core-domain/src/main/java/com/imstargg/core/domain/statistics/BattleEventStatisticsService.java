@@ -1,6 +1,9 @@
 package com.imstargg.core.domain.statistics;
 
+import com.imstargg.core.config.CacheNames;
 import com.imstargg.core.error.CoreException;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -10,7 +13,10 @@ import java.util.concurrent.Future;
 import java.util.function.Supplier;
 
 @Service
+@CacheConfig(cacheNames = CacheNames.STATISTICS)
 public class BattleEventStatisticsService {
+
+    private static final int MINIMUM_BATTLE_COUNT = 10;
 
     private final BattleEventStatisticsReaderWithCache battleEventStatisticsReader;
     private final BattleEventStatisticsReaderWithAsync battleEventStatisticsReaderWithAsync;
@@ -23,19 +29,39 @@ public class BattleEventStatisticsService {
         this.battleEventStatisticsReaderWithAsync = battleEventStatisticsReaderWithAsync;
     }
 
+    @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.battleDate() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':duplicateBrawler' + #params.duplicateBrawler()")
     public List<BattleEventBrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
             BattleEventBrawlerResultStatisticsParams params
     ) {
         List<BattleEventBrawlerResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
-                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlerResultStatistics)
+                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlerResultCounts)
                 .toList());
 
         BattleEventBrawlerResultCounts mergedCounts = countsList.stream()
                 .reduce(BattleEventBrawlerResultCounts::merge)
                 .orElseGet(BattleEventBrawlerResultCounts::empty);
 
-        return mergedCounts.toStatistics();
+        return mergedCounts.toStatistics()
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
+    }
 
+    @Cacheable(key = "'battle-event-brawlers-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.battleDate() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':brawlersNum' + #params.brawlersNum() + ':duplicateBrawler' + #params.duplicateBrawler()")
+    public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
+            BattleEventBrawlersResultStatisticsParams params) {
+        List<BattleEventBrawlersResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlersResultCounts)
+                .toList());
+
+        BattleEventBrawlersResultCounts mergedCounts = countsList.stream()
+                .reduce(BattleEventBrawlersResultCounts::merge)
+                .orElseGet(BattleEventBrawlersResultCounts::empty);
+
+        return mergedCounts.toStatistics()
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
     }
 
     private <T> List<T> getFutureResults(Supplier<List<Future<T>>> supplier) {
@@ -52,10 +78,6 @@ public class BattleEventStatisticsService {
             throw new CoreException("Failed to get future results", e);
         }
         return results;
-    }
-
-    public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(BattleEventBrawlersResultStatisticsParam param) {
-        return battleEventStatisticsReader.getBattleEventBrawlersResultStatistics(param);
     }
 
     public List<BattleEventBrawlerRankStatistics> getBattleEventBrawlerRankStatistics(BattleEventBrawlerRankStatisticsParam param) {

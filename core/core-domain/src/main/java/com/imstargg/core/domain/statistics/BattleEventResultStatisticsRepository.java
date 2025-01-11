@@ -56,8 +56,8 @@ public class BattleEventResultStatisticsRepository {
                 )).toList();
     }
 
-    public List<BattleEventBrawlersResultStatistics> findBrawlersResultStatistics(
-            long eventBrawlStarsId, LocalDate battleDate,
+    public List<BattleEventBrawlersResultCount> findBrawlersResultCounts(
+            BrawlStarsId eventId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             int brawlNum, boolean duplicateBrawler
     ) {
@@ -68,7 +68,7 @@ public class BattleEventResultStatisticsRepository {
         while (hasNext) {
             Slice<BrawlersBattleResultStatisticsEntity> brawlersBattleResultStatsSlice = brawlersBattleResultStatisticsJpaRepository
                     .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlersNumAndDuplicateBrawler(
-                            eventBrawlStarsId, battleDate, trophyRange, soloRankTierRange,
+                            eventId.value(), battleDate, trophyRange, soloRankTierRange,
                             brawlNum, duplicateBrawler,
                             pageRequest
                     );
@@ -89,11 +89,11 @@ public class BattleEventResultStatisticsRepository {
         }
 
         return brawlersCounters.entrySet().stream()
-                .map(entry -> new BattleEventBrawlersResultStatistics(
+                .map(entry -> new BattleEventBrawlersResultCount(
                         entry.getKey().ids().stream().map(BrawlStarsId::new).toList(),
-                        entry.getValue().getVictoryCount() / entry.getKey().num(),
-                        entry.getValue().getDefeatCount() / entry.getKey().num(),
-                        entry.getValue().getDrawCount() / entry.getKey().num()
+                        entry.getValue().getVictoryCount() / brawlNum,
+                        entry.getValue().getDefeatCount() / brawlNum,
+                        entry.getValue().getDrawCount() / brawlNum
                 ))
                 .toList();
     }
