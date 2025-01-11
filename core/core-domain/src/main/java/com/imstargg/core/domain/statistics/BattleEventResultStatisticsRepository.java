@@ -3,7 +3,6 @@ package com.imstargg.core.domain.statistics;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsEntity;
@@ -39,42 +38,18 @@ public class BattleEventResultStatisticsRepository {
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler
     ) {
-        Map<Long, BattleEventBrawlerCounter> brawlerCounters = new HashMap<>();
-        var pageRequest = PageRequest.ofSize(PAGE_SIZE);
-        boolean hasNext = true;
-
-        while (hasNext) {
-            Slice<BrawlerBattleResultStatisticsEntity> brawlerBattleResultStatsSlice = brawlerBattleResultStatisticsJpaRepository
-                    .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
-                            eventId.value(), battleDate, trophyRange, soloRankTierRange,
-                            duplicateBrawler,
-                            pageRequest
-                    );
-            hasNext = brawlerBattleResultStatsSlice.hasNext();
-
-            brawlerBattleResultStatsSlice.forEach(stats -> {
-                BattleEventBrawlerCounter brawlerCounter = brawlerCounters.computeIfAbsent(
-                        stats.getBrawlerBrawlStarsId(),
-                        k -> new BattleEventBrawlerCounter()
-                );
-                brawlerCounter.addVictory(stats.getVictoryCount());
-                brawlerCounter.addDefeat(stats.getDefeatCount());
-                brawlerCounter.addDraw(stats.getDrawCount());
-                brawlerCounter.addStarPlayer(stats.getStarPlayerCount());
-            });
-
-            pageRequest = pageRequest.next();
-        }
-
-        return brawlerCounters.entrySet().stream()
-                .map(entry -> new BattleEventBrawlerResultCount(
-                        new BrawlStarsId(entry.getKey()),
-                        entry.getValue().getVictoryCount(),
-                        entry.getValue().getDefeatCount(),
-                        entry.getValue().getDrawCount(),
-                        entry.getValue().getStarPlayerCount()
-                ))
-                .toList();
+        return brawlerBattleResultStatisticsJpaRepository
+                .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
+                        eventId.value(), battleDate, trophyRange, soloRankTierRange,
+                        duplicateBrawler
+                ).stream()
+                .map(statsEntity -> new BattleEventBrawlerResultCount(
+                        new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
+                        statsEntity.getVictoryCount(),
+                        statsEntity.getDefeatCount(),
+                        statsEntity.getDrawCount(),
+                        statsEntity.getStarPlayerCount()
+                )).toList();
     }
 
     public List<BattleEventBrawlersResultStatistics> findBrawlersResultStatistics(
@@ -119,52 +94,6 @@ public class BattleEventResultStatisticsRepository {
                 .toList();
     }
 
-    private static class BattleEventBrawlerCounter {
-
-        private long victoryCount;
-        private long defeatCount;
-        private long drawCount;
-        private long starPlayerCount;
-
-        BattleEventBrawlerCounter() {
-            this.victoryCount = 0;
-            this.defeatCount = 0;
-            this.drawCount = 0;
-            this.starPlayerCount = 0;
-        }
-
-        void addVictory(long count) {
-            victoryCount += count;
-        }
-
-        void addDefeat(long count) {
-            defeatCount += count;
-        }
-
-        void addDraw(long count) {
-            drawCount += count;
-        }
-
-        void addStarPlayer(long count) {
-            starPlayerCount += count;
-        }
-
-        long getVictoryCount() {
-            return victoryCount;
-        }
-
-        long getDefeatCount() {
-            return defeatCount;
-        }
-
-        long getDrawCount() {
-            return drawCount;
-        }
-
-        long getStarPlayerCount() {
-            return starPlayerCount;
-        }
-    }
 
     private static class BattleEventBrawlersCounter {
 
