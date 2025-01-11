@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1;
 
 import com.imstargg.core.api.controller.response.SliceResponse;
-import com.imstargg.core.api.controller.v1.request.PageRequest;
+import com.imstargg.core.api.controller.request.PageRequest;
 import com.imstargg.core.api.controller.v1.response.PlayerBattleResponse;
 import com.imstargg.core.domain.BattleService;
 import com.imstargg.core.domain.BrawlStarsTag;

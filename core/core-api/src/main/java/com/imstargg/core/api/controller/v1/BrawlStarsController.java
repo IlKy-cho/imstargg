@@ -2,7 +2,7 @@ package com.imstargg.core.api.controller.v1;
 
 import com.imstargg.core.api.controller.response.ListResponse;
 import com.imstargg.core.api.controller.response.SliceResponse;
-import com.imstargg.core.api.controller.v1.request.PageRequest;
+import com.imstargg.core.api.controller.request.PageRequest;
 import com.imstargg.core.api.controller.v1.response.BattleEventResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlStarsNewsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerResponse;

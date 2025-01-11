@@ -1,4 +1,4 @@
-package com.imstargg.core.api.controller.v1.request;
+package com.imstargg.core.api.controller.request;
 
 import jakarta.validation.constraints.Positive;
 
