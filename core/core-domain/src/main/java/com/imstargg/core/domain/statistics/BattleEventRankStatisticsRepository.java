@@ -1,6 +1,7 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsEntity;
@@ -9,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +31,16 @@ public class BattleEventRankStatisticsRepository {
         this.brawlersBattleRankStatisticsJpaRepository = brawlersBattleRankStatisticsJpaRepository;
     }
 
-    public List<BattleEventBrawlerRankStatistics> findBrawlerRankStatistics(
-            BattleEventBrawlerRankStatisticsParam param
+    public List<BattleEventBrawlerRankCount> findBrawlerRankCounts(
+            BrawlStarsId eventId,
+            LocalDate battleDate,
+            TrophyRange trophyRange
     ) {
         return brawlerBattleRankStatisticsJpaRepository
                 .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRange(
-                        param.eventBrawlStarsId(), param.battleDate(), param.trophyRange()
+                        eventId.value(), battleDate, trophyRange
                 ).stream()
-                .map(statsEntity -> new BattleEventBrawlerRankStatistics(
+                .map(statsEntity -> new BattleEventBrawlerRankCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
                         statsEntity.getRankToCounts()
                 )).toList();

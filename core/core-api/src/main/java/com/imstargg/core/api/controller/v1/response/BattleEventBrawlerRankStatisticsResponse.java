@@ -2,17 +2,19 @@ package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.statistics.BattleEventBrawlerRankStatistics;
 
-import java.util.Map;
-
 public record BattleEventBrawlerRankStatisticsResponse(
-        long brawlerBrawlStarsId,
-        Map<Integer, Long> rankToCounts
+        long brawlerId,
+        long totalBattleCount,
+        double averageRank,
+        double pickRate
 ) {
 
     public static BattleEventBrawlerRankStatisticsResponse of(BattleEventBrawlerRankStatistics stats) {
         return new BattleEventBrawlerRankStatisticsResponse(
-                stats.brawlerBrawlStarsId().value(),
-                stats.rankToCounts()
+                stats.brawlerId().value(),
+                stats.totalBattleCount(),
+                stats.averageRank(),
+                stats.pickRate()
         );
     }
 }
