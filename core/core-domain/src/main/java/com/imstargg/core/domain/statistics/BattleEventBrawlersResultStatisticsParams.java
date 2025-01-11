@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public record BattleEventBrawlersResultStatisticsParams(
         BrawlStarsId eventId,
-        LocalDate battleDate,
+        LocalDate date,
         @Nullable TrophyRangeRange trophyRangeRange,
         @Nullable SoloRankTierRangeRange soloRankTierRangeRange,
         int brawlersNum,
@@ -22,15 +22,15 @@ public record BattleEventBrawlersResultStatisticsParams(
 
     public List<BattleEventBrawlersResultStatisticsParam> toParamList() {
         if (trophyRangeRange != null) {
-            return battleDateWeekStream().flatMap(date ->
+            return battleDateWeekStream().flatMap(battleDate ->
                     trophyRangeRange.getRanges().stream().flatMap(trophyRange ->
-                            mapParam(date, trophyRange, null, duplicateBrawler)
+                            mapParam(battleDate, trophyRange, null, duplicateBrawler)
                     )
             ).toList();
         } else if (soloRankTierRangeRange != null) {
-            return battleDateWeekStream().flatMap(date ->
+            return battleDateWeekStream().flatMap(battleDate ->
                     soloRankTierRangeRange.getRanges().stream().flatMap(soloRankTierRange ->
-                            mapParam(date, null, soloRankTierRange, duplicateBrawler)
+                            mapParam(battleDate, null, soloRankTierRange, duplicateBrawler)
                     )
             ).toList();
         }
@@ -39,12 +39,12 @@ public record BattleEventBrawlersResultStatisticsParams(
     }
 
     private Stream<LocalDate> battleDateWeekStream() {
-        return Stream.iterate(battleDate, date -> date.minusDays(1))
+        return Stream.iterate(date, battleDate -> battleDate.minusDays(1))
                 .limit(7);
     }
 
     private Stream<BattleEventBrawlersResultStatisticsParam> mapParam(
-            LocalDate date,
+            LocalDate battleDate,
             @Nullable TrophyRange trophyRange,
             @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler
@@ -53,7 +53,7 @@ public record BattleEventBrawlersResultStatisticsParams(
                 ? Stream.of(
                 new BattleEventBrawlersResultStatisticsParam(
                         eventId,
-                        date,
+                        battleDate,
                         trophyRange,
                         soloRankTierRange,
                         brawlersNum,
@@ -63,7 +63,7 @@ public record BattleEventBrawlersResultStatisticsParams(
                 Stream.of(
                         new BattleEventBrawlersResultStatisticsParam(
                                 eventId,
-                                date,
+                                battleDate,
                                 trophyRange,
                                 soloRankTierRange,
                                 brawlersNum,
@@ -71,7 +71,7 @@ public record BattleEventBrawlersResultStatisticsParams(
                         ),
                         new BattleEventBrawlersResultStatisticsParam(
                                 eventId,
-                                date,
+                                battleDate,
                                 trophyRange,
                                 soloRankTierRange,
                                 brawlersNum,
