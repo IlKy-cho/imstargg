@@ -5,19 +5,17 @@ import com.imstargg.core.domain.statistics.BattleEventBrawlersRankStatisticsPara
 import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Positive;
 
 import java.time.LocalDate;
 
 public record BattleEventBrawlersRankStatisticsRequest(
-        @Positive long eventId,
         @PastOrPresent LocalDate date,
         @NotNull TrophyRangeRange trophyRange
 ) {
 
-    public BattleEventBrawlersRankStatisticsParams toParams() {
+    public BattleEventBrawlersRankStatisticsParams toParams(BrawlStarsId eventId) {
         return new BattleEventBrawlersRankStatisticsParams(
-                new BrawlStarsId(eventId()),
+                eventId,
                 date(),
                 trophyRange(),
                 2
