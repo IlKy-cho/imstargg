@@ -6,8 +6,8 @@ import java.util.List;
 
 public record BattleEventBrawlersResultStatistics(
         List<BrawlStarsId> brawlerBrawlStarsIds,
-        long victoryCount,
-        long defeatCount,
-        long drawCount
+        long totalBattleCount,
+        double winRate,
+        double pickRate
 ) {
 }

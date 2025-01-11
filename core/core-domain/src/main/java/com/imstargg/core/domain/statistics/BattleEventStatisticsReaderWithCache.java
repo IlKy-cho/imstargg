@@ -22,8 +22,8 @@ public class BattleEventStatisticsReaderWithCache {
         this.battleEventRankStatisticsRepository = battleEventRankStatisticsRepository;
     }
 
-    @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public BattleEventBrawlerResultCounts getBattleEventBrawlerResultStatistics(
+    @Cacheable(key = "'battle-event-brawler-result-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange() + ':duplicateBrawler' + #param.duplicateBrawler()")
+    public BattleEventBrawlerResultCounts getBattleEventBrawlerResultCounts(
             BattleEventBrawlerResultStatisticsParam param
     ) {
         return new BattleEventBrawlerResultCounts(
@@ -37,17 +37,19 @@ public class BattleEventStatisticsReaderWithCache {
         );
     }
 
-    @Cacheable(key = "'battle-event-brawlers-result-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTier' + #param.soloRankTier()  + ':brawlersNum' + #param.brawlersNum() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
+    @Cacheable(key = "'battle-event-brawlers-result-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()  + ':brawlersNum' + #param.brawlersNum() + ':duplicateBrawler' + #param.duplicateBrawler()")
+    public BattleEventBrawlersResultCounts getBattleEventBrawlersResultCounts(
             BattleEventBrawlersResultStatisticsParam param
     ) {
-        return battleEventResultStatisticsRepository.findBrawlersResultStatistics(
-                param.eventBrawlStarsId(),
-                param.battleDate(),
-                param.trophyRange(),
-                param.soloRankTierRange(),
-                param.brawlersNum(),
-                param.duplicateBrawler()
+        return new BattleEventBrawlersResultCounts(
+                battleEventResultStatisticsRepository.findBrawlersResultCounts(
+                        param.eventId(),
+                        param.battleDate(),
+                        param.trophyRange(),
+                        param.soloRankTierRange(),
+                        param.brawlersNum(),
+                        param.duplicateBrawler()
+                )
         );
     }
 
