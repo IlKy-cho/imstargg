@@ -5,7 +5,7 @@ import com.imstargg.core.domain.BrawlStarsId;
 import java.util.List;
 
 public record BattleEventBrawlersResultCount(
-        List<BrawlStarsId> brawlerBrawlStarsIds,
+        List<BrawlStarsId> brawlerIds,
         long victoryCount,
         long defeatCount,
         long drawCount
@@ -31,13 +31,13 @@ public record BattleEventBrawlersResultCount(
     }
 
     public BattleEventBrawlersResultCount merge(BattleEventBrawlersResultCount other) {
-        if (!brawlerBrawlStarsIds.equals(other.brawlerBrawlStarsIds)) {
+        if (!brawlerIds.equals(other.brawlerIds)) {
             throw new IllegalArgumentException(
-                    "Brawler ID is not matched. " + brawlerBrawlStarsIds + " != " + other.brawlerBrawlStarsIds);
+                    "Brawler ID is not matched. " + brawlerIds + " != " + other.brawlerIds);
         }
 
         return new BattleEventBrawlersResultCount(
-                brawlerBrawlStarsIds,
+                brawlerIds,
                 victoryCount + other.victoryCount,
                 defeatCount + other.defeatCount,
                 drawCount + other.drawCount

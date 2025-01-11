@@ -1,27 +1,26 @@
 package com.imstargg.core.api.controller.v1.request;
 
-import com.imstargg.core.domain.statistics.BattleEventBrawlersRankStatisticsParam;
-import com.imstargg.core.enums.TrophyRange;
+import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.statistics.BattleEventBrawlersRankStatisticsParams;
+import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
-import org.hibernate.validator.constraints.Range;
 
 import java.time.LocalDate;
 
 public record BattleEventBrawlersRankStatisticsRequest(
-        @Positive long eventBrawlStarsId,
+        @Positive long eventId,
         @PastOrPresent LocalDate battleDate,
-        @NotNull TrophyRange trophyRange,
-        @Range(min = 2, max = 5) int brawlersNum
+        @NotNull TrophyRangeRange trophyRange
 ) {
 
-    public BattleEventBrawlersRankStatisticsParam toParam() {
-        return new BattleEventBrawlersRankStatisticsParam(
-                eventBrawlStarsId(),
+    public BattleEventBrawlersRankStatisticsParams toParams() {
+        return new BattleEventBrawlersRankStatisticsParams(
+                new BrawlStarsId(eventId()),
                 battleDate(),
                 trophyRange(),
-                brawlersNum()
+                2
         );
     }
 }

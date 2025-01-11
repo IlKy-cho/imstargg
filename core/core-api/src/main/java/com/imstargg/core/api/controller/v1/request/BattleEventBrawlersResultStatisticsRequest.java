@@ -11,7 +11,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public record BattleEventBrawlersResultStatisticsRequest(
-        @Positive long eventBrawlStarsId,
+        @Positive long eventId,
         @PastOrPresent LocalDate battleDate,
         @Nullable TrophyRangeRange trophyRange,
         @Nullable SoloRankTierRangeRange soloRankTierRange,
@@ -20,7 +20,7 @@ public record BattleEventBrawlersResultStatisticsRequest(
 
     public BattleEventBrawlersResultStatisticsParams toParams() {
         return new BattleEventBrawlersResultStatisticsParams(
-                new BrawlStarsId(eventBrawlStarsId()),
+                new BrawlStarsId(eventId()),
                 battleDate(),
                 trophyRange(),
                 soloRankTierRange(),

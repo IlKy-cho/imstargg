@@ -14,7 +14,7 @@ public record BattleEventBrawlersResultStatisticsResponse(
 
     public static BattleEventBrawlersResultStatisticsResponse of(BattleEventBrawlersResultStatistics statistics) {
         return new BattleEventBrawlersResultStatisticsResponse(
-                statistics.brawlerBrawlStarsIds().stream().map(BrawlStarsId::value).toList(),
+                statistics.brawlerIds().stream().map(BrawlStarsId::value).toList(),
                 statistics.totalBattleCount(),
                 statistics.winRate(),
                 statistics.pickRate()

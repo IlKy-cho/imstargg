@@ -18,15 +18,12 @@ public class BattleEventStatisticsService {
 
     private static final int MINIMUM_BATTLE_COUNT = 10;
 
-    private final BattleEventStatisticsReaderWithCache battleEventStatisticsReader;
-    private final BattleEventStatisticsReaderWithAsync battleEventStatisticsReaderWithAsync;
+    private final BattleEventStatisticsReaderWithAsync battleEventStatisticsReader;
 
     public BattleEventStatisticsService(
-            BattleEventStatisticsReaderWithCache battleEventStatisticsReader,
-            BattleEventStatisticsReaderWithAsync battleEventStatisticsReaderWithAsync
+            BattleEventStatisticsReaderWithAsync battleEventStatisticsReader
     ) {
         this.battleEventStatisticsReader = battleEventStatisticsReader;
-        this.battleEventStatisticsReaderWithAsync = battleEventStatisticsReaderWithAsync;
     }
 
     @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.battleDate() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':duplicateBrawler' + #params.duplicateBrawler()")
@@ -34,7 +31,7 @@ public class BattleEventStatisticsService {
             BattleEventBrawlerResultStatisticsParams params
     ) {
         List<BattleEventBrawlerResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
-                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlerResultCounts)
+                .map(battleEventStatisticsReader::getBattleEventBrawlerResultCounts)
                 .toList());
 
         BattleEventBrawlerResultCounts mergedCounts = countsList.stream()
@@ -51,7 +48,7 @@ public class BattleEventStatisticsService {
     public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
             BattleEventBrawlersResultStatisticsParams params) {
         List<BattleEventBrawlersResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
-                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlersResultCounts)
+                .map(battleEventStatisticsReader::getBattleEventBrawlersResultCounts)
                 .toList());
 
         BattleEventBrawlersResultCounts mergedCounts = countsList.stream()
@@ -69,14 +66,34 @@ public class BattleEventStatisticsService {
             BattleEventBrawlerRankStatisticsParams params
     ) {
         List<BattleEventBrawlerRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
-                .map(battleEventStatisticsReaderWithAsync::getBattleEventBrawlerRankCounts)
+                .map(battleEventStatisticsReader::getBattleEventBrawlerRankCounts)
                 .toList());
 
         BattleEventBrawlerRankCounts mergedCounts = countsList.stream()
                 .reduce(BattleEventBrawlerRankCounts::merge)
                 .orElseGet(BattleEventBrawlerRankCounts::empty);
 
-        return mergedCounts.toStatistics();
+        return mergedCounts.toStatistics()
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
+    }
+
+    @Cacheable(key = "'battle-event-brawlers-rank-stats:v1:events:' + #params.eventId().value() + ':date' + #params.battleDate() + ':trophyRange' + #params.trophyRangeRange() + ':brawlersNum' + #params.brawlersNum()")
+    public List<BattleEventBrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
+            BattleEventBrawlersRankStatisticsParams params) {
+        List<BattleEventBrawlersRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+                .map(battleEventStatisticsReader::getBattleEventBrawlersRankCounts)
+                .toList());
+
+        BattleEventBrawlersRankCounts mergedCounts = countsList.stream()
+                .reduce(BattleEventBrawlersRankCounts::merge)
+                .orElseGet(BattleEventBrawlersRankCounts::empty);
+
+        return mergedCounts.toStatistics()
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
     }
 
     private <T> List<T> getFutureResults(Supplier<List<Future<T>>> supplier) {
@@ -93,9 +110,5 @@ public class BattleEventStatisticsService {
             throw new CoreException("Failed to get future results", e);
         }
         return results;
-    }
-
-    public List<BattleEventBrawlersRankStatistics> getBattleEventBrawlersRankStatistics(BattleEventBrawlersRankStatisticsParam param) {
-        return battleEventStatisticsReader.getBattleEventBrawlersRankStatistics(param);
     }
 }

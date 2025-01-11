@@ -4,17 +4,20 @@ import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.statistics.BattleEventBrawlersRankStatistics;
 
 import java.util.List;
-import java.util.Map;
 
 public record BattleEventBrawlersRankStatisticsResponse(
-        List<Long> brawlerBrawlStarsIds,
-        Map<Integer, Long> rankToCounts
+        List<Long> brawlerIds,
+        long totalBattleCount,
+        double averageRank,
+        double pickRate
 ) {
 
     public static BattleEventBrawlersRankStatisticsResponse of(BattleEventBrawlersRankStatistics stats) {
         return new BattleEventBrawlersRankStatisticsResponse(
-                stats.brawlerBrawlStarsIds().stream().map(BrawlStarsId::value).toList(),
-                stats.rankToCounts()
+                stats.brawlerIds().stream().map(BrawlStarsId::value).toList(),
+                stats.totalBattleCount(),
+                stats.averageRank(),
+                stats.pickRate()
         );
     }
 }
