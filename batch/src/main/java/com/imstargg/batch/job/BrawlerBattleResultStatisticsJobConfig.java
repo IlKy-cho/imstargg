@@ -2,6 +2,7 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.BattleReader;
 import com.imstargg.batch.domain.BrawlerBattleResultStatisticsCollector;
+import com.imstargg.batch.domain.BrawlerEnemyBattleResultStatisticsCollector;
 import com.imstargg.batch.domain.BrawlersBattleResultStatisticsCollector;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
@@ -97,6 +98,7 @@ class BrawlerBattleResultStatisticsJobConfig {
                             }
                             brawlerBattleResultStatisticsCollector().collect(battle);
                             brawlersBattleResultStatisticsCollector().collect(battle);
+                            brawlerEnemyBattleResultStatisticsCollector().collect(battle);
                         }
                     }
 
@@ -107,6 +109,7 @@ class BrawlerBattleResultStatisticsJobConfig {
 
                     brawlerBattleResultStatisticsCollector().result().forEach(em::persist);
                     brawlersBattleResultStatisticsCollector().result().forEach(em::persist);
+                    brawlerEnemyBattleResultStatisticsCollector().result().forEach(em::persist);
 
                     return RepeatStatus.FINISHED;
                 }, txManager).build();
@@ -146,6 +149,12 @@ class BrawlerBattleResultStatisticsJobConfig {
     @StepScope
     BrawlersBattleResultStatisticsCollector brawlersBattleResultStatisticsCollector() {
         return new BrawlersBattleResultStatisticsCollector();
+    }
+
+    @Bean
+    @StepScope
+    BrawlerEnemyBattleResultStatisticsCollector brawlerEnemyBattleResultStatisticsCollector() {
+        return new BrawlerEnemyBattleResultStatisticsCollector();
     }
 
 }
