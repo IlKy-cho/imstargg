@@ -3,7 +3,7 @@ package com.imstargg.core.api.controller.v1.response;
 import com.imstargg.core.domain.statistics.BattleEventBrawlerResultStatistics;
 
 public record BattleEventBrawlerResultStatisticsResponse(
-        long brawlerBrawlStarsId,
+        long brawlerId,
         long totalBattleCount,
         double winRate,
         double pickRate,

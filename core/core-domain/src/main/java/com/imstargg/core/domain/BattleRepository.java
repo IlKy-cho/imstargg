@@ -48,11 +48,11 @@ public class BattleRepository {
                 .findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
                         player.id().value(), PageRequest.of(page, PAGE_SIZE));
 
-        Map<BrawlStarsId, BattleEvent> eventBrawlStarsIdToEvent = findEventIdToEvent(
+        Map<BrawlStarsId, BattleEvent> eventIdToEvent = findEventIdToEvent(
                 language, battleEntitySlice.getContent());
 
         return new Slice<>(
-                battleEntitySlice.map(battle -> mapBattle(battle, eventBrawlStarsIdToEvent)).toList(),
+                battleEntitySlice.map(battle -> mapBattle(battle, eventIdToEvent)).toList(),
                 battleEntitySlice.hasNext()
         );
     }

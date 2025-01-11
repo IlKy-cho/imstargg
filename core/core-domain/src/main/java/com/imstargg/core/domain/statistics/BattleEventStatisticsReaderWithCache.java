@@ -5,8 +5,6 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 @CacheConfig(cacheNames = CacheNames.STATISTICS)
 public class BattleEventStatisticsReaderWithCache {
@@ -66,10 +64,17 @@ public class BattleEventStatisticsReaderWithCache {
         );
     }
 
-    @Cacheable(key = "'battle-event-brawlers-rank-stats:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")
-    public List<BattleEventBrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
+    @Cacheable(key = "'battle-event-brawlers-rank-counts:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")
+    public BattleEventBrawlersRankCounts getBattleEventBrawlersRankCounts(
             BattleEventBrawlersRankStatisticsParam param
     ) {
-        return battleEventRankStatisticsRepository.findBrawlersRankStatistics(param);
+        return new BattleEventBrawlersRankCounts(
+                battleEventRankStatisticsRepository.findBrawlersRankCounts(
+                        param.eventId(),
+                        param.battleDate(),
+                        param.trophyRange(),
+                        param.brawlersNum()
+                )
+        );
     }
 }

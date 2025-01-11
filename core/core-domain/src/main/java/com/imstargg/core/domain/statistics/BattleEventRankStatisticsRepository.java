@@ -46,10 +46,10 @@ public class BattleEventRankStatisticsRepository {
                 )).toList();
     }
 
-    public List<BattleEventBrawlersRankStatistics> findBrawlersRankStatistics(
-            BattleEventBrawlersRankStatisticsParam param
+    public List<BattleEventBrawlersRankCount> findBrawlersRankCounts(
+            BrawlStarsId eventId, LocalDate battleDate, TrophyRange trophyRange, int brawlersNum
     ) {
-        Map<BrawlerIdHash, BattleEventBrawlersCounter> brawlersCounters = new HashMap<>();
+        Map<BrawlerIdHash, BattleEventRankCounter> brawlersCounters = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
 
@@ -57,14 +57,14 @@ public class BattleEventRankStatisticsRepository {
 
             Slice<BrawlersBattleRankStatisticsEntity> brawlersBattleRankStatsSlice = brawlersBattleRankStatisticsJpaRepository
                     .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndBrawlersNum(
-                            param.eventBrawlStarsId(), param.battleDate(), param.trophyRange(), param.brawlersNum(),
+                            eventId.value(), battleDate, trophyRange, brawlersNum,
                             pageRequest
                     );
 
             brawlersBattleRankStatsSlice.forEach(stats -> {
-                BattleEventBrawlersCounter brawlersCounter = brawlersCounters.computeIfAbsent(
+                BattleEventRankCounter brawlersCounter = brawlersCounters.computeIfAbsent(
                         new BrawlerIdHash(stats.getBrawlers().getIdHash()),
-                        k -> new BattleEventBrawlersCounter()
+                        k -> new BattleEventRankCounter()
                 );
                 brawlersCounter.addRankToCounts(stats.getRankToCounts());
             });
@@ -79,7 +79,7 @@ public class BattleEventRankStatisticsRepository {
                     entry.getValue().getRankToCounts().forEach((rank, count) -> {
                         rankToCounts.put(rank, count / entry.getKey().num());
                     });
-                    return new BattleEventBrawlersRankStatistics(
+                    return new BattleEventBrawlersRankCount(
                             entry.getKey().ids()
                                     .stream()
                                     .map(BrawlStarsId::new)
@@ -89,7 +89,7 @@ public class BattleEventRankStatisticsRepository {
                 }).toList();
     }
 
-    private static class BattleEventBrawlersCounter {
+    private static class BattleEventRankCounter {
         private final Map<Integer, Long> rankToCounts = new HashMap<>();
 
         public void addRankToCounts(Map<Integer, Long> rankToCounts) {
