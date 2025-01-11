@@ -11,8 +11,8 @@ import jakarta.persistence.UniqueConstraint;
         name = "brawler_battle_result_stats",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_event_battledate_range_duplicate_brawler_enemybrawler",
-                        columnNames = {"event_brawlstars_id", "battle_date", "trophy_range", "solo_rank_tier_range", "duplicate_brawler", "brawler_brawlstars_id", "enemy_brawler_brawlstars_id"}
+                        name = "uk_event_battledate_range_duplicate_brawler",
+                        columnNames = {"event_brawlstars_id", "battle_date", "trophy_range", "solo_rank_tier_range", "duplicate_brawler", "brawler_brawlstars_id"}
                 )
         }
 )
@@ -24,9 +24,6 @@ public class BrawlerBattleResultStatisticsEntity extends BrawlerBattleResultStat
 
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
-
-    @Column(name = "enemy_brawler_brawlstars_id", updatable = false, nullable = false)
-    private long enemyBrawlerBrawlStarsId;
 
     @Column(name = "star_player_count", nullable = false)
     private long starPlayerCount;
@@ -40,10 +37,6 @@ public class BrawlerBattleResultStatisticsEntity extends BrawlerBattleResultStat
 
     public long getBrawlerBrawlStarsId() {
         return brawlerBrawlStarsId;
-    }
-
-    public long getEnemyBrawlerBrawlStarsId() {
-        return enemyBrawlerBrawlStarsId;
     }
 
     public long getStarPlayerCount() {

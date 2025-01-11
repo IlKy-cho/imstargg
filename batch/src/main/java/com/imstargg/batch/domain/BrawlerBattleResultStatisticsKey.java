@@ -14,7 +14,6 @@ public record BrawlerBattleResultStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
         long brawlerBrawlStarsId,
-        long enemyBrawlerBrawlStarsId,
         @Nullable TrophyRange trophyRange,
         @Nullable SoloRankTierRange soloRankTierRange,
         boolean duplicateBrawler
@@ -22,15 +21,13 @@ public record BrawlerBattleResultStatisticsKey(
 
     public static BrawlerBattleResultStatisticsKey of(
             BattleCollectionEntity battle,
-            BattleCollectionEntityTeamPlayer myPlayer,
-            BattleCollectionEntityTeamPlayer enemyPlayer
+            BattleCollectionEntityTeamPlayer myPlayer
     ) {
         BattleType battleType = BattleType.find(battle.getType());
         return new BrawlerBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().toLocalDate(),
                 myPlayer.getBrawler().getBrawlStarsId(),
-                enemyPlayer.getBrawler().getBrawlStarsId(),
                 TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies()),
                 SoloRankTierRange.of(battleType, myPlayer.getBrawler().getTrophies()),
                 battle.containsDuplicateBrawler()
