@@ -9,17 +9,17 @@ import java.util.stream.Stream;
 
 public record BattleEventBrawlersRankStatisticsParams(
         BrawlStarsId eventId,
-        LocalDate battleDate,
+        LocalDate date,
         TrophyRangeRange trophyRangeRange,
         int brawlersNum
 ) {
 
     public List<BattleEventBrawlersRankStatisticsParam> toParamList() {
-        return battleDateWeekStream().flatMap(date ->
+        return battleDateWeekStream().flatMap(battleDate ->
                 trophyRangeRange.getRanges().stream().map(trophyRange ->
                         new BattleEventBrawlersRankStatisticsParam(
                                 eventId,
-                                date,
+                                battleDate,
                                 trophyRange,
                                 brawlersNum
                         )
@@ -28,7 +28,7 @@ public record BattleEventBrawlersRankStatisticsParams(
     }
 
     private Stream<LocalDate> battleDateWeekStream() {
-        return Stream.iterate(battleDate, date -> date.minusDays(1))
+        return Stream.iterate(date, battleDate -> battleDate.minusDays(1))
                 .limit(7);
     }
 }

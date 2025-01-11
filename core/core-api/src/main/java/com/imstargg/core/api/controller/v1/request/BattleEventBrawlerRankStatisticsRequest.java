@@ -11,14 +11,14 @@ import java.time.LocalDate;
 
 public record BattleEventBrawlerRankStatisticsRequest(
         @Positive long eventId,
-        @PastOrPresent LocalDate battleDate,
+        @PastOrPresent LocalDate date,
         @NotNull TrophyRangeRange trophyRange
 ) {
 
     public BattleEventBrawlerRankStatisticsParams toParams() {
         return new BattleEventBrawlerRankStatisticsParams(
                 new BrawlStarsId(eventId()),
-                battleDate(),
+                date(),
                 trophyRange()
         );
     }
