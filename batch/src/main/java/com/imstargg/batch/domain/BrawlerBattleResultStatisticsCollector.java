@@ -18,8 +18,8 @@ public class BrawlerBattleResultStatisticsCollector {
 
     public void collect(BattleCollectionEntity battle) {
         boolean isStarPlayer = battle.amIStarPlayer();
-        battle.playerCombinations().forEach(playerCombination -> {
-            var key = BrawlerBattleResultStatisticsKey.of(battle, playerCombination.me(), playerCombination.enemy());
+        battle.findMe().forEach(myPlayer -> {
+            var key = BrawlerBattleResultStatisticsKey.of(battle, myPlayer);
             var brawlerBattleResultStats = getBrawlerBattleResultStats(key);
             brawlerBattleResultStats.countUp(BattleResult.map(battle.getResult()));
             if (isStarPlayer) {
@@ -40,8 +40,7 @@ public class BrawlerBattleResultStatisticsCollector {
                 k.soloRankTierRange(),
                 k.trophyRange(),
                 k.duplicateBrawler(),
-                k.brawlerBrawlStarsId(),
-                k.enemyBrawlerBrawlStarsId()
+                k.brawlerBrawlStarsId()
         ));
     }
 }

@@ -13,8 +13,8 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "brawler_battle_result_stats")
-public class BrawlerBattleResultStatisticsCollectionEntity extends BrawlerBattleResultStatisticsBaseCollectionEntity {
+@Table(name = "brawler_enemy_battle_result_stats")
+public class BrawlerEnemyBattleResultStatisticsCollectionEntity extends BrawlerBattleResultStatisticsBaseCollectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,28 +24,26 @@ public class BrawlerBattleResultStatisticsCollectionEntity extends BrawlerBattle
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    @Column(name = "star_player_count", nullable = false)
-    private long starPlayerCount;
+    @Column(name = "enemy_brawler_brawlstars_id", updatable = false, nullable = false)
+    private long enemyBrawlerBrawlStarsId;
 
-    protected BrawlerBattleResultStatisticsCollectionEntity() {
+    protected BrawlerEnemyBattleResultStatisticsCollectionEntity() {
     }
 
-    public BrawlerBattleResultStatisticsCollectionEntity(
+    public BrawlerEnemyBattleResultStatisticsCollectionEntity(
             long battleEventId,
             LocalDate battleDate,
             @Nullable SoloRankTierRange soloRankTierRange,
             @Nullable TrophyRange trophyRange,
             boolean duplicateBrawler,
-            long brawlerBrawlStarsId
+            long brawlerBrawlStarsId,
+            long enemyBrawlerBrawlStarsId
     ) {
         super(battleEventId, battleDate, soloRankTierRange, trophyRange, duplicateBrawler);
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
-        this.starPlayerCount = 0;
+        this.enemyBrawlerBrawlStarsId = enemyBrawlerBrawlStarsId;
     }
 
-    public void starPlayer() {
-        starPlayerCount++;
-    }
 
     public Long getId() {
         return id;
@@ -55,7 +53,7 @@ public class BrawlerBattleResultStatisticsCollectionEntity extends BrawlerBattle
         return brawlerBrawlStarsId;
     }
 
-    public long getStarPlayerCount() {
-        return starPlayerCount;
+    public long getEnemyBrawlerBrawlStarsId() {
+        return enemyBrawlerBrawlStarsId;
     }
 }
