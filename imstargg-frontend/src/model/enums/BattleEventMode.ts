@@ -46,3 +46,16 @@ export const BattleEventModeValue = {
 export type BattleEventMode = typeof BattleEventModeValue[keyof typeof BattleEventModeValue];
 
 export const BattleEventModeValues = Object.keys(BattleEventModeValue) as BattleEventMode[];
+
+const resultBattleEventModes: BattleEventMode[] = [
+  BattleEventModeValue.SOLO_SHOWDOWN,
+  BattleEventModeValue.DUO_SHOWDOWN,
+  BattleEventModeValue.TRIO_SHOWDOWN,
+  BattleEventModeValue.HUNTERS,
+  BattleEventModeValue.TROPHY_ESCAPE,
+  BattleEventModeValue.TAKEDOWN,
+];
+
+export const isResultBattleEventMode = (battleEventMode: BattleEventMode): boolean => {
+  return resultBattleEventModes.includes(battleEventMode);
+};
