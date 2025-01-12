@@ -2,7 +2,6 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
-import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
@@ -25,9 +24,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
-import java.util.Objects;
-
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
 class NewPlayerFindJobConfig {
@@ -105,19 +101,8 @@ class NewPlayerFindJobConfig {
 
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
-    QuerydslPagingItemReader<BattleCollectionEntity> reader() {
-        return new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
-                .selectFrom(battleCollectionEntity)
-                .where(
-                        battleCollectionEntity.battleTime.goe(
-                                Objects.requireNonNull(dateJobParameter().getDate()).atStartOfDay()
-                        ),
-                        battleCollectionEntity.battleTime.lt(
-                                Objects.requireNonNull(dateJobParameter().getDate()).plusDays(1).atStartOfDay()
-                        )
-                )
-                .orderBy(battleCollectionEntity.battleTime.desc())
-        );
+    BattleItemReader reader() {
+        return new BattleItemReader(emf, CHUNK_SIZE, dateJobParameter().getDate());
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
