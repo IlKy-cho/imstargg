@@ -1,6 +1,13 @@
 import Image from 'next/image';
 import {SoloRankTierValue, SoloRankTier as SoloRankTierType} from "@/model/enums/SoloRankTier";
 import {cn} from "@/lib/utils";
+import BronzeIconSrc from '@/../public/rank/icon_ranked_bronze.png';
+import SilverIconSrc from '@/../public/rank/icon_ranked_silver.png';
+import GoldIconSrc from '@/../public/rank/icon_ranked_gold.png';
+import DiamondIconSrc from '@/../public/rank/icon_ranked_diamond.png';
+import MythicIconSrc from '@/../public/rank/icon_ranked_mythic.png';
+import LegendaryIconSrc from '@/../public/rank/icon_ranked_legendary.png';
+import MastersIconSrc from '@/../public/rank/icon_ranked_masters.png';
 
 const soloRankTierTextColor = (tier: SoloRankTierType) => {
   switch (tier) {
@@ -61,34 +68,44 @@ const soloRankTierNumber = (tier: SoloRankTierType) => {
   }
 }
 
+export const SoloRankTierIconSrc = {
+  BRONZE: BronzeIconSrc,
+  SILVER: SilverIconSrc,
+  GOLD: GoldIconSrc,
+  DIAMOND: DiamondIconSrc,
+  MYTHIC: MythicIconSrc,
+  LEGENDARY: LegendaryIconSrc,
+  MASTER: MastersIconSrc,
+}
+
 export const soloRankTierIconSrc = (tier: SoloRankTierType) => {
   switch (tier) {
     case SoloRankTierValue.BRONZE_1:
     case SoloRankTierValue.BRONZE_2:
     case SoloRankTierValue.BRONZE_3:
-      return '/rank/icon_ranked_bronze.png';
+      return SoloRankTierIconSrc.BRONZE;
     case SoloRankTierValue.SILVER_1:
     case SoloRankTierValue.SILVER_2:
     case SoloRankTierValue.SILVER_3:
-      return '/rank/icon_ranke d_silver.png';
+      return SoloRankTierIconSrc.SILVER;
     case SoloRankTierValue.GOLD_1:
     case SoloRankTierValue.GOLD_2:
     case SoloRankTierValue.GOLD_3:
-      return '/rank/icon_ranked_gold.png';
+      return SoloRankTierIconSrc.GOLD;
     case SoloRankTierValue.DIAMOND_1:
     case SoloRankTierValue.DIAMOND_2:
     case SoloRankTierValue.DIAMOND_3:
-      return '/rank/icon_ranked_diamond.png';
+      return SoloRankTierIconSrc.DIAMOND;
     case SoloRankTierValue.MYTHIC_1:
     case SoloRankTierValue.MYTHIC_2:
     case SoloRankTierValue.MYTHIC_3:
-      return '/rank/icon_ranked_mythic.png';
+      return SoloRankTierIconSrc.MYTHIC;
     case SoloRankTierValue.LEGENDARY_1:
     case SoloRankTierValue.LEGENDARY_2:
     case SoloRankTierValue.LEGENDARY_3:
-      return '/rank/icon_ranked_legendary.png';
+      return SoloRankTierIconSrc.LEGENDARY;
     case SoloRankTierValue.MASTER:
-      return '/rank/icon_ranked_masters.png';
+      return SoloRankTierIconSrc.MASTER;
   }
 }
 

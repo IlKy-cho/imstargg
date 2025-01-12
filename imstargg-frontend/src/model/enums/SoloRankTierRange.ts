@@ -9,3 +9,18 @@ export const SoloRankTierRangeValue = {
 export type SoloRankTierRange = typeof SoloRankTierRangeValue[keyof typeof SoloRankTierRangeValue];
 
 export const SoloRankTierRangeValues = Object.keys(SoloRankTierRangeValue) as SoloRankTierRange[];
+
+export const soloRankTierRangeTitle = (tier: SoloRankTierRange) => {
+  switch (tier) {
+    case SoloRankTierRangeValue.BRONZE_SILVER_GOLD_PLUS:
+      return '브실골+';
+    case SoloRankTierRangeValue.DIAMOND_PLUS:
+      return '다이아+';
+    case SoloRankTierRangeValue.MYTHIC_PLUS:
+      return '신화+';
+    case SoloRankTierRangeValue.LEGENDARY_MASTER:
+      return '전설+';
+    case SoloRankTierRangeValue.MASTER:
+      return '마스터';
+  }
+}
