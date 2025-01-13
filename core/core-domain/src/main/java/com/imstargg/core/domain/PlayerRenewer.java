@@ -58,10 +58,10 @@ public class PlayerRenewer {
     }
 
     public void validateRequestCount() {
-        int renewRequestedCount = playerRepository.countRenewRequested();
-        log.debug("갱신 요청된 플레이어 수: {}", renewRequestedCount);
-        if (renewRequestedCount > 1000) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_TOO_MANY);
+        int renewingCount = playerRenewalRepository.countRenewing();
+        log.debug("갱신 처리 중인 플레이어 수: {}", renewingCount);
+        if (renewingCount > 1000) {
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_TOO_MANY, "renewingCount=" + renewingCount);
         }
     }
 

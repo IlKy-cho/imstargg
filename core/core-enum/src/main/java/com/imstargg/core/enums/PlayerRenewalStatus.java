@@ -1,5 +1,8 @@
 package com.imstargg.core.enums;
 
+import java.util.Arrays;
+import java.util.List;
+
 public enum PlayerRenewalStatus {
 
     PENDING,
@@ -7,6 +10,12 @@ public enum PlayerRenewalStatus {
     COMPLETED,
     FAILED
     ;
+
+    public static List<PlayerRenewalStatus> renewingList() {
+        return Arrays.stream(values())
+                .filter(PlayerRenewalStatus::renewing)
+                .toList();
+    }
 
     public boolean finished() {
         return this == COMPLETED || this == FAILED;

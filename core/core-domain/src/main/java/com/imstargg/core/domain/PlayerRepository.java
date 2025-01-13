@@ -3,7 +3,6 @@ package com.imstargg.core.domain;
 import com.imstargg.core.domain.brawlstars.Brawler;
 import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
 import com.imstargg.core.enums.Language;
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.core.error.CoreException;
@@ -69,11 +68,6 @@ public class PlayerRepository {
                 entity.getUpdatedAt(),
                 entity.getStatus()
         );
-    }
-
-    public int countRenewRequested() {
-        return unknownPlayerJpaRepository.countByStatus(UnknownPlayerStatus.SEARCH_NEW)
-                + playerJpaRepository.countByStatus(PlayerStatus.RENEW_REQUESTED);
     }
 
     public UnknownPlayer getUnknown(BrawlStarsTag tag) {
