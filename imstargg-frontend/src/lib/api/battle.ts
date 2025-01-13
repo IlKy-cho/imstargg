@@ -2,10 +2,11 @@ import {PlayerBattle} from "@/model/PlayerBattle";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {BattleResult} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
-import {ApiError, fetchGetBattles} from "@/lib/api/api";
+import {fetchGetBattles} from "@/lib/api/api";
 import {SoloRankTier} from "@/model/enums/SoloRankTier";
 import {SliceResponse} from "@/model/response/SliceResponse";
 import {BattleMode} from "@/model/enums/BattleMode";
+import {ApiError} from "@/model/response/error";
 
 
 interface PlayerBattleResponse {
@@ -72,5 +73,5 @@ export async function getBattles(tag: string, page: number = 1): Promise<SliceRe
     }
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }

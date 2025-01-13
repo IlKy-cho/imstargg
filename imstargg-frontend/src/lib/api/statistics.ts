@@ -1,11 +1,12 @@
 import {TrophyRange} from "@/model/enums/TrophyRange";
 import {SoloRankTierRange} from "@/model/enums/SoloRankTierRange";
-import {ApiError, fetchGetBattleEventBrawlerResultStatistics, fetchGetBattleEventBrawlersResultStatistics, fetchGetBattleEventBrawlerRankStatistics, fetchGetBattleEventBrawlersRankStatistics} from "@/lib/api/api";
+import {fetchGetBattleEventBrawlerResultStatistics, fetchGetBattleEventBrawlersResultStatistics, fetchGetBattleEventBrawlerRankStatistics, fetchGetBattleEventBrawlersRankStatistics} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
 import {BattleEventBrawlerResultStatistics} from "@/model/BattleEventBrawlerResultStatistics";
 import {BattleEventBrawlerRankStatistics} from "@/model/BattleEventBrawlerRankStatistics";
 import {BattleEventBrawlersRankStatistics} from "@/model/BattleEventBrawlersRankStatistics";
 import {BattleEventBrawlersResultStatistics} from "@/model/BattleEventBrawlersResultStatistics";
+import {ApiError} from "@/model/response/error";
 
 export async function getBattleEventBrawlerResultStatistics(
   eventId: number,
@@ -24,7 +25,7 @@ export async function getBattleEventBrawlerResultStatistics(
     return data.content;
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }
 
 export async function getBattleEventBrawlersResultStatistics(
@@ -44,7 +45,7 @@ export async function getBattleEventBrawlersResultStatistics(
     return data.content;
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }
 
 export async function getBattleEventBrawlerRankStatistics(
@@ -62,7 +63,7 @@ export async function getBattleEventBrawlerRankStatistics(
     return data.content;
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }
 
 export async function getBattleEventBrawlersRankStatistics(
@@ -80,5 +81,5 @@ export async function getBattleEventBrawlersRankStatistics(
     return data.content;
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }

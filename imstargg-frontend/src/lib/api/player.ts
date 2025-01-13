@@ -1,9 +1,9 @@
-import {ApiError, fetchGetRenewalStatus, fetchRenewPlayer} from "@/lib/api/api";
-import {ApiResponse, createApiResponse} from "@/model/response/ApiResponse";
+import {fetchGetRenewalStatus, fetchRenewPlayer} from "@/lib/api/api";
 import {Player} from "@/model/Player";
 import {fetchGetPlayer} from "@/lib/api/api";
 import {fetchSearchPlayer} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
+import {ApiError} from "@/model/response/error";
 
 export async function getPlayer(tag: string): Promise<Player | null> {
   const response = await fetchGetPlayer(encodeURIComponent(tag));
@@ -18,7 +18,7 @@ export async function getPlayer(tag: string): Promise<Player | null> {
     return null;
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }
 
 export interface PlayerRenewalStatusResponse {
@@ -29,22 +29,24 @@ export async function getPlayerRenewalStatus(tag: string): Promise<PlayerRenewal
   const response = await fetchGetRenewalStatus(encodeURIComponent(tag));
 
   if (!response.ok) {
-    throw new ApiError(response);
+    throw await ApiError.create(response);
   }
 
   return await response.json() as PlayerRenewalStatusResponse;
 }
 
-export async function renewPlayer(tag: string): Promise<ApiResponse<void>> {
+export async function renewPlayer(tag: string): Promise<void> {
   const response = await fetchRenewPlayer(encodeURIComponent(tag));
-  return createApiResponse(response);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
 }
 
 export async function searchPlayer(query: string): Promise<Player[]> {
   const response = await fetchSearchPlayer(query);
 
   if (!response.ok) {
-    throw new ApiError(response);
+    throw await ApiError.create(response);
   }
 
   const data = await response.json() as ListResponse<Player>;
