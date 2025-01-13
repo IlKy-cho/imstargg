@@ -1,7 +1,8 @@
-import {ApiError, fetchGetBattleEvent, fetchGetBattleEvents} from "@/lib/api/api";
+import {fetchGetBattleEvent, fetchGetBattleEvents} from "@/lib/api/api";
 import {BattleEvent} from "@/model/BattleEvent";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ListResponse} from "@/model/response/ListResponse";
+import {ApiError} from "@/model/response/error";
 
 interface BattleEventResponse {
   id: number;
@@ -29,7 +30,7 @@ export async function getBattleEvents(): Promise<BattleEvent[]> {
     }));
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }
 
 export async function getBattleEvent(id: number): Promise<BattleEvent | null> {
@@ -48,5 +49,5 @@ export async function getBattleEvent(id: number): Promise<BattleEvent | null> {
     return null;
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }

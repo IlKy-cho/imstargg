@@ -1,6 +1,7 @@
 import {Brawler} from "@/model/Brawler";
-import {ApiError, fetchGetBrawlers} from "@/lib/api/api";
+import {fetchGetBrawlers} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
+import {ApiError} from "@/model/response/error";
 
 export async function getBrawlers() : Promise<Brawler[]> {
   const response = await fetchGetBrawlers({revalidate: 60 * 60});
@@ -10,5 +11,5 @@ export async function getBrawlers() : Promise<Brawler[]> {
     return data.content;
   }
 
-  throw new ApiError(response);
+  throw await ApiError.create(response);
 }
