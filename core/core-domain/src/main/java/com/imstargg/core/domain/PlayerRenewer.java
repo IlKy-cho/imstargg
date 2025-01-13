@@ -55,7 +55,12 @@ public class PlayerRenewer {
     public boolean isRenewing(BrawlStarsTag tag) {
         return playerRepository.findByTag(tag)
                 .map(Player::isRenewing)
-                .or(() -> playerRepository.findNew(tag).map(UnknownPlayer::isRenewing))
+                .orElseThrow(() -> new CoreException(CoreErrorType.PLAYER_NOT_FOUND, "playerTag=" + tag));
+    }
+
+    public boolean isRenewingNew(BrawlStarsTag tag) {
+        return playerRepository.findNew(tag)
+                .map(UnknownPlayer::isRenewing)
                 .orElseThrow(() -> new CoreException(CoreErrorType.PLAYER_NOT_FOUND, "playerTag=" + tag));
     }
 }
