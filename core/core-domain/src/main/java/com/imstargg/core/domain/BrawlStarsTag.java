@@ -1,5 +1,6 @@
 package com.imstargg.core.domain;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public record BrawlStarsTag(String value) {
@@ -11,6 +12,7 @@ public record BrawlStarsTag(String value) {
     }
 
     public BrawlStarsTag {
+        Objects.requireNonNull(value);
         if (!isValid(value)) {
             throw new IllegalArgumentException("Invalid BrawlStarsTag: " + value);
         }
