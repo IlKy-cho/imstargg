@@ -1,5 +1,6 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.PlayerRenewalEntity;
 import com.imstargg.storage.db.core.PlayerRenewalJpaRepository;
@@ -56,6 +57,10 @@ public class PlayerRenewalRepository {
             log.debug("플레이어 갱신 pending 업데이트 실패. playerTag={}", tag, e);
             return false;
         }
+    }
+
+    public int countRenewing() {
+        return (int) playerRenewalJpaRepository.countByStatusIn(PlayerRenewalStatus.renewingList());
     }
 
     @Component
