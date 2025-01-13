@@ -67,10 +67,6 @@ public class UnknownPlayerCollectionEntity extends BaseEntity {
         this.status = UnknownPlayerStatus.ADMIN_NEW;
     }
 
-    public void renewing() {
-        this.status = UnknownPlayerStatus.RENEWING;
-    }
-
     public void notFound() {
         if (this.status == UnknownPlayerStatus.ADMIN_NEW || this.status == UnknownPlayerStatus.UPDATE_NEW) {
             this.status = UnknownPlayerStatus.DELETED;

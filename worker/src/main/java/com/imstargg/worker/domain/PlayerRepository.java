@@ -6,8 +6,6 @@ import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,23 +30,17 @@ public class PlayerRepository {
     }
 
     @Transactional
-    @Retryable(retryFor = OptimisticLockingFailureException.class)
     public Optional<PlayerCollectionEntity> find(String brawlStarsTag) {
-        return playerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag)
+        return playerJpaRepository.findByBrawlStarsTag(brawlStarsTag)
                 .map(player -> {
                     player.initializeBrawlStarsIdToBrawler();
-                    player.renewing();
                     return player;
                 });
     }
 
     @Transactional
-    @Retryable(retryFor = OptimisticLockingFailureException.class)
     public Optional<UnknownPlayerCollectionEntity> findUnknown(String brawlStarsTag) {
-        return unknownPlayerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag).map(unknownPlayer -> {
-            unknownPlayer.renewing();
-            return unknownPlayer;
-        });
+        return unknownPlayerJpaRepository.findByBrawlStarsTag(brawlStarsTag);
     }
 
     @Transactional

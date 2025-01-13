@@ -10,8 +10,10 @@ import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
 import com.imstargg.collection.domain.BattleUpdateApplier;
+import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,36 +30,55 @@ public class PlayerRenewer {
 
     private final Clock clock;
     private final PlayerRepository playerRepository;
+    private final PlayerRenewalRepository playerRenewalRepository;
     private final BrawlStarsClient brawlStarsClient;
     private final BattleUpdateApplier battleUpdateApplier;
 
     public PlayerRenewer(
             Clock clock,
             PlayerRepository playerRepository,
+            PlayerRenewalRepository playerRenewalRepository,
             BrawlStarsClient brawlStarsClient,
             BattleUpdateApplier battleUpdateApplier
     ) {
         this.clock = clock;
         this.playerRepository = playerRepository;
+        this.playerRenewalRepository = playerRenewalRepository;
         this.brawlStarsClient = brawlStarsClient;
         this.battleUpdateApplier = battleUpdateApplier;
     }
 
     public void renew(String tag) {
-        Optional<PlayerCollectionEntity> playerEntityOpt = playerRepository.find(tag);
-        if (playerEntityOpt.isPresent()) {
-            renewPlayer(playerEntityOpt.get());
-            log.debug("플레이어 갱신 완료. tag={}", tag);
-            return;
-        }
-        Optional<UnknownPlayerCollectionEntity> unknownPlayerEntityOpt = playerRepository.findUnknown(tag);
-        if (unknownPlayerEntityOpt.isPresent()) {
-            renewNewPlayer(unknownPlayerEntityOpt.get());
-            log.debug("신규 플레이어 갱신 완료. tag={}", tag);
+        PlayerRenewalCollectionEntity playerRenewalEntity = playerRenewalRepository.find(tag)
+                .orElseThrow(() -> new IllegalStateException("플레이어 갱신 정보가 존재하지 않습니다. tag=" + tag));
+        if (PlayerRenewalStatus.PENDING != playerRenewalEntity.getStatus()) {
+            log.warn("플레이어 갱신 상태가 PENDING이 아니므로 갱신하지 않습니다. tag={}", tag);
             return;
         }
 
-        log.warn("플레이어가 존재하지 않습니다. tag={}", tag);
+        try {
+            playerRenewalRepository.executing(playerRenewalEntity);
+
+            Optional<PlayerCollectionEntity> playerEntityOpt = playerRepository.find(tag);
+            if (playerEntityOpt.isPresent()) {
+                renewPlayer(playerEntityOpt.get());
+                log.info("플레이어 갱신 완료. tag={}", tag);
+                return;
+            }
+            Optional<UnknownPlayerCollectionEntity> unknownPlayerEntityOpt = playerRepository.findUnknown(tag);
+            if (unknownPlayerEntityOpt.isPresent()) {
+                renewNewPlayer(unknownPlayerEntityOpt.get());
+                log.info("신규 플레이어 갱신 완료. tag={}", tag);
+                return;
+            }
+
+            log.warn("플레이어가 존재하지 않습니다. tag={}", tag);
+        } catch(Exception e) {
+            playerRenewalRepository.failed(playerRenewalEntity);
+            throw e;
+        } finally {
+            playerRenewalRepository.complete(playerRenewalEntity);
+        }
     }
 
     private void renewPlayer(PlayerCollectionEntity playerEntity) {
@@ -161,7 +182,6 @@ public class PlayerRenewer {
                     brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
             );
         }
-        playerEntity.renewing();
         return playerRepository.add(playerEntity);
     }
 }
