@@ -24,15 +24,24 @@ export async function fetchSearchPlayer(query: string, options?: CacheOptions): 
 
 export async function fetchGetRenewalStatus(tag: string): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renewal-status`);
-  return await fetch(url, {
-    next: {
-      tags: ['players', tag, 'renewal-status']
-    }
-  });
+  return await fetch(url);
+}
+
+export async function fetchGetNewPlayerRenewalStatus(tag: string): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renewal-status-new`);
+  return await fetch(url);
 }
 
 export async function fetchRenewPlayer(tag: string): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renew`);
+
+  return await fetch(url, {
+    method: 'POST',
+  });
+}
+
+export async function fetchRenewNewPlayer(tag: string): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renew-new`);
 
   return await fetch(url, {
     method: 'POST',
