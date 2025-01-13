@@ -31,7 +31,7 @@ public class PlayerRepository {
 
     @Transactional
     public Optional<PlayerCollectionEntity> find(String brawlStarsTag) {
-        return playerJpaRepository.findByBrawlStarsTag(brawlStarsTag)
+        return playerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag)
                 .map(player -> {
                     player.initializeBrawlStarsIdToBrawler();
                     return player;
@@ -40,7 +40,7 @@ public class PlayerRepository {
 
     @Transactional
     public Optional<UnknownPlayerCollectionEntity> findUnknown(String brawlStarsTag) {
-        return unknownPlayerJpaRepository.findByBrawlStarsTag(brawlStarsTag);
+        return unknownPlayerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag);
     }
 
     @Transactional
