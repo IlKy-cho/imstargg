@@ -38,6 +38,9 @@ public class PlayerService {
     }
 
     public void renewNew(BrawlStarsTag tag) {
+        if (playerFinder.find(tag).isPresent()) {
+            return;
+        }
         playerRenewalExecutor.renewNew(tag);
     }
 
