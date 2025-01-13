@@ -81,7 +81,8 @@ public class BattleRepository {
                 battleEntity.getDuration(),
                 battleEntity.getPlayer().getRank(),
                 battleEntity.getPlayer().getTrophyChange(),
-                new BrawlStarsTag(battleEntity.getStarPlayerBrawlStarsTag()),
+                battleEntity.getStarPlayerBrawlStarsTag() != null
+                        ? new BrawlStarsTag(battleEntity.getStarPlayerBrawlStarsTag()) : null,
                 mapTeams(battleType, battleEntity.getTeams())
         );
     }
