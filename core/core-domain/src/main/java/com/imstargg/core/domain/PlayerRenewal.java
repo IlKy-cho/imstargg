@@ -21,4 +21,16 @@ public record PlayerRenewal(
 
         return LocalDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
     }
+
+    public boolean available(UnknownPlayer unknownPlayer, Clock clock) {
+        if (!unknownPlayer.updateAvailable(clock)) {
+            return false;
+        }
+
+        if (status.finished()) {
+            return true;
+        }
+
+        return LocalDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
+    }
 }

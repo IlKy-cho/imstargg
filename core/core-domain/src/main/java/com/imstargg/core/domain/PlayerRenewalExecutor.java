@@ -10,16 +10,16 @@ import org.springframework.stereotype.Component;
 import java.time.Clock;
 
 @Component
-public class PlayerRenewer {
+public class PlayerRenewalExecutor {
 
-    private static final Logger log = LoggerFactory.getLogger(PlayerRenewer.class);
+    private static final Logger log = LoggerFactory.getLogger(PlayerRenewalExecutor.class);
 
     private final Clock clock;
     private final PlayerRepository playerRepository;
     private final PlayerRenewalRepository playerRenewalRepository;
     private final PlayerRenewEventPublisher eventPublisher;
 
-    public PlayerRenewer(
+    public PlayerRenewalExecutor(
             Clock clock,
             PlayerRepository playerRepository,
             PlayerRenewalRepository playerRenewalRepository,
@@ -36,6 +36,10 @@ public class PlayerRenewer {
 
         UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
         if (unknownPlayer.updateAvailable(clock)) {
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "unknownPlayerTag=" + tag);
+        }
+
+        if (playerRenewalRepository.pending(tag)) {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "unknownPlayerTag=" + tag);
         }
 
