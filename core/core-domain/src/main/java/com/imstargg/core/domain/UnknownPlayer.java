@@ -12,10 +12,6 @@ public record UnknownPlayer(
         LocalDateTime updateAvailableAt
 ) {
 
-    public boolean isRenewing() {
-        return status() == UnknownPlayerStatus.SEARCH_NEW || status() == UnknownPlayerStatus.RENEWING;
-    }
-
     public boolean updateAvailable(Clock clock) {
         boolean timeAvailable = updateAvailableAt().isBefore(LocalDateTime.now(clock));
         if (!timeAvailable) {
@@ -26,11 +22,7 @@ public record UnknownPlayer(
             return true;
         }
 
-        if (status == UnknownPlayerStatus.SEARCH_NEW
-                && Duration.between(updateAvailableAt(), LocalDateTime.now(clock)).toSeconds() > 120) {
-            return true;
-        }
-
-        return false;
+        return status == UnknownPlayerStatus.SEARCH_NEW
+                && Duration.between(updateAvailableAt(), LocalDateTime.now(clock)).toSeconds() > 120;
     }
 }

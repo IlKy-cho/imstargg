@@ -6,7 +6,6 @@ public enum UnknownPlayerStatus {
     SEARCH_NEW,
     UPDATE_NEW,
     UPDATED,
-    RENEWING,
     DELETED,
     NOT_FOUND,
 }
