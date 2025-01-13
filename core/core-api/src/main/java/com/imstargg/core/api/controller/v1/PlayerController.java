@@ -58,8 +58,19 @@ public class PlayerController {
         return ResponseEntity.accepted().build();
     }
 
+    @PostMapping("/api/v1/players/{tag}/renew-new")
+    public ResponseEntity<Void> renewNew(@PathVariable String tag) {
+        playerService.renewNew(new BrawlStarsTag(tag));
+        return ResponseEntity.accepted().build();
+    }
+
     @GetMapping("/api/v1/players/{tag}/renewal-status")
     public RenewalStatusResponse getRenewalStatus(@PathVariable String tag) {
         return new RenewalStatusResponse(playerService.isRenewing(new BrawlStarsTag(tag)));
+    }
+
+    @GetMapping("/api/v1/players/{tag}/renewal-status-new")
+    public RenewalStatusResponse getRenewalStatusNew(@PathVariable String tag) {
+        return new RenewalStatusResponse(playerService.isRenewingNew(new BrawlStarsTag(tag)));
     }
 }
