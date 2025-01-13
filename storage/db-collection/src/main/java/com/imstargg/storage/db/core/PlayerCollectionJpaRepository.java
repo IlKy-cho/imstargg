@@ -11,5 +11,6 @@ public interface PlayerCollectionJpaRepository extends JpaRepository<PlayerColle
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     Optional<PlayerCollectionEntity> findWithOptimisticLockById(Long id);
 
-    Optional<PlayerCollectionEntity> findByBrawlStarsTag(String brawlStarsTag);
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
+    Optional<PlayerCollectionEntity> findWithOptimisticLockByBrawlStarsTag(String brawlStarsTag);
 }
