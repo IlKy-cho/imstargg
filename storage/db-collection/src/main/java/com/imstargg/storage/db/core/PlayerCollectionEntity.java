@@ -99,7 +99,7 @@ public class PlayerCollectionEntity extends BaseEntity {
     private int version;
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL)
-    private List<PlayerBrawlerCollectionEntity> brawlers = new ArrayList<>();
+    private final List<PlayerBrawlerCollectionEntity> brawlers = new ArrayList<>();
 
     @Transient
     private Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToBrawler;
@@ -224,10 +224,6 @@ public class PlayerCollectionEntity extends BaseEntity {
 
     public void deleted() {
         this.status = PlayerStatus.DELETED;
-    }
-
-    public void renewing() {
-        this.status = PlayerStatus.RENEWING;
     }
 
     public boolean update(

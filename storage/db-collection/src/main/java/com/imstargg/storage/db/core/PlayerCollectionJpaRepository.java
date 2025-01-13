@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface PlayerCollectionJpaRepository extends JpaRepository<PlayerCollectionEntity, Long> {
 
-    boolean existsByBrawlStarsTag(String brawlStarsTag);
-
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    Optional<PlayerCollectionEntity> findWithOptimisticLockByBrawlStarsTag(String brawlStarsTag);
+    Optional<PlayerCollectionEntity> findWithOptimisticLockById(Long id);
+
+    Optional<PlayerCollectionEntity> findByBrawlStarsTag(String brawlStarsTag);
 }

@@ -30,6 +30,18 @@ public class PlayerRenewalCollectionEntity extends BaseEntity {
     protected PlayerRenewalCollectionEntity() {
     }
 
+    public void executing() {
+        this.status = PlayerRenewalStatus.EXECUTING;
+    }
+
+    public void complete() {
+        this.status = PlayerRenewalStatus.COMPLETE;
+    }
+
+    public void failed() {
+        this.status = PlayerRenewalStatus.FAILED;
+    }
+
     public Long getId() {
         return id;
     }
