@@ -165,6 +165,9 @@ create table player_renewal
 alter table player_renewal
     add constraint uk_brawlstarstag unique (brawlstars_tag);
 
+create index ix_status
+    on player_renewal (status);
+
 
 create table message
 (
