@@ -42,7 +42,7 @@ public class PlayerService {
     }
 
     public boolean isRenewing(BrawlStarsTag tag) {
-        return playerRenewer.isRenewing(tag);
+        return playerRenewer.isRenewing(playerReader.get(tag));
     }
 
     public boolean isRenewingNew(BrawlStarsTag tag) {

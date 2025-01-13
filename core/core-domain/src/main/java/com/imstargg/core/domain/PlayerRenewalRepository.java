@@ -1,26 +1,33 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.enums.PlayerRenewalStatus;
-import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.PlayerRenewalEntity;
 import com.imstargg.storage.db.core.PlayerRenewalJpaRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Component
 public class PlayerRenewalRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(PlayerRenewalRepository.class);
+
+    private final Clock clock;
     private final PlayerRenewalJpaRepository playerRenewalJpaRepository;
     private final Inner inner;
 
     public PlayerRenewalRepository(
+            Clock clock,
             PlayerRenewalJpaRepository playerRenewalJpaRepository,
             Inner inner
     ) {
+        this.clock = clock;
         this.playerRenewalJpaRepository = playerRenewalJpaRepository;
         this.inner = inner;
     }
@@ -28,38 +35,49 @@ public class PlayerRenewalRepository {
 
     public PlayerRenewal get(BrawlStarsTag tag) {
         PlayerRenewalEntity entity = playerRenewalJpaRepository.findByBrawlStarsTag(tag.value())
-                .orElseGet(() -> playerRenewalJpaRepository.save(new PlayerRenewalEntity(tag.value())));
+                .orElseGet(() -> playerRenewalJpaRepository.save(
+                        new PlayerRenewalEntity(tag.value(), LocalDateTime.now(clock))
+                ));
 
         return new PlayerRenewal(entity.getStatus(), entity.getUpdatedAt());
     }
 
-    @Retryable(
-            retryFor = OptimisticLockingFailureException.class,
-            backoff = @Backoff(delay = 200, multiplier = 3, maxDelay = 2000, random = true)
-    )
-    public void pending(BrawlStarsTag tag) {
-        inner.pending(tag);
+    public Optional<PlayerRenewal> find(BrawlStarsTag tag) {
+        return playerRenewalJpaRepository.findByBrawlStarsTag(tag.value())
+                .map(entity -> new PlayerRenewal(entity.getStatus(), entity.getUpdatedAt()));
+    }
+
+
+    public boolean pending(BrawlStarsTag tag) {
+        try {
+            inner.pending(tag);
+            return true;
+        } catch (OptimisticLockingFailureException e) {
+            log.debug("플레이어 갱신 pending 업데이트 실패. playerTag={}", tag, e);
+            return false;
+        }
     }
 
     @Component
     public static class Inner {
 
+        private final Clock clock;
         private final PlayerRenewalJpaRepository playerRenewalJpaRepository;
 
-        public Inner(PlayerRenewalJpaRepository playerRenewalJpaRepository) {
+        public Inner(
+                Clock clock,
+                PlayerRenewalJpaRepository playerRenewalJpaRepository
+        ) {
+            this.clock = clock;
             this.playerRenewalJpaRepository = playerRenewalJpaRepository;
         }
 
         @Transactional
         public void pending(BrawlStarsTag tag) {
             PlayerRenewalEntity entity = playerRenewalJpaRepository.findWithOptimisticLockByBrawlStarsTag(tag.value())
-                    .orElseGet(() -> playerRenewalJpaRepository.save(new PlayerRenewalEntity(tag.value())));
+                    .orElseThrow(() -> new CoreException("플레이어 갱신 요청을 찾을 수 없습니다. playerTag=" + tag));
 
-            if (entity.getStatus() == PlayerRenewalStatus.PENDING) {
-                throw new CoreException(CoreErrorType.PLAYER_ALREADY_RENEWAL_REQUESTED, "playerTag=" + tag);
-            }
-
-            entity.pending();
+            entity.pending(LocalDateTime.now(clock));
             playerRenewalJpaRepository.save(entity);
         }
     }

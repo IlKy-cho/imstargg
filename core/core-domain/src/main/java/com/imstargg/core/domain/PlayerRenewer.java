@@ -1,5 +1,6 @@
 package com.imstargg.core.domain;
 
+import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import org.slf4j.Logger;
@@ -15,11 +16,18 @@ public class PlayerRenewer {
 
     private final Clock clock;
     private final PlayerRepository playerRepository;
+    private final PlayerRenewalRepository playerRenewalRepository;
     private final PlayerRenewEventPublisher eventPublisher;
 
-    public PlayerRenewer(Clock clock, PlayerRepository playerRepository, PlayerRenewEventPublisher eventPublisher) {
+    public PlayerRenewer(
+            Clock clock,
+            PlayerRepository playerRepository,
+            PlayerRenewalRepository playerRenewalRepository,
+            PlayerRenewEventPublisher eventPublisher
+    ) {
         this.clock = clock;
         this.playerRepository = playerRepository;
+        this.playerRenewalRepository = playerRenewalRepository;
         this.eventPublisher = eventPublisher;
     }
 
@@ -28,7 +36,7 @@ public class PlayerRenewer {
 
         UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
         if (unknownPlayer.updateAvailable(clock)) {
-            throw new CoreException(CoreErrorType.PLAYER_ALREADY_RENEWED, "unknownPlayerTag=" + tag);
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "unknownPlayerTag=" + tag);
         }
 
         playerRepository.updateSearchNew(unknownPlayer);
@@ -37,10 +45,15 @@ public class PlayerRenewer {
 
     public void renew(Player player) {
         validateRequestCount();
-        if (!player.renewAvailable(clock)) {
-            throw new CoreException(CoreErrorType.PLAYER_ALREADY_RENEWED, "playerTag=" + player.tag());
+        PlayerRenewal playerRenewal = playerRenewalRepository.get(player.tag());
+        if (!playerRenewal.available(player, clock)) {
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "playerTag=" + player.tag());
         }
-        playerRepository.renewRequested(player);
+
+        if (!playerRenewalRepository.pending(player.tag())) {
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "playerTag=" + player.tag());
+        }
+
         eventPublisher.publish(player.tag());
     }
 
@@ -48,14 +61,15 @@ public class PlayerRenewer {
         int renewRequestedCount = playerRepository.countRenewRequested();
         log.debug("갱신 요청된 플레이어 수: {}", renewRequestedCount);
         if (renewRequestedCount > 1000) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEW_UNAVAILABLE);
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_TOO_MANY);
         }
     }
 
-    public boolean isRenewing(BrawlStarsTag tag) {
-        return playerRepository.findByTag(tag)
-                .map(Player::isRenewing)
-                .orElseThrow(() -> new CoreException(CoreErrorType.PLAYER_NOT_FOUND, "playerTag=" + tag));
+    public boolean isRenewing(Player player) {
+        return playerRenewalRepository.find(player.tag())
+                .map(PlayerRenewal::status)
+                .map(PlayerRenewalStatus::renewing)
+                .orElse(false);
     }
 
     public boolean isRenewingNew(BrawlStarsTag tag) {
