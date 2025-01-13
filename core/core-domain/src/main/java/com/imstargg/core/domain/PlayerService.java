@@ -11,16 +11,16 @@ public class PlayerService {
 
     private final PlayerReader playerReader;
     private final PlayerFinder playerFinder;
-    private final PlayerRenewer playerRenewer;
+    private final PlayerRenewalExecutor playerRenewalExecutor;
 
     public PlayerService(
             PlayerReader playerReader,
             PlayerFinder playerFinder,
-            PlayerRenewer playerRenewer
+            PlayerRenewalExecutor playerRenewalExecutor
     ) {
         this.playerReader = playerReader;
         this.playerFinder = playerFinder;
-        this.playerRenewer = playerRenewer;
+        this.playerRenewalExecutor = playerRenewalExecutor;
     }
 
     public Player get(BrawlStarsTag tag) {
@@ -34,18 +34,18 @@ public class PlayerService {
     public void renew(BrawlStarsTag tag) {
         Player player = playerFinder.find(tag)
                 .orElseThrow(() -> new CoreException(CoreErrorType.PLAYER_NOT_FOUND, "playerTag=" + tag));
-        playerRenewer.renew(player);
+        playerRenewalExecutor.renew(player);
     }
 
     public void renewNew(BrawlStarsTag tag) {
-        playerRenewer.renewNew(tag);
+        playerRenewalExecutor.renewNew(tag);
     }
 
     public boolean isRenewing(BrawlStarsTag tag) {
-        return playerRenewer.isRenewing(playerReader.get(tag));
+        return playerRenewalExecutor.isRenewing(playerReader.get(tag));
     }
 
     public boolean isRenewingNew(BrawlStarsTag tag) {
-        return playerRenewer.isRenewingNew(tag);
+        return playerRenewalExecutor.isRenewingNew(tag);
     }
 }
