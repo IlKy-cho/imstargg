@@ -11,4 +11,8 @@ public enum PlayerRenewalStatus {
     public boolean finished() {
         return this == COMPLETED || this == FAILED;
     }
+
+    public boolean renewing() {
+        return this == PENDING || this == EXECUTING;
+    }
 }

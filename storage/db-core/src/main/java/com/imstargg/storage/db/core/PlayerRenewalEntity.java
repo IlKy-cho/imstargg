@@ -55,4 +55,8 @@ public class PlayerRenewalEntity extends BaseEntity {
     public PlayerRenewalStatus getStatus() {
         return status;
     }
+
+    public void pending() {
+        this.status = PlayerRenewalStatus.PENDING;
+    }
 }
