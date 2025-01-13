@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
@@ -19,6 +20,9 @@ import java.time.LocalDateTime;
         name = "player_renewal",
         uniqueConstraints = {
                 @UniqueConstraint(name = "uk_brawlstarstag", columnNames = "brawlstars_tag")
+        },
+        indexes = {
+                @Index(name = "ix_status", columnList = "status"),
         }
 )
 public class PlayerRenewalEntity extends BaseEntity {
