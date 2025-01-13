@@ -155,6 +155,7 @@ create table player_renewal
     brawlstars_tag    varchar(45)  not null,
     status            varchar(25)  not null,
     version           int          not null,
+    requested_at      timestamp(6) not null default CURRENT_TIMESTAMP(6),
     created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,

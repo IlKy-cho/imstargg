@@ -152,11 +152,4 @@ public class PlayerRepository {
                 entity.getHighestTrophies()
         );
     }
-
-    @Transactional
-    public void renewRequested(Player player) {
-        PlayerEntity playerEntity = playerJpaRepository.findById(player.id().value())
-                .orElseThrow(() -> new CoreException("Player not found. id=" + player.id()));
-        playerEntity.renewRequested();
-    }
 }

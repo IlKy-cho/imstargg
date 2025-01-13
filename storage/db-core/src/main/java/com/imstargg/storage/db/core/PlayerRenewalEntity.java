@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(
         name = "player_renewal",
@@ -33,15 +35,24 @@ public class PlayerRenewalEntity extends BaseEntity {
     @Column(name = "status", columnDefinition = "varchar(25)", nullable = false)
     private PlayerRenewalStatus status;
 
+    @Column(name = "requested_at", nullable = false)
+    private LocalDateTime requestedAt;
+
     @Version
     private int version;
 
     protected PlayerRenewalEntity() {
     }
 
-    public PlayerRenewalEntity(String brawlStarsTag) {
+    public PlayerRenewalEntity(String brawlStarsTag, LocalDateTime requestedAt) {
         this.brawlStarsTag = brawlStarsTag;
         this.status = PlayerRenewalStatus.PENDING;
+        this.requestedAt = requestedAt;
+    }
+
+    public void pending(LocalDateTime requestedAt) {
+        this.status = PlayerRenewalStatus.PENDING;
+        this.requestedAt = requestedAt;
     }
 
     public Long getId() {
@@ -56,7 +67,7 @@ public class PlayerRenewalEntity extends BaseEntity {
         return status;
     }
 
-    public void pending() {
-        this.status = PlayerRenewalStatus.PENDING;
+    public LocalDateTime getRequestedAt() {
+        return requestedAt;
     }
 }
