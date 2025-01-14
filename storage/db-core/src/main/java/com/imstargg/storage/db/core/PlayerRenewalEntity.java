@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(
@@ -40,7 +40,7 @@ public class PlayerRenewalEntity extends BaseEntity {
     private PlayerRenewalStatus status;
 
     @Column(name = "requested_at", nullable = false)
-    private LocalDateTime requestedAt;
+    private OffsetDateTime requestedAt;
 
     @Version
     private int version;
@@ -48,13 +48,13 @@ public class PlayerRenewalEntity extends BaseEntity {
     protected PlayerRenewalEntity() {
     }
 
-    public PlayerRenewalEntity(String brawlStarsTag, LocalDateTime requestedAt) {
+    public PlayerRenewalEntity(String brawlStarsTag, OffsetDateTime requestedAt) {
         this.brawlStarsTag = brawlStarsTag;
         this.status = PlayerRenewalStatus.PENDING;
         this.requestedAt = requestedAt;
     }
 
-    public void pending(LocalDateTime requestedAt) {
+    public void pending(OffsetDateTime requestedAt) {
         this.status = PlayerRenewalStatus.PENDING;
         this.requestedAt = requestedAt;
     }
@@ -71,7 +71,7 @@ public class PlayerRenewalEntity extends BaseEntity {
         return status;
     }
 
-    public LocalDateTime getRequestedAt() {
+    public OffsetDateTime getRequestedAt() {
         return requestedAt;
     }
 }

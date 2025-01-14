@@ -1,12 +1,12 @@
 package com.imstargg.client.brawlstars.response;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record BattleResponse(
-        @JsonDeserialize(using = BrawlStarsLocalDateTimeSerializer.class)
-        LocalDateTime battleTime,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyyMMdd'T'HHmmss.SSSX")
+        OffsetDateTime battleTime,
         EventResponse event,
         BattleResultResponse battle
 ) {

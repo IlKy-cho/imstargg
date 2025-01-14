@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Entity
@@ -35,7 +35,7 @@ public class BattleEntity extends BaseEntity {
     private String battleKey;
 
     @Column(name = "battle_time", updatable = false, nullable = false)
-    private LocalDateTime battleTime;
+    private OffsetDateTime battleTime;
 
     @Embedded
     private BattleEntityEvent event;
@@ -73,7 +73,7 @@ public class BattleEntity extends BaseEntity {
         return id;
     }
 
-    public LocalDateTime getBattleTime() {
+    public OffsetDateTime getBattleTime() {
         return battleTime;
     }
 

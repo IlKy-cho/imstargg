@@ -4,19 +4,18 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BattleKeyBuilder {
 
-    private final LocalDateTime battleTime;
+    private final OffsetDateTime battleTime;
 
     private final List<String> playerTags = new ArrayList<>();
 
-    public BattleKeyBuilder(LocalDateTime battleTime) {
+    public BattleKeyBuilder(OffsetDateTime battleTime) {
         this.battleTime = battleTime;
     }
 
@@ -38,7 +37,7 @@ public class BattleKeyBuilder {
                 .collect(Collectors.joining()))
                 .getBytes(StandardCharsets.UTF_8);
         ByteBuffer buffer = ByteBuffer.allocate(8 + joinedPlayerTagBytes.length);
-        buffer.putLong(battleTime.toEpochSecond(ZoneOffset.UTC));
+        buffer.putLong(battleTime.toEpochSecond());
         buffer.put(joinedPlayerTagBytes);
         return buffer.array();
     }

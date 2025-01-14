@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,7 +65,7 @@ public class PlayerRepository {
                 entity.getHighestTrophies(),
                 entity.getSoloRankTier() == null ? null : SoloRankTier.of(entity.getSoloRankTier()),
                 entity.getBrawlStarsClubTag() == null ? null : new BrawlStarsTag(entity.getBrawlStarsClubTag()),
-                entity.getUpdatedAt(),
+                entity.getUpdatedAt().toLocalDateTime(),
                 entity.getStatus()
         );
     }
@@ -74,8 +74,7 @@ public class PlayerRepository {
         UnknownPlayerEntity entity = unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
                 .orElseGet(() -> unknownPlayerJpaRepository.save(
                         UnknownPlayerEntity.newSearchNew(
-                                tag.value(),
-                                clock
+                                tag.value()
                         )
                 ));
         return mapNewPlayer(entity);
@@ -97,13 +96,13 @@ public class PlayerRepository {
         return new UnknownPlayer(
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getStatus(),
-                updateAvailableAt(entity)
+                updateAvailableAt(entity).toLocalDateTime()
         );
     }
 
-    private LocalDateTime updateAvailableAt(UnknownPlayerEntity entity) {
+    private OffsetDateTime updateAvailableAt(UnknownPlayerEntity entity) {
         if (entity.getStatus() != UnknownPlayerStatus.NOT_FOUND) {
-            return LocalDateTime.now(clock);
+            return OffsetDateTime.now(clock);
         }
 
         return entity.getUpdatedAt().plusMinutes(1L + entity.getNotFoundCount());

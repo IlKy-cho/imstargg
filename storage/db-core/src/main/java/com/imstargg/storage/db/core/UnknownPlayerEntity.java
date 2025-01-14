@@ -11,9 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-
 @Entity
 @Table(
         name = "unknown_player",
@@ -44,14 +41,14 @@ public class UnknownPlayerEntity extends BaseEntity {
     protected UnknownPlayerEntity() {
     }
 
-    public UnknownPlayerEntity(String brawlStarsTag, UnknownPlayerStatus status, LocalDateTime updateAvailableAt) {
+    public UnknownPlayerEntity(String brawlStarsTag, UnknownPlayerStatus status) {
         this.brawlStarsTag = brawlStarsTag;
         this.status = status;
         this.notFoundCount = 0;
     }
 
-    public static UnknownPlayerEntity newSearchNew(String brawlStarsTag, Clock clock) {
-        return new UnknownPlayerEntity(brawlStarsTag, UnknownPlayerStatus.SEARCH_NEW, LocalDateTime.now(clock));
+    public static UnknownPlayerEntity newSearchNew(String brawlStarsTag) {
+        return new UnknownPlayerEntity(brawlStarsTag, UnknownPlayerStatus.SEARCH_NEW);
     }
 
     public void searchNew() {

@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "battle_event")
@@ -33,7 +33,7 @@ public class BattleEventCollectionEntity extends BaseEntity {
 
     @Nullable
     @Column(name = "latest_battle_time")
-    private LocalDateTime latestBattleTime;
+    private OffsetDateTime latestBattleTime;
 
     protected BattleEventCollectionEntity() {
     }
@@ -42,7 +42,7 @@ public class BattleEventCollectionEntity extends BaseEntity {
             long brawlStarsId,
             String mode,
             String mapBrawlStarsName,
-            @Nullable LocalDateTime latestBattleTime
+            @Nullable OffsetDateTime latestBattleTime
     ) {
         this.brawlStarsId = brawlStarsId;
         this.mode = mode;
@@ -53,7 +53,7 @@ public class BattleEventCollectionEntity extends BaseEntity {
     public void update(
             String mode,
             @Nullable String mapBrawlStarsName,
-            @Nullable LocalDateTime latestBattleTime
+            @Nullable OffsetDateTime latestBattleTime
     ) {
         if (BattleEventMode.UNKNOWN.getCode().equals(mode)) {
             this.mode = mode;
@@ -85,7 +85,7 @@ public class BattleEventCollectionEntity extends BaseEntity {
     }
 
     @Nullable
-    public LocalDateTime getLatestBattleTime() {
+    public OffsetDateTime getLatestBattleTime() {
         return latestBattleTime;
     }
 }

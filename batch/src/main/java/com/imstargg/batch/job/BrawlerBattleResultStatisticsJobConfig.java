@@ -29,6 +29,7 @@ import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +43,7 @@ class BrawlerBattleResultStatisticsJobConfig {
     private static final String STEP_NAME = "brawlerBattleResultStatisticsStep";
     private static final int CHUNK_SIZE = 1000;
 
+    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
@@ -49,11 +51,13 @@ class BrawlerBattleResultStatisticsJobConfig {
     private final AlertManager alertManager;
 
     BrawlerBattleResultStatisticsJobConfig(
+            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             AlertManager alertManager
     ) {
+        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
@@ -135,7 +139,7 @@ class BrawlerBattleResultStatisticsJobConfig {
     @Bean(STEP_NAME + "BattleReader")
     @StepScope
     BattleReader battleReader() {
-        return new BattleReader(emf);
+        return new BattleReader(clock, emf);
     }
 
 

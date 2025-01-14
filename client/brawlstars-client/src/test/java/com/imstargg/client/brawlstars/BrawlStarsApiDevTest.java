@@ -21,16 +21,16 @@ import java.util.List;
 @SpringBootTest
 @Tag("develop")
 @TestPropertySource(properties = {
-        "app.client.brawlstars.key="
+        "app.client.brawlstars.keys=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjdjODNiMGE1LTg0ZjItNDYzNS1hMzAwLTk4NjlmYmQ2MTFlNyIsImlhdCI6MTczMzIwNjEyNywic3ViIjoiZGV2ZWxvcGVyLzk4MjY5Yzk4LTg0ZjctNzE0ZC00NzIyLTczMmFkNzI3MTdkOSIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiMjIxLjE1My4yMTYuMjMyIiwiMTc1LjE5NS4xNjUuNDUiXSwidHlwZSI6ImNsaWVudCJ9XX0.UwVMSOaXEPqvehWlcSs5lzzc2fG3p5-oxu3ssXsEBgfJ2DHyLpGKMlBMwJlPW7xijCmJ5IpksfkCf0T9wHSleA"
 })
 class BrawlStarsApiDevTest {
 
     @Autowired
     private BrawlStarsApi brawlstarsApi;
 
-    private String playerTag = "";
-    private String clubTag = "";
-    private long brawlerId = 0;
+    private final String playerTag = "#88J8Q9RPV";
+    private final String clubTag = "";
+    private final long brawlerId = 0;
 
     @Test
     void getLogOfRecentBattlesForAPlayer() {

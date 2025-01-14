@@ -6,7 +6,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManager;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +24,7 @@ class BattleJpaRepositoryCustomImpl implements BattleJpaRepositoryCustom {
     }
 
     public List<Long> findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
-            @Nullable Collection<BattleType> battleTypes, @Nullable LocalDateTime battleTime
+            @Nullable Collection<BattleType> battleTypes, @Nullable OffsetDateTime battleTime
     ) {
         return queryFactory
                 .select(
@@ -56,7 +56,7 @@ class BattleJpaRepositoryCustomImpl implements BattleJpaRepositoryCustom {
         return battleTypes != null ? battleEntity.type.in(battleTypes.stream().map(BattleType::getCode).toList()) : null;
     }
 
-    private BooleanExpression battleTimeMaxGreaterThanEqual(@Nullable LocalDateTime battleTime) {
+    private BooleanExpression battleTimeMaxGreaterThanEqual(@Nullable OffsetDateTime battleTime) {
         return battleTime != null ? battleEntity.battleTime.max().goe(battleTime) : null;
     }
 

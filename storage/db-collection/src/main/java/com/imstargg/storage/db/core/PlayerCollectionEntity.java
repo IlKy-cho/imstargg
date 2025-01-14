@@ -18,6 +18,7 @@ import jakarta.persistence.Version;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -88,7 +89,7 @@ public class PlayerCollectionEntity extends BaseEntity {
 
     @Nullable
     @Column(name = "latest_battle_time")
-    private LocalDateTime latestBattleTime;
+    private OffsetDateTime latestBattleTime;
 
     @Nullable
     @Column(name = "solo_rank_tier")
@@ -193,10 +194,13 @@ public class PlayerCollectionEntity extends BaseEntity {
         if (status == PlayerStatus.NEW) {
             return true;
         }
-        return status.isNextUpdateCooldownOver(LocalDateTime.now(clock), getUpdatedAt());
+        return status.isNextUpdateCooldownOver(
+                LocalDateTime.now(clock),
+                getUpdatedAt().toLocalDateTime()
+        );
     }
 
-    public void battleUpdated(List<LocalDateTime> updatedBattleTimes) {
+    public void battleUpdated(List<OffsetDateTime> updatedBattleTimes) {
         updatedBattleTimes
                 .stream()
                 .max(Comparator.naturalOrder())
@@ -208,14 +212,14 @@ public class PlayerCollectionEntity extends BaseEntity {
             return;
         }
 
-        if (durationBetweenLastBattleUpdated(LocalDateTime.now(clock)).toDays() > 30) {
+        if (durationBetweenLastBattleUpdated(OffsetDateTime.now(clock)).toDays() > 30) {
             this.status = PlayerStatus.DORMANT;
         } else {
             this.status = PlayerStatus.PLAYER_UPDATED;
         }
     }
 
-    private Duration durationBetweenLastBattleUpdated(LocalDateTime now) {
+    private Duration durationBetweenLastBattleUpdated(OffsetDateTime now) {
         return Duration.between(
                 latestBattleTime != null ? latestBattleTime : getCreatedAt(),
                 now
@@ -356,7 +360,7 @@ public class PlayerCollectionEntity extends BaseEntity {
     }
 
     @Nullable
-    public LocalDateTime getLatestBattleTime() {
+    public OffsetDateTime getLatestBattleTime() {
         return latestBattleTime;
     }
 }

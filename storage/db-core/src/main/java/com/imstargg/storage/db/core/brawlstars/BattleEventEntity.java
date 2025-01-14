@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(
@@ -35,7 +35,7 @@ public class BattleEventEntity extends BaseEntity {
 
     @Nullable
     @Column(name = "latest_battle_time", updatable = false)
-    private LocalDateTime latestBattleTime;
+    private OffsetDateTime latestBattleTime;
 
     protected BattleEventEntity() {
     }
@@ -58,7 +58,7 @@ public class BattleEventEntity extends BaseEntity {
     }
 
     @Nullable
-    public LocalDateTime getLatestBattleTime() {
+    public OffsetDateTime getLatestBattleTime() {
         return latestBattleTime;
     }
 }

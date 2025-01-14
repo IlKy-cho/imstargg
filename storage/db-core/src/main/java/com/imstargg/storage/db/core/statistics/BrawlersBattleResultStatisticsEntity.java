@@ -3,6 +3,8 @@ package com.imstargg.storage.db.core.statistics;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -20,6 +22,7 @@ import jakarta.persistence.UniqueConstraint;
 public class BrawlersBattleResultStatisticsEntity extends BrawlerBattleResultStatisticsBaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "brawlers_battle_result_stats_id")
     private Long id;
 
