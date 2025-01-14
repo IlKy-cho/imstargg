@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -14,12 +15,15 @@ import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollect
 
 public class BattleReader {
 
+    private final Clock clock;
+
     private final EntityManagerFactory entityManagerFactory;
 
     @Nullable
     private BattleCollectionEntity lastBattle;
 
-    public BattleReader(EntityManagerFactory entityManagerFactory) {
+    public BattleReader(Clock clock, EntityManagerFactory entityManagerFactory) {
+        this.clock = clock;
         this.entityManagerFactory = entityManagerFactory;
     }
 
@@ -30,8 +34,8 @@ public class BattleReader {
                 .selectFrom(battleCollectionEntity)
                 .join(battleCollectionEntity.player.player).fetchJoin()
                 .where(
-                        battleCollectionEntity.battleTime.goe(date.atStartOfDay()),
-                        battleCollectionEntity.battleTime.lt(date.plusDays(1).atStartOfDay()),
+                        battleCollectionEntity.battleTime.goe(date.atStartOfDay().atZone(clock.getZone()).toOffsetDateTime()),
+                        battleCollectionEntity.battleTime.lt(date.plusDays(1).atStartOfDay().atZone(clock.getZone()).toOffsetDateTime()),
                         lastBattleCondition()
                 )
                 .orderBy(battleCollectionEntity.battleTime.desc(), battleCollectionEntity.id.asc())

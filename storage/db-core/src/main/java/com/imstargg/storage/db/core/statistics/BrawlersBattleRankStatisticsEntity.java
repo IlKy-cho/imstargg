@@ -6,13 +6,15 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawlers__battle_rank_stats",
+        name = "brawlers_battle_rank_stats",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_event_battledate_range_brawler",
@@ -23,7 +25,8 @@ import jakarta.persistence.UniqueConstraint;
 public class BrawlersBattleRankStatisticsEntity extends BrawlerBattleRankStatisticsBaseEntity {
 
     @Id
-    @Column(name = "brawlers__battle_rank_stats_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "brawlers_battle_rank_stats_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)

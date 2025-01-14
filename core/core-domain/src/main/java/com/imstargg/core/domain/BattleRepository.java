@@ -16,6 +16,7 @@ import com.imstargg.storage.db.core.BattleJpaRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -29,15 +30,18 @@ public class BattleRepository {
 
     private static final int PAGE_SIZE = 25;
 
+    private final Clock clock;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventRepository battleEventRepository;
     private final BrawlerRepositoryWithCache brawlerRepository;
 
     public BattleRepository(
+            Clock clock,
             BattleJpaRepository battleJpaRepository,
             BattleEventRepository battleEventRepository,
             BrawlerRepositoryWithCache brawlerRepository
     ) {
+        this.clock = clock;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventRepository = battleEventRepository;
         this.brawlerRepository = brawlerRepository;
@@ -73,7 +77,7 @@ public class BattleRepository {
             BattleEntity battleEntity, Map<BrawlStarsId, BattleEvent> eventIdToEvent) {
         BattleType battleType = BattleType.find(battleEntity.getType());
         return new PlayerBattle(
-                battleEntity.getBattleTime(),
+                battleEntity.getBattleTime().toLocalDateTime(),
                 mapBattleEvent(battleEntity, eventIdToEvent),
                 BattleMode.find(battleEntity.getMode()),
                 battleType,

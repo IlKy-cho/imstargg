@@ -4,7 +4,9 @@ import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.stream.IntStream;
 
 public class BattleCollectionEntityFixture {
@@ -13,7 +15,7 @@ public class BattleCollectionEntityFixture {
     private String battleKey;
 
     @Nullable
-    private LocalDateTime battleTime;
+    private OffsetDateTime battleTime;
 
     @Nullable
     private BattleCollectionEntityEvent event;
@@ -62,7 +64,7 @@ public class BattleCollectionEntityFixture {
         return this;
     }
 
-    public BattleCollectionEntityFixture battleTime(LocalDateTime battleTime) {
+    public BattleCollectionEntityFixture battleTime(OffsetDateTime battleTime) {
         this.battleTime = battleTime;
         return this;
     }
@@ -169,7 +171,7 @@ public class BattleCollectionEntityFixture {
             battleKey = "battleKey-" + fillKey;
         }
         if (battleTime == null) {
-            battleTime = LocalDateTime.now();
+            battleTime = OffsetDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
         }
         if (event == null) {
             event = new BattleCollectionEntityEvent(

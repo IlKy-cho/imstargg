@@ -8,7 +8,7 @@ import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +33,7 @@ public class BattleUpdateApplier {
     public List<BattleCollectionEntity> update(
             PlayerCollectionEntity playerEntity,
             ListResponse<BattleResponse> battleListResponse,
-            @Nullable LocalDateTime latestBattleTime
+            @Nullable OffsetDateTime latestBattleTime
     ) {
         List<BattleResponse> battleResponseListToUpdate = getBattleResponseListToUpdate(
                 battleListResponse, latestBattleTime);
@@ -46,7 +46,7 @@ public class BattleUpdateApplier {
     }
 
     private List<BattleResponse> getBattleResponseListToUpdate(
-            ListResponse<BattleResponse> battleListResponse, @Nullable LocalDateTime latestBattleTime) {
+            ListResponse<BattleResponse> battleListResponse, @Nullable OffsetDateTime latestBattleTime) {
         return Optional.ofNullable(latestBattleTime)
                 .map(battle -> battleListResponse.items().stream()
                         .filter(battleResponse -> battleResponse.battleTime().isAfter(latestBattleTime))

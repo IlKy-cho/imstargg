@@ -3,6 +3,7 @@ package com.imstargg.storage.db.core;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,13 +18,13 @@ class PlayerCollectionEntityTest {
         // when
         playerEntity.battleUpdated(
                 List.of(
-                        LocalDateTime.of(2021, 1, 1, 0, 0),
-                        LocalDateTime.of(2021, 1, 3, 0, 0),
-                        LocalDateTime.of(2021, 1, 2, 0, 0)
+                        LocalDateTime.of(2021, 1, 1, 0, 0).atZone(ZoneId.systemDefault()).toOffsetDateTime(),
+                        LocalDateTime.of(2021, 1, 3, 0, 0).atZone(ZoneId.systemDefault()).toOffsetDateTime(),
+                        LocalDateTime.of(2021, 1, 2, 0, 0).atZone(ZoneId.systemDefault()).toOffsetDateTime()
                 )
         );
 
         // then
-        assertThat(playerEntity.getLatestBattleTime()).isEqualTo(LocalDateTime.of(2021, 1, 3, 0, 0));
+        assertThat(playerEntity.getLatestBattleTime()).isEqualTo(LocalDateTime.of(2021, 1, 3, 0, 0).atZone(ZoneId.systemDefault()).toOffsetDateTime());
     }
 }

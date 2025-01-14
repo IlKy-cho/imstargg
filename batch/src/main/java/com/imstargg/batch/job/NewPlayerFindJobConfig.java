@@ -24,6 +24,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.time.Clock;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,6 +39,7 @@ class NewPlayerFindJobConfig {
     private static final String STEP_NAME = "newPlayerFindStep";
     private static final int CHUNK_SIZE = 1000;
 
+    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
@@ -45,11 +47,13 @@ class NewPlayerFindJobConfig {
     private final AlertManager alertManager;
 
     NewPlayerFindJobConfig(
+            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             AlertManager alertManager
     ) {
+        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
@@ -110,10 +114,10 @@ class NewPlayerFindJobConfig {
                 .selectFrom(battleCollectionEntity)
                 .where(
                         battleCollectionEntity.battleTime.goe(
-                                Objects.requireNonNull(dateJobParameter().getDate()).atStartOfDay()
+                                Objects.requireNonNull(dateJobParameter().getDate()).atStartOfDay().atZone(clock.getZone()).toOffsetDateTime()
                         ),
                         battleCollectionEntity.battleTime.lt(
-                                Objects.requireNonNull(dateJobParameter().getDate()).plusDays(1).atStartOfDay()
+                                Objects.requireNonNull(dateJobParameter().getDate()).plusDays(1).atStartOfDay().atZone(clock.getZone()).toOffsetDateTime()
                         )
                 )
                 .orderBy(battleCollectionEntity.id.desc())

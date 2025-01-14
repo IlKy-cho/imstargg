@@ -16,6 +16,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,11 +91,17 @@ class BattleUpdateApplierTest {
         given(playerEntity.getId()).willReturn(123L);
         given(playerEntity.getTrophies()).willReturn(500);
 
-        LocalDateTime latestBattleTime = LocalDateTime.of(2024, 12, 1, 0, 0, 0);
+        OffsetDateTime latestBattleTime = ZonedDateTime.of(
+                LocalDateTime.of(2024, 12, 1, 0, 0, 0),
+                ZoneId.systemDefault()
+        ).toOffsetDateTime();
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
-                        LocalDateTime.of(2024, 11, 29, 0, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 11, 29, 0, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
@@ -188,7 +197,10 @@ class BattleUpdateApplierTest {
                         )
                 ),
                 new BattleResponse(
-                        LocalDateTime.of(2024, 12, 1, 0, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 12, 1, 0, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
@@ -284,7 +296,10 @@ class BattleUpdateApplierTest {
                         )
                 ),
                 new BattleResponse(
-                        LocalDateTime.of(2024, 12, 29, 0, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 12, 29, 0, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
@@ -389,7 +404,11 @@ class BattleUpdateApplierTest {
         assertThat(results).hasSize(1);
 
         var battleEntity = results.get(0);
-        assertThat(battleEntity.getBattleTime()).isEqualTo(LocalDateTime.of(2024, 12, 29, 0, 0, 0));
+        assertThat(battleEntity.getBattleTime()).isEqualTo(ZonedDateTime.of(
+                        LocalDateTime.of(2024, 12, 29, 0, 0, 0),
+                        ZoneId.systemDefault()
+                ).toOffsetDateTime()
+        );
     }
 
     @Test
@@ -401,7 +420,10 @@ class BattleUpdateApplierTest {
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
-                        LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.brawlStarsId(),
                                 BattleEvent.KNOCKOUT_FLARING_PHOENIX.mode(),
@@ -522,7 +544,10 @@ class BattleUpdateApplierTest {
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
-                        LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.brawlStarsId(),
                                 BattleEvent.DUO_SHOWDOWN_FLYING_FANTASIES.mode(),
@@ -696,7 +721,10 @@ class BattleUpdateApplierTest {
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
-                        LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.brawlStarsId(),
                                 BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.mode(),
@@ -860,7 +888,10 @@ class BattleUpdateApplierTest {
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
-                        LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.brawlStarsId(),
                                 BattleEvent.SOLO_SHOWDOWN_FLYING_FANTASIES.mode(),
@@ -961,7 +992,10 @@ class BattleUpdateApplierTest {
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
-                        LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.brawlStarsId(),
                                 BattleEvent.TRIO_SHOWDOWN_RING_O_BRAWLNG.mode(),
@@ -1158,7 +1192,10 @@ class BattleUpdateApplierTest {
 
         List<BattleResponse> battleResponseList = List.of(
                 new BattleResponse(
-                        LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                        ZonedDateTime.of(
+                                LocalDateTime.of(2024, 11, 29, 11, 0, 0),
+                                ZoneId.systemDefault()
+                        ).toOffsetDateTime(),
                         new EventResponse(
                                 BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.brawlStarsId(),
                                 BattleEvent.KNOCKOUT_5VS5_SIZZLING_CHAMBERS.mode(),

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Component
@@ -37,15 +37,21 @@ public class PlayerRenewalRepository {
     public PlayerRenewal get(BrawlStarsTag tag) {
         PlayerRenewalEntity entity = playerRenewalJpaRepository.findByBrawlStarsTag(tag.value())
                 .orElseGet(() -> playerRenewalJpaRepository.save(
-                        new PlayerRenewalEntity(tag.value(), LocalDateTime.now(clock))
+                        new PlayerRenewalEntity(tag.value(), OffsetDateTime.now(clock))
                 ));
 
-        return new PlayerRenewal(entity.getStatus(), entity.getUpdatedAt());
+        return new PlayerRenewal(
+                entity.getStatus(),
+                entity.getUpdatedAt().toLocalDateTime()
+        );
     }
 
     public Optional<PlayerRenewal> find(BrawlStarsTag tag) {
         return playerRenewalJpaRepository.findByBrawlStarsTag(tag.value())
-                .map(entity -> new PlayerRenewal(entity.getStatus(), entity.getUpdatedAt()));
+                .map(entity -> new PlayerRenewal(
+                        entity.getStatus(),
+                        entity.getUpdatedAt().toLocalDateTime()
+                ));
     }
 
 
@@ -82,7 +88,7 @@ public class PlayerRenewalRepository {
             PlayerRenewalEntity entity = playerRenewalJpaRepository.findWithOptimisticLockByBrawlStarsTag(tag.value())
                     .orElseThrow(() -> new CoreException("플레이어 갱신 요청을 찾을 수 없습니다. playerTag=" + tag));
 
-            entity.pending(LocalDateTime.now(clock));
+            entity.pending(OffsetDateTime.now(clock));
             playerRenewalJpaRepository.save(entity);
         }
     }

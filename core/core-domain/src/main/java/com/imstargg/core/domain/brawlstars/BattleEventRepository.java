@@ -17,6 +17,7 @@ import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -28,17 +29,20 @@ import java.util.stream.Collectors;
 @Component
 public class BattleEventRepository {
 
+    private final Clock clock;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventJpaRepository battleEventJpaRepository;
     private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
     private final MessageRepository messageRepository;
 
     public BattleEventRepository(
+            Clock clock,
             BattleJpaRepository battleJpaRepository,
             BattleEventJpaRepository battleEventJpaRepository,
             BrawlStarsImageJpaRepository brawlStarsImageJpaRepository,
             MessageRepository messageRepository
     ) {
+        this.clock = clock;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventJpaRepository = battleEventJpaRepository;
         this.brawlStarsImageJpaRepository = brawlStarsImageJpaRepository;
@@ -49,7 +53,7 @@ public class BattleEventRepository {
         return battleJpaRepository
                 .findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
                         BattleType.regularTypes(),
-                        date != null ? date.atStartOfDay() : null
+                        date != null ? date.atStartOfDay().atZone(clock.getZone()).toOffsetDateTime() : null
                 )
                 .stream()
                 .map(BrawlStarsId::new)
@@ -96,7 +100,9 @@ public class BattleEventRepository {
                                         ).map(BrawlStarsImageEntity::getUrl)
                                         .orElse(null)
                         ),
-                        eventEntity.getLatestBattleTime()
+                        eventEntity.getLatestBattleTime() != null
+                                ? eventEntity.getLatestBattleTime().toLocalDateTime()
+                                : null
                 ))
                 .toList();
     }
@@ -121,7 +127,9 @@ public class BattleEventRepository {
                                         ).map(BrawlStarsImageEntity::getUrl)
                                         .orElse(null)
                         ),
-                        eventEntity.getLatestBattleTime()
+                        eventEntity.getLatestBattleTime() != null
+                                ? eventEntity.getLatestBattleTime().toLocalDateTime()
+                                : null
                 )
         );
     }

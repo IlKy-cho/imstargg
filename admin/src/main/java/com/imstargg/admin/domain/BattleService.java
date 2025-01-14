@@ -13,6 +13,7 @@ import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepos
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,17 +26,20 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class BattleService {
 
+    private final Clock clock;
     private final BrawlStarsImageUploader brawlStarsImageUploader;
     private final BattleJpaRepository battleJpaRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
 
     public BattleService(
+            Clock clock,
             BrawlStarsImageUploader brawlStarsImageUploader,
             BattleJpaRepository battleMapRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
             MessageCollectionJpaRepository messageRepository
     ) {
+        this.clock = clock;
         this.brawlStarsImageUploader = brawlStarsImageUploader;
         this.battleJpaRepository = battleMapRepository;
         this.brawlStarsImageRepository = brawlStarsImageRepository;
@@ -78,7 +82,7 @@ public class BattleService {
                                 battle.getEvent().getBrawlStarsId() == null ? null :
                                 mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(battle.getEvent().getBrawlStarsId()))
                         ),
-                        battle.getBattleTime()
+                        battle.getBattleTime().toLocalDateTime()
                 ))
                 .toList();
     }

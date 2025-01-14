@@ -6,13 +6,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(
@@ -28,6 +30,7 @@ import java.time.LocalDateTime;
 public class PlayerEntity extends BaseEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "player_id")
     private Long id;
 
@@ -84,7 +87,7 @@ public class PlayerEntity extends BaseEntity {
 
     @Nullable
     @Column(name = "latest_battle_time", updatable = false)
-    private LocalDateTime latestBattleTime;
+    private OffsetDateTime latestBattleTime;
 
     @Nullable
     @Column(name = "solo_rank_tier", updatable = false)

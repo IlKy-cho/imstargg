@@ -11,7 +11,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +30,7 @@ public class BattleCollectionEntity extends BaseEntity {
     private String battleKey;
 
     @Column(name = "battle_time", updatable = false, nullable = false)
-    private LocalDateTime battleTime;
+    private OffsetDateTime battleTime;
 
     @Embedded
     private BattleCollectionEntityEvent event;
@@ -66,7 +66,7 @@ public class BattleCollectionEntity extends BaseEntity {
 
     public BattleCollectionEntity(
             String battleKey,
-            LocalDateTime battleTime,
+            OffsetDateTime battleTime,
             BattleCollectionEntityEvent event,
             String mode,
             String type,
@@ -177,7 +177,7 @@ public class BattleCollectionEntity extends BaseEntity {
         return battleKey;
     }
 
-    public LocalDateTime getBattleTime() {
+    public OffsetDateTime getBattleTime() {
         return battleTime;
     }
 
