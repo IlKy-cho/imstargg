@@ -2,7 +2,7 @@ export const SoloRankTierRangeValue = {
   BRONZE_SILVER_GOLD_PLUS: 'BRONZE_SILVER_GOLD_PLUS',
   DIAMOND_PLUS: 'DIAMOND_PLUS',
   MYTHIC_PLUS: 'MYTHIC_PLUS',
-  LEGENDARY_MASTER: 'LEGENDARY_MASTER',
+  LEGENDARY_PLUS: 'LEGENDARY_PLUS',
   MASTER: 'MASTER',
 } as const;
 
@@ -18,7 +18,7 @@ export const soloRankTierRangeTitle = (tier: SoloRankTierRange) => {
       return '다이아+';
     case SoloRankTierRangeValue.MYTHIC_PLUS:
       return '신화+';
-    case SoloRankTierRangeValue.LEGENDARY_MASTER:
+    case SoloRankTierRangeValue.LEGENDARY_PLUS:
       return '전설+';
     case SoloRankTierRangeValue.MASTER:
       return '마스터';
