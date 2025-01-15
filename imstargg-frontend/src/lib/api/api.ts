@@ -140,8 +140,8 @@ export async function fetchGetBattleEventBrawlerResultStatistics(
   eventId: number,
   date: Date,
   duplicateBrawler: boolean,
-  trophyRange?: TrophyRange,
-  soloRankTierRange?: SoloRankTierRange,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawler`);
@@ -169,8 +169,8 @@ export async function fetchGetBattleEventBrawlersResultStatistics(
   eventId: number,
   date: Date,
   duplicateBrawler: boolean,
-  trophyRange?: TrophyRange,
-  soloRankTierRange?: SoloRankTierRange,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawlers`);
