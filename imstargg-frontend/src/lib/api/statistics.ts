@@ -12,8 +12,8 @@ export async function getBattleEventBrawlerResultStatistics(
   eventId: number,
   date: Date,
   duplicateBrawler: boolean,
-  trophyRange?: TrophyRange,
-  soloRankTierRange?: SoloRankTierRange
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BattleEventBrawlerResultStatistics[]> {
   const response = await fetchGetBattleEventBrawlerResultStatistics(
     eventId, date, duplicateBrawler, trophyRange, soloRankTierRange,
@@ -22,7 +22,7 @@ export async function getBattleEventBrawlerResultStatistics(
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BattleEventBrawlerResultStatistics>;
-    return data.content;
+    return data.content.sort((a, b) => b.winRate - a.winRate);
   }
 
   throw await ApiError.create(response);
@@ -32,17 +32,17 @@ export async function getBattleEventBrawlersResultStatistics(
   eventId: number,
   date: Date,
   duplicateBrawler: boolean,
-  trophyRange?: TrophyRange,
-  soloRankTierRange?: SoloRankTierRange
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BattleEventBrawlersResultStatistics[]> {
   const response = await fetchGetBattleEventBrawlersResultStatistics(
     eventId, date, duplicateBrawler, trophyRange, soloRankTierRange,
-    {revalidate: 60 * 60}
+    // {revalidate: 60 * 60}
   );
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BattleEventBrawlersResultStatistics>;
-    return data.content;
+    return data.content.sort((a, b) => b.winRate - a.winRate);
   }
 
   throw await ApiError.create(response);
@@ -60,7 +60,7 @@ export async function getBattleEventBrawlerRankStatistics(
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BattleEventBrawlerRankStatistics>;
-    return data.content;
+    return data.content.sort((a, b) => a.averageRank - b.averageRank);
   }
 
   throw await ApiError.create(response);
@@ -78,7 +78,7 @@ export async function getBattleEventBrawlersRankStatistics(
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BattleEventBrawlersRankStatistics>;
-    return data.content;
+    return data.content.sort((a, b) => a.averageRank - b.averageRank);
   }
 
   throw await ApiError.create(response);
