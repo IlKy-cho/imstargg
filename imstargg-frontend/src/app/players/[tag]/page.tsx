@@ -12,9 +12,7 @@ dayjs.extend(relativeTime);
 
 
 type Props = {
-  params: {
-    tag: string;
-  }
+  params: Promise<{ tag: string; }>
 };
 
 export default async function PlayerPage({params}: Readonly<Props>) {
