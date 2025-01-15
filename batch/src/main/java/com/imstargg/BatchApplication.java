@@ -1,7 +1,6 @@
 package com.imstargg;
 
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
@@ -12,9 +11,7 @@ import java.time.ZoneId;
 public class BatchApplication {
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(BatchApplication.class);
-        app.setWebApplicationType(WebApplicationType.NONE);
-        System.exit(SpringApplication.exit(app.run(args)));
+        System.exit(SpringApplication.exit(SpringApplication.run(BatchApplication.class, args)));
     }
 
     @Bean
