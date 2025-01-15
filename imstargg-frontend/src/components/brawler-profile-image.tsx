@@ -12,6 +12,8 @@ const imageVariants = cva(
     variants: {
       size: {
         default: 'w-20',
+        sm: 'w-16',
+        xs: 'w-12',
       },
     },
     defaultVariants: {
@@ -19,12 +21,6 @@ const imageVariants = cva(
     },
   },
 );
-
-interface ImageProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof imageVariants> {
-  brawler: Brawler | null;
-}
 
 const brawlerBackgroundColor = (brawler: Brawler) => {
   if (brawler.id === 16000088) {
@@ -45,6 +41,12 @@ const brawlerBackgroundColor = (brawler: Brawler) => {
     case BrawlerRarityValue.LEGENDARY:
       return 'bg-[#FDF255]';
   }
+}
+
+interface ImageProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof imageVariants> {
+  brawler?: Brawler | null;
 }
 
 export default function BrawlerProfileImage({brawler, className, size}: Readonly<ImageProps>) {
