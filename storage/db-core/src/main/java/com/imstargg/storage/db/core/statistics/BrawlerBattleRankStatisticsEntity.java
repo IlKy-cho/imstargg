@@ -25,7 +25,7 @@ public class BrawlerBattleRankStatisticsEntity extends BrawlerBattleRankStatisti
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brawler_ra_battlenk_stats_id")
+    @Column(name = "brawler_battle_rank_stats_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)

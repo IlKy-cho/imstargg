@@ -64,7 +64,7 @@ public class BattleEventStatisticsReaderWithCache {
         );
     }
 
-    @Cacheable(key = "'battle-event-brawlers-rank-counts:v1:events:' + #param.eventBrawlStarsId() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")
+    @Cacheable(key = "'battle-event-brawlers-rank-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")
     public BattleEventBrawlersRankCounts getBattleEventBrawlersRankCounts(
             BattleEventBrawlersRankStatisticsParam param
     ) {
