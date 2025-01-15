@@ -160,7 +160,7 @@ function DuplicateBrawlerCheckbox({ duplicateBrawler }: { duplicateBrawler: bool
             <Label htmlFor="duplicate-brawler" className="text-sm text-zinc-500">
               브롤러 중복
             </Label>
-            <InfoIcon className="w-4 h-4 pointer-events-none" />
+            <InfoIcon className="w-4 h-4 cursor-default" />
           </TooltipTrigger>
           <TooltipContent>
             <p>한 전투에 같은 브롤러가 존재하는 경우가 있습니다.</p>
