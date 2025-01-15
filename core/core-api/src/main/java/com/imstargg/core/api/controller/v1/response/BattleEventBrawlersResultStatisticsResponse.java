@@ -6,7 +6,7 @@ import com.imstargg.core.domain.statistics.BattleEventBrawlersResultStatistics;
 import java.util.List;
 
 public record BattleEventBrawlersResultStatisticsResponse(
-        List<Long> brawlerBrawlStarsIds,
+        List<Long> brawlerIds,
         long totalBattleCount,
         double winRate,
         double pickRate
