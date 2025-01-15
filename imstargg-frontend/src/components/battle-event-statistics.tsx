@@ -81,6 +81,13 @@ export function BattleEventBrawlerRankStatistics(
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
       cell: ({row}) => toPercentage(row.original.pickRate),
+    },
+    {
+      accessorKey: "totalBattleCount",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"표본수"}/>,
+      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
     }
   ];
 
@@ -122,6 +129,13 @@ export function BattleEventBrawlersRankStatistics(
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
       cell: ({row}) => toPercentage(row.original.pickRate),
+    },
+    {
+      accessorKey: "totalBattleCount",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"표본수"}/>,
+      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
     }
   ];
 
@@ -169,6 +183,13 @@ export function BattleEventBrawlerResultStatistics(
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
       cell: ({row}) => toPercentage(row.original.pickRate),
+    },
+    {
+      accessorKey: "totalBattleCount",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"표본수"}/>,
+      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
     }
   ];
 
@@ -210,6 +231,13 @@ export function BattleEventBrawlersResultStatistics(
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
       cell: ({row}) => toPercentage(row.original.pickRate),
+    },
+    {
+      accessorKey: "totalBattleCount",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"표본수"}/>,
+      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
     }
   ];
 
