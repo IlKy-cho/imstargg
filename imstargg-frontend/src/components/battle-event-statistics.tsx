@@ -29,7 +29,7 @@ function BrawlerCell({brawler} : {brawler: Brawler | null}) {
         brawler={brawler}
         size="sm"
       />
-      <span className="text-xs">{brawler ? brawler.name : "❓"}</span>
+      <div className="text-xs">{brawler ? brawler.name : "❓"}</div>
     </div>
   )
 }
