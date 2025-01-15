@@ -37,7 +37,7 @@ export async function getBattleEventBrawlersResultStatistics(
 ): Promise<BattleEventBrawlersResultStatistics[]> {
   const response = await fetchGetBattleEventBrawlersResultStatistics(
     eventId, date, duplicateBrawler, trophyRange, soloRankTierRange,
-    // {revalidate: 60 * 60}
+    {revalidate: 60 * 60}
   );
 
   if (response.ok) {
