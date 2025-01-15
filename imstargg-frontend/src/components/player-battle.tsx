@@ -5,7 +5,7 @@ import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import {Brawler, Brawlers} from "@/model/Brawler";
-import {battleResultTitle, battleTypeTitle, playerBattleModeTitle} from "./title";
+import {battleResultTitle, playerBattleModeTitle} from "./title";
 import {BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
 import {battleTypeIconSrc} from "@/components/icon";
@@ -19,6 +19,7 @@ import BattleEventMapImage from "@/components/battle-event-map-image";
 import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
 import {battleEventModeIconSrc, battleModeIconSrc} from "@/components/battle-mode";
+import {battleTypeTitle} from "@/components/battle-type";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
