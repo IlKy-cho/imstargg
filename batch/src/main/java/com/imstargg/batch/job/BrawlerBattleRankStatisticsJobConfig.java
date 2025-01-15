@@ -1,12 +1,12 @@
 package com.imstargg.batch.job;
 
-import com.imstargg.batch.domain.BattleReader;
 import com.imstargg.batch.domain.BrawlerBattleRankStatisticsCollector;
 import com.imstargg.batch.domain.BrawlersBattleRankStatisticsCollector;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -25,11 +25,14 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,19 +51,22 @@ class BrawlerBattleRankStatisticsJobConfig {
     private final EntityManagerFactory emf;
 
     private final AlertManager alertManager;
+    private final BattleCollectionJpaRepository battleCollectionJpaRepository;
 
     BrawlerBattleRankStatisticsJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
-            AlertManager alertManager
+            AlertManager alertManager,
+            BattleCollectionJpaRepository battleCollectionJpaRepository
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
         this.alertManager = alertManager;
+        this.battleCollectionJpaRepository = battleCollectionJpaRepository;
     }
 
     @Bean(JOB_NAME)
@@ -87,13 +93,16 @@ class BrawlerBattleRankStatisticsJobConfig {
                 .tasklet((contribution, chunkContext) -> {
                     boolean hasNext = true;
                     LocalDate date = Objects.requireNonNull(dateJobParameter().getDate());
-                    int page = 0;
+                    OffsetDateTime fromDateTime = date.atStartOfDay().atZone(clock.getZone()).toOffsetDateTime();
+                    OffsetDateTime toDateTime = date.plusDays(1).atStartOfDay().atZone(clock.getZone()).toOffsetDateTime();
+                    PageRequest pageRequest = PageRequest.ofSize(CHUNK_SIZE);
                     while (hasNext) {
-                        log.debug("Reading page: {}", page++);
-                        List<BattleCollectionEntity> battles = battleReader().read(date, CHUNK_SIZE);
-                        if (battles.size() < CHUNK_SIZE) {
-                            hasNext = false;
-                        }
+                        log.debug("Reading page: {}", pageRequest.getPageNumber());
+                        Slice<BattleCollectionEntity> slice = battleCollectionJpaRepository
+                                .findSliceWithPlayerByBattleTimeGreaterThanEqualAndBattleTimeLessThan(
+                                        fromDateTime, toDateTime, pageRequest);
+                        List<BattleCollectionEntity> battles = slice.getContent();
+
 
                         for (BattleCollectionEntity battle : battles) {
                             if (!validate(battle)) {
@@ -102,6 +111,9 @@ class BrawlerBattleRankStatisticsJobConfig {
                             brawlerBattleRankStatisticsCollector().collect(battle);
                             brawlersBattleRankStatisticsCollector().collect(battle);
                         }
+
+                        hasNext = slice.hasNext();
+                        pageRequest = pageRequest.next();
                     }
 
                     EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
@@ -124,12 +136,6 @@ class BrawlerBattleRankStatisticsJobConfig {
             return false;
         }
         return BattleType.find(battle.getType()).isRegular();
-    }
-
-    @Bean(STEP_NAME + "BattleReader")
-    @StepScope
-    BattleReader battleReader() {
-        return new BattleReader(clock, emf);
     }
 
 
