@@ -21,9 +21,21 @@ const lilitaOne = localFont({
   variable: "--font-lilita-one",
 });
 
+
+const geistSans = localFont({
+  src: "./fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "./fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
+
 export const metadata: Metadata = {
   title: "ImStarGG",
-  description: "브롤스타즈 통계",
+  description: "브롤스타즈 전적 검색. 브롤스타즈 브롤러. 브롤스타즈 이벤트. 브롤스타즈 통계.",
 };
 
 export default function RootLayout({
@@ -33,7 +45,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-    <body className={`${kobrawl40.variable} ${kobrawl60.variable} ${lilitaOne.variable} antialiased`}>
+    <body
+      // className={`${kobrawl40.variable} ${kobrawl60.variable} ${lilitaOne.variable} antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+    >
     <div className="flex flex-col min-h-screen">
       <SiteHeader/>
       <div className="flex flex-1">
