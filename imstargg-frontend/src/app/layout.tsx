@@ -39,7 +39,7 @@ export default function RootLayout({
       <div className="flex flex-1">
         <SideArea/>
 
-        <main className="flex-1">
+        <main className="flex-1 max-w-screen-lg mx-auto">
           {children}
         </main>
 
