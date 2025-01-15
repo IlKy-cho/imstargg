@@ -14,7 +14,7 @@ public class BatchApplication {
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(BatchApplication.class);
         app.setWebApplicationType(WebApplicationType.NONE);
-        app.run(args);
+        System.exit(SpringApplication.exit(app.run(args)));
     }
 
     @Bean
