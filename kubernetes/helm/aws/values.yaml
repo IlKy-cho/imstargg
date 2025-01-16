@@ -5,9 +5,3 @@ aws:
   credentials:
     accessKey: ""
     secretKey: ""
-
-  sqs:
-    enabled: false
-    queue:
-      playerRenewal:
-        name: ""
