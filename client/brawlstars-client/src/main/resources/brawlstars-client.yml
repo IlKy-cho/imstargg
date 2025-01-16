@@ -42,6 +42,6 @@ resilience4j:
   ratelimiter:
     instances:
       brawlstars-api:
-        limit-for-period: 100
+        limit-for-period: 10
 
 spring.cloud.openfeign.client.config.brawlstars.loggerLevel: NONE
