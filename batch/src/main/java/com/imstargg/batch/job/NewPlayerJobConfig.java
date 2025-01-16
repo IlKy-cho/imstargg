@@ -72,9 +72,9 @@ public class NewPlayerJobConfig {
     }
 
     @Bean(JOB_NAME + "IdRangeJobParameter")
-    @JobScope
-    IdRangeJobParameter<Long> idRangeJobParameter() {
-        return new IdRangeJobParameter<>();
+    @StepScope
+    IdRangeJobParameter idRangeJobParameter() {
+        return new IdRangeJobParameter();
     }
 
     @Bean(STEP_NAME)
@@ -84,6 +84,7 @@ public class NewPlayerJobConfig {
         return stepBuilder
                 .<BattleCollectionEntity, List<PlayerCollectionEntity>>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
+                .processor(processor())
                 .writer(writer())
                 .taskExecutor(taskExecutor)
                 .build();

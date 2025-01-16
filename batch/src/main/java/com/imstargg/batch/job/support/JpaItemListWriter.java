@@ -1,13 +1,14 @@
 package com.imstargg.batch.job.support;
 
-import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.item.Chunk;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JpaItemWriter;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class JpaItemListWriter<T> extends JpaItemWriter<List<T>> {
+public class JpaItemListWriter<T> implements ItemWriter<List<T>>, InitializingBean {
 
     private final JpaItemWriter<T> jpaItemWriter;
 
@@ -24,21 +25,6 @@ public class JpaItemListWriter<T> extends JpaItemWriter<List<T>> {
         }
 
         jpaItemWriter.write(new Chunk<>(totalList));
-    }
-
-    @Override
-    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
-        jpaItemWriter.setEntityManagerFactory(entityManagerFactory);
-    }
-
-    @Override
-    public void setClearPersistenceContext(boolean clearPersistenceContext) {
-        jpaItemWriter.setClearPersistenceContext(clearPersistenceContext);
-    }
-
-    @Override
-    public void setUsePersist(boolean usePersist) {
-        jpaItemWriter.setUsePersist(usePersist);
     }
 
     @Override

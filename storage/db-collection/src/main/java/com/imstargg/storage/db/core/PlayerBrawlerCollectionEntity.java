@@ -147,31 +147,4 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         return gadgetBrawlStarsIds;
     }
 
-    public void setPower(int power) {
-        this.power = power;
-    }
-
-    public void setRank(int rank) {
-        this.rank = rank;
-    }
-
-    public void setTrophies(int trophies) {
-        this.trophies = trophies;
-    }
-
-    public void setHighestTrophies(int highestTrophies) {
-        this.highestTrophies = highestTrophies;
-    }
-
-    public void setGearBrawlStarsIds(List<Long> gearBrawlStarsIds) {
-        this.gearBrawlStarsIds = gearBrawlStarsIds;
-    }
-
-    public void setStarPowerBrawlStarsIds(List<Long> starPowerBrawlStarsIds) {
-        this.starPowerBrawlStarsIds = starPowerBrawlStarsIds;
-    }
-
-    public void setGadgetBrawlStarsIds(List<Long> gadgetBrawlStarsIds) {
-        this.gadgetBrawlStarsIds = gadgetBrawlStarsIds;
-    }
 }
