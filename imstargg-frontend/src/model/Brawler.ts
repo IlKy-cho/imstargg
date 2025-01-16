@@ -15,7 +15,7 @@ export interface Brawler {
   imageUrl: string | null;
 }
 
-export class Brawlers {
+export class BrawlerCollection {
   private readonly brawlers: Record<number, Brawler>;
 
   constructor(brawlers: Brawler[]) {
