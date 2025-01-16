@@ -74,6 +74,7 @@ public class NewPlayerJobItemProcessor
             }
         }
 
+        log.debug("{}명 Player 가 새로 추가되었습니다.", newPlayers.size());
         return newPlayers;
     }
 
