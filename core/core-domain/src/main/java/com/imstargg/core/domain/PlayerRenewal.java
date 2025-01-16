@@ -6,6 +6,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 
 public record PlayerRenewal(
+        BrawlStarsTag tag,
         PlayerRenewalStatus status,
         LocalDateTime updatedAt
 ) {

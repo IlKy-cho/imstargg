@@ -43,9 +43,8 @@ public class PlayerRepository {
         return unknownPlayerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag);
     }
 
-    @Transactional
-    public void update(PlayerCollectionEntity player) {
-        playerJpaRepository.save(player);
+    public PlayerCollectionEntity save(PlayerCollectionEntity player) {
+        return playerJpaRepository.save(player);
     }
 
     @Transactional
@@ -65,12 +64,9 @@ public class PlayerRepository {
             PlayerCollectionEntity player,
             List<BattleCollectionEntity> battles
     ) {
-        unknownPlayerJpaRepository.save(unknownPlayer);
+        unknownPlayerJpaRepository.delete(unknownPlayer);
         playerJpaRepository.save(player);
         battleJpaRepository.saveAll(battles);
     }
 
-    public PlayerCollectionEntity add(PlayerCollectionEntity player) {
-        return playerJpaRepository.save(player);
-    }
 }

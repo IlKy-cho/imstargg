@@ -4,7 +4,6 @@ import com.imstargg.core.domain.brawlstars.Brawler;
 import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.SoloRankTier;
-import com.imstargg.core.enums.UnknownPlayerStatus;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.PlayerBrawlerEntity;
 import com.imstargg.storage.db.core.PlayerBrawlerJpaRepository;
@@ -13,10 +12,8 @@ import com.imstargg.storage.db.core.PlayerJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerEntity;
 import com.imstargg.storage.db.core.UnknownPlayerJpaRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,40 +69,17 @@ public class PlayerRepository {
 
     public UnknownPlayer getUnknown(BrawlStarsTag tag) {
         UnknownPlayerEntity entity = unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
-                .orElseGet(() -> unknownPlayerJpaRepository.save(
-                        UnknownPlayerEntity.newSearchNew(
-                                tag.value()
-                        )
-                ));
+                .orElseGet(() -> unknownPlayerJpaRepository.save(new UnknownPlayerEntity(tag.value())));
         return mapNewPlayer(entity);
     }
 
-    @Transactional
-    public void updateSearchNew(UnknownPlayer unknownPlayer) {
-        UnknownPlayerEntity entity = unknownPlayerJpaRepository.findByBrawlStarsTag(unknownPlayer.tag().value())
-                .orElseThrow(() -> new CoreException("Unknown player not found: " + unknownPlayer.tag()));
-        entity.searchNew();
-    }
-
-    public Optional<UnknownPlayer> findNew(BrawlStarsTag tag) {
-        return unknownPlayerJpaRepository.findByBrawlStarsTag(tag.value())
-                .map(this::mapNewPlayer);
-    }
 
     private UnknownPlayer mapNewPlayer(UnknownPlayerEntity entity) {
         return new UnknownPlayer(
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
-                entity.getStatus(),
-                updateAvailableAt(entity).toLocalDateTime()
+                entity.getNotFoundCount(),
+                entity.getUpdatedAt().toLocalDateTime()
         );
-    }
-
-    private OffsetDateTime updateAvailableAt(UnknownPlayerEntity entity) {
-        if (entity.getStatus() != UnknownPlayerStatus.NOT_FOUND) {
-            return OffsetDateTime.now(clock);
-        }
-
-        return entity.getUpdatedAt().plusMinutes(1L + entity.getNotFoundCount());
     }
 
     public List<PlayerBrawler> findBrawlers(Player player) {

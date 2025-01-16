@@ -1,6 +1,5 @@
 package com.imstargg.storage.db.core;
 
-import com.imstargg.core.enums.UnknownPlayerStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

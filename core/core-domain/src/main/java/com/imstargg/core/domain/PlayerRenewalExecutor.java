@@ -33,17 +33,16 @@ public class PlayerRenewalExecutor {
 
     public void renewNew(BrawlStarsTag tag) {
         validateRequestCount();
-
         UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
-        if (unknownPlayer.updateAvailable(clock)) {
+        PlayerRenewal playerRenewal = playerRenewalRepository.get(unknownPlayer.tag());
+        if (!playerRenewal.available(unknownPlayer, clock)) {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "unknownPlayerTag=" + tag);
         }
 
-        if (playerRenewalRepository.pending(tag)) {
+        if (playerRenewalRepository.pending(playerRenewal)) {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "unknownPlayerTag=" + tag);
         }
 
-        playerRepository.updateSearchNew(unknownPlayer);
         eventPublisher.publish(tag);
     }
 
@@ -54,7 +53,7 @@ public class PlayerRenewalExecutor {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "playerTag=" + player.tag());
         }
 
-        if (!playerRenewalRepository.pending(player.tag())) {
+        if (!playerRenewalRepository.pending(playerRenewal)) {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "playerTag=" + player.tag());
         }
 
