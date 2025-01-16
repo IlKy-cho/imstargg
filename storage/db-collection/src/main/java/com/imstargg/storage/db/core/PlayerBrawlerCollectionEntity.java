@@ -147,4 +147,17 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         return gadgetBrawlStarsIds;
     }
 
+    public void errorRestore() {
+        if (power < 1 || power > 11) {
+            // power, trophies 스왑
+            int temp = power;
+            power = trophies;
+            trophies = temp;
+
+            // rank, highestTrophies 스왑
+            temp = rank;
+            rank = highestTrophies;
+            highestTrophies = temp;
+        }
+    }
 }
