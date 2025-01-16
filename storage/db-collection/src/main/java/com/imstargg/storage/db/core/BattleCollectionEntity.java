@@ -169,6 +169,12 @@ public class BattleCollectionEntity extends BaseEntity {
         return brawlerIds.size() != brawlerIds.stream().distinct().count();
     }
 
+    public List<BattleCollectionEntityTeamPlayer> getAllPlayers() {
+        return teams.stream()
+                .flatMap(List::stream)
+                .toList();
+    }
+
     public Long getId() {
         return id;
     }
