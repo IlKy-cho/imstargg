@@ -41,6 +41,7 @@ public class PlayerRenewalRepository {
                 ));
 
         return new PlayerRenewal(
+                new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getStatus(),
                 entity.getUpdatedAt().toLocalDateTime()
         );
@@ -49,18 +50,19 @@ public class PlayerRenewalRepository {
     public Optional<PlayerRenewal> find(BrawlStarsTag tag) {
         return playerRenewalJpaRepository.findByBrawlStarsTag(tag.value())
                 .map(entity -> new PlayerRenewal(
+                        new BrawlStarsTag(entity.getBrawlStarsTag()),
                         entity.getStatus(),
                         entity.getUpdatedAt().toLocalDateTime()
                 ));
     }
 
 
-    public boolean pending(BrawlStarsTag tag) {
+    public boolean pending(PlayerRenewal playerRenewal) {
         try {
-            inner.pending(tag);
+            inner.pending(playerRenewal);
             return true;
         } catch (OptimisticLockingFailureException e) {
-            log.debug("플레이어 갱신 pending 업데이트 실패. playerTag={}", tag, e);
+            log.debug("플레이어 갱신 pending 업데이트 실패. playerTag={}", playerRenewal.tag(), e);
             return false;
         }
     }
@@ -84,9 +86,9 @@ public class PlayerRenewalRepository {
         }
 
         @Transactional
-        public void pending(BrawlStarsTag tag) {
-            PlayerRenewalEntity entity = playerRenewalJpaRepository.findWithOptimisticLockByBrawlStarsTag(tag.value())
-                    .orElseThrow(() -> new CoreException("플레이어 갱신 요청을 찾을 수 없습니다. playerTag=" + tag));
+        public void pending(PlayerRenewal playerRenewal) {
+            PlayerRenewalEntity entity = playerRenewalJpaRepository.findWithOptimisticLockByBrawlStarsTag(playerRenewal.tag().value())
+                    .orElseThrow(() -> new CoreException("플레이어 갱신 요청을 찾을 수 없습니다. playerTag=" + playerRenewal.tag()));
 
             entity.pending(OffsetDateTime.now(clock));
             playerRenewalJpaRepository.save(entity);

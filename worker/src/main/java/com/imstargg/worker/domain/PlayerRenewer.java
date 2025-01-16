@@ -93,7 +93,7 @@ public class PlayerRenewer {
         } catch (BrawlStarsClientNotFoundException ex) {
             log.warn("플레이어가 존재하지 않아 삭제합니다. tag={}", playerEntity.getBrawlStarsTag());
             playerEntity.deleted();
-            playerRepository.update(playerEntity);
+            playerRepository.save(playerEntity);
         }
     }
 
@@ -130,8 +130,6 @@ public class PlayerRenewer {
 
     public void renewNewPlayer(UnknownPlayerCollectionEntity unknownPlayerEntity) {
         try {
-            unknownPlayerEntity.updated();
-
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(unknownPlayerEntity.getBrawlStarsTag());
             PlayerCollectionEntity playerEntity = newPlayer(playerResponse);
 
@@ -182,6 +180,6 @@ public class PlayerRenewer {
                     brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
             );
         }
-        return playerRepository.add(playerEntity);
+        return playerRepository.save(playerEntity);
     }
 }
