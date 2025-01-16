@@ -1,4 +1,4 @@
-import {Brawler as IBrawler, Brawlers} from "@/model/Brawler";
+import {Brawler as IBrawler, BrawlerCollection} from "@/model/Brawler";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {BrawlerClassIcon, brawlerClassTitle} from "@/components/brawler-class";
 
@@ -22,7 +22,7 @@ function Brawler({brawler}: Readonly<{ brawler: IBrawler }>) {
 }
 
 export default async function BrawlerList({brawlerList}: Readonly<Props>) {
-  const brawlers = new Brawlers(brawlerList);
+  const brawlers = new BrawlerCollection(brawlerList);
 
   return (<div className="p-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
       {brawlers.all().map((brawler) => (

@@ -6,7 +6,7 @@ import {
 import {
   BattleEventBrawlersRankStatistics as IBattleEventBrawlersRankStatistics
 } from "@/model/BattleEventBrawlersRankStatistics";
-import {Brawler, Brawlers} from "@/model/Brawler";
+import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
@@ -56,7 +56,7 @@ type BrawlerRankStatisticsProps = {
 export function BattleEventBrawlerRankStatistics(
   {brawlerList, brawlerRankStatsList}: Readonly<BrawlerRankStatisticsProps>
 ) {
-  const brawlers = new Brawlers(brawlerList);
+  const brawlers = new BrawlerCollection(brawlerList);
   const columns: ColumnDef<IBattleEventBrawlerRankStatistics>[] = [
     {
       accessorKey: "brawlerId",
@@ -104,7 +104,7 @@ type BrawlersRankStatisticsProps = {
 export function BattleEventBrawlersRankStatistics(
   {brawlerList, brawlersRankStatsList}: Readonly<BrawlersRankStatisticsProps>
 ) {
-  const brawlers = new Brawlers(brawlerList);
+  const brawlers = new BrawlerCollection(brawlerList);
   const columns: ColumnDef<IBattleEventBrawlersRankStatistics>[] = [
     {
       accessorKey: "brawlerIds",
@@ -152,7 +152,7 @@ type BrawlerResultStatisticsProps = {
 export function BattleEventBrawlerResultStatistics(
   {brawlerList, brawlerResultStatsList}: Readonly<BrawlerResultStatisticsProps>
 ) {
-  const brawlers = new Brawlers(brawlerList);
+  const brawlers = new BrawlerCollection(brawlerList);
   const columns: ColumnDef<IBattleEventBrawlerResultStatistics>[] = [
     {
       accessorKey: "brawlerId",
@@ -206,7 +206,7 @@ type BrawlersResultStatisticsProps = {
 export function BattleEventBrawlersResultStatistics(
   {brawlerList, brawlersResultStatsList}: Readonly<BrawlersResultStatisticsProps>
 ) {
-  const brawlers = new Brawlers(brawlerList);
+  const brawlers = new BrawlerCollection(brawlerList);
   const columns: ColumnDef<IBattleEventBrawlersResultStatistics>[] = [
     {
       accessorKey: "brawlerIds",
