@@ -11,6 +11,9 @@ import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -19,18 +22,23 @@ import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.task.TaskExecutor;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
 public class NewPlayerJobConfig {
+
+    private static final Logger log = LoggerFactory.getLogger(NewPlayerJobConfig.class);
 
     private static final String JOB_NAME = "newPlayerJob";
     private static final String STEP_NAME = "newPlayerStep";
@@ -87,6 +95,24 @@ public class NewPlayerJobConfig {
                 .processor(processor())
                 .writer(writer())
                 .taskExecutor(taskExecutor)
+
+                .faultTolerant()
+                .backOffPolicy(new FixedBackOffPolicy())
+                .skipLimit(3)
+                .skip(SQLIntegrityConstraintViolationException.class)
+                .listener(new ItemWriteListener<>() {
+                    @Override
+                    public void onWriteError(Exception exception, Chunk<? extends List<PlayerCollectionEntity>> items) {
+                        log.warn("{} 중 플레이어 업데이트 충돌 발생. tags={}",
+                                JOB_NAME,
+                                items.getItems().stream()
+                                        .flatMap(List::stream)
+                                        .map(PlayerCollectionEntity::getBrawlStarsTag)
+                                        .toList(),
+                                exception
+                        );
+                    }
+                })
                 .build();
     }
 
