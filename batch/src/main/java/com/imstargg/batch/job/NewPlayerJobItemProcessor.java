@@ -59,10 +59,10 @@ public class NewPlayerJobItemProcessor
                 for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
                     playerEntity.updateBrawler(
                             brawlerResponse.id(),
-                            brawlerResponse.trophies(),
-                            brawlerResponse.highestTrophies(),
                             brawlerResponse.power(),
                             brawlerResponse.rank(),
+                            brawlerResponse.trophies(),
+                            brawlerResponse.highestTrophies(),
                             brawlerResponse.gears().stream().map(GearStatResponse::id).toList(),
                             brawlerResponse.starPowers().stream().map(StarPowerResponse::id).toList(),
                             brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
