@@ -44,9 +44,6 @@ spring:
 
 app:
   batch:
-    new-player-update-job:
-      chunk-size: 10
-      async-enabled: false
     player-update-job:
       chunk-size: 10
 
