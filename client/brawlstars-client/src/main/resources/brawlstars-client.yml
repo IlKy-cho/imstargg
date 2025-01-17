@@ -24,7 +24,7 @@ resilience4j:
 
 app.client.brawlstars:
   url: https://api.brawlstars.com
-  key: ${BRAWL_STARS_API_KEY}
+  keys: ${BRAWL_STARS_API_KEYS}
 
 ---
 spring.config.activate.on-profile: local
