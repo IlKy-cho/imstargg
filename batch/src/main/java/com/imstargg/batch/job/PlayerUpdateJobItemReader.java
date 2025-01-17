@@ -15,6 +15,8 @@ import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollect
 
 public class PlayerUpdateJobItemReader extends QuerydslZeroPagingItemReader<PlayerCollectionEntity> {
 
+    private static final int PAGE_TROPHY_RANGE = 10000;
+
     public PlayerUpdateJobItemReader(
             EntityManagerFactory entityManagerFactory,
             int pageSize
@@ -51,18 +53,16 @@ public class PlayerUpdateJobItemReader extends QuerydslZeroPagingItemReader<Play
 
         return super.createQuery()
                 .where(
-                        playerCollectionEntity.status.in(
-                                PlayerStatus.PLAYER_UPDATED, PlayerStatus.NEW, PlayerStatus.DORMANT_RETURNED
-                        ),
+                        playerCollectionEntity.status.in(PlayerStatus.updatableStatuses()),
                         playerCollectionEntity.trophies.goe(startTrophy)
                 );
     }
 
     private int currentPageStartTrophyRangeOrigin(int page) {
-        return page * 10000;
+        return page * PAGE_TROPHY_RANGE;
     }
 
     private int currentPageStartTrophyRangeBound(int page) {
-        return (1 + page) * 10000;
+        return (1 + page) * PAGE_TROPHY_RANGE;
     }
 }
