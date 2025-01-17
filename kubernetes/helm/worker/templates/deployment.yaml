@@ -23,6 +23,10 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
@@ -36,13 +40,13 @@ spec:
               value: {{ .Values.app.profile | quote }}
           envFrom:
             - secretRef:
-                name: {{ .Values.app.secret.db | quote }}
+                name: {{ .Values.app.secret.db  }}
             - secretRef:
-                name: {{ .Values.app.secret.coreEvent | quote }}
+                name: {{ .Values.app.secret.coreEvent }}
             - secretRef:
-                name: {{ .Values.app.secret.aws | quote }}
+                name: {{ .Values.app.secret.aws }}
             - secretRef:
-                name: {{ .Values.app.secret.brawlStarsClient | quote }}
+                name: {{ .Values.app.secret.brawlStarsClient }}
 
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

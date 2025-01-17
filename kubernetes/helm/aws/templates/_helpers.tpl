@@ -1,7 +1,7 @@
 {{- define "aws.secretName" -}}
-{{- if .Values.app.name }}
+{{- if .Values.app.name -}}
 aws-secret-{{ .Values.app.name }}
-{{- else }}
+{{- else -}}
 aws-secret
-{{- end }}
-{{- end }}
+{{- end -}}
+{{- end -}}

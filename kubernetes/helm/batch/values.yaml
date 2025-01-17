@@ -1,20 +1,23 @@
-# Default values for worker.
+# Default values for batch.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 app:
   profile: live
+  job:
+    name: ""
   secret:
     db: db-core-secret
-    coreEvent: core-event-secret
-    aws: aws-secret-worker
-    brawlStarsClient: brawlstars-client-secret-worker
+    brawlStarsClient: brawlstars-client-secret-batch
+    alertManager: alert-manager-secret
 
-
-replicaCount: 1
+job:
+  ttlSecondsAfterFinished: 604800
+  schedule: "0 0 * * *"
+  concurrencyPolicy: Forbid
 
 image:
-  repository: worker
+  repository: batch
   pullPolicy: Never
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -37,7 +40,6 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -50,19 +52,17 @@ resources:
     cpu: 100m
     memory: 128Mi
 
-autoscaling:
-  enabled: false
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-# Additional volumes on the output Deployment definition.
 volumes: []
 # - name: foo
 #   secret:
 #     secretName: mysecret
 #     optional: false
+
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
 
 nodeSelector: {}
 
