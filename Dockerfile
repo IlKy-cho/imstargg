@@ -1,8 +1,7 @@
 FROM eclipse-temurin:21-jdk AS builder
-ARG app
-ARG version=0.1.0
+ARG jar
 WORKDIR /workspace
-COPY ${app}/build/libs/${app}-${version}.jar application.jar
+COPY ${jar} application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 FROM eclipse-temurin:21-jre

@@ -42,5 +42,4 @@ bootJar {
     from ("${asciidoctor.outputDir}") {
         into 'static/docs'
     }
-    archiveFileName = 'application.jar'
 }
