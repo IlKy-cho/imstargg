@@ -6,6 +6,8 @@ import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
 
 import java.util.List;
@@ -15,6 +17,8 @@ import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollect
 
 public class DormantReturnedPlayerJobItemProcessor
         implements ItemProcessor<BattleCollectionEntity, List<PlayerCollectionEntity>> {
+
+    private static final Logger log = LoggerFactory.getLogger(DormantReturnedPlayerJobItemProcessor.class);
 
     private final EntityManagerFactory emf;
     private final ConcurrentSkipListSet<String> tagSet;
@@ -41,6 +45,13 @@ public class DormantReturnedPlayerJobItemProcessor
                 ).fetch();
 
         dormantReturnedPlayers.forEach(PlayerCollectionEntity::dormantReturned);
+
+        if (!dormantReturnedPlayers.isEmpty()) {
+            log.debug("총 {}명의 플레이어가 휴면해제 되었습니다. tags={}",
+                    dormantReturnedPlayers.size(),
+                    dormantReturnedPlayers.stream().map(PlayerCollectionEntity::getBrawlStarsTag).toList()
+            );
+        }
 
         return dormantReturnedPlayers;
     }
