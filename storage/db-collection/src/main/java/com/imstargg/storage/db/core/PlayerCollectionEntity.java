@@ -286,6 +286,10 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.soloRankTier = soloRankTier;
     }
 
+    public void dormantReturned() {
+        this.status = PlayerStatus.DORMANT_RETURNED;
+    }
+
     public Long getId() {
         return id;
     }
