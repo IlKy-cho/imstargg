@@ -1,9 +1,8 @@
-import { BattleEvent as IBattleEvent } from "@/model/BattleEvent";
-import { BattleEventMode } from "@/model/enums/BattleEventMode";
-import { battleEventModeTitle } from "@/components/title";
+import {BattleEvent as IBattleEvent} from "@/model/BattleEvent";
+import {BattleEventMode, BattleEventModeValues} from "@/model/enums/BattleEventMode";
+import {battleEventModeTitle} from "@/components/title";
 import Image from 'next/image';
-import { battleEventModeIconSrc } from "@/components/battle-mode";
-import { BattleEventModeValues } from "@/model/enums/BattleEventMode";
+import {battleEventModeIconSrc} from "@/components/battle-mode";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import Link from "next/link";
 

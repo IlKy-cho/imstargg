@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {SoloRankTierValue, SoloRankTier as SoloRankTierType} from "@/model/enums/SoloRankTier";
+import {SoloRankTier as SoloRankTierType, SoloRankTierValue} from "@/model/enums/SoloRankTier";
 import {cn} from "@/lib/utils";
 import BronzeIconSrc from '@/../public/rank/icon_ranked_bronze.png';
 import SilverIconSrc from '@/../public/rank/icon_ranked_silver.png';

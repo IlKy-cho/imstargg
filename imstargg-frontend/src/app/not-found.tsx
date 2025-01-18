@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import edgarPhewPinSrc from '@/../public/icon/brawler/edgar/edgar_phew_pin.png';
 
 export default async function NotFound() {

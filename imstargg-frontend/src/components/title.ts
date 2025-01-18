@@ -1,8 +1,7 @@
-import {BattleResultValue, BattleResult} from "@/model/enums/BattleResult";
-import {BattleTypeValue, BattleType} from "@/model/enums/BattleType";
-import {BattleEventModeValue, BattleEventMode} from "@/model/enums/BattleEventMode";
-import {BattleModeValue, BattleMode} from "@/model/enums/BattleMode";
-import { PlayerBattle } from "@/model/PlayerBattle";
+import {BattleResult, BattleResultValue} from "@/model/enums/BattleResult";
+import {BattleEventMode, BattleEventModeValue} from "@/model/enums/BattleEventMode";
+import {BattleMode, BattleModeValue} from "@/model/enums/BattleMode";
+import {PlayerBattle} from "@/model/PlayerBattle";
 
 export const battleResultTitle = (result: BattleResult) => {
   switch (result) {
