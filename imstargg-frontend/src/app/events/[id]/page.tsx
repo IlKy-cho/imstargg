@@ -1,16 +1,26 @@
-import { getBattleEvent } from "@/lib/api/battle-event";
-import { notFound } from "next/navigation";
+import {getBattleEvent} from "@/lib/api/battle-event";
+import {notFound} from "next/navigation";
 import BattleEventProfile from "@/components/battle-event-profile";
-import { TrophyRange, TrophyRangeValue } from "@/model/enums/TrophyRange";
-import { SoloRankTierRange, SoloRankTierRangeValue } from "@/model/enums/SoloRankTierRange";
-import { BattleEventStatisticsOption } from "@/components/battle-event-statistics-option";
-import { getBattleEventBrawlerRankStatistics, getBattleEventBrawlerResultStatistics, getBattleEventBrawlersRankStatistics, getBattleEventBrawlersResultStatistics } from "@/lib/api/statistics";
-import { isResultBattleEventMode } from "@/model/enums/BattleEventMode";
-import { RegularBattleType, RegularBattleTypeValue } from "@/model/enums/BattleType";
+import {TrophyRange, TrophyRangeValue} from "@/model/enums/TrophyRange";
+import {SoloRankTierRange, SoloRankTierRangeValue} from "@/model/enums/SoloRankTierRange";
+import {BattleEventStatisticsOption} from "@/components/battle-event-statistics-option";
+import {
+  getBattleEventBrawlerRankStatistics,
+  getBattleEventBrawlerResultStatistics,
+  getBattleEventBrawlersRankStatistics,
+  getBattleEventBrawlersResultStatistics
+} from "@/lib/api/statistics";
+import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
+import {RegularBattleType, RegularBattleTypeValue} from "@/model/enums/BattleType";
 import Image from "next/image";
 import gusSadPinSrc from "@/../public/icon/brawler/gus/gus_sad_pin.png"
-import { BattleEventBrawlerRankStatistics, BattleEventBrawlerResultStatistics, BattleEventBrawlersRankStatistics, BattleEventBrawlersResultStatistics } from "@/components/battle-event-statistics";
-import { getBrawlers } from "@/lib/api/brawler";
+import {
+  BattleEventBrawlerRankStatistics,
+  BattleEventBrawlerResultStatistics,
+  BattleEventBrawlersRankStatistics,
+  BattleEventBrawlersResultStatistics
+} from "@/components/battle-event-statistics";
+import {getBrawlers} from "@/lib/api/brawler";
 import {
   BattleEventBrawlerResultStatistics as IBattleEventBrawlerResultStatistics
 } from "@/model/BattleEventBrawlerResultStatistics";
@@ -23,7 +33,7 @@ import {
 import {
   BattleEventBrawlersRankStatistics as IBattleEventBrawlersRankStatistics
 } from "@/model/BattleEventBrawlersRankStatistics";
-import { Brawler } from "@/model/Brawler";
+import {Brawler} from "@/model/Brawler";
 
 function StatisticsAbsence() {
   return (

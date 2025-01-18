@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { Player } from "@/model/Player";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, {useEffect, useState} from "react";
+import {Player} from "@/model/Player";
+import {useRouter, useSearchParams} from "next/navigation";
 import SearchedPlayer from "@/components/searched-player";
 import PlayerSearchForm from "@/components/player-search-form";
-import { searchPlayer } from "@/lib/api/player";
-import { metadataTitle } from "@/config/site";
+import {searchPlayer} from "@/lib/api/player";
+import {metadataTitle} from "@/config/site";
 
 export default function PlayerSearchResultPage() {
   const [players, setPlayers] = useState<Player[] | null>(null);

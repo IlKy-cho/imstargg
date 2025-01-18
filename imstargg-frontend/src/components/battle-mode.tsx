@@ -28,7 +28,7 @@ import HotZoneIcon from '@/../public/mode/핫존.webp';
 import JellyfishingIcon from '@/../public/mode/해파리사냥.png';
 import HuntersIcon from '@/../public/mode/헌터즈.webp';
 import TrioShowdownIcon from '@/../public/mode/트리오 쇼다운.png';
-import { BattleMode, BattleModeValue } from "@/model/enums/BattleMode";
+import {BattleMode, BattleModeValue} from "@/model/enums/BattleMode";
 
 export const battleModeIconSrc = (mode: BattleMode) => {
   switch (mode) {

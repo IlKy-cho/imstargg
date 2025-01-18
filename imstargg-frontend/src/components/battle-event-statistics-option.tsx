@@ -1,29 +1,19 @@
 "use client";
 
 import Image from "next/image";
-import { BattleEvent } from "@/model/BattleEvent";
-import { TrophyRange, trophyRangeTitle, TrophyRangeValues } from "@/model/enums/TrophyRange";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BrawlStarsIconSrc } from "@/components/icon";
-import { useRouter, useSearchParams } from "next/navigation";
-import { SoloRankTierRange, soloRankTierRangeTitle, SoloRankTierRangeValues } from "@/model/enums/SoloRankTierRange";
-import { useState } from "react";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { isResultBattleEventMode } from "@/model/enums/BattleEventMode";
-import {
-  RegularBattleType,
-  RegularBattleTypeValue,
-  RegularBattleTypeValues
-} from "@/model/enums/BattleType";
-import { battleTypeTitle } from "@/components/battle-type";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { InfoIcon } from "lucide-react";
+import {BattleEvent} from "@/model/BattleEvent";
+import {TrophyRange, trophyRangeTitle, TrophyRangeValues} from "@/model/enums/TrophyRange";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {BrawlStarsIconSrc} from "@/components/icon";
+import {useRouter, useSearchParams} from "next/navigation";
+import {SoloRankTierRange, soloRankTierRangeTitle, SoloRankTierRangeValues} from "@/model/enums/SoloRankTierRange";
+import {Label} from "@/components/ui/label";
+import {Checkbox} from "@/components/ui/checkbox";
+import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
+import {RegularBattleType, RegularBattleTypeValue, RegularBattleTypeValues} from "@/model/enums/BattleType";
+import {battleTypeTitle} from "@/components/battle-type";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip"
+import {InfoIcon} from "lucide-react";
 
 
 function BattleTypeSelect({ battleType }: { battleType?: RegularBattleType }) {
