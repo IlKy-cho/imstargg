@@ -1,19 +1,36 @@
 package com.imstargg.batch.domain;
 
+import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
+import jakarta.persistence.EntityManagerFactory;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static com.imstargg.storage.db.core.statistics.QBrawlerBattleResultStatisticsCollectionEntity.brawlerBattleResultStatisticsCollectionEntity;
 
 
 public class BrawlerBattleResultStatisticsCollector {
 
-    private final ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
+    private final ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache
+            = new ConcurrentHashMap<>();
 
-    public BrawlerBattleResultStatisticsCollector() {
-        this.cache = new ConcurrentHashMap<>();
+    public BrawlerBattleResultStatisticsCollector(
+            EntityManagerFactory emf, LocalDate battleDate, long eventBrawlStarsId
+    ) {
+        JPAQueryFactoryUtils.getQueryFactory(emf)
+                .selectFrom(brawlerBattleResultStatisticsCollectionEntity)
+                .where(
+                        brawlerBattleResultStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
+                        brawlerBattleResultStatisticsCollectionEntity.battleDate.eq(battleDate)
+                ).fetch()
+                .forEach(entity -> cache.put(
+                        BrawlerBattleResultStatisticsKey.of(entity),
+                        entity
+                ));
     }
 
     public void collect(BattleCollectionEntity battle) {
