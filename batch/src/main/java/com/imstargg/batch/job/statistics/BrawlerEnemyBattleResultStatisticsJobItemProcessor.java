@@ -58,12 +58,15 @@ public class BrawlerEnemyBattleResultStatisticsJobItemProcessor
             pageRequest = pageRequest.next();
 
             List<BattleCollectionEntity> battles = slice.getContent();
-            log.debug("Processing {} battles. eventId: {}, date: {}", battles.size(), eventId, date);
+            int processedCount = 0;
             for (BattleCollectionEntity battle : battles) {
                 if (battle.canResultStatisticsCollected()) {
                     collector.collect(battle);
+                    processedCount++;
                 }
             }
+            log.debug("Processed {}/{} battles. eventId: {}, date: {}",
+                    processedCount, battles.size(), eventId, date);
         }
 
         return collector.result();

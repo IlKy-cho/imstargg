@@ -1,9 +1,9 @@
 package com.imstargg.batch.job.statistics;
 
-import com.imstargg.batch.domain.BrawlerBattleResultStatisticsCollector;
+import com.imstargg.batch.domain.BrawlersBattleResultStatisticsCollector;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +16,10 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public class BrawlerBattleResultStatisticsJobItemProcessor
-        implements ItemProcessor<Long, List<BrawlerBattleResultStatisticsCollectionEntity>> {
+public class BrawlersBattleResultStatisticsJobItemProcessor
+        implements ItemProcessor<Long, List<BrawlersBattleResultStatisticsCollectionEntity>> {
 
-    private static final Logger log = LoggerFactory.getLogger(BrawlerBattleResultStatisticsJobItemProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(BrawlersBattleResultStatisticsJobItemProcessor.class);
 
     private static final int PAGE_SIZE = 1000;
 
@@ -28,7 +28,7 @@ public class BrawlerBattleResultStatisticsJobItemProcessor
     private final Clock clock;
     private final LocalDate date;
 
-    public BrawlerBattleResultStatisticsJobItemProcessor(
+    public BrawlersBattleResultStatisticsJobItemProcessor(
             EntityManagerFactory emf,
             BattleCollectionJpaRepository battleCollectionJpaRepository,
             Clock clock,
@@ -41,11 +41,11 @@ public class BrawlerBattleResultStatisticsJobItemProcessor
     }
 
     @Override
-    public List<BrawlerBattleResultStatisticsCollectionEntity> process(Long item) throws Exception {
+    public List<BrawlersBattleResultStatisticsCollectionEntity> process(Long item) throws Exception {
         OffsetDateTime fromBattleTime = date.atStartOfDay(clock.getZone()).toOffsetDateTime();
         OffsetDateTime toBattleTime = date.plusDays(1).atStartOfDay(clock.getZone()).toOffsetDateTime();
         long eventId = item;
-        var collector = new BrawlerBattleResultStatisticsCollector(emf, date, item);
+        var collector = new BrawlersBattleResultStatisticsCollector(emf, date, item);
         boolean hasNext = true;
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         while (hasNext) {
