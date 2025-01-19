@@ -5,6 +5,7 @@ import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsCollectionEntity;
 import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
@@ -34,6 +35,18 @@ public record BrawlerEnemyBattleResultStatisticsKey(
                 myPlayer.getBrawler().getBrawlStarsId(),
                 enemyPlayer.getBrawler().getBrawlStarsId(),
                 battle.containsDuplicateBrawler()
+        );
+    }
+
+    public static BrawlerEnemyBattleResultStatisticsKey of(BrawlerEnemyBattleResultStatisticsCollectionEntity entity) {
+        return new BrawlerEnemyBattleResultStatisticsKey(
+                entity.getEventBrawlStarsId(),
+                entity.getBattleDate(),
+                entity.getTrophyRange(),
+                entity.getSoloRankTierRange(),
+                entity.getBrawlerBrawlStarsId(),
+                entity.getEnemyBrawlerBrawlStarsId(),
+                entity.isDuplicateBrawler()
         );
     }
 }
