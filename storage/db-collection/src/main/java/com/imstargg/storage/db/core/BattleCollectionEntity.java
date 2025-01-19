@@ -176,7 +176,7 @@ public class BattleCollectionEntity extends BaseEntity {
                 .toList();
     }
 
-    public boolean canStatisticsCollected() {
+    public boolean canResultStatisticsCollected() {
         return result != null
                 && existsEventId()
                 && BattleType.find(type).isRegular()
