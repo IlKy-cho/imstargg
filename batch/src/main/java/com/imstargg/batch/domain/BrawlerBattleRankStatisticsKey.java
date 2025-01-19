@@ -4,6 +4,7 @@ import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +32,17 @@ public record BrawlerBattleRankStatisticsKey(
                 battle.getBattleTime().toLocalDate(),
                 myPlayer.getBrawler().getBrawlStarsId(),
                 TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies())
+        );
+    }
+
+    public static BrawlerBattleRankStatisticsKey of(
+            BrawlerBattleRankStatisticsCollectionEntity entity
+    ) {
+        return new BrawlerBattleRankStatisticsKey(
+                entity.getEventBrawlStarsId(),
+                entity.getBattleDate(),
+                entity.getBrawlerBrawlStarsId(),
+                entity.getTrophyRange()
         );
     }
 }

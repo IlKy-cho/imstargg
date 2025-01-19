@@ -5,7 +5,7 @@ import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
 import com.imstargg.storage.db.core.BattleJpaRepository;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
@@ -27,10 +27,10 @@ import java.time.Clock;
 import java.util.List;
 
 @Configuration
-public class BrawlerBattleResultStatisticsJobConfig {
+public class BrawlerBattleRankStatisticsJobConfig {
 
-    private static final String JOB_NAME = "brawlerBattleResultStatisticsJob";
-    private static final String STEP_NAME = "brawlerBattleResultStatisticsStep";
+    private static final String JOB_NAME = "brawlerBattleRankStatisticsJob";
+    private static final String STEP_NAME = "brawlerBattleRankStatisticsStep";
     private static final int CHUNK_SIZE = 1;
 
     private final Clock clock;
@@ -42,7 +42,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
     private final BattleJpaRepository battleJpaRepository;
     private final BattleCollectionJpaRepository battleCollectionJpaRepository;
 
-    public BrawlerBattleResultStatisticsJobConfig(
+    public BrawlerBattleRankStatisticsJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
@@ -76,7 +76,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
     Step step() {
         StepBuilder stepBuilder = new StepBuilder(STEP_NAME, jobRepository);
         return stepBuilder
-                .<Long, List<BrawlerBattleResultStatisticsCollectionEntity>>chunk(CHUNK_SIZE, txManager)
+                .<Long, List<BrawlerBattleRankStatisticsCollectionEntity>>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
                 .processor(processor())
                 .writer(writer())
@@ -102,17 +102,17 @@ public class BrawlerBattleResultStatisticsJobConfig {
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
-    BrawlerBattleResultStatisticsJobItemProcessor processor() {
-        return new BrawlerBattleResultStatisticsJobItemProcessor(
+    BrawlerBattleRankStatisticsJobItemProcessor processor() {
+        return new BrawlerBattleRankStatisticsJobItemProcessor(
                 emf, battleCollectionJpaRepository, clock, dateJobParameter().getDate()
         );
     }
 
     @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    JpaItemListWriter<BrawlerBattleResultStatisticsCollectionEntity> writer() {
+    JpaItemListWriter<BrawlerBattleRankStatisticsCollectionEntity> writer() {
         return new JpaItemListWriter<>(
-                new JpaItemWriterBuilder<BrawlerBattleResultStatisticsCollectionEntity>()
+                new JpaItemWriterBuilder<BrawlerBattleRankStatisticsCollectionEntity>()
                         .entityManagerFactory(emf)
                         .usePersist(false)
                         .build()

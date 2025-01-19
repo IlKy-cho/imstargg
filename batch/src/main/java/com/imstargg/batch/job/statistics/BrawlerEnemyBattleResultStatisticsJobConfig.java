@@ -31,7 +31,7 @@ public class BrawlerEnemyBattleResultStatisticsJobConfig {
 
     private static final String JOB_NAME = "brawlerEnemyBattleResultStatisticsJob";
     private static final String STEP_NAME = "brawlerEnemyBattleResultStatisticsStep";
-    private static final int CHUNK_SIZE = 1000;
+    private static final int CHUNK_SIZE = 1;
 
     private final Clock clock;
     private final JobRepository jobRepository;

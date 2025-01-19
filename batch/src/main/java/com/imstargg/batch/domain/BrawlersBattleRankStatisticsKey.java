@@ -5,6 +5,7 @@ import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
+import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsCollectionEntity;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -34,6 +35,18 @@ public record BrawlersBattleRankStatisticsKey(
                 brawlerIdHash.value(),
                 TrophyRange.of(battleType, player.getBrawler().getTrophies())
         )).toList();
+    }
+
+    public static BrawlersBattleRankStatisticsKey of(
+            BrawlersBattleRankStatisticsCollectionEntity entity
+    ) {
+        return new BrawlersBattleRankStatisticsKey(
+                entity.getEventBrawlStarsId(),
+                entity.getBattleDate(),
+                entity.getBrawlerBrawlStarsId(),
+                entity.getBrawlers().getIdHash(),
+                entity.getTrophyRange()
+        );
     }
 
     @Override
