@@ -119,11 +119,13 @@ public class NewPlayerJobConfig {
     @Bean(STEP_NAME + "ItemReader")
     @StepScope
     QuerydslPagingItemReader<BattleCollectionEntity> reader() {
-        return new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
+        var reader = new QuerydslPagingItemReader<>(emf, CHUNK_SIZE, false, queryFactory -> queryFactory
                 .selectFrom(battleCollectionEntity)
                 .where(idGoe(), idLt())
                 .orderBy(battleCollectionEntity.id.asc())
         );
+        reader.setSaveState(true);
+        return reader;
     }
 
     private BooleanExpression idGoe() {
