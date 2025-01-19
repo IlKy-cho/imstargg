@@ -96,6 +96,8 @@ class BrawlerBattleRankStatisticsJobConfig {
                     OffsetDateTime fromDateTime = date.atStartOfDay().atZone(clock.getZone()).toOffsetDateTime();
                     OffsetDateTime toDateTime = date.plusDays(1).atStartOfDay().atZone(clock.getZone()).toOffsetDateTime();
                     PageRequest pageRequest = PageRequest.ofSize(CHUNK_SIZE);
+
+                    log.debug("통계 데이터 수집 시작: {}", date);
                     while (hasNext) {
                         log.debug("Reading page: {}", pageRequest.getPageNumber());
                         Slice<BattleCollectionEntity> slice = battleCollectionJpaRepository
@@ -115,14 +117,17 @@ class BrawlerBattleRankStatisticsJobConfig {
                         hasNext = slice.hasNext();
                         pageRequest = pageRequest.next();
                     }
+                    log.debug("통계 데이터 수집 완료: {}", date);
 
                     EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
                     if (em == null) {
                         throw new DataAccessResourceFailureException("Unable to obtain a transactional EntityManager");
                     }
 
+                    log.debug("통계 데이터 저장 시작: {}", date);
                     brawlerBattleRankStatisticsCollector().result().forEach(em::persist);
                     brawlersBattleRankStatisticsCollector().result().forEach(em::persist);
+                    log.debug("통계 데이터 저장 완료: {}", date);
 
                     return RepeatStatus.FINISHED;
                 }, txManager).build();
