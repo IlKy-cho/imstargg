@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.core.enums.BattleType;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -173,6 +174,13 @@ public class BattleCollectionEntity extends BaseEntity {
         return teams.stream()
                 .flatMap(List::stream)
                 .toList();
+    }
+
+    public boolean canStatisticsCollected() {
+        return result != null
+                && existsEventId()
+                && BattleType.find(type).isRegular()
+                && teams.size() == 2;
     }
 
     public Long getId() {

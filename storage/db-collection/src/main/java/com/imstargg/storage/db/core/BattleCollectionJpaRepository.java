@@ -12,4 +12,8 @@ public interface BattleCollectionJpaRepository extends JpaRepository<BattleColle
     @EntityGraph(attributePaths = {"player.player"})
     Slice<BattleCollectionEntity> findSliceWithPlayerByBattleTimeGreaterThanEqualAndBattleTimeLessThan(
             OffsetDateTime fromBattleTime, OffsetDateTime toBattleTime, Pageable pageable);
+
+    @EntityGraph(attributePaths = {"player.player"})
+    Slice<BattleCollectionEntity> findSliceWithPlayerByEventBrawlStarsIdAndBattleTimeGreaterThanEqualAndBattleTimeLessThan(
+            long eventBrawlStarsId, OffsetDateTime fromBattleTime, OffsetDateTime toBattleTime, Pageable pageable);
 }

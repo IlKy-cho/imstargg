@@ -18,7 +18,7 @@ public class BrawlerEnemyBattleResultStatisticsCollectionEntity extends BrawlerB
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brawler_battle_result_stats_id")
+    @Column(name = "brawler_enemy_battle_result_stats_id")
     private Long id;
 
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
