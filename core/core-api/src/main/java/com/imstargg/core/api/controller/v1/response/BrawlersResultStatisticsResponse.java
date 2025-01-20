@@ -5,15 +5,15 @@ import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
 
 import java.util.List;
 
-public record BattleEventBrawlersResultStatisticsResponse(
+public record BrawlersResultStatisticsResponse(
         List<Long> brawlerIds,
         long totalBattleCount,
         double winRate,
         double pickRate
 ) {
 
-    public static BattleEventBrawlersResultStatisticsResponse of(BrawlersResultStatistics statistics) {
-        return new BattleEventBrawlersResultStatisticsResponse(
+    public static BrawlersResultStatisticsResponse of(BrawlersResultStatistics statistics) {
+        return new BrawlersResultStatisticsResponse(
                 statistics.brawlerIds().stream().map(BrawlStarsId::value).toList(),
                 statistics.totalBattleCount(),
                 statistics.winRate(),
