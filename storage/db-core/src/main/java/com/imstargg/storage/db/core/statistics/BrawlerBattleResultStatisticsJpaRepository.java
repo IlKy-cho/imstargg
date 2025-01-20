@@ -23,4 +23,10 @@ public interface BrawlerBattleResultStatisticsJpaRepository extends JpaRepositor
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             Pageable pageable
     );
+
+    List<BrawlerBattleResultStatisticsEntity> findAllByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
+            LocalDate battleDate,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
+            long brawlerBrawlStarsId
+    );
 }

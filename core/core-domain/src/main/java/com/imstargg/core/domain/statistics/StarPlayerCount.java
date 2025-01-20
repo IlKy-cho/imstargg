@@ -3,7 +3,8 @@ package com.imstargg.core.domain.statistics;
 public record StarPlayerCount(
         long count
 ) {
-    public double starPlayerRate(long totalBattleCount) {
+    public double starPlayerRate(ResultCount resultCount) {
+        long totalBattleCount = resultCount.totalBattleCount();
         if (totalBattleCount == 0) {
             return 0;
         }
