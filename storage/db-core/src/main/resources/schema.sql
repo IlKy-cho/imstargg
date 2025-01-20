@@ -269,6 +269,8 @@ alter table brawler_battle_result_stats
                 trophy_range, solo_rank_tier_range, duplicate_brawler,
                 brawler_brawlstars_id);
 
+create index ix_battledate_range_brawler
+    on brawler_battle_result_stats (battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id);
 
 
 create table brawlers_battle_result_stats
