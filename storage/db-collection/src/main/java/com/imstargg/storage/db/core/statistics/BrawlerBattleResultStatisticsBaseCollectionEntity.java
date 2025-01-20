@@ -72,6 +72,12 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
         }
     }
 
+    public void init() {
+        victoryCount = 0;
+        defeatCount = 0;
+        drawCount = 0;
+    }
+
     @Nullable
     public SoloRankTierRange getSoloRankTierRange() {
         return soloRankTierRange;

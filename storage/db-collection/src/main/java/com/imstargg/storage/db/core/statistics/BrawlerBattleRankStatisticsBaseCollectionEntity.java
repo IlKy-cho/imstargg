@@ -29,4 +29,8 @@ abstract class BrawlerBattleRankStatisticsBaseCollectionEntity extends BattleSta
     public void countUp(int rank) {
         rankToCounts.put(rank, rankToCounts.getOrDefault(rank, 0L) + 1);
     }
+
+    public void init() {
+        rankToCounts.clear();
+    }
 }
