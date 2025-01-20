@@ -5,6 +5,7 @@ import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerRankStatist
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersRankStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersResultStatisticsRequest;
+import com.imstargg.core.api.controller.v1.request.BrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.response.BrawlerRankStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerResultStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlersRankStatisticsResponse;
@@ -88,4 +89,15 @@ public class StatisticsController {
         );
     }
 
+    @GetMapping("/api/v1/statistics/brawler-result")
+    public ListResponse<BrawlerResultStatisticsResponse> getBrawlerResultStatistics(
+            @ModelAttribute @Validated BrawlerResultStatisticsRequest request
+    ) {
+        return new ListResponse<>(
+                brawlerStatisticsService.getBrawlerResultStatistics(request.toParams())
+                        .stream()
+                        .map(BrawlerResultStatisticsResponse::of)
+                        .toList()
+        );
+    }
 }
