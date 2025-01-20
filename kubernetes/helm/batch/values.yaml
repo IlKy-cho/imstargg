@@ -6,6 +6,7 @@ app:
   profile: live
   job:
     name: ""
+    parameters: []
   secret:
     db: db-core-secret
     brawlStarsClient: brawlstars-client-secret-batch
@@ -50,7 +51,7 @@ resources:
     memory: 2048Mi
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 256Mi
 
 volumes: []
 # - name: foo
