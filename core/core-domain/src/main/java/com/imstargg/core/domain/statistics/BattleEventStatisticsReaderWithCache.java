@@ -21,10 +21,10 @@ public class BattleEventStatisticsReaderWithCache {
     }
 
     @Cacheable(key = "'battle-event-brawler-result-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public BattleEventBrawlerResultCounts getBattleEventBrawlerResultCounts(
+    public BrawlerResultCounts getBattleEventBrawlerResultCounts(
             BattleEventBrawlerResultStatisticsParam param
     ) {
-        return new BattleEventBrawlerResultCounts(
+        return new BrawlerResultCounts(
                 battleEventResultStatisticsRepository.findBrawlerResultCounts(
                         param.eventId(),
                         param.battleDate(),
@@ -36,10 +36,10 @@ public class BattleEventStatisticsReaderWithCache {
     }
 
     @Cacheable(key = "'battle-event-brawlers-result-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()  + ':brawlersNum' + #param.brawlersNum() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public BattleEventBrawlersResultCounts getBattleEventBrawlersResultCounts(
+    public BrawlersResultCounts getBattleEventBrawlersResultCounts(
             BattleEventBrawlersResultStatisticsParam param
     ) {
-        return new BattleEventBrawlersResultCounts(
+        return new BrawlersResultCounts(
                 battleEventResultStatisticsRepository.findBrawlersResultCounts(
                         param.eventId(),
                         param.battleDate(),
@@ -52,10 +52,10 @@ public class BattleEventStatisticsReaderWithCache {
     }
 
     @Cacheable(key = "'battle-event-brawler-rank-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange()")
-    public BattleEventBrawlerRankCounts getBattleEventBrawlerRankCounts(
+    public BrawlerRankCounts getBattleEventBrawlerRankCounts(
             BattleEventBrawlerRankStatisticsParam param
     ) {
-        return new BattleEventBrawlerRankCounts(
+        return new BrawlerRankCounts(
                 battleEventRankStatisticsRepository.findBrawlerRankCounts(
                         param.eventId(),
                         param.battleDate(),
@@ -65,10 +65,10 @@ public class BattleEventStatisticsReaderWithCache {
     }
 
     @Cacheable(key = "'battle-event-brawlers-rank-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")
-    public BattleEventBrawlersRankCounts getBattleEventBrawlersRankCounts(
+    public BrawlersRankCounts getBattleEventBrawlersRankCounts(
             BattleEventBrawlersRankStatisticsParam param
     ) {
-        return new BattleEventBrawlersRankCounts(
+        return new BrawlersRankCounts(
                 battleEventRankStatisticsRepository.findBrawlersRankCounts(
                         param.eventId(),
                         param.battleDate(),

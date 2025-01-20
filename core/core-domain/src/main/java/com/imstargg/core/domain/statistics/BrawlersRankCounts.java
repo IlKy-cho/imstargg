@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public record BattleEventBrawlersRankCounts(
-        List<BattleEventBrawlersRankCount> counts
+public record BrawlersRankCounts(
+        List<BrawlersRankCount> counts
 ) {
 
-    public static BattleEventBrawlersRankCounts empty() {
-        return new BattleEventBrawlersRankCounts(List.of());
+    public static BrawlersRankCounts empty() {
+        return new BrawlersRankCounts(List.of());
     }
 
     public long totalBattleCount() {
         return counts.stream()
-                .map(BattleEventBrawlersRankCount::rankCount)
+                .map(BrawlersRankCount::rankCount)
                 .mapToLong(RankCount::totalBattleCount)
                 .sum();
     }
@@ -24,13 +24,13 @@ public record BattleEventBrawlersRankCounts(
         return counts.isEmpty();
     }
 
-    public BattleEventBrawlersRankCounts merge(BattleEventBrawlersRankCounts other) {
+    public BrawlersRankCounts merge(BrawlersRankCounts other) {
         var brawlerIdToCount = new HashMap<>(counts.stream().collect(
-                Collectors.toMap(BattleEventBrawlersRankCount::brawlerIds, Function.identity())
+                Collectors.toMap(BrawlersRankCount::brawlerIds, Function.identity())
         ));
 
         other.counts.forEach(otherCount -> {
-            BattleEventBrawlersRankCount count = brawlerIdToCount.get(otherCount.brawlerIds());
+            BrawlersRankCount count = brawlerIdToCount.get(otherCount.brawlerIds());
             if (count == null) {
                 brawlerIdToCount.put(otherCount.brawlerIds(), otherCount);
             } else {
@@ -38,13 +38,13 @@ public record BattleEventBrawlersRankCounts(
             }
         });
 
-        return new BattleEventBrawlersRankCounts(brawlerIdToCount.values().stream().toList());
+        return new BrawlersRankCounts(brawlerIdToCount.values().stream().toList());
     }
 
-    public List<BattleEventBrawlersRankStatistics> toStatistics() {
+    public List<BrawlersRankStatistics> toStatistics() {
         long totalBattleCount = totalBattleCount();
         return counts.stream()
-                .map(count -> new BattleEventBrawlersRankStatistics(
+                .map(count -> new BrawlersRankStatistics(
                         count.brawlerIds(),
                         count.rankCount().totalBattleCount(),
                         count.rankCount().averageRank(),

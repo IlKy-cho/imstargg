@@ -37,7 +37,7 @@ public class BattleEventResultStatisticsRepository {
         this.brawlerEnemyBattleResultStatisticsJpaRepository = brawlerEnemyBattleResultStatisticsJpaRepository;
     }
 
-    public List<BattleEventBrawlerResultCount> findBrawlerResultCounts(
+    public List<BrawlerResultCount> findBrawlerResultCounts(
             BrawlStarsId eventId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler
@@ -47,7 +47,7 @@ public class BattleEventResultStatisticsRepository {
                         eventId.value(), battleDate, trophyRange, soloRankTierRange,
                         duplicateBrawler
                 ).stream()
-                .map(statsEntity -> new BattleEventBrawlerResultCount(
+                .map(statsEntity -> new BrawlerResultCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
                         new ResultCount(
                                 statsEntity.getVictoryCount(),
@@ -58,7 +58,7 @@ public class BattleEventResultStatisticsRepository {
                 )).toList();
     }
 
-    public List<BattleEventBrawlersResultCount> findBrawlersResultCounts(
+    public List<BrawlersResultCount> findBrawlersResultCounts(
             BrawlStarsId eventId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             int brawlNum, boolean duplicateBrawler
@@ -91,7 +91,7 @@ public class BattleEventResultStatisticsRepository {
         }
 
         return brawlersCounters.entrySet().stream()
-                .map(entry -> new BattleEventBrawlersResultCount(
+                .map(entry -> new BrawlersResultCount(
                         entry.getKey().ids().stream().map(BrawlStarsId::new).toList(),
                         new ResultCount(
                                 entry.getValue().getVictoryCount() / brawlNum,
@@ -102,7 +102,7 @@ public class BattleEventResultStatisticsRepository {
                 .toList();
     }
 
-    public List<BattleEventBrawlerEnemyResultCount> findBrawlerEnemyResultCounts(
+    public List<BrawlerEnemyResultCount> findBrawlerEnemyResultCounts(
             BrawlStarsId eventId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler
@@ -112,7 +112,7 @@ public class BattleEventResultStatisticsRepository {
                         eventId.value(), battleDate, trophyRange, soloRankTierRange,
                         duplicateBrawler
                 ).stream()
-                .map(statsEntity -> new BattleEventBrawlerEnemyResultCount(
+                .map(statsEntity -> new BrawlerEnemyResultCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
                         new BrawlStarsId(statsEntity.getEnemyBrawlerBrawlStarsId()),
                         new ResultCount(

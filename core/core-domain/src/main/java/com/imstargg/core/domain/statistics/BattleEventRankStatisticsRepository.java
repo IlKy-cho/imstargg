@@ -31,7 +31,7 @@ public class BattleEventRankStatisticsRepository {
         this.brawlersBattleRankStatisticsJpaRepository = brawlersBattleRankStatisticsJpaRepository;
     }
 
-    public List<BattleEventBrawlerRankCount> findBrawlerRankCounts(
+    public List<BrawlerRankCount> findBrawlerRankCounts(
             BrawlStarsId eventId,
             LocalDate battleDate,
             TrophyRange trophyRange
@@ -40,13 +40,13 @@ public class BattleEventRankStatisticsRepository {
                 .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRange(
                         eventId.value(), battleDate, trophyRange
                 ).stream()
-                .map(statsEntity -> new BattleEventBrawlerRankCount(
+                .map(statsEntity -> new BrawlerRankCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
                         new RankCount(statsEntity.getRankToCounts())
                 )).toList();
     }
 
-    public List<BattleEventBrawlersRankCount> findBrawlersRankCounts(
+    public List<BrawlersRankCount> findBrawlersRankCounts(
             BrawlStarsId eventId, LocalDate battleDate, TrophyRange trophyRange, int brawlersNum
     ) {
         Map<BrawlerIdHash, BattleEventRankCounter> brawlersCounters = new HashMap<>();
@@ -79,7 +79,7 @@ public class BattleEventRankStatisticsRepository {
                     entry.getValue().getRankToCounts().forEach((rank, count) -> {
                         rankToCount.put(rank, count / entry.getKey().num());
                     });
-                    return new BattleEventBrawlersRankCount(
+                    return new BrawlersRankCount(
                             entry.getKey().ids()
                                     .stream()
                                     .map(BrawlStarsId::new)

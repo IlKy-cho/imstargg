@@ -27,16 +27,16 @@ public class BattleEventStatisticsService {
     }
 
     @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':duplicateBrawler' + #params.duplicateBrawler()")
-    public List<BattleEventBrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
+    public List<BrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
             BattleEventBrawlerResultStatisticsParams params
     ) {
-        List<BattleEventBrawlerResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlerResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlerResultCounts)
                 .toList());
 
-        BattleEventBrawlerResultCounts mergedCounts = countsList.stream()
-                .reduce(BattleEventBrawlerResultCounts::merge)
-                .orElseGet(BattleEventBrawlerResultCounts::empty);
+        BrawlerResultCounts mergedCounts = countsList.stream()
+                .reduce(BrawlerResultCounts::merge)
+                .orElseGet(BrawlerResultCounts::empty);
 
         return mergedCounts.toStatistics()
                 .stream()
@@ -45,15 +45,15 @@ public class BattleEventStatisticsService {
     }
 
     @Cacheable(key = "'battle-event-brawlers-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':brawlersNum' + #params.brawlersNum() + ':duplicateBrawler' + #params.duplicateBrawler()")
-    public List<BattleEventBrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
+    public List<BrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
             BattleEventBrawlersResultStatisticsParams params) {
-        List<BattleEventBrawlersResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlersResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlersResultCounts)
                 .toList());
 
-        BattleEventBrawlersResultCounts mergedCounts = countsList.stream()
-                .reduce(BattleEventBrawlersResultCounts::merge)
-                .orElseGet(BattleEventBrawlersResultCounts::empty);
+        BrawlersResultCounts mergedCounts = countsList.stream()
+                .reduce(BrawlersResultCounts::merge)
+                .orElseGet(BrawlersResultCounts::empty);
 
         return mergedCounts.toStatistics()
                 .stream()
@@ -62,16 +62,16 @@ public class BattleEventStatisticsService {
     }
 
     @Cacheable(key = "'battle-event-brawler-rank-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange()")
-    public List<BattleEventBrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
+    public List<BrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
             BattleEventBrawlerRankStatisticsParams params
     ) {
-        List<BattleEventBrawlerRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlerRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlerRankCounts)
                 .toList());
 
-        BattleEventBrawlerRankCounts mergedCounts = countsList.stream()
-                .reduce(BattleEventBrawlerRankCounts::merge)
-                .orElseGet(BattleEventBrawlerRankCounts::empty);
+        BrawlerRankCounts mergedCounts = countsList.stream()
+                .reduce(BrawlerRankCounts::merge)
+                .orElseGet(BrawlerRankCounts::empty);
 
         return mergedCounts.toStatistics()
                 .stream()
@@ -80,15 +80,15 @@ public class BattleEventStatisticsService {
     }
 
     @Cacheable(key = "'battle-event-brawlers-rank-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':brawlersNum' + #params.brawlersNum()")
-    public List<BattleEventBrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
+    public List<BrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
             BattleEventBrawlersRankStatisticsParams params) {
-        List<BattleEventBrawlersRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlersRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlersRankCounts)
                 .toList());
 
-        BattleEventBrawlersRankCounts mergedCounts = countsList.stream()
-                .reduce(BattleEventBrawlersRankCounts::merge)
-                .orElseGet(BattleEventBrawlersRankCounts::empty);
+        BrawlersRankCounts mergedCounts = countsList.stream()
+                .reduce(BrawlersRankCounts::merge)
+                .orElseGet(BrawlersRankCounts::empty);
 
         return mergedCounts.toStatistics()
                 .stream()

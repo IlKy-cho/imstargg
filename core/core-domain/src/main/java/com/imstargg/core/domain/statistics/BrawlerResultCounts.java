@@ -5,17 +5,17 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public record BattleEventBrawlerResultCounts(
-        List<BattleEventBrawlerResultCount> counts
+public record BrawlerResultCounts(
+        List<BrawlerResultCount> counts
 ) {
 
-    public static BattleEventBrawlerResultCounts empty() {
-        return new BattleEventBrawlerResultCounts(List.of());
+    public static BrawlerResultCounts empty() {
+        return new BrawlerResultCounts(List.of());
     }
 
     public long totalBattleCount() {
         return counts.stream()
-                .map(BattleEventBrawlerResultCount::resultCount)
+                .map(BrawlerResultCount::resultCount)
                 .mapToLong(ResultCount::totalBattleCount)
                 .sum();
     }
@@ -24,10 +24,10 @@ public record BattleEventBrawlerResultCounts(
         return counts.isEmpty();
     }
 
-    public List<BattleEventBrawlerResultStatistics> toStatistics() {
+    public List<BrawlerResultStatistics> toStatistics() {
         long totalBattleCount = totalBattleCount();
         return counts.stream()
-                .map(count -> new BattleEventBrawlerResultStatistics(
+                .map(count -> new BrawlerResultStatistics(
                         count.brawlerId(),
                         count.resultCount().totalBattleCount(),
                         count.resultCount().winRate(),
@@ -36,12 +36,12 @@ public record BattleEventBrawlerResultCounts(
                 )).toList();
     }
 
-    public BattleEventBrawlerResultCounts merge(BattleEventBrawlerResultCounts other) {
+    public BrawlerResultCounts merge(BrawlerResultCounts other) {
         var brawlerIdToCount = new HashMap<>(counts.stream().collect(
-                Collectors.toMap(BattleEventBrawlerResultCount::brawlerId, Function.identity())
+                Collectors.toMap(BrawlerResultCount::brawlerId, Function.identity())
         ));
         other.counts.forEach(otherCount -> {
-            BattleEventBrawlerResultCount count = brawlerIdToCount.get(otherCount.brawlerId());
+            BrawlerResultCount count = brawlerIdToCount.get(otherCount.brawlerId());
             if (count == null) {
                 brawlerIdToCount.put(otherCount.brawlerId(), otherCount);
             } else {
@@ -49,6 +49,6 @@ public record BattleEventBrawlerResultCounts(
             }
         });
 
-        return new BattleEventBrawlerResultCounts(brawlerIdToCount.values().stream().toList());
+        return new BrawlerResultCounts(brawlerIdToCount.values().stream().toList());
     }
 }
