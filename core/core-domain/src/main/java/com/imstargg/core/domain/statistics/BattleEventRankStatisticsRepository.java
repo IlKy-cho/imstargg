@@ -42,7 +42,7 @@ public class BattleEventRankStatisticsRepository {
                 ).stream()
                 .map(statsEntity -> new BattleEventBrawlerRankCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
-                        statsEntity.getRankToCounts()
+                        new RankCount(statsEntity.getRankToCounts())
                 )).toList();
     }
 
@@ -75,16 +75,16 @@ public class BattleEventRankStatisticsRepository {
 
         return brawlersCounters.entrySet().stream()
                 .map(entry -> {
-                    Map<Integer, Long> rankToCounts = new HashMap<>();
+                    Map<Integer, Long> rankToCount = new HashMap<>();
                     entry.getValue().getRankToCounts().forEach((rank, count) -> {
-                        rankToCounts.put(rank, count / entry.getKey().num());
+                        rankToCount.put(rank, count / entry.getKey().num());
                     });
                     return new BattleEventBrawlersRankCount(
                             entry.getKey().ids()
                                     .stream()
                                     .map(BrawlStarsId::new)
                                     .toList(),
-                            rankToCounts
+                            new RankCount(rankToCount)
                     );
                 }).toList();
     }

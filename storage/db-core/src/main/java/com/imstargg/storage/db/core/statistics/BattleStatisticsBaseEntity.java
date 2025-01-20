@@ -16,4 +16,12 @@ abstract class BattleStatisticsBaseEntity {
 
     protected BattleStatisticsBaseEntity() {
     }
+
+    public long getEventBrawlStarsId() {
+        return eventBrawlStarsId;
+    }
+
+    public LocalDate getBattleDate() {
+        return battleDate;
+    }
 }
