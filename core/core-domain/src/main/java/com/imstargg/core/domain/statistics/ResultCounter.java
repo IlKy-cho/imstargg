@@ -2,32 +2,32 @@ package com.imstargg.core.domain.statistics;
 
 public class ResultCounter {
 
-    private long victoryCount = 0;
-    private long defeatCount = 0;
-    private long drawCount = 0;
+    private final Counter victoryCount = new Counter();
+    private final Counter defeatCount = new Counter();
+    private final Counter drawCount = new Counter();
 
     void addVictory(long count) {
-        victoryCount += count;
+        victoryCount.add(count);
     }
 
     void addDefeat(long count) {
-        defeatCount += count;
+        defeatCount.add(count);
     }
 
     void addDraw(long count) {
-        drawCount += count;
+        drawCount.add(count);
     }
 
 
     long getVictoryCount() {
-        return victoryCount;
+        return victoryCount.getCount();
     }
 
     long getDefeatCount() {
-        return defeatCount;
+        return defeatCount.getCount();
     }
 
     long getDrawCount() {
-        return drawCount;
+        return drawCount.getCount();
     }
 }
