@@ -6,7 +6,6 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Stream;
 
 public record BrawlerResultStatisticsParams(
         LocalDate date,
@@ -15,33 +14,17 @@ public record BrawlerResultStatisticsParams(
 ) {
 
     public List<BrawlerResultStatisticsParam> toParamList() {
-        if (trophyRange != null) {
-            return battleDateWeekStream().flatMap(battleDate ->
-                    trophyRange.getRanges().stream().map(trophyRange ->
-                            new BrawlerResultStatisticsParam(
-                                    battleDate,
-                                    trophyRange,
-                                    null
-                            )
-                    )
-            ).toList();
-        } else if (soloRankTierRange != null) {
-            return battleDateWeekStream().flatMap(date ->
-                    soloRankTierRange.getRanges().stream().map(soloRankTierRange ->
-                            new BrawlerResultStatisticsParam(
-                                    date,
-                                    null,
-                                    soloRankTierRange
-                            )
-                    )
-            ).toList();
-        }
-
-        return List.of();
+        return new StatisticsParamBuilder()
+                .date(date)
+                .trophyRange(trophyRange)
+                .soloRankTierRange(soloRankTierRange)
+                .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
+                        new BrawlerResultStatisticsParam(
+                                battleDate,
+                                trophyRange,
+                                soloRankTierRange
+                        )
+                );
     }
 
-    private Stream<LocalDate> battleDateWeekStream() {
-        return Stream.iterate(date, date -> date.minusDays(1))
-                .limit(7);
-    }
 }

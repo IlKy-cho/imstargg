@@ -1,10 +1,7 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.utils.DateUtils;
-import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.SoloRankTierRangeRange;
-import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.annotation.Nullable;
 
@@ -19,32 +16,17 @@ public record BrawlerBattleEventResultStatisticsParams(
 ) {
 
     public List<BrawlerBattleEventResultStatisticsParam> toParamList() {
-        if (trophyRange != null) {
-            return DateUtils.lastAWeekStream(date).flatMap(battleDate ->
-                    trophyRange.getRanges().stream().map(trophyRange ->
-                            mapParam(trophyRange, null)
-                    )
-            ).toList();
-        } else if (soloRankTierRange != null) {
-            return DateUtils.lastAWeekStream(date).flatMap(battleDate ->
-                    soloRankTierRange.getRanges().stream().map(soloRankTierRange ->
-                            mapParam(null, soloRankTierRange)
-                    )
-            ).toList();
-        }
-
-        return List.of();
-    }
-
-    private BrawlerBattleEventResultStatisticsParam mapParam(
-            @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange
-    ) {
-        return new BrawlerBattleEventResultStatisticsParam(
-                brawlerId,
-                date,
-                trophyRange,
-                soloRankTierRange
-        );
+        return new StatisticsParamBuilder()
+                .date(date)
+                .trophyRange(trophyRange)
+                .soloRankTierRange(soloRankTierRange)
+                .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
+                        new BrawlerBattleEventResultStatisticsParam(
+                                brawlerId,
+                                battleDate,
+                                trophyRange,
+                                soloRankTierRange
+                        )
+                );
     }
 }

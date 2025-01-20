@@ -1,7 +1,6 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.utils.DateUtils;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.SoloRankTierRangeRange;
 import com.imstargg.core.enums.TrophyRange;
@@ -22,21 +21,20 @@ public record BattleEventBrawlerResultStatisticsParams(
 ) {
 
     public List<BattleEventBrawlerResultStatisticsParam> toParamList() {
-        if (trophyRangeRange != null) {
-            return DateUtils.lastAWeekStream(date).flatMap(battleDate ->
-                    trophyRangeRange.getRanges().stream().flatMap(trophyRange ->
-                            mapParam(battleDate, trophyRange, null, duplicateBrawler)
-                    )
-            ).toList();
-        } else if (soloRankTierRangeRange != null) {
-            return DateUtils.lastAWeekStream(date).flatMap(date ->
-                    soloRankTierRangeRange.getRanges().stream().flatMap(soloRankTierRange ->
-                            mapParam(date, null, soloRankTierRange, duplicateBrawler)
-                    )
-            ).toList();
-        }
-
-        return List.of();
+        return new StatisticsParamBuilder()
+                .date(date)
+                .trophyRange(trophyRangeRange)
+                .soloRankTierRange(soloRankTierRangeRange)
+                .duplicateBrawler(duplicateBrawler)
+                .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
+                        new BattleEventBrawlerResultStatisticsParam(
+                                eventId,
+                                battleDate,
+                                trophyRange,
+                                soloRankTierRange,
+                                Boolean.TRUE.equals(duplicateBrawler)
+                        )
+                );
     }
 
     private Stream<BattleEventBrawlerResultStatisticsParam> mapParam(
