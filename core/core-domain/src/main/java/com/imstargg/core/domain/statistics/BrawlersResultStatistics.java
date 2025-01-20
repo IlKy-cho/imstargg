@@ -4,10 +4,10 @@ import com.imstargg.core.domain.BrawlStarsId;
 
 import java.util.List;
 
-public record BattleEventBrawlersRankStatistics(
+public record BrawlersResultStatistics(
         List<BrawlStarsId> brawlerIds,
         long totalBattleCount,
-        double averageRank,
+        double winRate,
         double pickRate
 ) {
 }

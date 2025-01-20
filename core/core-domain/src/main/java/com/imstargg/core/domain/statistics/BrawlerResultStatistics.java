@@ -2,10 +2,11 @@ package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
 
-public record BattleEventBrawlerRankStatistics(
+public record BrawlerResultStatistics(
         BrawlStarsId brawlerId,
         long totalBattleCount,
-        double averageRank,
-        double pickRate
+        double winRate,
+        double pickRate,
+        double starPlayerRate
 ) {
 }

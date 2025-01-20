@@ -1,6 +1,6 @@
 package com.imstargg.core.api.controller.v1.response;
 
-import com.imstargg.core.domain.statistics.BattleEventBrawlerResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
 
 public record BattleEventBrawlerResultStatisticsResponse(
         long brawlerId,
@@ -10,7 +10,7 @@ public record BattleEventBrawlerResultStatisticsResponse(
         double starPlayerRate
 ) {
 
-    public static BattleEventBrawlerResultStatisticsResponse of(BattleEventBrawlerResultStatistics statistics) {
+    public static BattleEventBrawlerResultStatisticsResponse of(BrawlerResultStatistics statistics) {
         return new BattleEventBrawlerResultStatisticsResponse(
                 statistics.brawlerId().value(),
                 statistics.totalBattleCount(),
