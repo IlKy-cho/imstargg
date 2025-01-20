@@ -37,4 +37,21 @@ public class BrawlerStatisticsService {
                 .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
                 .toList();
     }
+
+    public List<BattleEventResultStatistics> getBrawlerBattleEventResultStatistics(
+            BrawlerBattleEventResultStatisticsParams params
+    ) {
+        List<BattleEventResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
+                .map(brawlerStatisticsReader::getBrawlerBattleEventResultCounts)
+                .toList());
+
+        BattleEventResultCounts mergedCounts = countsList.stream()
+                .reduce(BattleEventResultCounts::merge)
+                .orElseGet(BattleEventResultCounts::empty);
+
+        return mergedCounts.toStatistics()
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
+    }
 }

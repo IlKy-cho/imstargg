@@ -79,4 +79,25 @@ public class BrawlerResultStatisticsRepository {
                 )).toList();
     }
 
+    public List<BattleEventResultCount> findBrawlerBattleEventResultCounts(
+            BrawlStarsId brawlerId,
+            LocalDate date,
+            @Nullable TrophyRange trophyRange,
+            @Nullable SoloRankTierRange soloRankTierRange
+    ) {
+        return brawlerBattleResultStatisticsJpaRepository
+                .findAllByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
+                        date, trophyRange, soloRankTierRange, brawlerId.value()
+                ).stream()
+                .map(statsEntity -> new BattleEventResultCount(
+                        new BrawlStarsId(statsEntity.getEventBrawlStarsId()),
+                        new ResultCount(
+                                statsEntity.getVictoryCount(),
+                                statsEntity.getDefeatCount(),
+                                statsEntity.getDrawCount()
+                        ),
+                        new StarPlayerCount(statsEntity.getStarPlayerCount())
+                )).toList();
+    }
+
 }

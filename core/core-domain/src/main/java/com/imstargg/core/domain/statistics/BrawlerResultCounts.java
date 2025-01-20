@@ -20,10 +20,6 @@ public record BrawlerResultCounts(
                 .sum();
     }
 
-    public boolean isEmpty() {
-        return counts.isEmpty();
-    }
-
     public BrawlerResultCounts merge(BrawlerResultCounts other) {
         var brawlerIdToCount = new HashMap<>(counts.stream().collect(
                 Collectors.toMap(BrawlerResultCount::brawlerId, Function.identity())
@@ -48,7 +44,7 @@ public record BrawlerResultCounts(
                         count.resultCount().totalBattleCount(),
                         count.resultCount().winRate(),
                         count.resultCount().pickRate(totalBattleCount),
-                        count.starPlayerCount().starPlayerRate(count.resultCount().totalBattleCount())
+                        count.starPlayerCount().starPlayerRate(count.resultCount())
                 )).toList();
     }
 }
