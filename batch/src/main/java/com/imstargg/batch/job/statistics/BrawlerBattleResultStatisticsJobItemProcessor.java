@@ -1,6 +1,6 @@
 package com.imstargg.batch.job.statistics;
 
-import com.imstargg.batch.domain.BrawlerBattleResultStatisticsCollector;
+import com.imstargg.batch.domain.statistics.BrawlerBattleResultStatisticsCollector;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;

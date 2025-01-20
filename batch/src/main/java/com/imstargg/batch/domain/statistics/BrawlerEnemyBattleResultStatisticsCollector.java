@@ -1,4 +1,4 @@
-package com.imstargg.batch.domain;
+package com.imstargg.batch.domain.statistics;
 
 import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleResult;
