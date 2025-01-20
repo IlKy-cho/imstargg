@@ -1,5 +1,6 @@
 package com.imstargg.batch.job.statistics;
 
+import com.imstargg.batch.domain.statistics.BrawlersBattleRankStatisticsCollectorFactory;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.JpaItemListWriter;
@@ -102,9 +103,10 @@ public class BrawlersBattleRankStatisticsJobConfig {
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
-    BrawlersBattleRankStatisticsJobItemProcessor processor() {
-        return new BrawlersBattleRankStatisticsJobItemProcessor(
-                emf, battleCollectionJpaRepository, clock, dateJobParameter().getDate()
+    StatisticsJobItemProcessor<BrawlersBattleRankStatisticsCollectionEntity> processor() {
+        var factory = new BrawlersBattleRankStatisticsCollectorFactory(emf);
+        return new StatisticsJobItemProcessor<>(
+                factory, battleCollectionJpaRepository, clock, dateJobParameter().getDate()
         );
     }
 
