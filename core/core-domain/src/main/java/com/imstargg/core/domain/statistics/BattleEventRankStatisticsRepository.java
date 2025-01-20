@@ -49,7 +49,7 @@ public class BattleEventRankStatisticsRepository {
     public List<BrawlersRankCount> findBrawlersRankCounts(
             BrawlStarsId eventId, LocalDate battleDate, TrophyRange trophyRange, int brawlersNum
     ) {
-        Map<BrawlerIdHash, BattleEventRankCounter> brawlersCounters = new HashMap<>();
+        Map<BrawlerIdHash, RankCounter> brawlersCounters = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
 
@@ -62,11 +62,11 @@ public class BattleEventRankStatisticsRepository {
                     );
 
             brawlersBattleRankStatsSlice.forEach(stats -> {
-                BattleEventRankCounter brawlersCounter = brawlersCounters.computeIfAbsent(
+                RankCounter brawlersCounter = brawlersCounters.computeIfAbsent(
                         new BrawlerIdHash(stats.getBrawlers().getIdHash()),
-                        k -> new BattleEventRankCounter()
+                        k -> new RankCounter()
                 );
-                brawlersCounter.addRankToCounts(stats.getRankToCounts());
+                brawlersCounter.add(stats.getRankToCounts());
             });
 
             hasNext = brawlersBattleRankStatsSlice.hasNext();
@@ -76,7 +76,7 @@ public class BattleEventRankStatisticsRepository {
         return brawlersCounters.entrySet().stream()
                 .map(entry -> {
                     Map<Integer, Long> rankToCount = new HashMap<>();
-                    entry.getValue().getRankToCounts().forEach((rank, count) -> {
+                    entry.getValue().getRankToCount().forEach((rank, count) -> {
                         rankToCount.put(rank, count / entry.getKey().num());
                     });
                     return new BrawlersRankCount(
@@ -89,17 +89,4 @@ public class BattleEventRankStatisticsRepository {
                 }).toList();
     }
 
-    private static class BattleEventRankCounter {
-        private final Map<Integer, Long> rankToCounts = new HashMap<>();
-
-        public void addRankToCounts(Map<Integer, Long> rankToCounts) {
-            rankToCounts.forEach((rank, count) ->
-                    this.rankToCounts.merge(rank, count, Long::sum)
-            );
-        }
-
-        public Map<Integer, Long> getRankToCounts() {
-            return rankToCounts;
-        }
-    }
 }
