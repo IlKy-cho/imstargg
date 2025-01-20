@@ -42,7 +42,7 @@ public class DormantReturnedPlayerJobConfig {
 
     private static final String JOB_NAME = "dormantReturnedPlayerJob";
     private static final String STEP_NAME = "dormantReturnedPlayerStep";
-    private static final int CHUNK_SIZE = 10;
+    private static final int CHUNK_SIZE = 1000;
 
     private final Clock clock;
     private final JobRepository jobRepository;
