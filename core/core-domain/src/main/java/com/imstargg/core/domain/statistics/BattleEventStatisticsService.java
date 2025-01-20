@@ -1,16 +1,12 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.config.CacheNames;
-import com.imstargg.core.error.CoreException;
+import com.imstargg.core.domain.utils.FutureUtils;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 @Service
 @CacheConfig(cacheNames = CacheNames.STATISTICS)
@@ -30,7 +26,7 @@ public class BattleEventStatisticsService {
     public List<BrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
             BattleEventBrawlerResultStatisticsParams params
     ) {
-        List<BrawlerResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlerResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlerResultCounts)
                 .toList());
 
@@ -47,7 +43,7 @@ public class BattleEventStatisticsService {
     @Cacheable(key = "'battle-event-brawlers-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':brawlersNum' + #params.brawlersNum() + ':duplicateBrawler' + #params.duplicateBrawler()")
     public List<BrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
             BattleEventBrawlersResultStatisticsParams params) {
-        List<BrawlersResultCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlersResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlersResultCounts)
                 .toList());
 
@@ -65,7 +61,7 @@ public class BattleEventStatisticsService {
     public List<BrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
             BattleEventBrawlerRankStatisticsParams params
     ) {
-        List<BrawlerRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlerRankCounts> countsList = FutureUtils.get(params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlerRankCounts)
                 .toList());
 
@@ -82,7 +78,7 @@ public class BattleEventStatisticsService {
     @Cacheable(key = "'battle-event-brawlers-rank-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':brawlersNum' + #params.brawlersNum()")
     public List<BrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
             BattleEventBrawlersRankStatisticsParams params) {
-        List<BrawlersRankCounts> countsList = getFutureResults(() -> params.toParamList().stream()
+        List<BrawlersRankCounts> countsList = FutureUtils.get(params.toParamList().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlersRankCounts)
                 .toList());
 
@@ -96,19 +92,4 @@ public class BattleEventStatisticsService {
                 .toList();
     }
 
-    private <T> List<T> getFutureResults(Supplier<List<Future<T>>> supplier) {
-        List<Future<T>> futures = supplier.get();
-        List<T> results = new ArrayList<>();
-        try {
-            for (Future<T> future : futures) {
-                results.add(future.get());
-            }
-        } catch (ExecutionException e) {
-            throw new CoreException("Failed to get future results", e);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new CoreException("Failed to get future results", e);
-        }
-        return results;
-    }
 }
