@@ -15,7 +15,8 @@ public record BattleEventBrawlerResultCounts(
 
     public long totalBattleCount() {
         return counts.stream()
-                .mapToLong(BattleEventBrawlerResultCount::totalBattleCount)
+                .map(BattleEventBrawlerResultCount::resultCount)
+                .mapToLong(ResultCount::totalBattleCount)
                 .sum();
     }
 
@@ -26,12 +27,12 @@ public record BattleEventBrawlerResultCounts(
     public List<BattleEventBrawlerResultStatistics> toStatistics() {
         long totalBattleCount = totalBattleCount();
         return counts.stream()
-                .map(resultCount -> new BattleEventBrawlerResultStatistics(
-                        resultCount.brawlerId(),
-                        resultCount.totalBattleCount(),
-                        resultCount.winRate(),
-                        resultCount.pickRate(totalBattleCount),
-                        resultCount.starPlayerRate()
+                .map(count -> new BattleEventBrawlerResultStatistics(
+                        count.brawlerId(),
+                        count.resultCount().totalBattleCount(),
+                        count.resultCount().winRate(),
+                        count.resultCount().pickRate(totalBattleCount),
+                        count.starPlayerCount().starPlayerRate(count.resultCount().totalBattleCount())
                 )).toList();
     }
 

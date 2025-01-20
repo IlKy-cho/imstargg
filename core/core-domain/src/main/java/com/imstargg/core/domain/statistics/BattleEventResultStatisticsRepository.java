@@ -49,10 +49,12 @@ public class BattleEventResultStatisticsRepository {
                 ).stream()
                 .map(statsEntity -> new BattleEventBrawlerResultCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
-                        statsEntity.getVictoryCount(),
-                        statsEntity.getDefeatCount(),
-                        statsEntity.getDrawCount(),
-                        statsEntity.getStarPlayerCount()
+                        new ResultCount(
+                                statsEntity.getVictoryCount(),
+                                statsEntity.getDefeatCount(),
+                                statsEntity.getDrawCount()
+                        ),
+                        new StarPlayerCount(statsEntity.getStarPlayerCount())
                 )).toList();
     }
 
@@ -91,9 +93,11 @@ public class BattleEventResultStatisticsRepository {
         return brawlersCounters.entrySet().stream()
                 .map(entry -> new BattleEventBrawlersResultCount(
                         entry.getKey().ids().stream().map(BrawlStarsId::new).toList(),
-                        entry.getValue().getVictoryCount() / brawlNum,
-                        entry.getValue().getDefeatCount() / brawlNum,
-                        entry.getValue().getDrawCount() / brawlNum
+                        new ResultCount(
+                                entry.getValue().getVictoryCount() / brawlNum,
+                                entry.getValue().getDefeatCount() / brawlNum,
+                                entry.getValue().getDrawCount() / brawlNum
+                        )
                 ))
                 .toList();
     }
@@ -111,9 +115,11 @@ public class BattleEventResultStatisticsRepository {
                 .map(statsEntity -> new BattleEventBrawlerEnemyResultCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
                         new BrawlStarsId(statsEntity.getEnemyBrawlerBrawlStarsId()),
-                        statsEntity.getVictoryCount(),
-                        statsEntity.getDefeatCount(),
-                        statsEntity.getDrawCount()
+                        new ResultCount(
+                                statsEntity.getVictoryCount(),
+                                statsEntity.getDefeatCount(),
+                                statsEntity.getDrawCount()
+                        )
                 )).toList();
     }
 
