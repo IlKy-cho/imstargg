@@ -23,7 +23,7 @@ public record RankCount(
             return 0;
         }
 
-        return (double) totalBattleCount() / totalBattleCount;
+        return (double) this.totalBattleCount() / totalBattleCount;
     }
 
     public RankCount merge(RankCount other) {
