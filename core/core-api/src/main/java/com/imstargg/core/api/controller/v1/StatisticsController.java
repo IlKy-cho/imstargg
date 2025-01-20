@@ -5,12 +5,13 @@ import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerRankStatist
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersRankStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersResultStatisticsRequest;
-import com.imstargg.core.api.controller.v1.response.BattleEventBrawlerRankStatisticsResponse;
-import com.imstargg.core.api.controller.v1.response.BattleEventBrawlerResultStatisticsResponse;
-import com.imstargg.core.api.controller.v1.response.BattleEventBrawlersRankStatisticsResponse;
-import com.imstargg.core.api.controller.v1.response.BattleEventBrawlersResultStatisticsResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlerRankStatisticsResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlerResultStatisticsResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlersRankStatisticsResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlersResultStatisticsResponse;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.statistics.BattleEventStatisticsService;
+import com.imstargg.core.domain.statistics.BrawlerStatisticsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,13 +22,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class StatisticsController {
 
     private final BattleEventStatisticsService battleEventStatisticsService;
+    private final BrawlerStatisticsService brawlerStatisticsService;
 
-    public StatisticsController(BattleEventStatisticsService battleEventStatisticsService) {
+    public StatisticsController(
+            BattleEventStatisticsService battleEventStatisticsService,
+            BrawlerStatisticsService brawlerStatisticsService
+    ) {
         this.battleEventStatisticsService = battleEventStatisticsService;
+        this.brawlerStatisticsService = brawlerStatisticsService;
     }
 
     @GetMapping("/api/v1/statistics/events/{eventId}/result/brawler")
-    public ListResponse<BattleEventBrawlerResultStatisticsResponse> getBattleEventResultBrawlerStatistics(
+    public ListResponse<BrawlerResultStatisticsResponse> getBattleEventResultBrawlerStatistics(
             @PathVariable long eventId,
             @ModelAttribute @Validated BattleEventBrawlerResultStatisticsRequest request
     ) {
@@ -35,13 +41,13 @@ public class StatisticsController {
                 battleEventStatisticsService.getBattleEventBrawlerResultStatistics(
                                 request.toParams(new BrawlStarsId(eventId)))
                         .stream()
-                        .map(BattleEventBrawlerResultStatisticsResponse::of)
+                        .map(BrawlerResultStatisticsResponse::of)
                         .toList()
         );
     }
 
     @GetMapping("/api/v1/statistics/events/{eventId}/result/brawlers")
-    public ListResponse<BattleEventBrawlersResultStatisticsResponse> getBattleEventResultBrawlersStatistics(
+    public ListResponse<BrawlersResultStatisticsResponse> getBattleEventResultBrawlersStatistics(
             @PathVariable long eventId,
             @ModelAttribute @Validated BattleEventBrawlersResultStatisticsRequest request
     ) {
@@ -49,13 +55,13 @@ public class StatisticsController {
                 battleEventStatisticsService.getBattleEventBrawlersResultStatistics(
                                 request.toParams(new BrawlStarsId(eventId)))
                         .stream()
-                        .map(BattleEventBrawlersResultStatisticsResponse::of)
+                        .map(BrawlersResultStatisticsResponse::of)
                         .toList()
         );
     }
 
     @GetMapping("/api/v1/statistics/events/{eventId}/rank/brawler")
-    public ListResponse<BattleEventBrawlerRankStatisticsResponse> getBattleEventRankBrawlerStatistics(
+    public ListResponse<BrawlerRankStatisticsResponse> getBattleEventRankBrawlerStatistics(
             @PathVariable long eventId,
             @ModelAttribute @Validated BattleEventBrawlerRankStatisticsRequest request
     ) {
@@ -63,13 +69,13 @@ public class StatisticsController {
                 battleEventStatisticsService.getBattleEventBrawlerRankStatistics(
                                 request.toParams(new BrawlStarsId(eventId)))
                         .stream()
-                        .map(BattleEventBrawlerRankStatisticsResponse::of)
+                        .map(BrawlerRankStatisticsResponse::of)
                         .toList()
         );
     }
 
     @GetMapping("/api/v1/statistics/events/{eventId}/rank/brawlers")
-    public ListResponse<BattleEventBrawlersRankStatisticsResponse> getBattleEventRankBrawlersStatistics(
+    public ListResponse<BrawlersRankStatisticsResponse> getBattleEventRankBrawlersStatistics(
             @PathVariable long eventId,
             @ModelAttribute @Validated BattleEventBrawlersRankStatisticsRequest request
     ) {
@@ -77,8 +83,9 @@ public class StatisticsController {
                 battleEventStatisticsService.getBattleEventBrawlersRankStatistics(
                                 request.toParams(new BrawlStarsId(eventId)))
                         .stream()
-                        .map(BattleEventBrawlersRankStatisticsResponse::of)
+                        .map(BrawlersRankStatisticsResponse::of)
                         .toList()
         );
     }
+
 }

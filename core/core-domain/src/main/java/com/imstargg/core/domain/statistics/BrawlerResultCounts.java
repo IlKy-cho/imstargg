@@ -24,18 +24,6 @@ public record BrawlerResultCounts(
         return counts.isEmpty();
     }
 
-    public List<BrawlerResultStatistics> toStatistics() {
-        long totalBattleCount = totalBattleCount();
-        return counts.stream()
-                .map(count -> new BrawlerResultStatistics(
-                        count.brawlerId(),
-                        count.resultCount().totalBattleCount(),
-                        count.resultCount().winRate(),
-                        count.resultCount().pickRate(totalBattleCount),
-                        count.starPlayerCount().starPlayerRate(count.resultCount().totalBattleCount())
-                )).toList();
-    }
-
     public BrawlerResultCounts merge(BrawlerResultCounts other) {
         var brawlerIdToCount = new HashMap<>(counts.stream().collect(
                 Collectors.toMap(BrawlerResultCount::brawlerId, Function.identity())
@@ -50,5 +38,17 @@ public record BrawlerResultCounts(
         });
 
         return new BrawlerResultCounts(brawlerIdToCount.values().stream().toList());
+    }
+
+    public List<BrawlerResultStatistics> toStatistics() {
+        long totalBattleCount = totalBattleCount();
+        return counts.stream()
+                .map(count -> new BrawlerResultStatistics(
+                        count.brawlerId(),
+                        count.resultCount().totalBattleCount(),
+                        count.resultCount().winRate(),
+                        count.resultCount().pickRate(totalBattleCount),
+                        count.starPlayerCount().starPlayerRate(count.resultCount().totalBattleCount())
+                )).toList();
     }
 }

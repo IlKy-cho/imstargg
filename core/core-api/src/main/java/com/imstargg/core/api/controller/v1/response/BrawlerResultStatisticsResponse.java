@@ -2,7 +2,7 @@ package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
 
-public record BattleEventBrawlerResultStatisticsResponse(
+public record BrawlerResultStatisticsResponse(
         long brawlerId,
         long totalBattleCount,
         double winRate,
@@ -10,8 +10,8 @@ public record BattleEventBrawlerResultStatisticsResponse(
         double starPlayerRate
 ) {
 
-    public static BattleEventBrawlerResultStatisticsResponse of(BrawlerResultStatistics statistics) {
-        return new BattleEventBrawlerResultStatisticsResponse(
+    public static BrawlerResultStatisticsResponse of(BrawlerResultStatistics statistics) {
+        return new BrawlerResultStatisticsResponse(
                 statistics.brawlerId().value(),
                 statistics.totalBattleCount(),
                 statistics.winRate(),
