@@ -1,4 +1,4 @@
-package com.imstargg.batch.domain;
+package com.imstargg.batch.domain.statistics;
 
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.TrophyRange;

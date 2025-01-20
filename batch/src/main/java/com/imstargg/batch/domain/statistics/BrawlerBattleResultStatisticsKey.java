@@ -1,51 +1,49 @@
-package com.imstargg.batch.domain;
+package com.imstargg.batch.domain.statistics;
 
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 import java.util.Objects;
 
-public record BrawlerEnemyBattleResultStatisticsKey(
+public record BrawlerBattleResultStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
+        long brawlerBrawlStarsId,
         @Nullable TrophyRange trophyRange,
         @Nullable SoloRankTierRange soloRankTierRange,
-        long brawlerBrawlStarsId,
-        long enemyBrawlerBrawlStarsId,
         boolean duplicateBrawler
 ) {
 
-    public static BrawlerEnemyBattleResultStatisticsKey of(
+    public static BrawlerBattleResultStatisticsKey of(
             BattleCollectionEntity battle,
-            BattleCollectionEntityTeamPlayer myPlayer,
-            BattleCollectionEntityTeamPlayer enemyPlayer
+            BattleCollectionEntityTeamPlayer myPlayer
     ) {
         BattleType battleType = BattleType.find(battle.getType());
-        return new BrawlerEnemyBattleResultStatisticsKey(
+        return new BrawlerBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().toLocalDate(),
+                myPlayer.getBrawler().getBrawlStarsId(),
                 TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies()),
                 SoloRankTierRange.of(battleType, myPlayer.getBrawler().getTrophies()),
-                myPlayer.getBrawler().getBrawlStarsId(),
-                enemyPlayer.getBrawler().getBrawlStarsId(),
                 battle.containsDuplicateBrawler()
         );
     }
 
-    public static BrawlerEnemyBattleResultStatisticsKey of(BrawlerEnemyBattleResultStatisticsCollectionEntity entity) {
-        return new BrawlerEnemyBattleResultStatisticsKey(
+    public static BrawlerBattleResultStatisticsKey of(
+            BrawlerBattleResultStatisticsCollectionEntity entity
+    ) {
+        return new BrawlerBattleResultStatisticsKey(
                 entity.getEventBrawlStarsId(),
                 entity.getBattleDate(),
+                entity.getBrawlerBrawlStarsId(),
                 entity.getTrophyRange(),
                 entity.getSoloRankTierRange(),
-                entity.getBrawlerBrawlStarsId(),
-                entity.getEnemyBrawlerBrawlStarsId(),
                 entity.isDuplicateBrawler()
         );
     }
