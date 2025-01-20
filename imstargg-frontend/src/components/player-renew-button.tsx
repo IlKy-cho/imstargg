@@ -7,11 +7,13 @@ import {getPlayerRenewalStatus, renewPlayer} from "@/lib/api/player";
 import {toast} from "sonner";
 import {useInterval} from "usehooks-ts";
 import {ApiError, ApiErrorTypeValue} from "@/model/response/error";
+import {useRouter} from 'next/navigation';
 
 export default function PlayerRenewButton({player}: Readonly<{ player: Player }>) {
   const [renewalEnabled, setRenewalEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
+  const router = useRouter();
 
   const calculateTimeStatus = useCallback(() => {
     const current = new Date();
@@ -41,7 +43,7 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
       const checkRenewalStatus = async () => {
         const status = await getPlayerRenewalStatus(player.tag);
         if (!status.renewing) {
-          window.location.reload();
+          router.refresh();
         } else {
           setTimeout(checkRenewalStatus, 1000);
         }
