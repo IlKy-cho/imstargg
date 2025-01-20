@@ -1,51 +1,41 @@
 package com.imstargg.batch.domain.statistics;
 
-import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsCollectionEntity;
-import jakarta.persistence.EntityManagerFactory;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.imstargg.storage.db.core.statistics.QBrawlerEnemyBattleResultStatisticsCollectionEntity.brawlerEnemyBattleResultStatisticsCollectionEntity;
+public class BrawlerEnemyBattleResultStatisticsCollector
+        implements StatisticsCollector<BrawlerEnemyBattleResultStatisticsCollectionEntity> {
 
-
-public class BrawlerEnemyBattleResultStatisticsCollector {
-
-    private final ConcurrentHashMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache
-            = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache;
 
     public BrawlerEnemyBattleResultStatisticsCollector(
-            EntityManagerFactory emf, LocalDate battleDate, long eventBrawlStarsId
+            ConcurrentHashMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache
     ) {
-        JPAQueryFactoryUtils.getQueryFactory(emf)
-                .selectFrom(brawlerEnemyBattleResultStatisticsCollectionEntity)
-                .where(
-                        brawlerEnemyBattleResultStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
-                        brawlerEnemyBattleResultStatisticsCollectionEntity.battleDate.eq(battleDate)
-                ).fetch()
-                .forEach(entity -> cache.put(
-                        BrawlerEnemyBattleResultStatisticsKey.of(entity),
-                        entity
-                ));
+        this.cache = cache;
     }
 
-    public void collect(BattleCollectionEntity battle) {
+    @Override
+    public boolean collect(BattleCollectionEntity battle) {
+        if (!battle.canResultStatisticsCollected()) {
+            return false;
+        }
         battle.playerCombinations().forEach(playerCombination -> {
             var key = BrawlerEnemyBattleResultStatisticsKey.of(
                     battle, playerCombination.me(), playerCombination.enemy());
             var stats = getBrawlerEnemyBattleResultStats(key);
             stats.countUp(BattleResult.map(battle.getResult()));
         });
+        return true;
     }
 
+    @Override
     public List<BrawlerEnemyBattleResultStatisticsCollectionEntity> result() {
         return List.copyOf(cache.values());
     }
-
 
     private BrawlerEnemyBattleResultStatisticsCollectionEntity getBrawlerEnemyBattleResultStats(
             BrawlerEnemyBattleResultStatisticsKey key) {

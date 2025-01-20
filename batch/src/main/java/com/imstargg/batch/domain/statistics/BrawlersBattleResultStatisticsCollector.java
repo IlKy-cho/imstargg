@@ -14,28 +14,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.imstargg.storage.db.core.statistics.QBrawlersBattleResultStatisticsCollectionEntity.brawlersBattleResultStatisticsCollectionEntity;
 
+public class BrawlersBattleResultStatisticsCollector
+        implements StatisticsCollector<BrawlersBattleResultStatisticsCollectionEntity> {
 
-public class BrawlersBattleResultStatisticsCollector {
-
-    private final ConcurrentHashMap<BrawlersBattleResultStatisticsKey, BrawlersBattleResultStatisticsCollectionEntity> cache
-            = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<BrawlersBattleResultStatisticsKey, BrawlersBattleResultStatisticsCollectionEntity> cache;
 
     public BrawlersBattleResultStatisticsCollector(
-            EntityManagerFactory emf, LocalDate battleDate, long eventBrawlStarsId
+            ConcurrentHashMap<BrawlersBattleResultStatisticsKey, BrawlersBattleResultStatisticsCollectionEntity> cache
     ) {
-        JPAQueryFactoryUtils.getQueryFactory(emf)
-                .selectFrom(brawlersBattleResultStatisticsCollectionEntity)
-                .where(
-                        brawlersBattleResultStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
-                        brawlersBattleResultStatisticsCollectionEntity.battleDate.eq(battleDate)
-                ).fetch()
-                .forEach(entity -> cache.put(
-                        BrawlersBattleResultStatisticsKey.of(entity),
-                        entity
-                ));
+        this.cache = cache;
     }
 
-    public void collect(BattleCollectionEntity battle) {
+    @Override
+    public boolean collect(BattleCollectionEntity battle) {
+        if (!battle.canResultStatisticsCollected()) {
+            return false;
+        }
         battle.myTeamCombinations()
                 .stream()
                 .filter(myTeamCombination -> myTeamCombination.players().size() == 2)
@@ -45,8 +39,10 @@ public class BrawlersBattleResultStatisticsCollector {
                             brawlersBattleResultStats.countUp(BattleResult.map(battle.getResult()));
                         })
                 );
+        return true;
     }
 
+    @Override
     public List<BrawlersBattleResultStatisticsCollectionEntity> result() {
         return List.copyOf(cache.values());
     }

@@ -12,28 +12,22 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.imstargg.storage.db.core.statistics.QBrawlerBattleResultStatisticsCollectionEntity.brawlerBattleResultStatisticsCollectionEntity;
 
+public class BrawlerBattleResultStatisticsCollector
+        implements StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> {
 
-public class BrawlerBattleResultStatisticsCollector {
-
-    private final ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache
-            = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
 
     public BrawlerBattleResultStatisticsCollector(
-            EntityManagerFactory emf, LocalDate battleDate, long eventBrawlStarsId
+            ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache
     ) {
-        JPAQueryFactoryUtils.getQueryFactory(emf)
-                .selectFrom(brawlerBattleResultStatisticsCollectionEntity)
-                .where(
-                        brawlerBattleResultStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
-                        brawlerBattleResultStatisticsCollectionEntity.battleDate.eq(battleDate)
-                ).fetch()
-                .forEach(entity -> cache.put(
-                        BrawlerBattleResultStatisticsKey.of(entity),
-                        entity
-                ));
+        this.cache = cache;
     }
 
-    public void collect(BattleCollectionEntity battle) {
+    @Override
+    public boolean collect(BattleCollectionEntity battle) {
+        if (!battle.canResultStatisticsCollected()) {
+            return false;
+        }
         boolean isStarPlayer = battle.amIStarPlayer();
         battle.findMe().forEach(myPlayer -> {
             var key = BrawlerBattleResultStatisticsKey.of(battle, myPlayer);
@@ -43,12 +37,13 @@ public class BrawlerBattleResultStatisticsCollector {
                 brawlerBattleResultStats.starPlayer();
             }
         });
+        return true;
     }
 
+    @Override
     public List<BrawlerBattleResultStatisticsCollectionEntity> result() {
         return List.copyOf(cache.values());
     }
-
 
     private BrawlerBattleResultStatisticsCollectionEntity getBrawlerBattleResultStats(BrawlerBattleResultStatisticsKey key) {
         return cache.computeIfAbsent(key, k -> new BrawlerBattleResultStatisticsCollectionEntity(

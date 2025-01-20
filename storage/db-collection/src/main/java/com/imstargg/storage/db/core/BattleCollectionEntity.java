@@ -183,6 +183,12 @@ public class BattleCollectionEntity extends BaseEntity {
                 && teams.size() == 2;
     }
 
+    public boolean canRankStatisticsCollected() {
+        return player.getRank() != null
+                && existsEventId()
+                && BattleType.find(type).isRegular();
+    }
+
     public Long getId() {
         return id;
     }

@@ -1,10 +1,9 @@
 package com.imstargg.batch.job.statistics;
 
-import com.imstargg.batch.domain.statistics.BrawlerBattleRankStatisticsCollector;
+import com.imstargg.batch.domain.statistics.StatisticsCollector;
+import com.imstargg.batch.domain.statistics.StatisticsCollectorFactory;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
-import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;
@@ -16,36 +15,34 @@ import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public class BrawlerBattleRankStatisticsJobItemProcessor
-        implements ItemProcessor<Long, List<BrawlerBattleRankStatisticsCollectionEntity>> {
+public class StatisticsJobItemProcessor<T> implements ItemProcessor<Long, List<T>> {
 
-    private static final Logger log = LoggerFactory.getLogger(BrawlerBattleRankStatisticsJobItemProcessor.class);
-
+    private static final Logger log = LoggerFactory.getLogger(StatisticsJobItemProcessor.class);
     private static final int PAGE_SIZE = 1000;
 
-    private final EntityManagerFactory emf;
+    private final StatisticsCollectorFactory<T> statisticsCollectorFactory;
     private final BattleCollectionJpaRepository battleCollectionJpaRepository;
     private final Clock clock;
     private final LocalDate date;
 
-    public BrawlerBattleRankStatisticsJobItemProcessor(
-            EntityManagerFactory emf,
+    public StatisticsJobItemProcessor(
+            StatisticsCollectorFactory<T> statisticsCollectorFactory,
             BattleCollectionJpaRepository battleCollectionJpaRepository,
             Clock clock,
             LocalDate date
     ) {
-        this.emf = emf;
+        this.statisticsCollectorFactory = statisticsCollectorFactory;
         this.battleCollectionJpaRepository = battleCollectionJpaRepository;
         this.clock = clock;
         this.date = date;
     }
 
     @Override
-    public List<BrawlerBattleRankStatisticsCollectionEntity> process(Long item) throws Exception {
+    public List<T> process(Long item) throws Exception {
+        long eventId = item;
         OffsetDateTime fromBattleTime = date.atStartOfDay(clock.getZone()).toOffsetDateTime();
         OffsetDateTime toBattleTime = date.plusDays(1).atStartOfDay(clock.getZone()).toOffsetDateTime();
-        long eventId = item;
-        var collector = new BrawlerBattleRankStatisticsCollector(emf, date, item);
+        StatisticsCollector<T> collector = statisticsCollectorFactory.create(eventId, date);
         boolean hasNext = true;
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         while (hasNext) {
@@ -60,8 +57,7 @@ public class BrawlerBattleRankStatisticsJobItemProcessor
             List<BattleCollectionEntity> battles = slice.getContent();
             int processedCount = 0;
             for (BattleCollectionEntity battle : battles) {
-                if (battle.canResultStatisticsCollected()) {
-                    collector.collect(battle);
+                if (collector.collect(battle)) {
                     processedCount++;
                 }
             }
@@ -71,5 +67,4 @@ public class BrawlerBattleRankStatisticsJobItemProcessor
 
         return collector.result();
     }
-
 }

@@ -1,46 +1,38 @@
 package com.imstargg.batch.domain.statistics;
 
-import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
-import jakarta.persistence.EntityManagerFactory;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.imstargg.storage.db.core.statistics.QBrawlerBattleRankStatisticsCollectionEntity.brawlerBattleRankStatisticsCollectionEntity;
 
+public class BrawlerBattleRankStatisticsCollector
+        implements StatisticsCollector<BrawlerBattleRankStatisticsCollectionEntity> {
 
-public class BrawlerBattleRankStatisticsCollector {
-
-    private final ConcurrentHashMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache
-            = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache;
 
     public BrawlerBattleRankStatisticsCollector(
-            EntityManagerFactory emf, LocalDate battleDate, long eventBrawlStarsId
+            ConcurrentHashMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache
     ) {
-        JPAQueryFactoryUtils.getQueryFactory(emf)
-                .selectFrom(brawlerBattleRankStatisticsCollectionEntity)
-                .where(
-                        brawlerBattleRankStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
-                        brawlerBattleRankStatisticsCollectionEntity.battleDate.eq(battleDate)
-                ).fetch()
-                .forEach(entity -> cache.put(
-                        BrawlerBattleRankStatisticsKey.of(entity),
-                        entity
-                ));
+        this.cache = cache;
     }
 
-    public void collect(BattleCollectionEntity battle) {
+    @Override
+    public boolean collect(BattleCollectionEntity battle) {
+        if (!battle.canRankStatisticsCollected()) {
+            return false;
+        }
         battle.playerCombinations().forEach(playerCombination -> {
             var key = BrawlerBattleRankStatisticsKey.of(battle);
             var brawlerBattleResultStats = getBrawlerBattleResultStats(key);
             brawlerBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
         });
+        return true;
     }
 
+    @Override
     public List<BrawlerBattleRankStatisticsCollectionEntity> result() {
         return List.copyOf(cache.values());
     }
