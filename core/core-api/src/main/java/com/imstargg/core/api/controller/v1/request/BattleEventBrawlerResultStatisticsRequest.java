@@ -5,12 +5,12 @@ import com.imstargg.core.domain.statistics.BattleEventBrawlerResultStatisticsPar
 import com.imstargg.core.enums.SoloRankTierRangeRange;
 import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.PastOrPresent;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 
 public record BattleEventBrawlerResultStatisticsRequest(
-        @PastOrPresent LocalDate date,
+        @NotNull LocalDate date,
         @Nullable TrophyRangeRange trophyRange,
         @Nullable SoloRankTierRangeRange SoloRankTierRange,
         boolean duplicateBrawler
