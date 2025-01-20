@@ -63,7 +63,7 @@ public class BattleEventResultStatisticsRepository {
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             int brawlNum, boolean duplicateBrawler
     ) {
-        Map<BrawlerIdHash, BattleEventResultCounter> brawlersCounters = new HashMap<>();
+        Map<BrawlerIdHash, ResultCounter> brawlersCounters = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
 
@@ -78,9 +78,9 @@ public class BattleEventResultStatisticsRepository {
             hasNext = brawlersBattleResultStatsSlice.hasNext();
 
             brawlersBattleResultStatsSlice.forEach(stats -> {
-                BattleEventResultCounter brawlersCounter = brawlersCounters.computeIfAbsent(
+                ResultCounter brawlersCounter = brawlersCounters.computeIfAbsent(
                         new BrawlerIdHash(stats.getBrawlers().getIdHash()),
-                        k -> new BattleEventResultCounter()
+                        k -> new ResultCounter()
                 );
                 brawlersCounter.addVictory(stats.getVictoryCount());
                 brawlersCounter.addDefeat(stats.getDefeatCount());
@@ -123,42 +123,4 @@ public class BattleEventResultStatisticsRepository {
                 )).toList();
     }
 
-    private static class BattleEventResultCounter {
-
-        private long victoryCount;
-        private long defeatCount;
-        private long drawCount;
-
-        BattleEventResultCounter() {
-            this.victoryCount = 0;
-            this.defeatCount = 0;
-            this.drawCount = 0;
-        }
-
-        void addVictory(long count) {
-            victoryCount += count;
-        }
-
-        void addDefeat(long count) {
-            defeatCount += count;
-        }
-
-        void addDraw(long count) {
-            drawCount += count;
-        }
-
-
-        long getVictoryCount() {
-            return victoryCount;
-        }
-
-        long getDefeatCount() {
-            return defeatCount;
-        }
-
-        long getDrawCount() {
-            return drawCount;
-        }
-
-    }
 }
