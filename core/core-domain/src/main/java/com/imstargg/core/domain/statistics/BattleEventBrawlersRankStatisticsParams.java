@@ -1,11 +1,11 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.utils.DateUtils;
 import com.imstargg.core.enums.TrophyRangeRange;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Stream;
 
 public record BattleEventBrawlersRankStatisticsParams(
         BrawlStarsId eventId,
@@ -15,7 +15,7 @@ public record BattleEventBrawlersRankStatisticsParams(
 ) {
 
     public List<BattleEventBrawlersRankStatisticsParam> toParamList() {
-        return battleDateWeekStream().flatMap(battleDate ->
+        return DateUtils.lastAWeekStream(date).flatMap(battleDate ->
                 trophyRangeRange.getRanges().stream().map(trophyRange ->
                         new BattleEventBrawlersRankStatisticsParam(
                                 eventId,
@@ -27,8 +27,4 @@ public record BattleEventBrawlersRankStatisticsParams(
         ).toList();
     }
 
-    private Stream<LocalDate> battleDateWeekStream() {
-        return Stream.iterate(date, battleDate -> battleDate.minusDays(1))
-                .limit(7);
-    }
 }
