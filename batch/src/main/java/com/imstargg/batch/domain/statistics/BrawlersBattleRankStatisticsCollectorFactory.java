@@ -5,6 +5,7 @@ import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsColle
 import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.imstargg.storage.db.core.statistics.QBrawlersBattleRankStatisticsCollectionEntity.brawlersBattleRankStatisticsCollectionEntity;
@@ -20,16 +21,14 @@ public class BrawlersBattleRankStatisticsCollectorFactory
     public StatisticsCollector<BrawlersBattleRankStatisticsCollectionEntity> create(
             long eventBrawlStarsId, LocalDate battleDate) {
         var cache = new ConcurrentHashMap<BrawlersBattleRankStatisticsKey, BrawlersBattleRankStatisticsCollectionEntity>();
-        JPAQueryFactoryUtils.getQueryFactory(getEntityManagerFactory())
+        List<BrawlersBattleRankStatisticsCollectionEntity> entities = JPAQueryFactoryUtils.getQueryFactory(getEntityManagerFactory())
                 .selectFrom(brawlersBattleRankStatisticsCollectionEntity)
                 .where(
                         brawlersBattleRankStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
                         brawlersBattleRankStatisticsCollectionEntity.battleDate.eq(battleDate)
-                ).fetch()
-                .forEach(entity -> cache.put(
-                        BrawlersBattleRankStatisticsKey.of(entity),
-                        entity
-                ));
+                ).fetch();
+        entities.forEach(BrawlersBattleRankStatisticsCollectionEntity::init);
+        entities.forEach(entity -> cache.put(BrawlersBattleRankStatisticsKey.of(entity), entity));
 
         return new BrawlersBattleRankStatisticsCollector(cache);
     }

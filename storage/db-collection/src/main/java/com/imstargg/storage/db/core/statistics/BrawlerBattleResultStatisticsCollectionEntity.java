@@ -47,6 +47,12 @@ public class BrawlerBattleResultStatisticsCollectionEntity extends BrawlerBattle
         starPlayerCount++;
     }
 
+    @Override
+    public void init() {
+        super.init();
+        starPlayerCount = 0;
+    }
+
     public Long getId() {
         return id;
     }
