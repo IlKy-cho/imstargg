@@ -19,7 +19,7 @@ import {
   BattleEventBrawlerResultStatistics,
   BattleEventBrawlersRankStatistics,
   BattleEventBrawlersResultStatistics
-} from "@/components/battle-event-statistics";
+} from "@/components/statistics";
 import {getBrawlers} from "@/lib/api/brawler";
 import {
   BrawlerResultStatistics as IBrawlerResultStatistics
