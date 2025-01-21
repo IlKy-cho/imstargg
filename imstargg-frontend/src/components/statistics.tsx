@@ -13,14 +13,15 @@ import {
   BrawlersResultStatistics as IBrawlersResultStatistics
 } from "@/model/statistics/BrawlersResultStatistics";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
-import { BrawlerRole } from "@/model/enums/BrawlerRole";
-import { BrawlerRarity } from "@/model/enums/BrawlerRarity";
-import { BrawlerClassIcon, brawlerClassTitle } from "./brawler-class";
-import { brawlerRarityTitle } from "./brawler-rarity";
+import {BrawlerRole} from "@/model/enums/BrawlerRole";
+import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
+import {BrawlerClassIcon} from "./brawler-class";
+import {brawlerRarityTitle} from "./brawler-rarity";
+import {BrawlerLink} from "@/components/brawler";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
-function BrawlerCell({brawler} : {brawler: Brawler | null}) {
+function BrawlerCell({brawler}: { brawler: Brawler | null }) {
   return (
     <div className="flex flex-col sm:flex-row gap-1 flex-grow items-center">
       <BrawlerProfileImage
@@ -32,7 +33,7 @@ function BrawlerCell({brawler} : {brawler: Brawler | null}) {
   )
 }
 
-function BrawlersCell({brawlers} : {brawlers: Array<Brawler | null>}) {
+function BrawlersCell({brawlers}: { brawlers: Array<Brawler | null> }) {
   return (
     <div className="flex gap-1">
       {brawlers.map(brawler => (
@@ -285,8 +286,6 @@ export function BrawlerListStatistics(
     };
   });
 
-  console.log(data);
-
   const columns: ColumnDef<BrawlerListStatisticsData>[] = [
     {
       accessorKey: "brawler",
@@ -295,7 +294,9 @@ export function BrawlerListStatistics(
         <DataTableColumnHeader column={column} title={"브롤러"}/>,
       cell: ({row}) => {
         return (
-          <BrawlerCell brawler={row.original.brawler}/>
+          <BrawlerLink brawler={row.original.brawler}>
+            <BrawlerCell brawler={row.original.brawler}/>
+          </BrawlerLink>
         );
       },
     },
