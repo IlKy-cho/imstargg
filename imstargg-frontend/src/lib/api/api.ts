@@ -235,3 +235,111 @@ export async function fetchGetBattleEventBrawlersRankStatistics(
     }
   });
 }
+
+export async function fetchGetBrawlerResultStatistics(
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null,
+  options?: CacheOptions
+): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/statistics/brawler-result`);
+  url.searchParams.append('date', date.toISOString().split('T')[0]);
+  if (trophyRange) {
+    url.searchParams.append('trophyRange', trophyRange);
+  }
+  if (soloRankTierRange) {
+    url.searchParams.append('soloRankTierRange', soloRankTierRange);
+  }
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['statistics', 'brawler-result', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
+
+export async function fetchGetBrawlerBattleEventResultStatistics(
+  brawlerId: number,
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null,
+  options?: CacheOptions
+): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result`);
+  url.searchParams.append('date', date.toISOString().split('T')[0]);
+  if (trophyRange) {
+    url.searchParams.append('trophyRange', trophyRange);
+  }
+  if (soloRankTierRange) {
+    url.searchParams.append('soloRankTierRange', soloRankTierRange);
+  }
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['statistics', 'brawlers', brawlerId.toString(), 'result', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
+
+export async function fetchGetBrawlerBrawlersResultStatistics(
+  brawlerId: number,
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null,
+  options?: CacheOptions
+): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/brawlers-result`);
+  url.searchParams.append('date', date.toISOString().split('T')[0]);
+  if (trophyRange) {
+    url.searchParams.append('trophyRange', trophyRange);
+  }
+  if (soloRankTierRange) {
+    url.searchParams.append('soloRankTierRange', soloRankTierRange);
+  }
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['statistics', 'brawlers', brawlerId.toString(), 'brawlers-result', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
+
+
+export async function fetchGetBrawlerEnemyResultStatistics(
+  brawlerId: number,
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null,
+  options?: CacheOptions
+): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/enemy-result`);
+  url.searchParams.append('date', date.toISOString().split('T')[0]);
+  if (trophyRange) {
+    url.searchParams.append('trophyRange', trophyRange);
+  }
+  if (soloRankTierRange) {
+    url.searchParams.append('soloRankTierRange', soloRankTierRange);
+  }
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['statistics', 'brawlers', brawlerId.toString(), 'enemy-result', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}

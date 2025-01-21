@@ -1,12 +1,14 @@
 import {TrophyRange} from "@/model/enums/TrophyRange";
 import {SoloRankTierRange} from "@/model/enums/SoloRankTierRange";
-import {fetchGetBattleEventBrawlerResultStatistics, fetchGetBattleEventBrawlersResultStatistics, fetchGetBattleEventBrawlerRankStatistics, fetchGetBattleEventBrawlersRankStatistics} from "@/lib/api/api";
+import {fetchGetBattleEventBrawlerResultStatistics, fetchGetBattleEventBrawlersResultStatistics, fetchGetBattleEventBrawlerRankStatistics, fetchGetBattleEventBrawlersRankStatistics, fetchGetBrawlerResultStatistics, fetchGetBrawlerBattleEventResultStatistics, fetchGetBrawlerBrawlersResultStatistics, fetchGetBrawlerEnemyResultStatistics} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
 import {BrawlerResultStatistics} from "@/model/statistics/BrawlerResultStatistics";
 import {BrawlerRankStatistics} from "@/model/statistics/BrawlerRankStatistics";
 import {BrawlersRankStatistics} from "@/model/statistics/BrawlersRankStatistics";
 import {BrawlersResultStatistics} from "@/model/statistics/BrawlersResultStatistics";
 import {ApiError} from "@/model/response/error";
+import { BrawlerEnemyResultStatistics } from "@/model/statistics/BrawlerEnemyResultStatistics";
+import { BattleEventResultStatistics } from "@/model/statistics/BattleEventResultStatistics";
 
 export async function getBattleEventBrawlerResultStatistics(
   eventId: number,
@@ -79,6 +81,81 @@ export async function getBattleEventBrawlersRankStatistics(
   if (response.ok) {
     const data = await response.json() as ListResponse<BrawlersRankStatistics>;
     return data.content.sort((a, b) => a.averageRank - b.averageRank);
+  }
+
+  throw await ApiError.create(response);
+}
+
+export async function getBrawlerResultStatistics(
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null
+): Promise<BrawlerResultStatistics[]> {
+  const response = await fetchGetBrawlerResultStatistics(
+    date, trophyRange, soloRankTierRange,
+    {revalidate: 60 * 60}
+  );
+
+  if (response.ok) {
+    const data = await response.json() as ListResponse<BrawlerResultStatistics>;
+    return data.content.sort((a, b) => b.winRate - a.winRate);
+  }
+
+  throw await ApiError.create(response);
+}
+
+export async function getBrawlerBattleEventResultStatistics(
+  brawlerId: number,
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null
+): Promise<BattleEventResultStatistics[]> {
+  const response = await fetchGetBrawlerBattleEventResultStatistics(
+    brawlerId, date, trophyRange, soloRankTierRange,
+    {revalidate: 60 * 60}
+  );
+
+  if (response.ok) {
+    const data = await response.json() as ListResponse<BattleEventResultStatistics>;
+    return data.content.sort((a, b) => b.winRate - a.winRate);
+  }
+
+  throw await ApiError.create(response);
+}
+
+export async function getBrawlerBrawlersResultStatistics(
+  brawlerId: number,
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null
+): Promise<BrawlersResultStatistics[]> {
+  const response = await fetchGetBrawlerBrawlersResultStatistics(
+    brawlerId, date, trophyRange, soloRankTierRange,
+    {revalidate: 60 * 60}
+  );
+
+  if (response.ok) {
+    const data = await response.json() as ListResponse<BrawlersResultStatistics>;
+    return data.content.sort((a, b) => b.winRate - a.winRate);
+  }
+
+  throw await ApiError.create(response);
+}
+
+export async function getBrawlerEnemyResultStatistics(
+  brawlerId: number,
+  date: Date,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null
+): Promise<BrawlerEnemyResultStatistics[]> {
+  const response = await fetchGetBrawlerEnemyResultStatistics(
+    brawlerId, date, trophyRange, soloRankTierRange,
+    {revalidate: 60 * 60}
+  );
+
+  if (response.ok) {
+    const data = await response.json() as ListResponse<BrawlerEnemyResultStatistics>;
+    return data.content.sort((a, b) => b.winRate - a.winRate);
   }
 
   throw await ApiError.create(response);
