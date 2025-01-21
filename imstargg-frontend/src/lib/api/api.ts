@@ -91,6 +91,20 @@ export async function fetchGetBrawlers(options?: CacheOptions): Promise<Response
   });
 }
 
+export async function fetchGetBrawler(id: number, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/brawlers/${id}`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlers', id.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
+
 export async function fetchGetBrawlStarsNews(page: number, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/brawlstars/news`);
   url.searchParams.append('language', 'KOREAN');
