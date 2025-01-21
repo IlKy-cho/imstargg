@@ -1,4 +1,4 @@
-export interface BattleEventBrawlerRankStatistics {
+export interface BrawlerRankStatistics {
   brawlerId: number;
   totalBattleCount: number;
   averageRank: number;
