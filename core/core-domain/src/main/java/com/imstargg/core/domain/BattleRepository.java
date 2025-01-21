@@ -3,7 +3,6 @@ package com.imstargg.core.domain;
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.domain.brawlstars.BattleEventMap;
 import com.imstargg.core.domain.brawlstars.BattleEventRepository;
-import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
@@ -16,7 +15,6 @@ import com.imstargg.storage.db.core.BattleJpaRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,21 +28,15 @@ public class BattleRepository {
 
     private static final int PAGE_SIZE = 25;
 
-    private final Clock clock;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventRepository battleEventRepository;
-    private final BrawlerRepositoryWithCache brawlerRepository;
 
     public BattleRepository(
-            Clock clock,
             BattleJpaRepository battleJpaRepository,
-            BattleEventRepository battleEventRepository,
-            BrawlerRepositoryWithCache brawlerRepository
+            BattleEventRepository battleEventRepository
     ) {
-        this.clock = clock;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventRepository = battleEventRepository;
-        this.brawlerRepository = brawlerRepository;
     }
 
     public Slice<PlayerBattle> find(Player player, int page, Language language) {
@@ -137,10 +129,7 @@ public class BattleRepository {
     private BattlePlayerBrawler mapBattlePlayerBrawler(BattleType battleType, BattleEntityTeamPlayer player) {
         boolean isSoloRanked = BattleType.SOLO_RANKED.equals(battleType);
         return new BattlePlayerBrawler(
-                brawlerRepository.find(
-                        new BrawlStarsId(player.getBrawler().getBrawlStarsId()),
-                        Language.KOREAN
-                ).orElse(null),
+                new BrawlStarsId(player.getBrawler().getBrawlStarsId()),
                 player.getBrawler().getPower(),
                 isSoloRanked ? null : player.getBrawler().getTrophies(),
                 isSoloRanked ? null : player.getBrawler().getTrophyChange()
