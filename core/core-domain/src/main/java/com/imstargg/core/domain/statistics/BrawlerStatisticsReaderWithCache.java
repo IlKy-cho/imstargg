@@ -18,7 +18,7 @@ public class BrawlerStatisticsReaderWithCache {
     }
 
     @Cacheable(key = "'brawler-result-counts:v1:date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
-    public BrawlerResultCounts getBrawlerResultCounts(BrawlerResultStatisticsParam param) {
+    public BrawlerResultCounts getBrawlerResultCounts(BrawlerResultCountParam param) {
         return new BrawlerResultCounts(
                 brawlerResultStatisticsRepository.findBrawlerResultCounts(
                         param.date(),
@@ -29,7 +29,7 @@ public class BrawlerStatisticsReaderWithCache {
     }
 
     @Cacheable(key = "'brawler-battle-event-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
-    public BattleEventResultCounts getBrawlerBattleEventResultCounts(BrawlerBattleEventResultStatisticsParam param) {
+    public BattleEventResultCounts getBrawlerBattleEventResultCounts(BrawlerBattleEventResultCountParam param) {
         return new BattleEventResultCounts(
                 brawlerResultStatisticsRepository.findBrawlerBattleEventResultCounts(
                         param.brawlerId(),
@@ -41,7 +41,7 @@ public class BrawlerStatisticsReaderWithCache {
     }
 
     @Cacheable(key = "'brawler-brawlers-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
-    public BrawlersResultCounts getBrawlerBrawlersResultCounts(BrawlerBrawlersResultStatisticsParam param) {
+    public BrawlersResultCounts getBrawlerBrawlersResultCounts(BrawlerBrawlersResultCountParam param) {
         return new BrawlersResultCounts(
                 brawlerResultStatisticsRepository.findBrawlerBrawlersResultCounts(
                         param.brawlerId(),

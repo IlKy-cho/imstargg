@@ -19,25 +19,25 @@ public class BattleEventStatisticsReaderWithAsync {
     }
 
     public Future<BrawlerResultCounts> getBattleEventBrawlerResultCounts(
-            BattleEventBrawlerResultStatisticsParam param
+            BattleEventBrawlerResultCountParam param
     ) {
         return CompletableFuture.completedFuture(reader.getBattleEventBrawlerResultCounts(param));
     }
 
     public Future<BrawlersResultCounts> getBattleEventBrawlersResultCounts(
-            BattleEventBrawlersResultStatisticsParam param
+            BattleEventBrawlersResultCountParam param
     ) {
         return CompletableFuture.completedFuture(reader.getBattleEventBrawlersResultCounts(param));
     }
 
     public Future<BrawlerRankCounts> getBattleEventBrawlerRankCounts(
-            BattleEventBrawlerRankStatisticsParam param
+            BattleEventBrawlerRankCountParam param
     ) {
         return CompletableFuture.completedFuture(reader.getBattleEventBrawlerRankCounts(param));
     }
 
     public Future<BrawlersRankCounts> getBattleEventBrawlersRankCounts(
-            BattleEventBrawlersRankStatisticsParam param
+            BattleEventBrawlersRankCountParam param
     ) {
         return CompletableFuture.completedFuture(reader.getBattleEventBrawlersRankCounts(param));
     }

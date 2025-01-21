@@ -43,7 +43,7 @@ public class StatisticsController {
     ) {
         return new ListResponse<>(
                 battleEventStatisticsService.getBattleEventBrawlerResultStatistics(
-                                request.toParams(new BrawlStarsId(eventId)))
+                                request.toParam(new BrawlStarsId(eventId)))
                         .stream()
                         .map(BrawlerResultStatisticsResponse::of)
                         .toList()
@@ -57,7 +57,7 @@ public class StatisticsController {
     ) {
         return new ListResponse<>(
                 battleEventStatisticsService.getBattleEventBrawlersResultStatistics(
-                                request.toParams(new BrawlStarsId(eventId)))
+                                request.toParam(new BrawlStarsId(eventId)))
                         .stream()
                         .map(BrawlersResultStatisticsResponse::of)
                         .toList()
@@ -71,7 +71,7 @@ public class StatisticsController {
     ) {
         return new ListResponse<>(
                 battleEventStatisticsService.getBattleEventBrawlerRankStatistics(
-                                request.toParams(new BrawlStarsId(eventId)))
+                                request.toParam(new BrawlStarsId(eventId)))
                         .stream()
                         .map(BrawlerRankStatisticsResponse::of)
                         .toList()
@@ -85,7 +85,7 @@ public class StatisticsController {
     ) {
         return new ListResponse<>(
                 battleEventStatisticsService.getBattleEventBrawlersRankStatistics(
-                                request.toParams(new BrawlStarsId(eventId)))
+                                request.toParam(new BrawlStarsId(eventId)))
                         .stream()
                         .map(BrawlersRankStatisticsResponse::of)
                         .toList()
@@ -97,7 +97,7 @@ public class StatisticsController {
             @ModelAttribute @Validated BrawlerResultStatisticsRequest request
     ) {
         return new ListResponse<>(
-                brawlerStatisticsService.getBrawlerResultStatistics(request.toParams())
+                brawlerStatisticsService.getBrawlerResultStatistics(request.toParam())
                         .stream()
                         .map(BrawlerResultStatisticsResponse::of)
                         .toList()
@@ -111,7 +111,7 @@ public class StatisticsController {
     ) {
         return new ListResponse<>(
                 brawlerStatisticsService.getBrawlerBattleEventResultStatistics(
-                                request.toParams(new BrawlStarsId(brawlerId))
+                                request.toParam(new BrawlStarsId(brawlerId))
                         ).stream()
                         .map(BattleEventResultStatisticsResponse::of)
                         .toList()
@@ -125,7 +125,7 @@ public class StatisticsController {
     ) {
         return new ListResponse<>(
                 brawlerStatisticsService.getBrawlerBrawlersResultStatistics(
-                                request.toParams(new BrawlStarsId(brawlerId))
+                                request.toParam(new BrawlStarsId(brawlerId))
                         ).stream()
                         .map(BrawlersResultStatisticsResponse::of)
                         .toList()
