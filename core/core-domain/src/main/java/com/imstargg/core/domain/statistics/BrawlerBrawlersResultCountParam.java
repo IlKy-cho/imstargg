@@ -11,6 +11,7 @@ public record BrawlerBrawlersResultCountParam(
         BrawlStarsId brawlerId,
         LocalDate date,
         @Nullable TrophyRange trophyRange,
-        @Nullable SoloRankTierRange soloRankTierRange
+        @Nullable SoloRankTierRange soloRankTierRange,
+        int brawlersNum
 ) {
 }

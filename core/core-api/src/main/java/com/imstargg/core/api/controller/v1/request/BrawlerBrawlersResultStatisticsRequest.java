@@ -20,7 +20,8 @@ public record BrawlerBrawlersResultStatisticsRequest(
                 brawlerId,
                 date(),
                 trophyRange(),
-                soloRankTierRange()
+                soloRankTierRange(),
+                2
         );
     }
 }
