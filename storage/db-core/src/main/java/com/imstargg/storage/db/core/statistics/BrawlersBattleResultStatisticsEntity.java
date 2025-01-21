@@ -21,8 +21,8 @@ import jakarta.persistence.UniqueConstraint;
         },
         indexes = {
                 @Index(
-                        name = "ix_battledate_range_brawler",
-                        columnList = "battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id"
+                        name = "ix_battledate_range_brawler_num",
+                        columnList = "battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id, brawler_num"
                 )
         }
 )

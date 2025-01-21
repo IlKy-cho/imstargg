@@ -299,6 +299,10 @@ alter table brawlers_battle_result_stats
                 trophy_range, solo_rank_tier_range, duplicate_brawler,
                 brawler_brawlstars_id, brawler_brawlstars_id_hash);
 
+create index ix_battledate_range_brawler_num
+    on brawlers_battle_result_stats (battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id, brawler_num);
+
+
 create table brawler_enemy_battle_result_stats
 (
     brawler_enemy_battle_result_stats_id bigint       not null auto_increment,
