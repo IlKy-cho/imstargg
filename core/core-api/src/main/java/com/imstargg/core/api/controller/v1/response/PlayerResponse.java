@@ -4,7 +4,7 @@ import com.imstargg.core.domain.Player;
 import com.imstargg.core.enums.SoloRankTier;
 import jakarta.annotation.Nullable;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record PlayerResponse(
         String tag,
@@ -15,7 +15,7 @@ public record PlayerResponse(
         int highestTrophies,
         @Nullable SoloRankTier soloRankTier,
         @Nullable String clubTag,
-        LocalDateTime updatedAt
+        OffsetDateTime updatedAt
 ) {
 
     public static PlayerResponse from(Player player) {

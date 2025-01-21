@@ -1,10 +1,11 @@
 package com.imstargg.client.brawlstars.news;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.annotation.Nullable;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record BrawlStarsNewsArticleResponse(
         @Nullable String descriptionForNewsArchive,
@@ -13,7 +14,8 @@ public record BrawlStarsNewsArticleResponse(
         BrawlStarsNewArticleThumbnailResponse thumbnail,
         String title,
         String linkUrl,
-        LocalDateTime publishDate,
+        @JsonFormat(shape = JsonFormat.Shape.STRING)
+        OffsetDateTime publishDate,
         boolean isSmallNews,
         String locale
 ) {

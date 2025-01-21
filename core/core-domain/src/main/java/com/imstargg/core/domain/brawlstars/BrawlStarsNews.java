@@ -1,10 +1,10 @@
 package com.imstargg.core.domain.brawlstars;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record BrawlStarsNews(
         String title,
         String linkUrl,
-        LocalDateTime publishDate
+        OffsetDateTime publishDate
 ) {
 }

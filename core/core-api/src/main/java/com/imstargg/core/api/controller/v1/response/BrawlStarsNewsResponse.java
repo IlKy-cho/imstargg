@@ -2,12 +2,12 @@ package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.brawlstars.BrawlStarsNews;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record BrawlStarsNewsResponse(
         String title,
         String linkUrl,
-        LocalDateTime publishDate
+        OffsetDateTime publishDate
 ) {
 
     public static BrawlStarsNewsResponse of(BrawlStarsNews brawlStarsNews) {

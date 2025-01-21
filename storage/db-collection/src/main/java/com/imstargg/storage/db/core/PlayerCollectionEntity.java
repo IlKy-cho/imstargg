@@ -17,7 +17,6 @@ import jakarta.persistence.Version;
 
 import java.time.Clock;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -195,8 +194,8 @@ public class PlayerCollectionEntity extends BaseEntity {
             return true;
         }
         return status.isNextUpdateCooldownOver(
-                LocalDateTime.now(clock),
-                getUpdatedAt().toLocalDateTime()
+                OffsetDateTime.now(clock),
+                getUpdatedAt()
         );
     }
 
