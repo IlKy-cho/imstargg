@@ -1,14 +1,15 @@
 package com.imstargg.core.api.controller.v1.response;
 
+import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.PlayerBrawler;
 
 import java.util.List;
 
 public record PlayerBrawlerResponse(
-        BrawlerResponse brawler,
-        List<GearResponse> gears,
-        List<StarPowerResponse> starPowers,
-        List<GadgetResponse> gadgets,
+        long brawlerId,
+        List<Long> gearIds,
+        List<Long> starPowerIds,
+        List<Long> gadgetIds,
         int power,
         int rank,
         int trophies,
@@ -17,10 +18,10 @@ public record PlayerBrawlerResponse(
 
     public static PlayerBrawlerResponse from(PlayerBrawler playerBrawler) {
         return new PlayerBrawlerResponse(
-                playerBrawler.brawler() == null ? null : BrawlerResponse.from(playerBrawler.brawler()),
-                playerBrawler.gears().stream().map(GearResponse::from).toList(),
-                playerBrawler.starPowers().stream().map(StarPowerResponse::from).toList(),
-                playerBrawler.gadgets().stream().map(GadgetResponse::from).toList(),
+                playerBrawler.brawlStarsId().value(),
+                playerBrawler.gearIds().stream().map(BrawlStarsId::value).toList(),
+                playerBrawler.starPowerIds().stream().map(BrawlStarsId::value).toList(),
+                playerBrawler.gadgetIds().stream().map(BrawlStarsId::value).toList(),
                 playerBrawler.power(),
                 playerBrawler.rank(),
                 playerBrawler.trophies(),
