@@ -17,7 +17,7 @@ import {BrawlerRole} from "@/model/enums/BrawlerRole";
 import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
 import {BrawlerClassIcon} from "./brawler-class";
 import {brawlerRarityTitle} from "./brawler-rarity";
-import {BrawlerLink} from "@/components/brawler";
+import {BrawlerLink} from "@/components/brawler-link";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
