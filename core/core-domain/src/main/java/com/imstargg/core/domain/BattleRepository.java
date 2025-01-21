@@ -69,7 +69,7 @@ public class BattleRepository {
             BattleEntity battleEntity, Map<BrawlStarsId, BattleEvent> eventIdToEvent) {
         BattleType battleType = BattleType.find(battleEntity.getType());
         return new PlayerBattle(
-                battleEntity.getBattleTime().toLocalDateTime(),
+                battleEntity.getBattleTime(),
                 mapBattleEvent(battleEntity, eventIdToEvent),
                 BattleMode.find(battleEntity.getMode()),
                 battleType,

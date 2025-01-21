@@ -7,11 +7,11 @@ import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import jakarta.annotation.Nullable;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 public record PlayerBattleResponse(
-        LocalDateTime battleTime,
+        OffsetDateTime battleTime,
         PlayerBattleEventResponse event,
         BattleMode mode,
         BattleType type,

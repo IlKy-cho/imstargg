@@ -1,7 +1,7 @@
 package com.imstargg.core.enums;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +26,7 @@ public enum PlayerStatus {
         return this == NEW || this == DORMANT || this == DORMANT_RETURNED;
     }
 
-    public boolean isNextUpdateCooldownOver(LocalDateTime now, LocalDateTime updatedAt) {
+    public boolean isNextUpdateCooldownOver(OffsetDateTime now, OffsetDateTime updatedAt) {
         return updatedAt.plus(NEXT_UPDATABLE_TERM).isBefore(now);
     }
 }

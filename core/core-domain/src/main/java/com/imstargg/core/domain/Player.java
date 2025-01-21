@@ -5,7 +5,7 @@ import com.imstargg.core.enums.SoloRankTier;
 import jakarta.annotation.Nullable;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record Player(
         PlayerId id,
@@ -17,11 +17,11 @@ public record Player(
         int highestTrophies,
         @Nullable SoloRankTier soloRankTier,
         @Nullable BrawlStarsTag clubTag,
-        LocalDateTime updatedAt,
+        OffsetDateTime updatedAt,
         PlayerStatus status
 ) {
 
     public boolean isNextUpdateCooldownOver(Clock clock) {
-        return status.isNextUpdateCooldownOver(LocalDateTime.now(clock), updatedAt);
+        return status.isNextUpdateCooldownOver(OffsetDateTime.now(clock), updatedAt);
     }
 }
