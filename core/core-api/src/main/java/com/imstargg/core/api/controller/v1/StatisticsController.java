@@ -6,6 +6,7 @@ import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerResultStati
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersRankStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerBattleEventResultStatisticsRequest;
+import com.imstargg.core.api.controller.v1.request.BrawlerBrawlersResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.response.BattleEventResultStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerRankStatisticsResponse;
@@ -104,15 +105,29 @@ public class StatisticsController {
     }
 
     @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/result")
-    public ListResponse<BattleEventResultStatisticsResponse> getBrawlersResultStatistics(
+    public ListResponse<BattleEventResultStatisticsResponse> getBrawlerBattleEventResultStatistics(
             @PathVariable long brawlerId,
             @ModelAttribute @Validated BrawlerBattleEventResultStatisticsRequest request
     ) {
         return new ListResponse<>(
                 brawlerStatisticsService.getBrawlerBattleEventResultStatistics(
-                                request.toParams(new BrawlStarsId(brawlerId)))
-                        .stream()
+                                request.toParams(new BrawlStarsId(brawlerId))
+                        ).stream()
                         .map(BattleEventResultStatisticsResponse::of)
+                        .toList()
+        );
+    }
+
+    @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/brawlers-result")
+    public ListResponse<BrawlersResultStatisticsResponse> getBrawlerBrawlersResultStatistics(
+            @PathVariable long brawlerId,
+            @ModelAttribute @Validated BrawlerBrawlersResultStatisticsRequest request
+    ) {
+        return new ListResponse<>(
+                brawlerStatisticsService.getBrawlerBrawlersResultStatistics(
+                                request.toParams(new BrawlStarsId(brawlerId))
+                        ).stream()
+                        .map(BrawlersResultStatisticsResponse::of)
                         .toList()
         );
     }
