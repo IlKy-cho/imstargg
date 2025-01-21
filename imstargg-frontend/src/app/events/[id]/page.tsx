@@ -22,17 +22,17 @@ import {
 } from "@/components/battle-event-statistics";
 import {getBrawlers} from "@/lib/api/brawler";
 import {
-  BattleEventBrawlerResultStatistics as IBattleEventBrawlerResultStatistics
-} from "@/model/BattleEventBrawlerResultStatistics";
+  BrawlerResultStatistics as IBrawlerResultStatistics
+} from "@/model/statistics/BrawlerResultStatistics";
 import {
-  BattleEventBrawlersResultStatistics as IBattleEventBrawlersResultStatistics
-} from "@/model/BattleEventBrawlersResultStatistics";
+  BrawlersResultStatistics as IBrawlersResultStatistics
+} from "@/model/statistics/BrawlersResultStatistics";
 import {
-  BattleEventBrawlerRankStatistics as IBattleEventBrawlerRankStatistics
-} from "@/model/BattleEventBrawlerRankStatistics";
+  BrawlerRankStatistics as IBrawlerRankStatistics
+} from "@/model/statistics/BrawlerRankStatistics";
 import {
-  BattleEventBrawlersRankStatistics as IBattleEventBrawlersRankStatistics
-} from "@/model/BattleEventBrawlersRankStatistics";
+  BrawlersRankStatistics as IBrawlersRankStatistics
+} from "@/model/statistics/BrawlersRankStatistics";
 import {Brawler} from "@/model/Brawler";
 
 function StatisticsAbsence() {
@@ -132,10 +132,10 @@ const searchParamsToStatsParams = (searchParams: SearchParams): StatsParams => {
 
 
 type Statistics = {
-  brawlerRankStats: IBattleEventBrawlerRankStatistics[] | null;
-  brawlersRankStats: IBattleEventBrawlersRankStatistics[] | null;
-  brawlerResultStats: IBattleEventBrawlerResultStatistics[] | null;
-  brawlersResultStats: IBattleEventBrawlersResultStatistics[] | null;
+  brawlerRankStats: IBrawlerRankStatistics[] | null;
+  brawlersRankStats: IBrawlersRankStatistics[] | null;
+  brawlerResultStats: IBrawlerResultStatistics[] | null;
+  brawlersResultStats: IBrawlersResultStatistics[] | null;
 };
 
 async function fetchStatistics(id: number, date: Date, statsParams: StatsParams, resulted: boolean): Promise<Statistics> {
