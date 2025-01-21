@@ -1,8 +1,5 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.domain.brawlstars.Brawler;
-import com.imstargg.core.domain.brawlstars.BrawlerRepositoryWithCache;
-import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.PlayerBrawlerEntity;
@@ -13,31 +10,24 @@ import com.imstargg.storage.db.core.UnknownPlayerEntity;
 import com.imstargg.storage.db.core.UnknownPlayerJpaRepository;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class PlayerRepository {
 
-    private final Clock clock;
     private final PlayerJpaRepository playerJpaRepository;
     private final UnknownPlayerJpaRepository unknownPlayerJpaRepository;
     private final PlayerBrawlerJpaRepository playerBrawlerJpaRepository;
-    private final BrawlerRepositoryWithCache brawlerRepository;
 
     public PlayerRepository(
-            Clock clock,
             PlayerJpaRepository playerJpaRepository,
             UnknownPlayerJpaRepository unknownPlayerJpaRepository,
-            PlayerBrawlerJpaRepository playerBrawlerJpaRepository,
-            BrawlerRepositoryWithCache brawlerRepository
+            PlayerBrawlerJpaRepository playerBrawlerJpaRepository
     ) {
-        this.clock = clock;
         this.playerJpaRepository = playerJpaRepository;
         this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
         this.playerBrawlerJpaRepository = playerBrawlerJpaRepository;
-        this.brawlerRepository = brawlerRepository;
     }
 
     public Optional<Player> findByTag(BrawlStarsTag tag) {
@@ -91,28 +81,11 @@ public class PlayerRepository {
     }
 
     private PlayerBrawler mapEntityToPlayerBrawler(PlayerBrawlerEntity entity) {
-        Optional<Brawler> brawlerOpt = brawlerRepository.find(
-                new BrawlStarsId(entity.getBrawlerBrawlStarsId()), Language.KOREAN);
-        if (brawlerOpt.isEmpty()) {
-            return new PlayerBrawler(
-                    null,
-                    List.of(),
-                    List.of(),
-                    List.of(),
-                    entity.getPower(),
-                    entity.getRank(),
-                    entity.getTrophies(),
-                    entity.getHighestTrophies()
-            );
-        }
-
-        Brawler brawler = brawlerOpt.get();
-
         return new PlayerBrawler(
-                brawlerOpt.orElse(null),
-                brawler.filterGears(entity.getGearBrawlStarsIds().stream().map(BrawlStarsId::new).toList()),
-                brawler.filterStarPowers(entity.getStarPowerBrawlStarsIds().stream().map(BrawlStarsId::new).toList()),
-                brawler.filterGadgets(entity.getGadgetBrawlStarsIds().stream().map(BrawlStarsId::new).toList()),
+                new BrawlStarsId(entity.getBrawlerBrawlStarsId()),
+                entity.getGearBrawlStarsIds().stream().map(BrawlStarsId::new).toList(),
+                entity.getStarPowerBrawlStarsIds().stream().map(BrawlStarsId::new).toList(),
+                entity.getGadgetBrawlStarsIds().stream().map(BrawlStarsId::new).toList(),
                 entity.getPower(),
                 entity.getRank(),
                 entity.getTrophies(),
