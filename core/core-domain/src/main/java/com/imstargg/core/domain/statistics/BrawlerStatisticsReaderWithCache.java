@@ -51,4 +51,16 @@ public class BrawlerStatisticsReaderWithCache {
                 )
         );
     }
+
+    @Cacheable(key = "'brawler-enemy-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
+    public BrawlerEnemyResultCounts getBrawlerEnemyResultCounts(BrawlerEnemyResultCountParam param) {
+        return new BrawlerEnemyResultCounts(
+                brawlerResultStatisticsRepository.findBrawlerEnemyResultCounts(
+                        param.brawlerId(),
+                        param.date(),
+                        param.trophyRange(),
+                        param.soloRankTierRange()
+                )
+        );
+    }
 }
