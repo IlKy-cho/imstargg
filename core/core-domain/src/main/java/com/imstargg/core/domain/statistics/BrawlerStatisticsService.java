@@ -22,9 +22,9 @@ public class BrawlerStatisticsService {
 
     @Cacheable(key = "'brawler-result-stats:v1:date' + #params.date() + ':trophyRange' + #params.trophyRange() + ':soloRankTierRange' + #params.soloRankTierRange()")
     public List<BrawlerResultStatistics> getBrawlerResultStatistics(
-            BrawlerResultStatisticsParams params
+            BrawlerResultStatisticsParam params
     ) {
-        List<BrawlerResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
+        List<BrawlerResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
                 .map(brawlerStatisticsReader::getBrawlerResultCounts)
                 .toList());
 
@@ -40,9 +40,9 @@ public class BrawlerStatisticsService {
 
     @Cacheable(key = "'brawler-battle-event-result-stats:v1:date' + #params.date() + ':trophyRange' + #params.trophyRange() + ':soloRankTierRange' + #params.soloRankTierRange()")
     public List<BattleEventResultStatistics> getBrawlerBattleEventResultStatistics(
-            BrawlerBattleEventResultStatisticsParams params
+            BrawlerBattleEventResultStatisticsParam params
     ) {
-        List<BattleEventResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
+        List<BattleEventResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
                 .map(brawlerStatisticsReader::getBrawlerBattleEventResultCounts)
                 .toList());
 
@@ -58,9 +58,9 @@ public class BrawlerStatisticsService {
 
     @Cacheable(key = "'brawler-brawlers-result-stats:v1:date' + #params.date() + ':brawlerId' + #params.brawlerId() + ':trophyRange' + #params.trophyRange() + ':soloRankTierRange' + #params.soloRankTierRange()")
     public List<BrawlersResultStatistics> getBrawlerBrawlersResultStatistics(
-            BrawlerBrawlersResultStatisticsParams params
+            BrawlerBrawlersResultStatisticsParam params
     ) {
-        List<BrawlersResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
+        List<BrawlersResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
                 .map(brawlerStatisticsReader::getBrawlerBrawlersResultCounts)
                 .toList());
 

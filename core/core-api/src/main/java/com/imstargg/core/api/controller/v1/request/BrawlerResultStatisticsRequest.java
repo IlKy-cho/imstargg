@@ -1,6 +1,6 @@
 package com.imstargg.core.api.controller.v1.request;
 
-import com.imstargg.core.domain.statistics.BrawlerResultStatisticsParams;
+import com.imstargg.core.domain.statistics.BrawlerResultStatisticsParam;
 import com.imstargg.core.enums.SoloRankTierRangeRange;
 import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.annotation.Nullable;
@@ -14,8 +14,8 @@ public record BrawlerResultStatisticsRequest(
         @Nullable SoloRankTierRangeRange soloRankTierRange
 ) {
 
-    public BrawlerResultStatisticsParams toParams() {
-        return new BrawlerResultStatisticsParams(
+    public BrawlerResultStatisticsParam toParam() {
+        return new BrawlerResultStatisticsParam(
                 date(),
                 trophyRange(),
                 soloRankTierRange()

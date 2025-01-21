@@ -1,18 +1,32 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.enums.SoloRankTierRange;
-import com.imstargg.core.enums.TrophyRange;
+import com.imstargg.core.enums.SoloRankTierRangeRange;
+import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record BrawlerBattleEventResultStatisticsParam(
         BrawlStarsId brawlerId,
         LocalDate date,
-        @Nullable TrophyRange trophyRange,
-        @Nullable SoloRankTierRange soloRankTierRange
+        @Nullable TrophyRangeRange trophyRange,
+        @Nullable SoloRankTierRangeRange soloRankTierRange
 ) {
 
-
+    public List<BrawlerBattleEventResultCountParam> toCountParams() {
+        return new StatisticsParamBuilder()
+                .date(date)
+                .trophyRange(trophyRange)
+                .soloRankTierRange(soloRankTierRange)
+                .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
+                        new BrawlerBattleEventResultCountParam(
+                                brawlerId,
+                                battleDate,
+                                trophyRange,
+                                soloRankTierRange
+                        )
+                );
+    }
 }

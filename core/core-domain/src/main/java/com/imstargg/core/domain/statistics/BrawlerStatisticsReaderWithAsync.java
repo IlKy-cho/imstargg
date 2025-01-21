@@ -18,15 +18,15 @@ public class BrawlerStatisticsReaderWithAsync {
         this.reader = reader;
     }
 
-    public Future<BrawlerResultCounts> getBrawlerResultCounts(BrawlerResultStatisticsParam param) {
+    public Future<BrawlerResultCounts> getBrawlerResultCounts(BrawlerResultCountParam param) {
         return CompletableFuture.completedFuture(reader.getBrawlerResultCounts(param));
     }
 
-    public Future<BattleEventResultCounts> getBrawlerBattleEventResultCounts(BrawlerBattleEventResultStatisticsParam param) {
+    public Future<BattleEventResultCounts> getBrawlerBattleEventResultCounts(BrawlerBattleEventResultCountParam param) {
         return CompletableFuture.completedFuture(reader.getBrawlerBattleEventResultCounts(param));
     }
 
-    public Future<BrawlersResultCounts> getBrawlerBrawlersResultCounts(BrawlerBrawlersResultStatisticsParam param) {
+    public Future<BrawlersResultCounts> getBrawlerBrawlersResultCounts(BrawlerBrawlersResultCountParam param) {
         return CompletableFuture.completedFuture(reader.getBrawlerBrawlersResultCounts(param));
     }
 }

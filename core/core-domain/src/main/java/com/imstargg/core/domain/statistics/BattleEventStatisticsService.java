@@ -24,9 +24,9 @@ public class BattleEventStatisticsService {
 
     @Cacheable(key = "'battle-event-brawler-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':duplicateBrawler' + #params.duplicateBrawler()")
     public List<BrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
-            BattleEventBrawlerResultStatisticsParams params
+            BattleEventBrawlerResultStatisticsParam params
     ) {
-        List<BrawlerResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
+        List<BrawlerResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlerResultCounts)
                 .toList());
 
@@ -42,8 +42,8 @@ public class BattleEventStatisticsService {
 
     @Cacheable(key = "'battle-event-brawlers-result-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':soloRankTierRange' + #params.soloRankTierRangeRange() + ':brawlersNum' + #params.brawlersNum() + ':duplicateBrawler' + #params.duplicateBrawler()")
     public List<BrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
-            BattleEventBrawlersResultStatisticsParams params) {
-        List<BrawlersResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
+            BattleEventBrawlersResultStatisticsParam params) {
+        List<BrawlersResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlersResultCounts)
                 .toList());
 
@@ -59,9 +59,9 @@ public class BattleEventStatisticsService {
 
     @Cacheable(key = "'battle-event-brawler-rank-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange()")
     public List<BrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
-            BattleEventBrawlerRankStatisticsParams params
+            BattleEventBrawlerRankStatisticsParam params
     ) {
-        List<BrawlerRankCounts> countsList = FutureUtils.get(params.toParamList().stream()
+        List<BrawlerRankCounts> countsList = FutureUtils.get(params.toCountParams().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlerRankCounts)
                 .toList());
 
@@ -77,8 +77,8 @@ public class BattleEventStatisticsService {
 
     @Cacheable(key = "'battle-event-brawlers-rank-stats:v1:events:' + #params.eventId().value() + ':date' + #params.date() + ':trophyRange' + #params.trophyRangeRange() + ':brawlersNum' + #params.brawlersNum()")
     public List<BrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
-            BattleEventBrawlersRankStatisticsParams params) {
-        List<BrawlersRankCounts> countsList = FutureUtils.get(params.toParamList().stream()
+            BattleEventBrawlersRankStatisticsParam params) {
+        List<BrawlersRankCounts> countsList = FutureUtils.get(params.toCountParams().stream()
                 .map(battleEventStatisticsReader::getBattleEventBrawlersRankCounts)
                 .toList());
 
