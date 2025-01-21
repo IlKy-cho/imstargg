@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -16,13 +17,19 @@ import jakarta.persistence.UniqueConstraint;
                         name = "uk_event_battledate_range_duplicate_brawler_enemybrawler",
                         columnNames = {"event_brawlstars_id", "battle_date", "trophy_range", "solo_rank_tier_range", "duplicate_brawler", "brawler_brawlstars_id", "enemy_brawler_brawlstars_id"}
                 )
+        },
+        indexes = {
+                @Index(
+                        name = "ix_battledate_range_brawler",
+                        columnList = "battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id"
+                )
         }
 )
 public class BrawlerEnemyBattleResultStatisticsEntity extends BrawlerBattleResultStatisticsBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brawler_battle_result_stats_id")
+    @Column(name = "brawler_enemy_battle_result_stats_id")
     private Long id;
 
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
