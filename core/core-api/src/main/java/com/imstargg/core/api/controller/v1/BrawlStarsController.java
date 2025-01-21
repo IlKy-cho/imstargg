@@ -53,6 +53,11 @@ public class BrawlStarsController {
         );
     }
 
+    @GetMapping("/api/v1/brawlstars/brawlers/{brawlerId}")
+    public BrawlerResponse getBrawler(@PathVariable long brawlerId) {
+        return BrawlerResponse.from(brawlStarsService.getBrawler(new BrawlStarsId(brawlerId)));
+    }
+
     @GetMapping("/api/v1/brawlstars/events")
     public ListResponse<BattleEventResponse> getEvents(@RequestParam LocalDate date) {
         return new ListResponse<>(

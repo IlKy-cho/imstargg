@@ -22,6 +22,10 @@ public class BrawlStarsService {
         return brawlerReader.getAll(Language.KOREAN);
     }
 
+    public Brawler getBrawler(BrawlStarsId brawlStarsId) {
+        return brawlerReader.get(brawlStarsId, Language.KOREAN);
+    }
+
     public List<BattleEvent> getEvents(LocalDate date) {
         return battleEventReader.getEvents(Language.KOREAN, date);
     }

@@ -15,6 +15,8 @@ public enum CoreErrorType {
             "플레이어 갱신 요청이 많아 처리가 불가능합니다. 잠시후에 다시 시도해주세요.", WARN),
 
     BATTLE_EVENT_NOT_FOUND(CoreErrorKind.NOT_FOUND, "존재하지 않는 이벤트 입니다.", INFO),
+
+    BRAWLER_NOT_FOUND(CoreErrorKind.NOT_FOUND, "존재하지 않는 브롤러 입니다.", INFO),
     ;
 
     private final CoreErrorKind kind;
