@@ -17,4 +17,11 @@ public interface BrawlersBattleResultStatisticsJpaRepository extends JpaReposito
             int brawlersNum, boolean duplicateBrawler,
             Pageable pageable
     );
+
+    Slice<BrawlersBattleResultStatisticsEntity> findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
+            LocalDate battleDate,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
+            long brawlerBrawlStarsId,
+            Pageable pageable
+    );
 }

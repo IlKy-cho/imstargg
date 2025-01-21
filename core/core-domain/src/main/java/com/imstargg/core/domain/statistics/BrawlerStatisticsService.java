@@ -38,6 +38,7 @@ public class BrawlerStatisticsService {
                 .toList();
     }
 
+    @Cacheable(key = "'brawler-battle-event-result-stats:v1:date' + #params.date() + ':trophyRange' + #params.trophyRange() + ':soloRankTierRange' + #params.soloRankTierRange()")
     public List<BattleEventResultStatistics> getBrawlerBattleEventResultStatistics(
             BrawlerBattleEventResultStatisticsParams params
     ) {
@@ -48,6 +49,24 @@ public class BrawlerStatisticsService {
         BattleEventResultCounts mergedCounts = countsList.stream()
                 .reduce(BattleEventResultCounts::merge)
                 .orElseGet(BattleEventResultCounts::empty);
+
+        return mergedCounts.toStatistics()
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
+    }
+
+    @Cacheable(key = "'brawler-brawlers-result-stats:v1:date' + #params.date() + ':brawlerId' + #params.brawlerId() + ':trophyRange' + #params.trophyRange() + ':soloRankTierRange' + #params.soloRankTierRange()")
+    public List<BrawlersResultStatistics> getBrawlerBrawlersResultStatistics(
+            BrawlerBrawlersResultStatisticsParams params
+    ) {
+        List<BrawlersResultCounts> countsList = FutureUtils.get(params.toParamList().stream()
+                .map(brawlerStatisticsReader::getBrawlerBrawlersResultCounts)
+                .toList());
+
+        BrawlersResultCounts mergedCounts = countsList.stream()
+                .reduce(BrawlersResultCounts::merge)
+                .orElseGet(BrawlersResultCounts::empty);
 
         return mergedCounts.toStatistics()
                 .stream()

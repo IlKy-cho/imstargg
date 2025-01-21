@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -16,6 +17,12 @@ import jakarta.persistence.UniqueConstraint;
                 @UniqueConstraint(
                         name = "uk_event_battledate_range_duplicate_brawler",
                         columnNames = {"event_brawlstars_id", "battle_date", "trophy_range", "solo_rank_tier_range", "duplicate_brawler", "brawler_brawlstars_id", "brawler_brawlstars_id_hash"}
+                ),
+        },
+        indexes = {
+                @Index(
+                        name = "ix_battledate_range_brawler",
+                        columnList = "battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id"
                 )
         }
 )
