@@ -5,7 +5,7 @@ import com.imstargg.core.domain.BattlePlayerBrawler;
 import jakarta.annotation.Nullable;
 
 public record BattlePlayerBrawlerResponse(
-        @Nullable Long id,
+        long id,
         int power,
         @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer trophies,
         @JsonInclude(JsonInclude.Include.NON_NULL) @Nullable Integer trophyChange
@@ -13,7 +13,7 @@ public record BattlePlayerBrawlerResponse(
 
     public static BattlePlayerBrawlerResponse from(BattlePlayerBrawler brawler) {
         return new BattlePlayerBrawlerResponse(
-                brawler.brawler() == null ? null : brawler.brawler().id().value(),
+                brawler.brawlerId().value(),
                 brawler.power(),
                 brawler.trophies(),
                 brawler.trophyChange()
