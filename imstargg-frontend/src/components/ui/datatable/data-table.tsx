@@ -30,12 +30,12 @@ export function DataTable<TData, TValue>(
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
     },
+    ...(paginated && { getPaginationRowModel: getPaginationRowModel() }),
   });
 
   return (
