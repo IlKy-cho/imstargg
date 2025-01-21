@@ -107,17 +107,19 @@ public class BrawlerResultStatisticsRepository {
             BrawlStarsId brawlerId,
             LocalDate date,
             @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange
+            @Nullable SoloRankTierRange soloRankTierRange,
+            int brawlersNum
     ) {
         Map<BrawlerIdHash, ResultCounter> brawlerIdHashToCounter = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
         while (hasNext) {
             Slice<BrawlersBattleResultStatisticsEntity> slice = brawlersBattleResultStatisticsJpaRepository
-                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
+                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndBrawlersNumAndDuplicateBrawlerFalse(
                             date,
                             trophyRange, soloRankTierRange,
                             brawlerId.value(),
+                            brawlersNum,
                             pageRequest
                     );
             hasNext = slice.hasNext();

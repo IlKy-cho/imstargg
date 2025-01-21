@@ -40,14 +40,15 @@ public class BrawlerStatisticsReaderWithCache {
         );
     }
 
-    @Cacheable(key = "'brawler-brawlers-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
+    @Cacheable(key = "'brawler-brawlers-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange() + ':brawlersNum' + #param.brawlersNum()")
     public BrawlersResultCounts getBrawlerBrawlersResultCounts(BrawlerBrawlersResultCountParam param) {
         return new BrawlersResultCounts(
                 brawlerResultStatisticsRepository.findBrawlerBrawlersResultCounts(
                         param.brawlerId(),
                         param.date(),
                         param.trophyRange(),
-                        param.soloRankTierRange()
+                        param.soloRankTierRange(),
+                        param.brawlersNum()
                 )
         );
     }

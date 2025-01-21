@@ -56,7 +56,7 @@ public class BrawlerStatisticsService {
                 .toList();
     }
 
-    @Cacheable(key = "'brawler-brawlers-result-stats:v1:date' + #param.date() + ':brawlerId' + #param.brawlerId() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
+    @Cacheable(key = "'brawler-brawlers-result-stats:v1:date' + #param.date() + ':brawlerId' + #param.brawlerId() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange() + ':brawlersNum' + #param.brawlersNum()")
     public List<BrawlersResultStatistics> getBrawlerBrawlersResultStatistics(
             BrawlerBrawlersResultStatisticsParam param
     ) {
