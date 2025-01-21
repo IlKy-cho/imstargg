@@ -4,7 +4,8 @@ import {AspectRatio} from "@/components/ui/aspect-ratio";
 import {cn} from "@/lib/utils";
 import {cva, VariantProps} from "class-variance-authority";
 import React from "react";
-import {BrawlerRarityValue} from "@/model/enums/BrawlerRarity";
+import {brawlerBackgroundColor} from "@/components/brawler";
+
 
 const imageVariants = cva(
   "rounded-[1px] border-[0.5px] border-black",
@@ -12,8 +13,11 @@ const imageVariants = cva(
     variants: {
       size: {
         default: 'w-20',
-        sm: 'w-16',
         xs: 'w-12',
+        sm: 'w-16',
+        lg: 'w-24',
+        xl: 'w-28',
+        '2xl': 'w-32',
       },
     },
     defaultVariants: {
@@ -21,27 +25,6 @@ const imageVariants = cva(
     },
   },
 );
-
-const brawlerBackgroundColor = (brawler: Brawler) => {
-  if (brawler.id === 16000088) {
-    return 'bg-[#163df6]';
-  }
-
-  switch (brawler.rarity) {
-    case BrawlerRarityValue.STARTING_BRAWLER:
-      return 'bg-[#A1D5F1]';
-    case BrawlerRarityValue.RARE:
-      return 'bg-[#6DDB47]';
-    case BrawlerRarityValue.SUPER_RARE:
-      return 'bg-[#0087fa]';
-    case BrawlerRarityValue.EPIC:
-      return 'bg-[#AA15E4]';
-    case BrawlerRarityValue.MYTHIC:
-      return 'bg-[#EA3330]';
-    case BrawlerRarityValue.LEGENDARY:
-      return 'bg-[#FDF255]';
-  }
-}
 
 interface ImageProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
