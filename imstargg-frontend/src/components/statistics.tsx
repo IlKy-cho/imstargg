@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  BrawlerRankStatistics as IBrawlerRankStatistics
-} from "@/model/statistics/BrawlerRankStatistics";
-import {
-  BrawlersRankStatistics as IBrawlersRankStatistics
-} from "@/model/statistics/BrawlersRankStatistics";
+import {BrawlerRankStatistics as IBrawlerRankStatistics} from "@/model/statistics/BrawlerRankStatistics";
+import {BrawlersRankStatistics as IBrawlersRankStatistics} from "@/model/statistics/BrawlersRankStatistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
-import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {DataTable} from "@/components/ui/datatable/data-table";
 import {
   BrawlerResultStatistics as IBrawlerResultStatistics
@@ -17,14 +12,17 @@ import {
 import {
   BrawlersResultStatistics as IBrawlersResultStatistics
 } from "@/model/statistics/BrawlersResultStatistics";
+import BrawlerProfileImage from "@/components/brawler-profile-image";
+import { BrawlerRole } from "@/model/enums/BrawlerRole";
+import { BrawlerRarity } from "@/model/enums/BrawlerRarity";
+import { BrawlerClassIcon, brawlerClassTitle } from "./brawler-class";
+import { brawlerRarityTitle } from "./brawler-rarity";
 
-function toPercentage(value: number): string {
-  return `${(value * 100).toFixed(2)}%`;
-}
+const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
 function BrawlerCell({brawler} : {brawler: Brawler | null}) {
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col sm:flex-row gap-1 flex-grow items-center">
       <BrawlerProfileImage
         brawler={brawler}
         size="sm"
@@ -243,6 +241,106 @@ export function BattleEventBrawlersResultStatistics(
 
   return (
     <DataTable columns={columns} data={brawlersResultStatsList} paginated={true}/>
-  )
+  );
+}
+
+type BrawlerListStatisticsProps = {
+  brawlers: Brawler[];
+  resultStatisticsList: IBrawlerResultStatistics[];
+}
+
+type BrawlerListStatisticsData = {
+  brawler: Brawler;
+  brawlerRole: BrawlerRole;
+  brawlerRarity: BrawlerRarity;
+  totalBattleCount: number | null;
+  winRate: number | null;
+  pickRate: number | null;
+  starPlayerRate: number | null;
+}
+
+export function BrawlerListStatistics(
+  {brawlers, resultStatisticsList}: Readonly<BrawlerListStatisticsProps>
+) {
+
+  const statisticsMap: Record<number, IBrawlerResultStatistics> = resultStatisticsList.reduce(
+    (acc, stats) => {
+      acc[stats.brawlerId] = stats;
+      return acc;
+    },
+    {} as Record<number, IBrawlerResultStatistics>
+  );
+
+  const data: BrawlerListStatisticsData[] = brawlers.map(brawler => {
+    const resultStatistics = statisticsMap[brawler.id] || null;
+
+    return {
+      brawler,
+      brawlerRole: brawler.role,
+      brawlerRarity: brawler.rarity,
+      totalBattleCount: resultStatistics ? resultStatistics.totalBattleCount : null,
+      winRate: resultStatistics ? resultStatistics.winRate : null,
+      pickRate: resultStatistics ? resultStatistics.pickRate : null,
+      starPlayerRate: resultStatistics ? resultStatistics.starPlayerRate : null,
+    };
+  });
+
+  console.log(data);
+
+  const columns: ColumnDef<BrawlerListStatisticsData>[] = [
+    {
+      accessorKey: "brawler",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"브롤러"}/>,
+      cell: ({row}) => {
+        return (
+          <BrawlerCell brawler={row.original.brawler}/>
+        );
+      },
+    },
+    {
+      accessorKey: "brawlerRole",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"유형"}/>,
+      cell: ({row}) => <BrawlerClassIcon brawlerRole={row.original.brawler.role}/>,
+    },
+    {
+      accessorKey: "brawlerRarity",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"희귀도"}/>,
+      cell: ({row}) => brawlerRarityTitle(row.original.brawler.rarity),
+    },
+    {
+      accessorKey: "winRate",
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"승률"}/>,
+      cell: ({row}) => row.original.winRate !== null ? toPercentage(row.original.winRate) : "N/A",
+    },
+    {
+      accessorKey: "pickRate",
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"픽률"}/>,
+      cell: ({row}) => row.original.pickRate !== null ? toPercentage(row.original.pickRate) : "N/A",
+    },
+    {
+      accessorKey: "starPlayerRate",
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"스타플레이어"}/>,
+      cell: ({row}) => row.original.starPlayerRate !== null ? toPercentage(row.original.starPlayerRate) : "N/A",
+    },
+    {
+      accessorKey: "totalBattleCount",
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"표본수"}/>,
+      cell: ({row}) => row.original.totalBattleCount?.toLocaleString() || "N/A",
+    },
+  ];
+
+  return (
+    <DataTable columns={columns} data={data}/>
+  );
 }
 
