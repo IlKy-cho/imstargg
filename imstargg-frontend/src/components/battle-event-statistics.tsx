@@ -1,22 +1,22 @@
 "use client";
 
 import {
-  BattleEventBrawlerRankStatistics as IBattleEventBrawlerRankStatistics
-} from "@/model/BattleEventBrawlerRankStatistics";
+  BrawlerRankStatistics as IBrawlerRankStatistics
+} from "@/model/statistics/BrawlerRankStatistics";
 import {
-  BattleEventBrawlersRankStatistics as IBattleEventBrawlersRankStatistics
-} from "@/model/BattleEventBrawlersRankStatistics";
+  BrawlersRankStatistics as IBrawlersRankStatistics
+} from "@/model/statistics/BrawlersRankStatistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {DataTable} from "@/components/ui/datatable/data-table";
 import {
-  BattleEventBrawlerResultStatistics as IBattleEventBrawlerResultStatistics
-} from "@/model/BattleEventBrawlerResultStatistics";
+  BrawlerResultStatistics as IBrawlerResultStatistics
+} from "@/model/statistics/BrawlerResultStatistics";
 import {
-  BattleEventBrawlersResultStatistics as IBattleEventBrawlersResultStatistics
-} from "@/model/BattleEventBrawlersResultStatistics";
+  BrawlersResultStatistics as IBrawlersResultStatistics
+} from "@/model/statistics/BrawlersResultStatistics";
 
 function toPercentage(value: number): string {
   return `${(value * 100).toFixed(2)}%`;
@@ -50,14 +50,14 @@ function BrawlersCell({brawlers} : {brawlers: Array<Brawler | null>}) {
 
 type BrawlerRankStatisticsProps = {
   brawlerList: Brawler[],
-  brawlerRankStatsList: IBattleEventBrawlerRankStatistics[]
+  brawlerRankStatsList: IBrawlerRankStatistics[]
 };
 
 export function BattleEventBrawlerRankStatistics(
   {brawlerList, brawlerRankStatsList}: Readonly<BrawlerRankStatisticsProps>
 ) {
   const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBattleEventBrawlerRankStatistics>[] = [
+  const columns: ColumnDef<IBrawlerRankStatistics>[] = [
     {
       accessorKey: "brawlerId",
       enableSorting: false,
@@ -98,14 +98,14 @@ export function BattleEventBrawlerRankStatistics(
 
 type BrawlersRankStatisticsProps = {
   brawlerList: Brawler[],
-  brawlersRankStatsList: IBattleEventBrawlersRankStatistics[]
+  brawlersRankStatsList: IBrawlersRankStatistics[]
 };
 
 export function BattleEventBrawlersRankStatistics(
   {brawlerList, brawlersRankStatsList}: Readonly<BrawlersRankStatisticsProps>
 ) {
   const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBattleEventBrawlersRankStatistics>[] = [
+  const columns: ColumnDef<IBrawlersRankStatistics>[] = [
     {
       accessorKey: "brawlerIds",
       enableSorting: false,
@@ -146,14 +146,14 @@ export function BattleEventBrawlersRankStatistics(
 
 type BrawlerResultStatisticsProps = {
   brawlerList: Brawler[],
-  brawlerResultStatsList: IBattleEventBrawlerResultStatistics[]
+  brawlerResultStatsList: IBrawlerResultStatistics[]
 };
 
 export function BattleEventBrawlerResultStatistics(
   {brawlerList, brawlerResultStatsList}: Readonly<BrawlerResultStatisticsProps>
 ) {
   const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBattleEventBrawlerResultStatistics>[] = [
+  const columns: ColumnDef<IBrawlerResultStatistics>[] = [
     {
       accessorKey: "brawlerId",
       enableSorting: false,
@@ -200,14 +200,14 @@ export function BattleEventBrawlerResultStatistics(
 
 type BrawlersResultStatisticsProps = {
   brawlerList: Brawler[],
-  brawlersResultStatsList: IBattleEventBrawlersResultStatistics[]
+  brawlersResultStatsList: IBrawlersResultStatistics[]
 };
 
 export function BattleEventBrawlersResultStatistics(
   {brawlerList, brawlersResultStatsList}: Readonly<BrawlersResultStatisticsProps>
 ) {
   const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBattleEventBrawlersResultStatistics>[] = [
+  const columns: ColumnDef<IBrawlersResultStatistics>[] = [
     {
       accessorKey: "brawlerIds",
       enableSorting: false,
