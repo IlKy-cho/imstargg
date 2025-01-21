@@ -29,4 +29,8 @@ public class BrawlerStatisticsReaderWithAsync {
     public Future<BrawlersResultCounts> getBrawlerBrawlersResultCounts(BrawlerBrawlersResultCountParam param) {
         return CompletableFuture.completedFuture(reader.getBrawlerBrawlersResultCounts(param));
     }
+
+    public Future<BrawlerEnemyResultCounts> getBrawlerEnemyResultCounts(BrawlerEnemyResultCountParam param) {
+        return CompletableFuture.completedFuture(reader.getBrawlerEnemyResultCounts(param));
+    }
 }

@@ -7,8 +7,10 @@ import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersRankStatis
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerBattleEventResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerBrawlersResultStatisticsRequest;
+import com.imstargg.core.api.controller.v1.request.BrawlerEnemyResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.response.BattleEventResultStatisticsResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlerEnemyResultStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerRankStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerResultStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlersRankStatisticsResponse;
@@ -128,6 +130,20 @@ public class StatisticsController {
                                 request.toParam(new BrawlStarsId(brawlerId))
                         ).stream()
                         .map(BrawlersResultStatisticsResponse::of)
+                        .toList()
+        );
+    }
+
+    @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/enemy-result")
+    public ListResponse<BrawlerEnemyResultStatisticsResponse> getBrawlerEnemyResultStatistics(
+            @PathVariable long brawlerId,
+            @ModelAttribute @Validated BrawlerEnemyResultStatisticsRequest request
+    ) {
+        return new ListResponse<>(
+                brawlerStatisticsService.getBrawlerEnemyResultStatistics(
+                                request.toParam(new BrawlStarsId(brawlerId))
+                        ).stream()
+                        .map(BrawlerEnemyResultStatisticsResponse::of)
                         .toList()
         );
     }

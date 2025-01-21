@@ -38,11 +38,11 @@ public class BrawlerStatisticsService {
                 .toList();
     }
 
-    @Cacheable(key = "'brawler-battle-event-result-stats:v1:date' + #params.date() + ':trophyRange' + #params.trophyRange() + ':soloRankTierRange' + #params.soloRankTierRange()")
+    @Cacheable(key = "'brawler-battle-event-result-stats:v1:date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
     public List<BattleEventResultStatistics> getBrawlerBattleEventResultStatistics(
-            BrawlerBattleEventResultStatisticsParam params
+            BrawlerBattleEventResultStatisticsParam param
     ) {
-        List<BattleEventResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
+        List<BattleEventResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
                 .map(brawlerStatisticsReader::getBrawlerBattleEventResultCounts)
                 .toList());
 
@@ -56,17 +56,35 @@ public class BrawlerStatisticsService {
                 .toList();
     }
 
-    @Cacheable(key = "'brawler-brawlers-result-stats:v1:date' + #params.date() + ':brawlerId' + #params.brawlerId() + ':trophyRange' + #params.trophyRange() + ':soloRankTierRange' + #params.soloRankTierRange()")
+    @Cacheable(key = "'brawler-brawlers-result-stats:v1:date' + #param.date() + ':brawlerId' + #param.brawlerId() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
     public List<BrawlersResultStatistics> getBrawlerBrawlersResultStatistics(
-            BrawlerBrawlersResultStatisticsParam params
+            BrawlerBrawlersResultStatisticsParam param
     ) {
-        List<BrawlersResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
+        List<BrawlersResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
                 .map(brawlerStatisticsReader::getBrawlerBrawlersResultCounts)
                 .toList());
 
         BrawlersResultCounts mergedCounts = countsList.stream()
                 .reduce(BrawlersResultCounts::merge)
                 .orElseGet(BrawlersResultCounts::empty);
+
+        return mergedCounts.toStatistics()
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
+    }
+
+    @Cacheable(key = "'brawler-enemy-result-stats:v1:date' + #param.date() + ':brawlerId' + #param.brawlerId() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
+    public List<BrawlerEnemyResultStatistics> getBrawlerEnemyResultStatistics(
+            BrawlerEnemyResultStatisticsParam param
+    ) {
+        List<BrawlerEnemyResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                .map(brawlerStatisticsReader::getBrawlerEnemyResultCounts)
+                .toList());
+
+        BrawlerEnemyResultCounts mergedCounts = countsList.stream()
+                .reduce(BrawlerEnemyResultCounts::merge)
+                .orElseGet(BrawlerEnemyResultCounts::empty);
 
         return mergedCounts.toStatistics()
                 .stream()

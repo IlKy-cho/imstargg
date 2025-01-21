@@ -20,10 +20,6 @@ public record BrawlerRankCounts(
                 .sum();
     }
 
-    public boolean isEmpty() {
-        return counts.isEmpty();
-    }
-
     public BrawlerRankCounts merge(BrawlerRankCounts other) {
         var brawlerIdToCount = new HashMap<>(counts.stream().collect(
                 Collectors.toMap(BrawlerRankCount::brawlerId, Function.identity())
