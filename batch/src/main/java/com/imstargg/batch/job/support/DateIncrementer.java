@@ -5,7 +5,6 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersIncrementer;
 
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
@@ -13,17 +12,17 @@ public class DateIncrementer implements JobParametersIncrementer {
 
     private static final String KEY = "date";
 
-    private final Clock clock;
+    private final LocalDate maxDate;
 
-    public DateIncrementer(Clock clock) {
-        this.clock = clock;
+    public DateIncrementer(LocalDate maxDate) {
+        this.maxDate = maxDate;
     }
 
     @Override
     public JobParameters getNext(JobParameters parameters) {
         JobParameters params = (parameters == null) ? new JobParameters() : parameters;
         JobParameter<?> dateParameter = params.getParameters().get(KEY);
-        LocalDate date = LocalDate.now(clock).minusDays(1);
+        LocalDate date = maxDate;
         if (dateParameter != null) {
             try {
                 LocalDate prevDate = LocalDate.parse(dateParameter.getValue().toString());
