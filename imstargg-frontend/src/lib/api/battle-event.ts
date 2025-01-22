@@ -12,11 +12,11 @@ interface BattleEventResponse {
 }
 
 export async function getBattleEvents(): Promise<BattleEvent[]> {
-  const twoWeeksAgo = new Date();
-  twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+  const aWeekAgo = new Date();
+  aWeekAgo.setDate(aWeekAgo.getDate() - 7);
 
   const response = await fetchGetBattleEvents(
-    twoWeeksAgo, { revalidate: 60 * 60 }
+    aWeekAgo, { revalidate: 60 * 60 }
   );
 
   if (response.ok) {
