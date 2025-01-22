@@ -22,7 +22,7 @@ public record BrawlerBattleRankStatisticsKey(
     ) {
         List<BattleCollectionEntityTeamPlayer> me = battle.findMe();
         if (me.size() != 1) {
-            throw new IllegalStateException("me is not found or duplicated. battleId: " + battle.getId());
+            throw new IllegalStateException("myTeamPlayer is not found or duplicated. battleId: " + battle.getId());
         }
 
         BattleCollectionEntityTeamPlayer myPlayer = me.getFirst();
