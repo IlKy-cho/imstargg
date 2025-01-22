@@ -6,15 +6,15 @@ import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepos
 import com.imstargg.support.aws.s3.Image;
 import com.imstargg.support.aws.s3.ImageUploader;
 import io.awspring.cloud.s3.S3Template;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
 
 @Component
+@EnableConfigurationProperties(BrawlStarsImageProperties.class)
 public class BrawlStarsImageUploader {
-
-    private static final String BUCKET_NAME = "brawlstars";
 
     private static final String BRAWLERS_DIR = "brawlers";
     private static final String PROFILE_DIR = "profiles";
@@ -24,14 +24,18 @@ public class BrawlStarsImageUploader {
     private final ImageUploader imageUploader;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageJpaRepository;
     private final S3Template s3Template;
+    private final String bucketName;
 
     public BrawlStarsImageUploader(
             ImageUploader imageUploader,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageJpaRepository,
-            S3Template s3Template) {
+            S3Template s3Template,
+            BrawlStarsImageProperties brawlStarsImageProperties
+    ) {
         this.imageUploader = imageUploader;
         this.brawlStarsImageJpaRepository = brawlStarsImageJpaRepository;
         this.s3Template = s3Template;
+        this.bucketName = brawlStarsImageProperties.bucketName();
     }
 
     public void uploadBrawlerProfile(long brawlStarsId, Resource resource) {
@@ -70,7 +74,7 @@ public class BrawlStarsImageUploader {
     private void processImageUpload(ImageUpload imageUpload) {
         URL imageUrl = imageUploader.upload(
                 imageUpload.image(),
-                BUCKET_NAME,
+                bucketName,
                 imageUpload.storedName()
         );
 
@@ -92,7 +96,7 @@ public class BrawlStarsImageUploader {
 
     private void updateExistingImage(BrawlStarsImageCollectionEntity entity, String storedName, String url) {
         if (!entity.getStoredName().equals(storedName)) {
-            s3Template.deleteObject(BUCKET_NAME, entity.getStoredName());
+            s3Template.deleteObject(bucketName, entity.getStoredName());
         }
         entity.update(storedName, url);
         brawlStarsImageJpaRepository.save(entity);
