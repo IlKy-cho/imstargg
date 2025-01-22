@@ -181,7 +181,7 @@ public class BrawlerRepositoryWithCache {
                 Optional.ofNullable(
                         codeToImageEntityCache.get(
                                 BrawlStarsImageType.BRAWLER_PROFILE.code(brawlerEntity.getBrawlStarsId()))
-                ).map(BrawlStarsImageEntity::getUrl).orElse(null)
+                ).map(BrawlStarsImageEntity::getStoredName).orElse(null)
         );
     }
 

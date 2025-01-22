@@ -191,7 +191,6 @@ create table brawlstars_image
     type                varchar(25)  not null,
     code                varchar(65)  not null,
     stored_name         varchar(255) not null,
-    url                 varchar(500) not null,
     created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false,

@@ -8,7 +8,7 @@ interface BattleEventResponse {
   id: number;
   mode: BattleEventMode;
   mapName: string | null;
-  mapImageUrl: string | null;
+  mapImagePath: string | null;
 }
 
 export async function getBattleEvents(): Promise<BattleEvent[]> {
@@ -25,7 +25,7 @@ export async function getBattleEvents(): Promise<BattleEvent[]> {
       ...event,
       map: {
         name: event.mapName,
-        imageUrl: event.mapImageUrl,
+        imageUrl: event.mapImagePath ? new URL(event.mapImagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
       }
     }));
   }
@@ -42,7 +42,7 @@ export async function getBattleEvent(id: number): Promise<BattleEvent | null> {
       ...data,
       map: {
         name: data.mapName,
-        imageUrl: data.mapImageUrl,
+        imageUrl: data.mapImagePath ? new URL(data.mapImagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
       }
     };
   } else if (response.status === 404) {

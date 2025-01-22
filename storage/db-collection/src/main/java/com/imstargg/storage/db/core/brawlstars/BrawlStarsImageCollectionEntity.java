@@ -30,27 +30,21 @@ public class BrawlStarsImageCollectionEntity extends BaseEntity {
     @Column(name = "stored_name", nullable = false)
     private String storedName;
 
-    @Column(name = "url", length = 500, nullable = false)
-    private String url;
-
     protected BrawlStarsImageCollectionEntity() {
     }
 
     public BrawlStarsImageCollectionEntity(
             BrawlStarsImageType type,
             String code,
-            String storedName,
-            String url
+            String storedName
     ) {
         this.type = type;
         this.code = code;
         this.storedName = storedName;
-        this.url = url;
     }
 
-    public void update(String storedName, String url) {
+    public void update(String storedName) {
         this.storedName = storedName;
-        this.url = url;
     }
 
     public Long getId() {
@@ -69,7 +63,4 @@ public class BrawlStarsImageCollectionEntity extends BaseEntity {
         return storedName;
     }
 
-    public String getUrl() {
-        return url;
-    }
 }

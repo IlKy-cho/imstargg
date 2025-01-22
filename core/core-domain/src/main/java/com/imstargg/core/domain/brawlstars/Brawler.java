@@ -15,7 +15,7 @@ public record Brawler(
         List<Gadget> gadgets,
         List<Gear> gears,
         List<StarPower> starPowers,
-        @Nullable String imageUrl
+        @Nullable String imagePath
 ) {
 
     public List<Gadget> filterGadgets(List<BrawlStarsId> ids) {

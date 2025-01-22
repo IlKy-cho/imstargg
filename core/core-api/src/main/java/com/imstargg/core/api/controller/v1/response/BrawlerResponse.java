@@ -15,7 +15,7 @@ public record BrawlerResponse(
         List<GadgetResponse> gadgets,
         List<GearResponse> gears,
         List<StarPowerResponse> starPowers,
-        @Nullable String imageUrl
+        @Nullable String imagePath
 ) {
 
     public static BrawlerResponse from(Brawler brawler) {
@@ -27,7 +27,7 @@ public record BrawlerResponse(
                 brawler.gadgets().stream().map(GadgetResponse::from).toList(),
                 brawler.gears().stream().map(GearResponse::from).toList(),
                 brawler.starPowers().stream().map(StarPowerResponse::from).toList(),
-                brawler.imageUrl()
+                brawler.imagePath()
         );
     }
 }

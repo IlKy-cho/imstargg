@@ -4,6 +4,6 @@ import jakarta.annotation.Nullable;
 
 public record BattleEventMap(
         @Nullable String name,
-        @Nullable String imageUrl
+        @Nullable String imagePath
 ) {
 }
