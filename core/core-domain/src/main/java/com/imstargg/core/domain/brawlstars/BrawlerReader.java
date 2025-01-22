@@ -7,32 +7,24 @@ import com.imstargg.core.error.CoreException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class BrawlerReader {
 
-    private final BrawlerRepository brawlerRepository;
-    private final BrawlerRepositoryWithCache brawlerRepositoryWithCache;
+    private final BrawlerRepositoryWithCache brawlerRepository;
 
     public BrawlerReader(
-            BrawlerRepository brawlerRepository,
-            BrawlerRepositoryWithCache brawlerRepositoryWithCache
+            BrawlerRepositoryWithCache brawlerRepository
     ) {
         this.brawlerRepository = brawlerRepository;
-        this.brawlerRepositoryWithCache = brawlerRepositoryWithCache;
     }
 
     public List<Brawler> getAll(Language language) {
-        return brawlerRepository.findAllIds().stream()
-                .map(id -> brawlerRepositoryWithCache.find(id, language))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+        return brawlerRepository.findAll(language);
     }
 
     public Brawler get(BrawlStarsId id, Language language) {
-        return brawlerRepositoryWithCache.find(id, language)
+        return brawlerRepository.find(id, language)
                 .orElseThrow(() -> new CoreException(CoreErrorType.BRAWLER_NOT_FOUND, "id=" + id));
     }
 }
