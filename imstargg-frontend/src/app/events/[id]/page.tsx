@@ -15,10 +15,10 @@ import {RegularBattleType, RegularBattleTypeValue} from "@/model/enums/BattleTyp
 import Image from "next/image";
 import gusSadPinSrc from "@/../public/icon/brawler/gus/gus_sad_pin.png"
 import {
-  BattleEventBrawlerRankStatistics,
-  BattleEventBrawlerResultStatistics,
-  BattleEventBrawlersRankStatistics,
-  BattleEventBrawlersResultStatistics
+  BrawlerRankStatistics,
+  BrawlerResultStatistics,
+  BrawlersRankStatistics,
+  BrawlersResultStatistics
 } from "@/components/statistics";
 import {getBrawlers} from "@/lib/api/brawler";
 import {
@@ -165,15 +165,15 @@ function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics
             브롤러 티어
             </h2>
             {hasBrawlerRankStats(statistics) ? (
-              <BattleEventBrawlerRankStatistics
-                brawlerRankStatsList={brawlerRankStats!}
-                brawlerList={brawlerList}
+              <BrawlerRankStatistics
+                statsList={brawlerRankStats!}
+                brawlers={brawlerList}
               />
             ) : null}
             {hasBrawlerResultStats(statistics) ? (
-              <BattleEventBrawlerResultStatistics
-                brawlerResultStatsList={brawlerResultStats!}
-                brawlerList={brawlerList}
+              <BrawlerResultStatistics
+                statsList={brawlerResultStats!}
+                brawlers={brawlerList}
               />
             ) : null}
           </div>
@@ -186,15 +186,15 @@ function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics
             브롤러 조합
             </h2>
             {hasBrawlersRankStats(statistics) ? (
-              <BattleEventBrawlersRankStatistics
-                brawlersRankStatsList={brawlersRankStats!}
-                brawlerList={brawlerList}
+              <BrawlersRankStatistics
+                statsList={brawlersRankStats!}
+                brawlers={brawlerList}
               />
             ) : null}
             {hasBrawlersResultStats(statistics) ? (
-              <BattleEventBrawlersResultStatistics
-                brawlersResultStatsList={brawlersResultStats!}
-                brawlerList={brawlerList}
+              <BrawlersResultStatistics
+                statsList={brawlersResultStats!}
+                brawlers={brawlerList}
               />
             ) : null}
           </div>

@@ -1,16 +1,17 @@
 "use client";
 
-import {BrawlerRankStatistics as IBrawlerRankStatistics} from "@/model/statistics/BrawlerRankStatistics";
-import {BrawlersRankStatistics as IBrawlersRankStatistics} from "@/model/statistics/BrawlersRankStatistics";
+import {BrawlerRankStatistics as BrawlerRankStatisticsModel} from "@/model/statistics/BrawlerRankStatistics";
+import {BrawlersRankStatistics as BrawlersRankStatisticsModel} from "@/model/statistics/BrawlersRankStatistics";
+import {BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel} from "@/model/statistics/BrawlerEnemyResultStatistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
 import {DataTable} from "@/components/ui/datatable/data-table";
 import {
-  BrawlerResultStatistics as IBrawlerResultStatistics
+  BrawlerResultStatistics as BrawlerResultStatisticsModel
 } from "@/model/statistics/BrawlerResultStatistics";
 import {
-  BrawlersResultStatistics as IBrawlersResultStatistics
+  BrawlersResultStatistics as BrawlersResultStatisticsModel
 } from "@/model/statistics/BrawlersResultStatistics";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {BrawlerRole} from "@/model/enums/BrawlerRole";
@@ -48,22 +49,22 @@ function BrawlersCell({brawlers}: { brawlers: Array<Brawler | null> }) {
 }
 
 type BrawlerRankStatisticsProps = {
-  brawlerList: Brawler[],
-  brawlerRankStatsList: IBrawlerRankStatistics[]
+  brawlers: Brawler[],
+  statsList: BrawlerRankStatisticsModel[]
 };
 
-export function BattleEventBrawlerRankStatistics(
-  {brawlerList, brawlerRankStatsList}: Readonly<BrawlerRankStatisticsProps>
+export function BrawlerRankStatistics(
+  {brawlers, statsList}: Readonly<BrawlerRankStatisticsProps>
 ) {
-  const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBrawlerRankStatistics>[] = [
+  const brawlerCollection = new BrawlerCollection(brawlers);
+  const columns: ColumnDef<BrawlerRankStatisticsModel>[] = [
     {
       accessorKey: "brawlerId",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"브롤러"}/>,
       cell: ({row}) => {
-        const brawler = brawlers.find(row.original.brawlerId);
+        const brawler = brawlerCollection.find(row.original.brawlerId);
         return (
           <BrawlerCell brawler={brawler}/>
         );
@@ -91,27 +92,27 @@ export function BattleEventBrawlerRankStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={brawlerRankStatsList}/>
+    <DataTable columns={columns} data={statsList} paginated={true}/>
   )
 }
 
 type BrawlersRankStatisticsProps = {
-  brawlerList: Brawler[],
-  brawlersRankStatsList: IBrawlersRankStatistics[]
+  brawlers: Brawler[],
+  statsList: BrawlersRankStatisticsModel[]
 };
 
-export function BattleEventBrawlersRankStatistics(
-  {brawlerList, brawlersRankStatsList}: Readonly<BrawlersRankStatisticsProps>
+export function BrawlersRankStatistics(
+  {brawlers, statsList}: Readonly<BrawlersRankStatisticsProps>
 ) {
-  const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBrawlersRankStatistics>[] = [
+  const brawlerCollection = new BrawlerCollection(brawlers);
+  const columns: ColumnDef<BrawlersRankStatisticsModel>[] = [
     {
       accessorKey: "brawlerIds",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"브롤러 조합"}/>,
       cell: ({row}) => {
-        const brawlersList = row.original.brawlerIds.map(id => brawlers.find(id));
+        const brawlersList = row.original.brawlerIds.map(id => brawlerCollection.find(id));
         return (
           <BrawlersCell brawlers={brawlersList}/>
         );
@@ -139,27 +140,27 @@ export function BattleEventBrawlersRankStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={brawlersRankStatsList} paginated={true}/>
+    <DataTable columns={columns} data={statsList} paginated={true}/>
   )
 }
 
 type BrawlerResultStatisticsProps = {
-  brawlerList: Brawler[],
-  brawlerResultStatsList: IBrawlerResultStatistics[]
+  brawlers: Brawler[],
+  statsList: BrawlerResultStatisticsModel[]
 };
 
-export function BattleEventBrawlerResultStatistics(
-  {brawlerList, brawlerResultStatsList}: Readonly<BrawlerResultStatisticsProps>
+export function BrawlerResultStatistics(
+  {brawlers, statsList}: Readonly<BrawlerResultStatisticsProps>
 ) {
-  const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBrawlerResultStatistics>[] = [
+  const brawlerCollection = new BrawlerCollection(brawlers);
+  const columns: ColumnDef<BrawlerResultStatisticsModel>[] = [
     {
       accessorKey: "brawlerId",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"브롤러"}/>,
       cell: ({row}) => {
-        const brawler = brawlers.find(row.original.brawlerId);
+        const brawler = brawlerCollection.find(row.original.brawlerId);
         return (
           <BrawlerCell brawler={brawler}/>
         );
@@ -193,27 +194,27 @@ export function BattleEventBrawlerResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={brawlerResultStatsList}/>
+    <DataTable columns={columns} data={statsList} paginated={true}/>
   )
 }
 
 type BrawlersResultStatisticsProps = {
-  brawlerList: Brawler[],
-  brawlersResultStatsList: IBrawlersResultStatistics[]
+  brawlers: Brawler[],
+  statsList: BrawlersResultStatisticsModel[]
 };
 
-export function BattleEventBrawlersResultStatistics(
-  {brawlerList, brawlersResultStatsList}: Readonly<BrawlersResultStatisticsProps>
+export function BrawlersResultStatistics(
+  {brawlers, statsList}: Readonly<BrawlersResultStatisticsProps>
 ) {
-  const brawlers = new BrawlerCollection(brawlerList);
-  const columns: ColumnDef<IBrawlersResultStatistics>[] = [
+  const brawlerCollection = new BrawlerCollection(brawlers);
+  const columns: ColumnDef<BrawlersResultStatisticsModel>[] = [
     {
       accessorKey: "brawlerIds",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"브롤러 조합"}/>,
       cell: ({row}) => {
-        const brawlersList = row.original.brawlerIds.map(id => brawlers.find(id));
+        const brawlersList = row.original.brawlerIds.map(id => brawlerCollection.find(id));
         return (
           <BrawlersCell brawlers={brawlersList}/>
         );
@@ -241,13 +242,13 @@ export function BattleEventBrawlersResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={brawlersResultStatsList} paginated={true}/>
+    <DataTable columns={columns} data={statsList} paginated={true}/>
   );
 }
 
 type BrawlerListStatisticsProps = {
   brawlers: Brawler[];
-  resultStatisticsList: IBrawlerResultStatistics[];
+  statsList: BrawlerResultStatisticsModel[];
 }
 
 type BrawlerListStatisticsData = {
@@ -261,15 +262,15 @@ type BrawlerListStatisticsData = {
 }
 
 export function BrawlerListStatistics(
-  {brawlers, resultStatisticsList}: Readonly<BrawlerListStatisticsProps>
+  {brawlers, statsList}: Readonly<BrawlerListStatisticsProps>
 ) {
 
-  const statisticsMap: Record<number, IBrawlerResultStatistics> = resultStatisticsList.reduce(
+  const statisticsMap: Record<number, BrawlerResultStatisticsModel> = statsList.reduce(
     (acc, stats) => {
       acc[stats.brawlerId] = stats;
       return acc;
     },
-    {} as Record<number, IBrawlerResultStatistics>
+    {} as Record<number, BrawlerResultStatisticsModel>
   );
 
   const data: BrawlerListStatisticsData[] = brawlers.map(brawler => {
@@ -343,5 +344,47 @@ export function BrawlerListStatistics(
   return (
     <DataTable columns={columns} data={data}/>
   );
+}
+
+type BrawlerEnemyResultStatisticsProps = {
+  brawlers: Brawler[];
+  statsList: BrawlerEnemyResultStatisticsModel[];
+}
+
+export function BrawlerEnemyResultStatistics(
+  {brawlers, statsList}: Readonly<BrawlerEnemyResultStatisticsProps>
+) {
+  const brawlerCollection = new BrawlerCollection(brawlers);
+  const columns: ColumnDef<BrawlerEnemyResultStatisticsModel>[] = [
+    {
+      accessorKey: "enemyBrawlerId",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"상대 브롤러"}/>,
+      cell: ({row}) => {
+        const enemyBrawler = brawlerCollection.find(row.original.enemyBrawlerId);
+        return (
+          <BrawlerCell brawler={enemyBrawler}/>
+        );
+      },
+    },
+    {
+      accessorKey: "winRate",
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"승률"}/>,
+      cell: ({row}) => toPercentage(row.original.winRate),
+    },
+    {
+      accessorKey: "totalBattleCount",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"표본수"}/>,
+      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
+    }
+  ];
+
+  return (
+    <DataTable columns={columns} data={statsList} paginated={true}/>
+  )
 }
 
