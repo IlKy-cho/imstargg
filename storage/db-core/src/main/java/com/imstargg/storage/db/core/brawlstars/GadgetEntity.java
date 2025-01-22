@@ -12,7 +12,7 @@ import jakarta.persistence.UniqueConstraint;
         name = "gadget",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_gadget__brawlstarsid",
+                        name = "uk_brawlstarsid",
                         columnNames = "brawlstars_id"
                 )
         }
@@ -29,8 +29,8 @@ public class GadgetEntity extends BaseEntity {
     @Column(name = "name_message_code", length = 105, updatable = false, nullable = false)
     private String nameMessageCode;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     protected GadgetEntity() {
     }
@@ -47,7 +47,7 @@ public class GadgetEntity extends BaseEntity {
         return nameMessageCode;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 }

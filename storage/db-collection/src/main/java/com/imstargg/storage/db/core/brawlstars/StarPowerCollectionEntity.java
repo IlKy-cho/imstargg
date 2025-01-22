@@ -24,15 +24,15 @@ public class StarPowerCollectionEntity extends BaseEntity {
     @Column(name = "name_message_code", length = 105, updatable = false, nullable = false)
     private String nameMessageCode;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     protected StarPowerCollectionEntity() {
     }
 
-    public StarPowerCollectionEntity(long brawlStarsId, long brawlerId) {
+    public StarPowerCollectionEntity(long brawlStarsId, long brawlerBrawlStarsId) {
         this.brawlStarsId = brawlStarsId;
-        this.brawlerId = brawlerId;
+        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.nameMessageCode = "starpower." + brawlStarsId + ".name";
     }
 
@@ -48,7 +48,7 @@ public class StarPowerCollectionEntity extends BaseEntity {
         return nameMessageCode;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 }

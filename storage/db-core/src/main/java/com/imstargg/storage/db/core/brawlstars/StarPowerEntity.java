@@ -12,7 +12,7 @@ import jakarta.persistence.UniqueConstraint;
         name = "star_power",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_starpower__brawlstarsid",
+                        name = "uk_brawlstarsid",
                         columnNames = "brawlstars_id"
                 )
         }
@@ -30,16 +30,10 @@ public class StarPowerEntity extends BaseEntity {
     @Column(name = "name_message_code", length = 105, updatable = false, nullable = false)
     private String nameMessageCode;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
     protected StarPowerEntity() {
-    }
-
-    public StarPowerEntity(long brawlStarsId, long brawlerId) {
-        this.brawlStarsId = brawlStarsId;
-        this.brawlerId = brawlerId;
-        this.nameMessageCode = "starpower." + brawlStarsId + ".name";
     }
 
     public Long getId() {
@@ -54,7 +48,7 @@ public class StarPowerEntity extends BaseEntity {
         return nameMessageCode;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 }
