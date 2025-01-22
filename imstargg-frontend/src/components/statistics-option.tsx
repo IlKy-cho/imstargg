@@ -28,7 +28,7 @@ function BattleTypeSelect({ battleType }: { battleType?: RegularBattleType }) {
 
   return (
     <Select defaultValue={battleType} onValueChange={handleBattleTypeChange}>
-      <SelectTrigger className="w-32">
+      <SelectTrigger className="w-28">
         <SelectValue placeholder="전투 타입" />
       </SelectTrigger>
       <SelectContent>
@@ -61,7 +61,7 @@ function TrophySelect({ trophy }: { trophy?: TrophyRange }) {
       onValueChange={handleTrophyChange}
       value={trophy}
     >
-      <SelectTrigger className="w-32">
+      <SelectTrigger className="w-28">
         <SelectValue placeholder="트로피" />
       </SelectTrigger>
       <SelectContent>
@@ -99,7 +99,7 @@ function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
 
   return (
     <Select defaultValue={tier} onValueChange={handleSoloRankTierChange}>
-      <SelectTrigger className="w-32">
+      <SelectTrigger className="w-28">
         <SelectValue placeholder="경쟁전 티어" />
       </SelectTrigger>
       <SelectContent>
