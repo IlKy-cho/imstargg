@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.Clock;
+import java.time.LocalDate;
 
 @Configuration
 public class DailyJobConfig {
@@ -29,7 +30,7 @@ public class DailyJobConfig {
     public Job job() {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
-                .incrementer(new DateIncrementer(clock))
+                .incrementer(new DateIncrementer(LocalDate.now(clock).minusDays(1)))
                 .start(dormantReturnedPlayerJobStep(null))
                 .next(brawlerBattleRankStatisticsJobStep(null))
                 .next(brawlersBattleRankStatisticsJobStep(null))
