@@ -2,7 +2,7 @@ package com.imstargg.admin.domain;
 
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.BrawlStarsImageType;
-import com.imstargg.core.enums.NameMessageCodes;
+import com.imstargg.core.enums.MessageCodes;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityEvent;
 import com.imstargg.storage.db.core.BattleJpaRepository;
@@ -64,7 +64,7 @@ public class BattleService {
                                 .map(BattleEntity::getEvent)
                                 .map(BattleEntityEvent::getMap)
                                 .filter(Objects::nonNull)
-                                .map(NameMessageCodes.BATTLE_MAP::code)
+                                .map(MessageCodes.BATTLE_MAP_NAME::code)
                                 .toList()
                 ).stream()
                 .collect(Collectors.groupingBy(MessageCollectionEntity::getCode));
@@ -78,7 +78,7 @@ public class BattleService {
                         battle.getEvent(),
                         new BattleEventMap(
                                 battle.getEvent().getMap() == null ? List.of() :
-                                mapCodeToNames.get(NameMessageCodes.BATTLE_MAP.code(battle.getEvent().getMap())),
+                                mapCodeToNames.get(MessageCodes.BATTLE_MAP_NAME.code(battle.getEvent().getMap())),
                                 battle.getEvent().getBrawlStarsId() == null ? null :
                                 mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(battle.getEvent().getBrawlStarsId()))
                         ),

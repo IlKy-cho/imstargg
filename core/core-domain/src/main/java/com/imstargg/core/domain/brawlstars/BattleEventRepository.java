@@ -8,7 +8,7 @@ import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
-import com.imstargg.core.enums.NameMessageCodes;
+import com.imstargg.core.enums.MessageCodes;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BattleEventEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventJpaRepository;
@@ -74,7 +74,7 @@ public class BattleEventRepository {
                 .map(BattleEventEntity::getMapBrawlStarsName)
                 .filter(Objects::nonNull)
                 .distinct()
-                .map(NameMessageCodes.BATTLE_MAP::code)
+                .map(MessageCodes.BATTLE_MAP_NAME::code)
                 .toList();
         Map<String, MessageCollection> codeToMessage = messageRepository.getCollectionList(nameMessageCodes).stream()
                 .collect(Collectors.toMap(MessageCollection::getCode, Function.identity()));
@@ -91,7 +91,7 @@ public class BattleEventRepository {
                         BattleEventMode.find(eventEntity.getMode()),
                         new BattleEventMap(
                                 eventEntity.getMapBrawlStarsName() == null ? null :
-                                        codeToMessage.get(NameMessageCodes.BATTLE_MAP.code(eventEntity.getMapBrawlStarsName()))
+                                        codeToMessage.get(MessageCodes.BATTLE_MAP_NAME.code(eventEntity.getMapBrawlStarsName()))
                                                 .find(language)
                                                 .map(Message::content)
                                                 .orElse(eventEntity.getMapBrawlStarsName()),
@@ -118,7 +118,7 @@ public class BattleEventRepository {
                         BattleEventMode.find(eventEntity.getMode()),
                         new BattleEventMap(
                                 eventEntity.getMapBrawlStarsName() == null ? null :
-                                        messageRepository.getCollection(NameMessageCodes.BATTLE_MAP.code(eventEntity.getMapBrawlStarsName()))
+                                        messageRepository.getCollection(MessageCodes.BATTLE_MAP_NAME.code(eventEntity.getMapBrawlStarsName()))
                                                 .find(language)
                                                 .map(Message::content)
                                                 .orElse(eventEntity.getMapBrawlStarsName()),

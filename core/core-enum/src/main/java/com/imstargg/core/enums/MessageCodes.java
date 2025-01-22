@@ -2,23 +2,26 @@ package com.imstargg.core.enums;
 
 import java.util.regex.Pattern;
 
-public abstract class NameMessageCodes {
+public abstract class MessageCodes {
 
-    public static final NameMessageCode<String> BATTLE_MAP = new NameMessageCode<>("maps.{mapBrawlStarsName}.name");
+    public static final MessageCodeTemplate<String> BATTLE_MAP_NAME = new MessageCodeTemplate<>("maps.{mapBrawlStarsName}.name");
+    public static final MessageCodeTemplate<Long> BRAWLER_NAME = new MessageCodeTemplate<>("brawler.{brawlStarsId}.name");
+    public static final MessageCodeTemplate<Long> GEAR_NAME = new MessageCodeTemplate<>("gear.{brawlStarsId}.name");
+    public static final MessageCodeTemplate<Long> STAR_POWER_NAME = new MessageCodeTemplate<>("starpower.{brawlStarsId}.name");
+    public static final MessageCodeTemplate<Long> GADGET_NAME = new MessageCodeTemplate<>("gadget.{brawlStarsId}.name");
 
-
-    private NameMessageCodes() {
+    private MessageCodes() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 
-    public static class NameMessageCode<T> {
-        
-        private final String codeTemplate;
-        private final String codeKeyPlaceholder;
+    public static class MessageCodeTemplate<T> {
 
-        private NameMessageCode(String codeTemplate) {
-            this.codeTemplate = codeTemplate;
-            this.codeKeyPlaceholder = extractCodeKeyPlaceholder(codeTemplate);
+        private final String template;
+        private final String keyPlaceholder;
+
+        private MessageCodeTemplate(String template) {
+            this.template = template;
+            this.keyPlaceholder = extractCodeKeyPlaceholder(template);
         }
 
         private String extractCodeKeyPlaceholder(String codeTemplate) {
@@ -38,13 +41,13 @@ public abstract class NameMessageCodes {
         }
 
         public String code(T key) {
-            return codeTemplate.replace(codeKeyPlaceholder, key.toString());
+            return template.replace(keyPlaceholder, key.toString());
         }
 
         public String key(String code) {
-            int codeKeyIndex = codeTemplate.indexOf(codeKeyPlaceholder);
-            String prefix = codeTemplate.substring(0, codeKeyIndex);
-            String suffix = codeTemplate.substring(codeKeyIndex + codeKeyPlaceholder.length());
+            int codeKeyIndex = template.indexOf(keyPlaceholder);
+            String prefix = template.substring(0, codeKeyIndex);
+            String suffix = template.substring(codeKeyIndex + keyPlaceholder.length());
             if (code.startsWith(prefix) && code.endsWith(suffix)) {
                 return code.substring(prefix.length(), code.length() - suffix.length());
             } else {
