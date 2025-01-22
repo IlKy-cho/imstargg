@@ -22,7 +22,6 @@ public class CacheConfig {
         );
 
         cacheManager.setCacheNames(List.of(
-                CacheNames.BRAWLER,
                 CacheNames.STATISTICS,
                 CacheNames.BRAWLSTARS_NEWS
         ));
