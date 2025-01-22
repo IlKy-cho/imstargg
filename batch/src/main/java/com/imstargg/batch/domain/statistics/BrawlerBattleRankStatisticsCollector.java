@@ -24,7 +24,7 @@ public class BrawlerBattleRankStatisticsCollector
         if (!battle.canRankStatisticsCollected()) {
             return false;
         }
-        battle.playerCombinations().forEach(playerCombination -> {
+        battle.myPlayerCombinations().forEach(playerCombination -> {
             var key = BrawlerBattleRankStatisticsKey.of(battle);
             var brawlerBattleResultStats = getBrawlerBattleResultStats(key);
             brawlerBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));

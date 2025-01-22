@@ -16,7 +16,6 @@ import java.time.OffsetDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Entity
 @Table(name = "battle")
@@ -108,14 +107,6 @@ public class BattleCollectionEntity extends BaseEntity {
                 ).toList();
     }
 
-    public Optional<BattleCollectionEntityTeamPlayer> findStarPlayer() {
-        return teams.stream()
-                .flatMap(List::stream)
-                .filter(teamPlayer -> Objects.equals(
-                        teamPlayer.getBrawlStarsTag(), this.getStarPlayerBrawlStarsTag())
-                ).findFirst();
-    }
-
     public List<BattleCollectionEntityTeamPlayer> findMyTeam() {
         return teams.stream()
                 .filter(team -> team.stream()
@@ -137,20 +128,19 @@ public class BattleCollectionEntity extends BaseEntity {
                 ).toList();
     }
 
-    public List<BattleCollectionEntityTeamPlayer> findEnemyTeam() {
-        List<List<BattleCollectionEntityTeamPlayer>> enemyTeams = findEnemyTeams();
-        if (enemyTeams.size() != 1) {
-            throw new IllegalStateException("적 팀이 1개가 아닙니다. battleId: " + id);
-        }
-
-        return enemyTeams.getFirst();
-    }
-
-    public List<BattlePlayerCombination> playerCombinations() {
+    public List<BattlePlayerCombination> myPlayerCombinations() {
         return findMe().stream()
                 .flatMap(me -> findEnemyTeams().stream()
                         .flatMap(Collection::stream)
-                        .map(enemy -> new BattlePlayerCombination(me, enemy))
+                        .map(enemyTeamPlayer -> new BattlePlayerCombination(me, enemyTeamPlayer))
+                ).toList();
+    }
+
+    public List<BattlePlayerCombination> playerCombinations() {
+        return findMyTeam().stream()
+                .flatMap(myTeamPlayer -> findEnemyTeams().stream()
+                        .flatMap(Collection::stream)
+                        .map(enemyTeamPlayer -> new BattlePlayerCombination(myTeamPlayer, enemyTeamPlayer))
                 ).toList();
     }
 

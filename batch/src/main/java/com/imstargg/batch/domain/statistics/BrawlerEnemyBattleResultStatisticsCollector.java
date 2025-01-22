@@ -23,9 +23,9 @@ public class BrawlerEnemyBattleResultStatisticsCollector
         if (!battle.canResultStatisticsCollected()) {
             return false;
         }
-        battle.playerCombinations().forEach(playerCombination -> {
+        battle.myPlayerCombinations().forEach(playerCombination -> {
             var key = BrawlerEnemyBattleResultStatisticsKey.of(
-                    battle, playerCombination.me(), playerCombination.enemy());
+                    battle, playerCombination.myTeamPlayer(), playerCombination.enemyTeamPlayer());
             var stats = getBrawlerEnemyBattleResultStats(key);
             stats.countUp(BattleResult.map(battle.getResult()));
         });
