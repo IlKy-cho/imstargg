@@ -1,20 +1,64 @@
 "use client";
 
 import Image from "next/image";
-import { BattleEvent } from "@/model/BattleEvent";
-import { TrophyRange, trophyRangeTitle, TrophyRangeValues } from "@/model/enums/TrophyRange";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { BrawlStarsIconSrc } from "@/components/icon";
-import { useRouter, useSearchParams } from "next/navigation";
-import { SoloRankTierRange, soloRankTierRangeTitle, SoloRankTierRangeValues } from "@/model/enums/SoloRankTierRange";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { isResultBattleEventMode } from "@/model/enums/BattleEventMode";
-import { RegularBattleType, RegularBattleTypeValue, RegularBattleTypeValues } from "@/model/enums/BattleType";
-import { battleTypeTitle } from "@/components/battle-type";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip"
-import { InfoIcon } from "lucide-react";
+import {BattleEvent} from "@/model/BattleEvent";
+import {TrophyRange, trophyRangeTitle, TrophyRangeValues} from "@/model/enums/TrophyRange";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {BrawlStarsIconSrc} from "@/components/icon";
+import {useRouter, useSearchParams} from "next/navigation";
+import {SoloRankTierRange, soloRankTierRangeTitle, SoloRankTierRangeValue, SoloRankTierRangeValues} from "@/model/enums/SoloRankTierRange";
+import {Label} from "@/components/ui/label";
+import {Checkbox} from "@/components/ui/checkbox";
+import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
+import {RegularBattleType, RegularBattleTypeValue, RegularBattleTypeValues} from "@/model/enums/BattleType";
+import {battleTypeTitle} from "@/components/battle-type";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip"
+import {InfoIcon} from "lucide-react";
+import { TrophyRangeValue } from "@/model/enums/TrophyRange";
 
+export interface StatisticsSearchParams {
+  duplicateBrawler?: boolean;
+  type?: RegularBattleType;
+  trophy?: TrophyRange;
+  soloRankTier?: SoloRankTierRange;
+}
+
+export class StatisticsParams {
+
+  public readonly duplicateBrawler: boolean;
+  public readonly type: RegularBattleType;
+  public readonly trophy: TrophyRange;
+  public readonly soloRankTier: SoloRankTierRange;
+
+  constructor(
+    type?: RegularBattleType,
+    trophy?: TrophyRange,
+    soloRankTier?: SoloRankTierRange,
+    duplicateBrawler?: boolean
+  ) {
+    this.type = type ?? RegularBattleTypeValue.RANKED;
+    this.trophy = trophy ?? TrophyRangeValue.TROPHY_500_PLUS;
+    this.soloRankTier = soloRankTier ?? SoloRankTierRangeValue.DIAMOND_PLUS;
+    this.duplicateBrawler = duplicateBrawler ?? false;
+  }
+
+  public static from(searchParams: StatisticsSearchParams): StatisticsParams {
+    return new StatisticsParams(
+      searchParams.type,
+      searchParams.trophy,
+      searchParams.soloRankTier,
+      searchParams.duplicateBrawler
+    );
+  }
+
+  public getSoloRankTierOfType(): SoloRankTierRange | null {
+    return this.type === RegularBattleTypeValue.SOLO_RANKED ? this.soloRankTier : null;
+  }
+
+  public getTrophyOfType(): TrophyRange | null {
+    return this.type === RegularBattleTypeValue.RANKED ? this.trophy : null;
+  }
+}
 
 function BattleTypeSelect({ battleType }: { battleType?: RegularBattleType }) {
   const router = useRouter();
@@ -122,6 +166,22 @@ function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
   )
 }
 
+function BattleTypeTierSelect(
+  { battleType, trophy, soloRankTier }
+  : { battleType: RegularBattleType, trophy?: TrophyRange, soloRankTier?: SoloRankTierRange }
+) {
+  return (
+    <div className="flex gap-2">
+      <BattleTypeSelect battleType={battleType} />
+      {battleType === RegularBattleTypeValue.SOLO_RANKED ? (
+        <SoloRankTierSelect tier={soloRankTier} />
+      ) : (
+        <TrophySelect trophy={trophy} />
+      )}
+    </div>
+  );
+}
+
 function DuplicateBrawlerCheckbox({ duplicateBrawler }: { duplicateBrawler: boolean }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -189,12 +249,7 @@ export function BattleEventResultStatisticsOption(
 
   return (
     <div className="flex gap-2">
-      <BattleTypeSelect battleType={battleType} />
-      {battleType === RegularBattleTypeValue.SOLO_RANKED ? (
-        <SoloRankTierSelect tier={soloRankTier} />
-      ) : (
-        <TrophySelect trophy={trophy} />
-      )}
+      <BattleTypeTierSelect battleType={battleType} trophy={trophy} soloRankTier={soloRankTier} />
       <DuplicateBrawlerCheckbox duplicateBrawler={duplicateBrawler} />
     </div>
   )
@@ -208,7 +263,7 @@ type BattleEventStatsOptionProps = {
   soloRankTier?: SoloRankTierRange;
 }
 
-export function StatisticsOption({
+export function BattleEventStatisticsOption({
   battleEvent,
   battleType,
   duplicateBrawler,
@@ -246,14 +301,7 @@ export function BrawlerStatisticsOption({
 }: Readonly<BrawlerStatsOptionProps>) {
   return (
     <div className="border rounded-lg p-1 bg-zinc-100">
-      <div className="flex gap-2">
-        <BattleTypeSelect battleType={battleType} />
-        {battleType === RegularBattleTypeValue.SOLO_RANKED ? (
-          <SoloRankTierSelect tier={soloRankTier} />
-        ) : (
-          <TrophySelect trophy={trophy} />
-        )}
-      </div>
+      <BattleTypeTierSelect battleType={battleType} soloRankTier={soloRankTier} trophy={trophy}/>
     </div>
   )
 }
