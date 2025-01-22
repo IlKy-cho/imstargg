@@ -1,17 +1,17 @@
 import {getBrawlers} from "@/lib/api/brawler";
 import {Metadata} from "next";
-import {metadataTitle} from "@/config/site";
+import {meta} from "@/config/site";
 import {getBrawlerResultStatistics} from "@/lib/api/statistics";
 import {BrawlerStatisticsOption} from "@/components/statistics-option";
 import {TrophyRange, TrophyRangeValue} from "@/model/enums/TrophyRange";
 import {SoloRankTierRange, SoloRankTierRangeValue} from "@/model/enums/SoloRankTierRange";
 import {RegularBattleType, RegularBattleTypeValue} from "@/model/enums/BattleType";
 import React from "react";
-import { BrawlerListStatistics } from "@/components/statistics";
+import {BrawlerListStatistics} from "@/components/statistics";
 
 export const metadata: Metadata = {
-  title: metadataTitle("브롤스타즈 브롤러"),
-  description: "브롤스타즈의 모든 브롤러 정보를 확인해보세요.",
+  title: `브롤러 | ${meta.name}`,
+  description: "브롤스타즈의 모든 브롤러 목록과 통계 정보 입니다.",
 };
 
 type SearchParams = {
@@ -53,7 +53,7 @@ export default async function BrawlersPage({ searchParams }: Readonly<PageProps>
   );
 
   return (
-    <div className="flex flex-col gap-4 items-center max-w-7xl mx-auto p-4">
+    <div className="flex flex-col gap-4 items-center max-w-7xl mx-auto p-1 md:p-4">
       <h1 className="text-3xl font-bold mb-6 text-zinc-800 border-b-2 border-zinc-200">
         브롤러
       </h1>
