@@ -1,5 +1,7 @@
 package com.imstargg.batch.job.support;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
@@ -9,6 +11,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 
 public class DateIncrementer implements JobParametersIncrementer {
+
+    private static final Logger log = LoggerFactory.getLogger(DateIncrementer.class);
 
     private static final String KEY = "date";
 
@@ -32,6 +36,8 @@ public class DateIncrementer implements JobParametersIncrementer {
                 throw new IllegalArgumentException("Invalid value for parameter " + KEY, exception);
             }
         }
+
+        log.info("JobParameter['{}'] = {}", KEY, date);
         return new JobParametersBuilder(params)
                 .addLocalDate(KEY, date)
                 .toJobParameters();
