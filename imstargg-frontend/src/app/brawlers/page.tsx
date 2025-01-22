@@ -65,7 +65,7 @@ export default async function BrawlersPage({ searchParams }: Readonly<PageProps>
         />
       </div>
       <div className="w-full">
-        <BrawlerListStatistics brawlers={brawlers} resultStatisticsList={brawlerResultStats} />
+        <BrawlerListStatistics brawlers={brawlers} statsList={brawlerResultStats} />
       </div>
     </div>
   );

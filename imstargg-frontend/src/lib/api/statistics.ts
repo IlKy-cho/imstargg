@@ -136,7 +136,13 @@ export async function getBrawlerBrawlersResultStatistics(
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BrawlersResultStatistics>;
-    return data.content.sort((a, b) => b.winRate - a.winRate);
+    return data.content.map(stat => {
+      const sortedBrawlerIds = [brawlerId, ...stat.brawlerIds.filter(id => id !== brawlerId)];
+      return {
+        ...stat,
+        brawlerIds: sortedBrawlerIds
+      };
+    }).sort((a, b) => b.winRate - a.winRate);
   }
 
   throw await ApiError.create(response);
