@@ -3,7 +3,7 @@ import React from "react";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {BrawlerClassIcon, brawlerClassTitle} from "@/components/brawler-class";
 import {brawlerRarityTitle} from "@/components/brawler-rarity";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { brawlerBackgroundColor } from "./brawler";
 
@@ -23,7 +23,7 @@ export function BrawlerProfile({brawler}: Readonly<BrawlerProfileProps>) {
               <TooltipTrigger>
                 <BrawlerClassIcon brawlerRole={brawler.role} size="xl"/>
               </TooltipTrigger>
-              <TooltipContent className="text-sm bg-zinc-800 text-white p-1 rounded-md">
+              <TooltipContent>
                 {brawlerClassTitle(brawler.role)}
               </TooltipContent>
             </Tooltip>
