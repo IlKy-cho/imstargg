@@ -14,7 +14,7 @@ import java.time.OffsetDateTime;
 @Table(
         name = "battle_event",
         uniqueConstraints = {
-                @UniqueConstraint(name = "uk_brawlstarsid", columnNames = "brawlstars_id")
+                @UniqueConstraint(name = "uk_battle_event__brawlstarsid", columnNames = "brawlstars_id")
         }
 )
 public class BattleEventEntity extends BaseEntity {
