@@ -8,11 +8,13 @@ import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCol
 
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class BrawlersBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlersBattleResultStatisticsCollectionEntity> {
 
     private final ConcurrentMap<BrawlersBattleResultStatisticsKey, BrawlersBattleResultStatisticsCollectionEntity> cache;
+    private final ConcurrentSkipListSet<String> battleKeySet = new ConcurrentSkipListSet<>();
 
     public BrawlersBattleResultStatisticsCollector(
             ConcurrentMap<BrawlersBattleResultStatisticsKey, BrawlersBattleResultStatisticsCollectionEntity> cache
@@ -22,16 +24,26 @@ public class BrawlersBattleResultStatisticsCollector
 
     @Override
     public boolean collect(BattleCollectionEntity battle) {
-        if (!battle.canResultStatisticsCollected()) {
+        if (!battle.canResultStatisticsCollected() || !battleKeySet.add(battle.getBattleKey())) {
             return false;
         }
+        BattleResult battleResult = BattleResult.map(battle.getResult());
         battle.myTeamCombinations()
                 .stream()
                 .filter(myTeamCombination -> myTeamCombination.players().size() == 2)
                 .forEach(myTeamCombination ->
                         BrawlersBattleResultStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
                             var brawlersBattleResultStats = getBrawlersBattleResult(key);
-                            brawlersBattleResultStats.countUp(BattleResult.map(battle.getResult()));
+                            brawlersBattleResultStats.countUp(battleResult);
+                        })
+                );
+        battle.enemyTeamCombinations()
+                .stream()
+                .filter(enemyTeamCombination -> enemyTeamCombination.players().size() == 2)
+                .forEach(enemyTeamCombination ->
+                        BrawlersBattleResultStatisticsKey.of(battle, enemyTeamCombination.players()).forEach(key -> {
+                            var brawlersBattleResultStats = getBrawlersBattleResult(key);
+                            brawlersBattleResultStats.countUp(battleResult.opposite());
                         })
                 );
         return true;

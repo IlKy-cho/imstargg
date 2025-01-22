@@ -92,10 +92,10 @@ public class BattleCollectionEntity extends BaseEntity {
         return event.getBrawlStarsId() != null && event.getBrawlStarsId() > 0;
     }
 
-    public boolean amIStarPlayer() {
+    public boolean isStarPlayer(BattleCollectionEntityTeamPlayer teamPlayer) {
         return Objects.equals(
                 this.getStarPlayerBrawlStarsTag(),
-                this.getPlayer().getPlayer().getBrawlStarsTag()
+                teamPlayer.getBrawlStarsTag()
         );
     }
 
@@ -128,6 +128,15 @@ public class BattleCollectionEntity extends BaseEntity {
                 ).toList();
     }
 
+    public List<BattleCollectionEntityTeamPlayer> findEnemyTeam() {
+        List<List<BattleCollectionEntityTeamPlayer>> enemyTeams = findEnemyTeams();
+        if (enemyTeams.size() != 1) {
+            throw new IllegalStateException("적 팀이 1개가 아닙니다. battleId: " + id);
+        }
+
+        return enemyTeams.getFirst();
+    }
+
     public List<BattlePlayerCombination> myPlayerCombinations() {
         return findMe().stream()
                 .flatMap(me -> findEnemyTeams().stream()
@@ -144,9 +153,15 @@ public class BattleCollectionEntity extends BaseEntity {
                 ).toList();
     }
 
-    public List<BattleMyTeamCombination> myTeamCombinations() {
+    public List<BattleTeamCombination> myTeamCombinations() {
         return new BattlePlayerCombinationBuilder(findMyTeam()).build().stream()
-                .map(BattleMyTeamCombination::new)
+                .map(BattleTeamCombination::new)
+                .toList();
+    }
+
+    public List<BattleTeamCombination> enemyTeamCombinations() {
+        return new BattlePlayerCombinationBuilder(findEnemyTeam()).build().stream()
+                .map(BattleTeamCombination::new)
                 .toList();
     }
 

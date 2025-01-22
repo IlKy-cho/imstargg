@@ -25,15 +25,16 @@ public class BrawlerBattleResultStatisticsCollector
         if (!battle.canResultStatisticsCollected() || !battleKeySet.add(battle.getBattleKey())) {
             return false;
         }
-        boolean isStarPlayer = battle.amIStarPlayer();
-        battle.findMe().forEach(myPlayer -> {
-            var key = BrawlerBattleResultStatisticsKey.of(battle, myPlayer);
-            var brawlerBattleResultStats = getBrawlerBattleResultStats(key);
-            brawlerBattleResultStats.countUp(BattleResult.map(battle.getResult()));
-            if (isStarPlayer) {
-                brawlerBattleResultStats.starPlayer();
-            }
+        BattleResult battleResult = BattleResult.map(battle.getResult());
+        battle.playerCombinations().forEach(playerCombination -> {
+            getBrawlerBattleResultStats(BrawlerBattleResultStatisticsKey
+                    .of(battle, playerCombination.myTeamPlayer())
+            ).countUp(battleResult);
+            getBrawlerBattleResultStats(BrawlerBattleResultStatisticsKey
+                    .of(battle, playerCombination.enemyTeamPlayer())
+            ).countUp(battleResult.opposite());
         });
+
         return true;
     }
 
