@@ -23,11 +23,6 @@ function BattleTypeSelect({ battleType }: { battleType?: RegularBattleType }) {
   const handleBattleTypeChange = (value: RegularBattleType) => {
     const params = new URLSearchParams(searchParams);
     params.set('type', value);
-    if (value === RegularBattleTypeValue.SOLO_RANKED) {
-      params.delete('trophy');
-    } else if (value === RegularBattleTypeValue.RANKED) {
-      params.delete('soloRankTier');
-    }
     router.replace(`?${params.toString()}`);
   };
 
@@ -57,7 +52,6 @@ function TrophySelect({ trophy }: { trophy?: TrophyRange }) {
     const params = new URLSearchParams(searchParams);
     params.set('trophy', value);
     params.set('type', RegularBattleTypeValue.RANKED);
-    params.delete('soloRankTier');
     router.replace(`?${params.toString()}`);
   };
 
@@ -100,7 +94,6 @@ function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
     const params = new URLSearchParams(searchParams);
     params.set('soloRankTier', value);
     params.set('type', RegularBattleTypeValue.SOLO_RANKED);
-    params.delete('trophy');
     router.replace(`?${params.toString()}`);
   };
 
@@ -166,7 +159,7 @@ function DuplicateBrawlerCheckbox({ duplicateBrawler }: { duplicateBrawler: bool
             <Label htmlFor="duplicate-brawler" className="text-sm text-zinc-500">
               브롤러 중복
             </Label>
-            <InfoIcon className="w-4 h-4 cursor-default" />
+            <InfoIcon className="w-4 h-4" />
           </TooltipTrigger>
           <TooltipContent>
             <p>한 전투에 같은 브롤러가 존재하는 경우가 있습니다.</p>
