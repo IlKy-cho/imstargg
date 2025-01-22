@@ -157,7 +157,7 @@ function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics
   const { brawlerRankStats, brawlersRankStats, brawlerResultStats, brawlersResultStats } = statistics;
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4">
+    <div className="flex flex-col gap-4">
       {
         hasBrawlerStats(statistics) && (
           <div className="flex flex-col gap-2">

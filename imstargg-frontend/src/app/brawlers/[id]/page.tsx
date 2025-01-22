@@ -63,7 +63,7 @@ function StatisticsContent(
   }
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-4">
       {
         hasStatistics(brawlersResultStatistics) && (
           <div className="flex flex-col gap-2">
