@@ -53,6 +53,14 @@ function BrawlersCell({brawlers}: { brawlers: Array<Brawler | null> }) {
   )
 }
 
+function TextCell({value}: { value: string }) {
+  return (
+    <span className="text-xs md:text-sm">
+      {value}
+    </span>
+  )
+}
+
 type BrawlerRankStatisticsProps = {
   brawlers: Brawler[],
   statsList: BrawlerRankStatisticsModel[]
@@ -79,20 +87,23 @@ export function BrawlerRankStatistics(
       accessorKey: "averageRank",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"평균 랭크"}/>,
-      cell: ({row}) => row.original.averageRank.toFixed(2),
+      cell: ({row}) =>
+        <TextCell value={row.original.averageRank.toFixed(2)}/>,
     },
     {
       accessorKey: "pickRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
-      cell: ({row}) => toPercentage(row.original.pickRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.pickRate)}/>,
     },
     {
       accessorKey: "totalBattleCount",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
-      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
+      cell: ({row}) =>
+        <TextCell value={row.original.totalBattleCount.toLocaleString()}/>,
     }
   ];
 
@@ -127,20 +138,23 @@ export function BrawlersRankStatistics(
       accessorKey: "averageRank",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"평균 랭크"}/>,
-      cell: ({row}) => row.original.averageRank.toFixed(2),
+      cell: ({row}) =>
+        <TextCell value={row.original.averageRank.toFixed(2)}/>,
     },
     {
       accessorKey: "pickRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
-      cell: ({row}) => toPercentage(row.original.pickRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.pickRate)}/>,
     },
     {
       accessorKey: "totalBattleCount",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
-      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
+      cell: ({row}) =>
+        <TextCell value={row.original.totalBattleCount.toLocaleString()}/>,
     }
   ];
 
@@ -175,26 +189,30 @@ export function BrawlerResultStatistics(
       accessorKey: "winRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"승률"}/>,
-      cell: ({row}) => toPercentage(row.original.winRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.winRate)}/>,
     },
     {
       accessorKey: "starPlayerRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"Star"}/>,
-      cell: ({row}) => toPercentage(row.original.starPlayerRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.starPlayerRate)}/>,
     },
     {
       accessorKey: "pickRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
-      cell: ({row}) => toPercentage(row.original.pickRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.pickRate)}/>,
     },
     {
       accessorKey: "totalBattleCount",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
-      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
+      cell: ({row}) =>
+        <TextCell value={row.original.totalBattleCount.toLocaleString()}/>,
     }
   ];
 
@@ -229,20 +247,23 @@ export function BrawlersResultStatistics(
       accessorKey: "winRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"승률"}/>,
-      cell: ({row}) => toPercentage(row.original.winRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.winRate)}/>,
     },
     {
       accessorKey: "pickRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
-      cell: ({row}) => toPercentage(row.original.pickRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.pickRate)}/>,
     },
     {
       accessorKey: "totalBattleCount",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
-      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
+      cell: ({row}) =>
+        <TextCell value={row.original.totalBattleCount.toLocaleString()}/>,
     }
   ];
 
@@ -316,31 +337,36 @@ export function BrawlerListStatistics(
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"희귀도"}/>,
-      cell: ({row}) => brawlerRarityTitle(row.original.brawler.rarity),
+      cell: ({row}) =>
+        <TextCell value={brawlerRarityTitle(row.original.brawler.rarity)}/>,
     },
     {
       accessorKey: "winRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"승률"}/>,
-      cell: ({row}) => row.original.winRate !== null ? toPercentage(row.original.winRate) : "N/A",
+      cell: ({row}) =>
+        <TextCell value={row.original.winRate !== null ? toPercentage(row.original.winRate) : "N/A"}/>,
     },
     {
       accessorKey: "pickRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"픽률"}/>,
-      cell: ({row}) => row.original.pickRate !== null ? toPercentage(row.original.pickRate) : "N/A",
+      cell: ({row}) =>
+        <TextCell value={row.original.pickRate !== null ? toPercentage(row.original.pickRate) : "N/A"}/>,
     },
     {
       accessorKey: "starPlayerRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"Star"}/>,
-      cell: ({row}) => row.original.starPlayerRate !== null ? toPercentage(row.original.starPlayerRate) : "N/A",
+      cell: ({row}) =>
+        <TextCell value={row.original.starPlayerRate !== null ? toPercentage(row.original.starPlayerRate) : "N/A"}/>,
     },
     {
       accessorKey: "totalBattleCount",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
-      cell: ({row}) => row.original.totalBattleCount?.toLocaleString() || "N/A",
+      cell: ({row}) =>
+        <TextCell value={row.original.totalBattleCount?.toLocaleString() || "N/A"}/>,
     },
   ];
 
@@ -375,14 +401,16 @@ export function BrawlerEnemyResultStatistics(
       accessorKey: "winRate",
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"승률"}/>,
-      cell: ({row}) => toPercentage(row.original.winRate),
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.winRate)}/>,
     },
     {
       accessorKey: "totalBattleCount",
       enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
-      cell: ({row}) => row.original.totalBattleCount.toLocaleString(),
+      cell: ({row}) =>
+        <TextCell value={row.original.totalBattleCount.toLocaleString()}/>,
     }
   ];
 
