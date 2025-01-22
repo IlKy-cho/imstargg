@@ -36,7 +36,7 @@ export default function PlayerBattleList({tag, brawlerList}: Readonly<Props>) {
 
   useEffect(() => {
     fetchBattles();
-  }, []);
+  });
 
   return (
     <div className="flex flex-col gap-2 p-1">

@@ -9,7 +9,6 @@ import {
   getBattleEventBrawlersResultStatistics
 } from "@/lib/api/statistics";
 import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
-import {RegularBattleTypeValue} from "@/model/enums/BattleType";
 import Image from "next/image";
 import gusSadPinSrc from "@/../public/icon/brawler/gus/gus_sad_pin.png"
 import {

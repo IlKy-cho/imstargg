@@ -37,7 +37,7 @@ interface BattlePlayerResponse {
 }
 
 interface BattlePlayerBrawlerResponse {
-  id: number | null;
+  id: number;
   power: number;
   trophies?: number;
   trophyChange?: number;
