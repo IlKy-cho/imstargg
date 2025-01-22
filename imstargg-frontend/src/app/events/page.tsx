@@ -16,9 +16,6 @@ export default async function EventsPage() {
       <h1 className="text-3xl font-bold mb-6 text-zinc-800 border-b-2 border-zinc-200 pb-2">
         이벤트
       </h1>
-      <div>
-        최근 2주간의 이벤트를 확인할 수 있습니다.
-      </div>
       <BattleEventList battleEvents={battleEvents}/>
     </div>
   );
