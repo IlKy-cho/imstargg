@@ -2,7 +2,9 @@
 
 import {BrawlerRankStatistics as BrawlerRankStatisticsModel} from "@/model/statistics/BrawlerRankStatistics";
 import {BrawlersRankStatistics as BrawlersRankStatisticsModel} from "@/model/statistics/BrawlersRankStatistics";
-import {BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel} from "@/model/statistics/BrawlerEnemyResultStatistics";
+import {
+  BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel
+} from "@/model/statistics/BrawlerEnemyResultStatistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
@@ -25,10 +27,12 @@ const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 function BrawlerCell({brawler}: { brawler: Brawler | null }) {
   return (
     <div className="flex flex-col sm:flex-row gap-1 flex-grow items-center">
-      <BrawlerProfileImage
-        brawler={brawler}
-        size="sm"
-      />
+      <BrawlerLink brawler={brawler}>
+        <BrawlerProfileImage
+          brawler={brawler}
+          size="sm"
+        />
+      </BrawlerLink>
       <div className="text-xs">{brawler ? brawler.name : "❓"}</div>
     </div>
   )
@@ -38,11 +42,12 @@ function BrawlersCell({brawlers}: { brawlers: Array<Brawler | null> }) {
   return (
     <div className="flex gap-1">
       {brawlers.map(brawler => (
-        <BrawlerProfileImage
-          key={brawler?.id}
-          brawler={brawler}
-          size="xs"
-        />
+        <BrawlerLink brawler={brawler} key={brawler?.id}>
+          <BrawlerProfileImage
+            brawler={brawler}
+            size="xs"
+          />
+        </BrawlerLink>
       ))}
     </div>
   )
@@ -295,9 +300,7 @@ export function BrawlerListStatistics(
         <DataTableColumnHeader column={column} title={"브롤러"}/>,
       cell: ({row}) => {
         return (
-          <BrawlerLink brawler={row.original.brawler}>
-            <BrawlerCell brawler={row.original.brawler}/>
-          </BrawlerLink>
+          <BrawlerCell brawler={row.original.brawler}/>
         );
       },
     },
