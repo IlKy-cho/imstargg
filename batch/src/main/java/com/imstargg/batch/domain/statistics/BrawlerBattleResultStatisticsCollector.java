@@ -6,11 +6,13 @@ import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsColl
 
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
 public class BrawlerBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> {
 
     private final ConcurrentMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
+    private final ConcurrentSkipListSet<String> battleKeySet = new ConcurrentSkipListSet<>();
 
     public BrawlerBattleResultStatisticsCollector(
             ConcurrentMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache
@@ -20,7 +22,7 @@ public class BrawlerBattleResultStatisticsCollector
 
     @Override
     public boolean collect(BattleCollectionEntity battle) {
-        if (!battle.canResultStatisticsCollected()) {
+        if (!battle.canResultStatisticsCollected() || !battleKeySet.add(battle.getBattleKey())) {
             return false;
         }
         boolean isStarPlayer = battle.amIStarPlayer();

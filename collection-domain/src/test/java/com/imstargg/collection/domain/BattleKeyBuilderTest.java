@@ -16,12 +16,33 @@ class BattleKeyBuilderTest {
 
         // when
         var result = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
-                        .addPlayerTag("player1")
-                        .addPlayerTag("player2")
-                        .build();
+                .addPlayerTag("player1")
+                .addPlayerTag("player2")
+                .addPlayerTag("player3")
+                .build();
 
         // then
         assertThat(result).hasSize(64);
+    }
+
+    @Test
+    void 전투_시간과_플레이어가_같으면_같은_키를_생성한다() {
+        // given
+
+        // when
+        var result1 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
+                .addPlayerTag("player1")
+                .addPlayerTag("player2")
+                .addPlayerTag("player3")
+                .build();
+        var result2 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
+                .addPlayerTag("player1")
+                .addPlayerTag("player2")
+                .addPlayerTag("player3")
+                .build();
+
+        // then
+        assertThat(result1).isEqualTo(result2);
     }
 
     @Test
@@ -32,10 +53,12 @@ class BattleKeyBuilderTest {
         var result1 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
                 .addPlayerTag("player1")
                 .addPlayerTag("player2")
+                .addPlayerTag("player3")
                 .build();
         var result2 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
                 .addPlayerTag("player2")
                 .addPlayerTag("player1")
+                .addPlayerTag("player3")
                 .build();
 
         // then
@@ -50,10 +73,12 @@ class BattleKeyBuilderTest {
         var result1 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
                 .addPlayerTag("player1")
                 .addPlayerTag("player2")
+                .addPlayerTag("player3")
                 .build();
         var result2 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 2, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
                 .addPlayerTag("player1")
                 .addPlayerTag("player2")
+                .addPlayerTag("player3")
                 .build();
 
         // then
@@ -68,9 +93,11 @@ class BattleKeyBuilderTest {
         var result1 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
                 .addPlayerTag("player1")
                 .addPlayerTag("player2")
+                .addPlayerTag("player3")
                 .build();
         var result2 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
                 .addPlayerTag("player1")
+                .addPlayerTag("player2")
                 .build();
 
         // then
@@ -85,10 +112,12 @@ class BattleKeyBuilderTest {
         var result1 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
                 .addPlayerTag("player1")
                 .addPlayerTag("player2")
+                .addPlayerTag("player3")
                 .build();
         var result2 = new BattleKeyBuilder(ZonedDateTime.of(LocalDateTime.of(2021, 1, 1, 0, 0), ZoneId.systemDefault()).toOffsetDateTime())
-                .addPlayerTag("player3")
                 .addPlayerTag("player4")
+                .addPlayerTag("player5")
+                .addPlayerTag("player6")
                 .build();
 
         // then
