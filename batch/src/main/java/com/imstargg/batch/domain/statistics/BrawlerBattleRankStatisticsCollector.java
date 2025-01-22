@@ -5,16 +5,16 @@ import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollec
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 
 public class BrawlerBattleRankStatisticsCollector
         implements StatisticsCollector<BrawlerBattleRankStatisticsCollectionEntity> {
 
-    private final ConcurrentHashMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache;
+    private final ConcurrentMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache;
 
     public BrawlerBattleRankStatisticsCollector(
-            ConcurrentHashMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache
+            ConcurrentMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache
     ) {
         this.cache = cache;
     }

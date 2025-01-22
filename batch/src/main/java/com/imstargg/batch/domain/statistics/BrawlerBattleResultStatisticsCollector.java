@@ -1,24 +1,19 @@
 package com.imstargg.batch.domain.statistics;
 
-import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
-import jakarta.persistence.EntityManagerFactory;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static com.imstargg.storage.db.core.statistics.QBrawlerBattleResultStatisticsCollectionEntity.brawlerBattleResultStatisticsCollectionEntity;
+import java.util.concurrent.ConcurrentMap;
 
 public class BrawlerBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> {
 
-    private final ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
+    private final ConcurrentMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
 
     public BrawlerBattleResultStatisticsCollector(
-            ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache
+            ConcurrentMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache
     ) {
         this.cache = cache;
     }
