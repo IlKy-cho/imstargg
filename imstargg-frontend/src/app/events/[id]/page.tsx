@@ -1,8 +1,6 @@
 import {getBattleEvent} from "@/lib/api/battle-event";
 import {notFound} from "next/navigation";
 import BattleEventProfile from "@/components/battle-event-profile";
-import {TrophyRange, TrophyRangeValue} from "@/model/enums/TrophyRange";
-import {SoloRankTierRange, SoloRankTierRangeValue} from "@/model/enums/SoloRankTierRange";
 import {BattleEventStatisticsOption} from "@/components/statistics-option";
 import {
   getBattleEventBrawlerRankStatistics,
@@ -11,7 +9,7 @@ import {
   getBattleEventBrawlersResultStatistics
 } from "@/lib/api/statistics";
 import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
-import {RegularBattleType, RegularBattleTypeValue} from "@/model/enums/BattleType";
+import {RegularBattleTypeValue} from "@/model/enums/BattleType";
 import Image from "next/image";
 import gusSadPinSrc from "@/../public/icon/brawler/gus/gus_sad_pin.png"
 import {
@@ -21,19 +19,16 @@ import {
   BrawlersResultStatistics
 } from "@/components/statistics";
 import {getBrawlers} from "@/lib/api/brawler";
-import {
-  BrawlerResultStatistics as IBrawlerResultStatistics
-} from "@/model/statistics/BrawlerResultStatistics";
-import {
-  BrawlersResultStatistics as IBrawlersResultStatistics
-} from "@/model/statistics/BrawlersResultStatistics";
-import {
-  BrawlerRankStatistics as IBrawlerRankStatistics
-} from "@/model/statistics/BrawlerRankStatistics";
-import {
-  BrawlersRankStatistics as IBrawlersRankStatistics
-} from "@/model/statistics/BrawlersRankStatistics";
+import {BrawlerResultStatistics as IBrawlerResultStatistics} from "@/model/statistics/BrawlerResultStatistics";
+import {BrawlersResultStatistics as IBrawlersResultStatistics} from "@/model/statistics/BrawlersResultStatistics";
+import {BrawlerRankStatistics as IBrawlerRankStatistics} from "@/model/statistics/BrawlerRankStatistics";
+import {BrawlersRankStatistics as IBrawlersRankStatistics} from "@/model/statistics/BrawlersRankStatistics";
 import {Brawler} from "@/model/Brawler";
+import {
+  searchParamsToStatisticsParams,
+  StatisticsParams,
+  StatisticsSearchParams
+} from "@/model/statistics/StatisticsParams";
 
 function StatisticsAbsence() {
   return (
@@ -63,20 +58,6 @@ function StatisticsAbsence() {
     </div>
   );
 }
-
-type SearchParams = {
-  duplicateBrawler?: boolean;
-  type?: RegularBattleType;
-  trophy?: TrophyRange;
-  soloRankTier?: SoloRankTierRange;
-};
-
-type StatsParams = {
-  duplicateBrawler: boolean;
-  type: RegularBattleType;
-  trophy: TrophyRange;
-  soloRankTier: SoloRankTierRange;
-};
 
 const hasStatistics = (statistics: Statistics): boolean => {
   return (
@@ -117,19 +98,6 @@ const hasBrawlersResultStats = (statistics: Statistics): boolean => {
   return (statistics.brawlersResultStats && statistics.brawlersResultStats.length > 0) ?? false;
 }
 
-const searchParamsToStatsParams = (searchParams: SearchParams): StatsParams => {
-  const duplicateBrawler = searchParams.duplicateBrawler ?? false;
-  const type = searchParams.type ?? RegularBattleTypeValue.RANKED;
-  const trophy = searchParams.trophy ?? TrophyRangeValue.TROPHY_500_PLUS;
-  const soloRankTier = searchParams.soloRankTier ?? SoloRankTierRangeValue.DIAMOND_PLUS;
-  return {
-    duplicateBrawler,
-    type,
-    trophy,
-    soloRankTier,
-  };
-}
-
 
 type Statistics = {
   brawlerRankStats: IBrawlerRankStatistics[] | null;
@@ -138,17 +106,15 @@ type Statistics = {
   brawlersResultStats: IBrawlersResultStatistics[] | null;
 };
 
-async function fetchStatistics(id: number, date: Date, statsParams: StatsParams, resulted: boolean): Promise<Statistics> {
-  const trophyRange = statsParams.type === RegularBattleTypeValue.RANKED ? statsParams.trophy : null;
-  const soloRankTier = statsParams.type === RegularBattleTypeValue.SOLO_RANKED ? statsParams.soloRankTier : undefined;
+async function fetchStatistics(id: number, date: Date, statsParams: StatisticsParams, resulted: boolean): Promise<Statistics> {
 
   return {
     brawlerRankStats: !resulted ? await getBattleEventBrawlerRankStatistics(id, date, statsParams.trophy) : null,
     brawlersRankStats: !resulted ? await getBattleEventBrawlersRankStatistics(id, date, statsParams.trophy) : null,
     brawlerResultStats: resulted ? await getBattleEventBrawlerResultStatistics(
-      id, date, statsParams.duplicateBrawler, trophyRange, soloRankTier) : null,
+      id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()) : null,
     brawlersResultStats: resulted ? await getBattleEventBrawlersResultStatistics(
-      id, date, statsParams.duplicateBrawler, trophyRange, soloRankTier) : null,
+      id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()) : null,
   };
 }
 
@@ -208,7 +174,7 @@ type Props = {
   params: Promise<{
     id: number;
   }>;
-  searchParams: Promise<SearchParams>;
+  searchParams: Promise<StatisticsSearchParams>;
 };
 
 export default async function EventPage({ params, searchParams }: Readonly<Props>) {
@@ -220,7 +186,7 @@ export default async function EventPage({ params, searchParams }: Readonly<Props
 
   const date = new Date();
   const brawlerList = await getBrawlers();
-  const statsParams = searchParamsToStatsParams(await searchParams);
+  const statsParams = searchParamsToStatisticsParams(await searchParams);
   const resulted = isResultBattleEventMode(battleEvent.mode);
   const statistics = await fetchStatistics(id, date, statsParams, resulted);  
 
