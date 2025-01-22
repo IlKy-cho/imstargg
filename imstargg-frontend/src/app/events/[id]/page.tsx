@@ -3,7 +3,7 @@ import {notFound} from "next/navigation";
 import BattleEventProfile from "@/components/battle-event-profile";
 import {TrophyRange, TrophyRangeValue} from "@/model/enums/TrophyRange";
 import {SoloRankTierRange, SoloRankTierRangeValue} from "@/model/enums/SoloRankTierRange";
-import {StatisticsOption} from "@/components/statistics-option";
+import {BattleEventStatisticsOption} from "@/components/statistics-option";
 import {
   getBattleEventBrawlerRankStatistics,
   getBattleEventBrawlerResultStatistics,
@@ -207,7 +207,7 @@ function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics
 type Props = {
   params: Promise<{
     id: number;
-  }>
+  }>;
   searchParams: Promise<SearchParams>;
 };
 
@@ -232,7 +232,7 @@ export default async function EventPage({ params, searchParams }: Readonly<Props
         </div>
       </div>
       <div>
-        <StatisticsOption
+        <BattleEventStatisticsOption
           battleEvent={battleEvent}
           battleType={statsParams.type}
           duplicateBrawler={statsParams.duplicateBrawler}
