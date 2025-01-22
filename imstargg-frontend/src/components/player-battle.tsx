@@ -20,6 +20,8 @@ import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
 import {battleEventModeIconSrc, battleModeIconSrc} from "@/components/battle-mode";
 import {battleTypeTitle} from "@/components/battle-type";
+import {BrawlerLink} from "@/components/brawler-link";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -70,9 +72,18 @@ const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
             <span className="font-bold">{battleTypeTitle(battle.type)}</span>
           )}
         </div>
-        <div className="text-sm text-zinc-600">
-          {dayjs(battle.battleTime).fromNow()}
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div className="text-sm text-zinc-600">
+                {dayjs(battle.battleTime).fromNow()}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              {dayjs(battle.battleTime).format('YYYY-MM-DD HH:mm')}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
         <Separator className="my-1"/>
         <BattleResultInfo battle={battle}/>
         <div className="text-sm text-zinc-600">
@@ -94,7 +105,7 @@ const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
   );
 }
 
-const playerBattleIconSrc = (battle: IPlayerBattle)=> {
+const playerBattleIconSrc = (battle: IPlayerBattle) => {
   const eventModeIcon = battle.event.mode ? battleEventModeIconSrc(battle.event.mode) : null;
   return eventModeIcon || battleModeIconSrc(battle.mode);
 }
@@ -194,15 +205,18 @@ const BattleTeamPlayer = (
 
   return (
     <div className="flex flex-col items-center w-20">
-      <div className="relative">
-        <div className="absolute top-0 left-0 z-10 bg-zinc-200/50">
-          <PowerLevel value={player.brawler.power}/>
+      <BrawlerLink brawler={brawler}>
+        <div className="relative">
+          <div className="absolute top-0 left-0 z-10 bg-zinc-200/50">
+            <PowerLevel value={player.brawler.power}/>
+          </div>
+          <div className="absolute bottom-0 right-0 z-10 bg-zinc-200/50">
+            <PlayerTier player={player}/>
+          </div>
+
+          <BrawlerProfileImage brawler={brawler}/>
         </div>
-        <div className="absolute bottom-0 right-0 z-10 bg-zinc-200/50">
-          <PlayerTier player={player}/>
-        </div>
-        <BrawlerProfileImage brawler={brawler}/>
-      </div>
+      </BrawlerLink>
       <div className="w-full">
         <div className="flex gap-1">
           <Link

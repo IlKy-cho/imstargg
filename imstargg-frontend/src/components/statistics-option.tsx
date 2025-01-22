@@ -6,7 +6,7 @@ import {TrophyRange, trophyRangeTitle, TrophyRangeValues} from "@/model/enums/Tr
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {BrawlStarsIconSrc} from "@/components/icon";
 import {useRouter, useSearchParams} from "next/navigation";
-import {SoloRankTierRange, soloRankTierRangeTitle, SoloRankTierRangeValue, SoloRankTierRangeValues} from "@/model/enums/SoloRankTierRange";
+import {SoloRankTierRange, soloRankTierRangeTitle, SoloRankTierRangeValues} from "@/model/enums/SoloRankTierRange";
 import {Label} from "@/components/ui/label";
 import {Checkbox} from "@/components/ui/checkbox";
 import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
