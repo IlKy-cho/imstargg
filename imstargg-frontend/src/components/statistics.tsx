@@ -26,7 +26,7 @@ const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
 function BrawlerCell({brawler}: { brawler: Brawler | null }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-1 flex-grow items-center">
+    <div className="flex flex-col sm:flex-row gap-1 items-center">
       <BrawlerLink brawler={brawler}>
         <BrawlerProfileImage
           brawler={brawler}
@@ -180,7 +180,7 @@ export function BrawlerResultStatistics(
     {
       accessorKey: "starPlayerRate",
       header: ({column}) =>
-        <DataTableColumnHeader column={column} title={"스타플레이어"}/>,
+        <DataTableColumnHeader column={column} title={"Star"}/>,
       cell: ({row}) => toPercentage(row.original.starPlayerRate),
     },
     {
@@ -333,7 +333,7 @@ export function BrawlerListStatistics(
     {
       accessorKey: "starPlayerRate",
       header: ({column}) =>
-        <DataTableColumnHeader column={column} title={"스타플레이어"}/>,
+        <DataTableColumnHeader column={column} title={"Star"}/>,
       cell: ({row}) => row.original.starPlayerRate !== null ? toPercentage(row.original.starPlayerRate) : "N/A",
     },
     {
