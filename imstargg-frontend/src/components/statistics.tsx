@@ -33,7 +33,7 @@ function BrawlerCell({brawler}: { brawler: Brawler | null }) {
           size="sm"
         />
       </BrawlerLink>
-      <div className="text-xs">{brawler ? brawler.name : "❓"}</div>
+      <div className="md:text-sm text-xs">{brawler ? brawler.name : "❓"}</div>
     </div>
   )
 }
