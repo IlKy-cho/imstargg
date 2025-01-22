@@ -8,7 +8,7 @@ public record PlayerBattleEventResponse(
         @Nullable Long id,
         @Nullable BattleEventMode mode,
         @Nullable String mapName,
-        @Nullable String mapImageUrl
+        @Nullable String mapImagePath
 ) {
 
     public static PlayerBattleEventResponse of(PlayerBattleEvent event) {
@@ -16,7 +16,7 @@ public record PlayerBattleEventResponse(
                 event.id() != null ? event.id().value() : null,
                 event.mode(),
                 event.map().name(),
-                event.map().imageUrl()
+                event.map().imagePath()
         );
     }
 }

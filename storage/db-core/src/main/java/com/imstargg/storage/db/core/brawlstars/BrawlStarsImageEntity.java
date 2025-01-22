@@ -33,9 +33,6 @@ public class BrawlStarsImageEntity extends BaseEntity {
     @Column(name = "stored_name", updatable = false, nullable = false)
     private String storedName;
 
-    @Column(name = "url", length = 500, nullable = false)
-    private String url;
-
     protected BrawlStarsImageEntity() {
     }
 
@@ -53,9 +50,5 @@ public class BrawlStarsImageEntity extends BaseEntity {
 
     public String getStoredName() {
         return storedName;
-    }
-
-    public String getUrl() {
-        return url;
     }
 }

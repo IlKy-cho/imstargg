@@ -97,7 +97,7 @@ public class BattleEventRepository {
                                                 .orElse(eventEntity.getMapBrawlStarsName()),
                                 Optional.ofNullable(
                                                 codeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(eventEntity.getBrawlStarsId()))
-                                        ).map(BrawlStarsImageEntity::getUrl)
+                                        ).map(BrawlStarsImageEntity::getStoredName)
                                         .orElse(null)
                         ),
                         eventEntity.getLatestBattleTime() != null
@@ -124,7 +124,7 @@ public class BattleEventRepository {
                                                 .orElse(eventEntity.getMapBrawlStarsName()),
                                 brawlStarsImageJpaRepository.findByCode(
                                                 BrawlStarsImageType.BATTLE_MAP.code(eventEntity.getBrawlStarsId())
-                                        ).map(BrawlStarsImageEntity::getUrl)
+                                        ).map(BrawlStarsImageEntity::getStoredName)
                                         .orElse(null)
                         ),
                         eventEntity.getLatestBattleTime() != null

@@ -10,8 +10,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import java.net.URL;
-
 @Component
 @EnableConfigurationProperties(BrawlStarsImageProperties.class)
 public class BrawlStarsImageUploader {
@@ -72,7 +70,7 @@ public class BrawlStarsImageUploader {
     }
 
     private void processImageUpload(ImageUpload imageUpload) {
-        URL imageUrl = imageUploader.upload(
+        imageUploader.upload(
                 imageUpload.image(),
                 bucketName,
                 imageUpload.storedName()
@@ -81,33 +79,31 @@ public class BrawlStarsImageUploader {
         update(
                 imageUpload.type(),
                 imageUpload.code(),
-                imageUpload.storedName(),
-                imageUrl
+                imageUpload.storedName()
         );
     }
 
-    private void update(BrawlStarsImageType type, String code, String storedName, URL url) {
+    private void update(BrawlStarsImageType type, String code, String storedName) {
         brawlStarsImageJpaRepository.findByCode(code)
                 .ifPresentOrElse(
-                        entity -> updateExistingImage(entity, storedName, url.toString()),
-                        () -> createNewImage(type, code, storedName, url.toString())
+                        entity -> updateExistingImage(entity, storedName),
+                        () -> createNewImage(type, code, storedName)
                 );
     }
 
-    private void updateExistingImage(BrawlStarsImageCollectionEntity entity, String storedName, String url) {
+    private void updateExistingImage(BrawlStarsImageCollectionEntity entity, String storedName) {
         if (!entity.getStoredName().equals(storedName)) {
             s3Template.deleteObject(bucketName, entity.getStoredName());
         }
-        entity.update(storedName, url);
+        entity.update(storedName);
         brawlStarsImageJpaRepository.save(entity);
     }
 
-    private void createNewImage(BrawlStarsImageType type, String code, String storedName, String url) {
+    private void createNewImage(BrawlStarsImageType type, String code, String storedName) {
         brawlStarsImageJpaRepository.save(new BrawlStarsImageCollectionEntity(
                 type,
                 code,
-                storedName,
-                url
+                storedName
         ));
     }
 
