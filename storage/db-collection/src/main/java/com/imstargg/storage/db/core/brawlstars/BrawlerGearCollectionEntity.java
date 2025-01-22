@@ -17,29 +17,29 @@ public class BrawlerGearCollectionEntity extends BaseEntity {
     @Column(name = "brawler_gear_id")
     private Long id;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
-    @Column(name = "gear_id", updatable = false, nullable = false)
-    private long gearId;
+    @Column(name = "gear_brawlstars_id", updatable = false, nullable = false)
+    private long gearBrawlStarsId;
 
     protected BrawlerGearCollectionEntity() {
     }
 
-    public BrawlerGearCollectionEntity(long brawlerId, long gearId) {
-        this.brawlerId = brawlerId;
-        this.gearId = gearId;
+    public BrawlerGearCollectionEntity(long brawlerBrawlStarsId, long gearBrawlStarsId) {
+        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
+        this.gearBrawlStarsId = gearBrawlStarsId;
     }
 
     public Long getId() {
         return id;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
-    public long getGearId() {
-        return gearId;
+    public long getGearBrawlStarsId() {
+        return gearBrawlStarsId;
     }
 }

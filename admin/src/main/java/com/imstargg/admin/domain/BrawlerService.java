@@ -65,16 +65,16 @@ public class BrawlerService {
 
     public List<Brawler> getList() {
         List<BrawlerCollectionEntity> brawlers = brawlerRepository.findAll();
-        Map<Long, List<GadgetCollectionEntity>> brawlerIdToGadgets = gadgetRepository.findAll().stream()
-                .collect(groupingBy(GadgetCollectionEntity::getBrawlerId));
-        Map<Long, List<StarPowerCollectionEntity>> brawlerIdToStarPowers = starPowerRepository.findAll().stream()
-                .collect(groupingBy(StarPowerCollectionEntity::getBrawlerId));
-        Map<Long, GearCollectionEntity> idToGear = gearRepository.findAll().stream()
-                .collect(toMap(GearCollectionEntity::getId, Function.identity()));
-        Map<Long, List<GearCollectionEntity>> brawlerIdToGears = brawlerGearRepository.findAll().stream()
-                .collect(groupingBy(BrawlerGearCollectionEntity::getBrawlerId,
+        Map<Long, List<GadgetCollectionEntity>> brawlerBrawlStarsIdToGadgets = gadgetRepository.findAll().stream()
+                .collect(groupingBy(GadgetCollectionEntity::getBrawlerBrawlStarsId));
+        Map<Long, List<StarPowerCollectionEntity>> brawlerBrawlStarsIdToStarPowers = starPowerRepository.findAll().stream()
+                .collect(groupingBy(StarPowerCollectionEntity::getBrawlerBrawlStarsId));
+        Map<Long, GearCollectionEntity> brawlStarsIdToGear = gearRepository.findAll().stream()
+                .collect(toMap(GearCollectionEntity::getBrawlStarsId, Function.identity()));
+        Map<Long, List<GearCollectionEntity>> brawlerBrawlStarsIdToGears = brawlerGearRepository.findAll().stream()
+                .collect(groupingBy(BrawlerGearCollectionEntity::getBrawlerBrawlStarsId,
                         mapping(
-                                brawlerGear -> idToGear.get(brawlerGear.getGearId()),
+                                brawlerGear -> brawlStarsIdToGear.get(brawlerGear.getGearBrawlStarsId()),
                                 toList()
                         )
                 ));
@@ -93,15 +93,15 @@ public class BrawlerService {
                         codeToBrawlerProfileImage.getOrDefault(
                                 BrawlStarsImageType.BRAWLER_PROFILE.code(brawler.getBrawlStarsId()), null
                         ),
-                        brawlerIdToGadgets.getOrDefault(brawler.getId(), List.of()).stream()
+                        brawlerBrawlStarsIdToGadgets.getOrDefault(brawler.getBrawlStarsId(), List.of()).stream()
                                 .map(gadget ->
                                         new Gadget(gadget, codeToMessages.get(gadget.getNameMessageCode()))
                                 ).toList(),
-                        brawlerIdToStarPowers.getOrDefault(brawler.getId(), List.of()).stream()
+                        brawlerBrawlStarsIdToStarPowers.getOrDefault(brawler.getBrawlStarsId(), List.of()).stream()
                                 .map(starPower ->
                                         new StarPower(starPower, codeToMessages.get(starPower.getNameMessageCode()))
                                 ).toList(),
-                        brawlerIdToGears.getOrDefault(brawler.getId(), List.of()).stream()
+                        brawlerBrawlStarsIdToGears.getOrDefault(brawler.getBrawlStarsId(), List.of()).stream()
                                 .map(gear ->
                                         new Gear(gear, codeToMessages.get(gear.getNameMessageCode()))
                                 ).toList()
@@ -127,7 +127,7 @@ public class BrawlerService {
             newGadget.names().validate();
             GadgetCollectionEntity gadget = gadgetRepository.save(new GadgetCollectionEntity(
                     newGadget.brawlStarsId(),
-                    brawler.getId()
+                    brawler.getBrawlStarsId()
             ));
 
             newGadget.names().messages().forEach((language, name) -> messageRepository.save(
@@ -138,7 +138,7 @@ public class BrawlerService {
             newStarPower.names().validate();
             StarPowerCollectionEntity starPower = starPowerRepository.save(new StarPowerCollectionEntity(
                     newStarPower.brawlStarsId(),
-                    brawler.getId()
+                    brawler.getBrawlStarsId()
             ));
 
             newStarPower.names().messages().forEach((language, name) -> messageRepository.save(
@@ -153,7 +153,7 @@ public class BrawlerService {
                             ", 존재하는 기어 아이디: " + gearEntities.stream().map(GearCollectionEntity::getId).toList());
         }
         brawlerGearRepository.saveAll(gearEntities.stream()
-                .map(gear -> new BrawlerGearCollectionEntity(brawler.getId(), gear.getId()))
+                .map(gear -> new BrawlerGearCollectionEntity(brawler.getBrawlStarsId(), gear.getBrawlStarsId()))
                 .toList());
     }
 

@@ -84,16 +84,16 @@ public class BrawlerRepositoryWithCache {
     }
 
     private void initGear() {
-        Map<Long, GearEntity> gearIdToEntity = gearJpaRepository.findAll().stream()
-                .collect(toMap(GearEntity::getId, Function.identity()));
+        Map<Long, GearEntity> gearBrawlStarsIdToEntity = gearJpaRepository.findAll().stream()
+                .collect(toMap(GearEntity::getBrawlStarsId, Function.identity()));
         brawlerGearJpaRepository.findAll()
                 .stream()
-                .collect(groupingBy(BrawlerGearEntity::getBrawlerId))
+                .collect(groupingBy(BrawlerGearEntity::getBrawlerBrawlStarsId))
                 .forEach((brawlerId, brawlerGearEntities) ->
                         brawlerIdToGearEntitiesCache.put(
                                 new BrawlStarsId(brawlerId),
                                 brawlerGearEntities.stream()
-                                        .map(brawlerGearEntity -> gearIdToEntity.get(brawlerGearEntity.getGearId()))
+                                        .map(brawlerGearEntity -> gearBrawlStarsIdToEntity.get(brawlerGearEntity.getGearBrawlStarsId()))
                                         .toList()
                         )
                 );
@@ -101,7 +101,7 @@ public class BrawlerRepositoryWithCache {
 
     private void initStarPower() {
         starPowerJpaRepository.findAll().stream()
-                .collect(groupingBy(StarPowerEntity::getBrawlerId))
+                .collect(groupingBy(StarPowerEntity::getBrawlerBrawlStarsId))
                 .forEach((brawlerId, starPowerEntities) ->
                         brawlerIdToStarPowerEntitiesCache.put(
                                 new BrawlStarsId(brawlerId),
@@ -112,7 +112,7 @@ public class BrawlerRepositoryWithCache {
 
     private void initGadget() {
         gadgetJpaRepository.findAll().stream()
-                .collect(groupingBy(GadgetEntity::getBrawlerId))
+                .collect(groupingBy(GadgetEntity::getBrawlerBrawlStarsId))
                 .forEach((brawlerId, gadgetEntities) ->
                         brawlerIdToGadgetEntitiesCache.put(
                                 new BrawlStarsId(brawlerId),
@@ -172,11 +172,11 @@ public class BrawlerRepositoryWithCache {
                         .content(),
                 brawlerEntity.getRarity(),
                 brawlerEntity.getRole(),
-                brawlerIdToGadgetEntitiesCache.get(brawlerId).stream().map(gadgetEntity ->
+                brawlerIdToGadgetEntitiesCache.getOrDefault(brawlerId, List.of()).stream().map(gadgetEntity ->
                         mapToGadget(gadgetEntity, language)).toList(),
-                brawlerIdToGearEntitiesCache.get(brawlerId).stream().map(gearEntity ->
+                brawlerIdToGearEntitiesCache.getOrDefault(brawlerId, List.of()).stream().map(gearEntity ->
                         mapToGear(gearEntity, language)).toList(),
-                brawlerIdToStarPowerEntitiesCache.get(brawlerId).stream().map(starPowerEntity ->
+                brawlerIdToStarPowerEntitiesCache.getOrDefault(brawlerId, List.of()).stream().map(starPowerEntity ->
                         mapToStarPower(starPowerEntity, language)).toList(),
                 Optional.ofNullable(
                         codeToImageEntityCache.get(

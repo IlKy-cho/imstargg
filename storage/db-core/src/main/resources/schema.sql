@@ -300,7 +300,8 @@ alter table brawlers_battle_result_stats
                 brawler_brawlstars_id, brawler_brawlstars_id_hash);
 
 create index ix_battledate_range_brawler_num
-    on brawlers_battle_result_stats (battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id, brawler_num);
+    on brawlers_battle_result_stats (battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id,
+                                     brawler_num);
 
 
 create table brawler_enemy_battle_result_stats
@@ -369,33 +370,33 @@ alter table brawler
 
 create table brawler_gear
 (
-    brawler_gear_id bigint       not null auto_increment,
-    brawler_id      bigint       not null,
-    gear_id         bigint       not null,
-    created_at      timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at      timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted         boolean      not null default false,
+    brawler_gear_id       bigint       not null auto_increment,
+    brawler_brawlstars_id bigint       not null,
+    gear_brawlstars_id    bigint       not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
     primary key (brawler_gear_id)
 ) engine = innodb;
 
 alter table brawler_gear
-    add constraint uk_brawler_gear__brawlerid_gearid unique (brawler_id, gear_id);
+    add constraint uk_brawler_gear unique (brawler_brawlstars_id, gear_brawlstars_id);
 
 
 create table gadget
 (
-    gadget_id         bigint       not null auto_increment,
-    brawlstars_id     bigint       not null,
-    name_message_code varchar(105) not null,
-    brawler_id        bigint       not null,
-    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted           boolean      not null default false,
+    gadget_id             bigint       not null auto_increment,
+    brawlstars_id         bigint       not null,
+    name_message_code     varchar(105) not null,
+    brawler_brawlstars_id bigint       not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
     primary key (gadget_id)
 ) engine = innodb;
 
 alter table gadget
-    add constraint uk_gadget__brawlstarsid unique (brawlstars_id);
+    add constraint uk_brawlstarsid unique (brawlstars_id);
 
 create table gear
 (
@@ -410,20 +411,20 @@ create table gear
 ) engine = innodb;
 
 alter table gear
-    add constraint uk_gear__brawlstarsid unique (brawlstars_id);
+    add constraint uk_brawlstarsid unique (brawlstars_id);
 
 create table star_power
 (
-    star_power_id     bigint       not null auto_increment,
-    brawlstars_id     bigint       not null,
-    name_message_code varchar(105) not null,
-    brawler_id        bigint       not null,
-    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted           boolean      not null default false,
+    star_power_id         bigint       not null auto_increment,
+    brawlstars_id         bigint       not null,
+    name_message_code     varchar(105) not null,
+    brawler_brawlstars_id bigint       not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
     primary key (star_power_id)
 ) engine = innodb;
 
 alter table star_power
-    add constraint uk_starpower__brawlstarsid unique (brawlstars_id);
+    add constraint uk_brawlstarsid unique (brawlstars_id);
 

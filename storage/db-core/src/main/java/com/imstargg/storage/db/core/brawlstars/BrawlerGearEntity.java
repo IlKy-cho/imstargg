@@ -12,8 +12,8 @@ import jakarta.persistence.UniqueConstraint;
         name = "brawler_gear",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_brawler_gear__brawlerid_gearid",
-                        columnNames = "brawler_id, gear_id"
+                        name = "uk_brawler_gear",
+                        columnNames = "brawler_brawlstars_id, gear_brawlstars_id"
                 )
         }
 )
@@ -23,11 +23,11 @@ public class BrawlerGearEntity extends BaseEntity {
     @Column(name = "brawler_gear_id")
     private Long id;
 
-    @Column(name = "brawler_id", updatable = false, nullable = false)
-    private long brawlerId;
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
 
-    @Column(name = "gear_id", updatable = false, nullable = false)
-    private long gearId;
+    @Column(name = "gear_brawlstars_id", updatable = false, nullable = false)
+    private long gearBrawlStarsId;
 
     protected BrawlerGearEntity() {
     }
@@ -36,11 +36,11 @@ public class BrawlerGearEntity extends BaseEntity {
         return id;
     }
 
-    public long getBrawlerId() {
-        return brawlerId;
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
     }
 
-    public long getGearId() {
-        return gearId;
+    public long getGearBrawlStarsId() {
+        return gearBrawlStarsId;
     }
 }
