@@ -6,6 +6,7 @@ import SiteHeader from "@/components/site-header";
 import Footer from "@/components/footer";
 import SideArea from "@/components/side-area";
 import { GoogleAnalytics } from '@next/third-parties/google'
+import {meta} from "@/config/site";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -19,8 +20,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "ImStarGG",
-  description: "브롤스타즈 전적 검색. 브롤스타즈 브롤러. 브롤스타즈 이벤트. 브롤스타즈 통계.",
+  title: `${meta.name} | 브롤스타즈 데이터 분석 전적 검색 아임스타지지`,
+  description: "브롤스타즈 전적 검색부터 데이터 분석, 메타 분석까지 다양한 정보를 제공합니다.",
 };
 
 export default function RootLayout({
