@@ -32,7 +32,7 @@ const NewsContainer = ({ news } : Props) => {
 export default function BrawlStarsNews({news}: Props) {
   return (
     news ?
-      <Link href={news.linkUrl}>
+      <Link href={news.linkUrl} target="_blank">
         <NewsContainer news={news}/>
       </Link>
       :
