@@ -1,6 +1,7 @@
 spring:
   config.import:
     - db-core.yml
+    - db-core-connection.yml
     - core-event.yml
     - aws.yml
     - brawlstars-news-client.yml
