@@ -4,9 +4,8 @@ import "./globals.css";
 import React from "react";
 import SiteHeader from "@/components/site-header";
 import Footer from "@/components/footer";
-import SideArea from "@/components/side-area";
 import {meta} from "@/config/site";
-import { GoogleAnalytics } from "@/lib/third-parties";
+import {GoogleAnalytics} from "@/lib/third-parties";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -42,13 +41,11 @@ export default function RootLayout({
       <SiteHeader/>
       <GoogleAnalytics/>
       <div className="flex flex-1">
-        <SideArea/>
 
         <main className="flex-1 max-w-screen-lg mx-auto">
           {children}
         </main>
 
-        <SideArea/>
       </div>
       <Footer/>
     </div>
