@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    hikari:
+      minimum-idle: 5
+      maximum-pool-size: 5
+
+---
+spring:
+  config:
+    activate:
+      on-profile: live
+
+  datasource:
+    hikari:
+      minimum-idle: 20
+      maximum-pool-size: 30

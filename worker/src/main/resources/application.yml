@@ -6,6 +6,7 @@ spring:
   config:
     import:
       - db-core.yml
+      - db-core-connection.yml
       - core-event.yml
       - brawlstars-client.yml
       - aws.yml
@@ -20,7 +21,6 @@ spring:
           batch_versioned_data: false
         order_inserts: true
         order_updates: true
-        default_batch_fetch_size: 500
 
 ---
 spring:
