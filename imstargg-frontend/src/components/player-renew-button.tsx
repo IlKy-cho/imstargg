@@ -18,8 +18,6 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
   const calculateTimeStatus = useCallback(() => {
     const current = new Date();
     const playerUpdatedAt = player.updatedAt;
-    console.log(`current: ${current}`);
-    console.log(`playerUpdatedAt: ${playerUpdatedAt}`);
     const timeDifferenceInSeconds = Math.floor((current.getTime() - playerUpdatedAt.getTime()) / 1000);
     const requiredWaitTime = 2 * 60;
     const remaining = Math.max(0, requiredWaitTime - timeDifferenceInSeconds);
@@ -56,6 +54,8 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
           toast("아직 새로고침이 불가능합니다. 잠시 후 다시 시도해주세요.");
         } else if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {
           toast("현재 새로고침 요청이 많아서 처리할 수 없습니다. 잠시 후 다시 시도해주세요.");
+        } else if (error.error?.type === ApiErrorTypeValue.BRAWLSTARS_IN_MAINTENANCE) {
+          toast("브롤스타즈 서버 점검 중입니다. 잠시 후 다시 시도해주세요.");
         } else {
           console.error('Failed to renew player:', error);
           toast("플레이어 정보 새로고침 중 오류가 발생했습니다.");
