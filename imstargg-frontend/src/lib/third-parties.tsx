@@ -1,5 +1,4 @@
-import { GoogleAnalytics as NextGoogleAnalytics } from '@next/third-parties/google'
-import Script from 'next/script';
+import {GoogleAnalytics as NextGoogleAnalytics} from '@next/third-parties/google'
 
 
 export function GoogleAnalytics() {
