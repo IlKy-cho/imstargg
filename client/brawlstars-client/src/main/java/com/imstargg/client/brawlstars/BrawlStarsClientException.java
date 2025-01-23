@@ -21,7 +21,7 @@ public class BrawlStarsClientException extends RuntimeException {
 
     public static class InMaintenance extends BrawlStarsClientException {
 
-        public InMaintenance(String message, FeignException ex) {
+        public InMaintenance(String message, FeignException.ServiceUnavailable ex) {
             super(message, ex);
         }
     }
