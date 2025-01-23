@@ -5,7 +5,7 @@ import PlayerSearchForm from "@/components/player-search-form";
 
 export default function Home() {
   return (
-    <div className="flex flex-col items-center justify-center my-4">
+    <div className="flex flex-col items-center justify-center my-4 p-2">
       <div className="mb-8">
         <Image
           src="/zBrawl Stars Logo 2_starr_parkk.png"
