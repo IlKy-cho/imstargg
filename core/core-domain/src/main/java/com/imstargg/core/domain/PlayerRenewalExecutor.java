@@ -86,10 +86,4 @@ public class PlayerRenewalExecutor {
         return false;
     }
 
-    public boolean isRenewingNew(BrawlStarsTag tag) {
-        return playerRenewalRepository.find(tag)
-                .map(PlayerRenewal::status)
-                .map(PlayerRenewalStatus::renewing)
-                .orElse(false);
-    }
 }

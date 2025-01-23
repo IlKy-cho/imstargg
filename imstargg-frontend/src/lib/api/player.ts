@@ -1,7 +1,11 @@
-import {fetchGetNewPlayerRenewalStatus, fetchGetRenewalStatus, fetchRenewNewPlayer, fetchRenewPlayer} from "@/lib/api/api";
+import {
+  fetchGetPlayer,
+  fetchGetRenewalStatus,
+  fetchRenewNewPlayer,
+  fetchRenewPlayer,
+  fetchSearchPlayer
+} from "@/lib/api/api";
 import {Player} from "@/model/Player";
-import {fetchGetPlayer} from "@/lib/api/api";
-import {fetchSearchPlayer} from "@/lib/api/api";
 import {ListResponse} from "@/model/response/ListResponse";
 import {ApiError} from "@/model/response/error";
 
@@ -27,16 +31,6 @@ export interface PlayerRenewalStatusResponse {
 
 export async function getPlayerRenewalStatus(tag: string): Promise<PlayerRenewalStatusResponse> {
   const response = await fetchGetRenewalStatus(encodeURIComponent(tag));
-
-  if (!response.ok) {
-    throw await ApiError.create(response);
-  }
-
-  return await response.json() as PlayerRenewalStatusResponse;
-}
-
-export async function getNewPlayerRenewalStatus(tag: string): Promise<PlayerRenewalStatusResponse> {
-  const response = await fetchGetNewPlayerRenewalStatus(encodeURIComponent(tag));
 
   if (!response.ok) {
     throw await ApiError.create(response);

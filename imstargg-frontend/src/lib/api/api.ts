@@ -27,11 +27,6 @@ export async function fetchGetRenewalStatus(tag: string): Promise<Response> {
   return await fetch(url);
 }
 
-export async function fetchGetNewPlayerRenewalStatus(tag: string): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renewal-status-new`);
-  return await fetch(url);
-}
-
 export async function fetchRenewPlayer(tag: string): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renew`);
 
