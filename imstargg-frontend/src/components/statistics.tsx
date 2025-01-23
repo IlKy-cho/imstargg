@@ -6,15 +6,11 @@ import {
   BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel
 } from "@/model/statistics/BrawlerEnemyResultStatistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
-import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
+import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
 import {DataTable} from "@/components/ui/datatable/data-table";
-import {
-  BrawlerResultStatistics as BrawlerResultStatisticsModel
-} from "@/model/statistics/BrawlerResultStatistics";
-import {
-  BrawlersResultStatistics as BrawlersResultStatisticsModel
-} from "@/model/statistics/BrawlersResultStatistics";
+import {BrawlerResultStatistics as BrawlerResultStatisticsModel} from "@/model/statistics/BrawlerResultStatistics";
+import {BrawlersResultStatistics as BrawlersResultStatisticsModel} from "@/model/statistics/BrawlersResultStatistics";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {BrawlerRole} from "@/model/enums/BrawlerRole";
 import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
@@ -27,7 +23,7 @@ const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
 function BrawlerCell({brawler}: { brawler: Brawler | null }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-1 items-center">
+    <div className="flex flex-col sm:flex-row gap-1">
       <BrawlerLink brawler={brawler}>
         <BrawlerProfileImage
           brawler={brawler}
