@@ -28,6 +28,7 @@ import {
   StatisticsParams,
   StatisticsSearchParams
 } from "@/model/statistics/StatisticsParams";
+import {battleEventModeTitle} from "@/components/title";
 
 type Props = {
   params: Promise<{
@@ -43,7 +44,7 @@ export async function generateMetadata({params}: Readonly<Props>) {
     notFound();
   }
   return {
-    title: `${battleEvent.mode} ${battleEvent.map.name}`,
+    title: `${battleEventModeTitle(battleEvent.mode)} ${battleEvent.map.name}`,
     description: `브롤스타즈 이벤트 ${battleEvent.mode} ${battleEvent.map.name}의 정보 및 통계입니다.`,
   }
 }
