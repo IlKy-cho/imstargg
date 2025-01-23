@@ -1,7 +1,7 @@
 import { Brawler } from "@/model/Brawler";
 import Link from "next/link";
-import { brawlerHref } from "@/config/docs";
 import React, { ReactNode } from "react";
+import {brawlerHref} from "@/config/site";
 
 type BrawlerLinkProps = {
   brawler: Brawler | null;
