@@ -1,5 +1,5 @@
 import {notFound} from "next/navigation";
-import {getBrawlers} from "@/lib/api/brawler";
+import {getBrawler, getBrawlers} from "@/lib/api/brawler";
 import {BrawlerProfile} from "@/components/brawler-profile";
 import {getBrawlerBrawlersResultStatistics, getBrawlerEnemyResultStatistics} from "@/lib/api/statistics";
 import {BrawlerStatisticsOption} from "@/components/statistics-option";
@@ -11,8 +11,9 @@ import Image from "next/image";
 import kitSadPinSrc from "@/../public/icon/brawler/kit/kit_sad_pin.png";
 import {BrawlerEnemyResultStatistics, BrawlersResultStatistics} from "@/components/statistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
-import { searchParamsToStatisticsParams } from "@/model/statistics/StatisticsParams";
-import { StatisticsSearchParams } from "@/model/statistics/StatisticsParams";
+import {searchParamsToStatisticsParams} from "@/model/statistics/StatisticsParams";
+import {StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
+import {meta} from "@/config/site";
 
 
 type Props = {
@@ -20,8 +21,20 @@ type Props = {
   searchParams: Promise<StatisticsSearchParams>;
 };
 
-export default async function BrawlerPage({ params, searchParams }: Readonly<Props>) {
-  const { id } = await params;
+export async function generateMetadata({params}: Readonly<Props>) {
+  const {id} = await params;
+  const brawler = await getBrawler(id);
+  if (!brawler) {
+    notFound();
+  }
+  return {
+    title: `${brawler.name} | ${meta.name}`,
+    description: `브롤스타즈 브롤러 ${brawler.name}의 정보 및 통계입니다.`,
+  }
+}
+
+export default async function BrawlerPage({params, searchParams}: Readonly<Props>) {
+  const {id} = await params;
   const brawlers = await getBrawlers();
   const brawlerCollection = new BrawlerCollection(brawlers);
   const brawler = brawlerCollection.find(id);
@@ -41,49 +54,55 @@ export default async function BrawlerPage({ params, searchParams }: Readonly<Pro
     <div className="space-y-2">
       <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
         <div className="flex-1">
-          <BrawlerProfile brawler={brawler} />
+          <BrawlerProfile brawler={brawler}/>
         </div>
       </div>
-      <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy} soloRankTier={statsParams.soloRankTier} />
-      <StatisticsContent brawlers={brawlers} enemyResultStatistics={enemyResultStatistics} brawlersResultStatistics={brawlersResultStatistics} />
+      <div className="p-1 md:p-4">
+        <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
+                                 soloRankTier={statsParams.soloRankTier}/>
+        <StatisticsContent brawlers={brawlers} enemyResultStatistics={enemyResultStatistics}
+                           brawlersResultStatistics={brawlersResultStatistics}/>
+      </div>
     </div>
   );
 }
 
 function StatisticsContent(
-  { brawlers, enemyResultStatistics, brawlersResultStatistics }
-    : Readonly<{
-      brawlers: Brawler[],
-      enemyResultStatistics: BrawlerEnemyResultStatisticsModel[],
-      brawlersResultStatistics: BrawlersResultStatisticsModel[]
-    }>) {
+  {brawlers, enemyResultStatistics, brawlersResultStatistics}
+  : Readonly<{
+    brawlers: Brawler[],
+    enemyResultStatistics: BrawlerEnemyResultStatisticsModel[],
+    brawlersResultStatistics: BrawlersResultStatisticsModel[]
+  }>) {
 
   if (!hasStatistics(enemyResultStatistics, brawlersResultStatistics)) {
-    return <StatisticsAbsence />;
+    return <StatisticsAbsence/>;
   }
 
   return (
     <div className="flex flex-col gap-4">
-      {
-        hasStatistics(brawlersResultStatistics) && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-            브롤러 조합
-            </h2>
-            <BrawlersResultStatistics statsList={brawlersResultStatistics} brawlers={brawlers} />
-          </div>
-        )
-      }
-      {
-        hasStatistics(enemyResultStatistics) && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-            상대 브롤러
-            </h2>
-            <BrawlerEnemyResultStatistics statsList={enemyResultStatistics} brawlers={brawlers} />
-          </div>
-        )
-      }
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
+          브롤러 조합
+        </h2>
+        {
+          hasStatistics(brawlersResultStatistics) && (
+            <BrawlersResultStatistics statsList={brawlersResultStatistics} brawlers={brawlers}/>
+          )
+        }
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
+          상대 브롤러
+        </h2>
+        {
+          hasStatistics(enemyResultStatistics) && (
+            <BrawlerEnemyResultStatistics statsList={enemyResultStatistics} brawlers={brawlers}/>
+          )
+        }
+      </div>
+
     </div>
   );
 }
