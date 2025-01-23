@@ -5,10 +5,11 @@ import Image from 'next/image';
 import {battleEventModeIconSrc} from "@/components/battle-mode";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import Link from "next/link";
+import {battleEventHref} from "@/config/site";
 
 function BattleEvent({battleEvent}: Readonly<{battleEvent: IBattleEvent}>) {
   return (
-    <Link href={`/events/${battleEvent.id}`}>
+    <Link href={battleEventHref(battleEvent.id)}>
       <div className="inline-block bg-zinc-100 hover:bg-zinc-200 rounded p-2 transition-colors">
         <div>
           {battleEvent.map.name}
@@ -54,13 +55,13 @@ export default async function BattleEventList({ battleEvents }: Readonly<Props>)
   });
 
   return (
-    <div className="w-full p-2">
+    <>
       {BattleEventModeValues
         .filter(mode => groupedEvents[mode]?.length > 0)
         .map((mode) => (
           <div key={mode} className="mb-4">
             <BattleEventModeHeader mode={mode} />
-            <ul className="mt-2 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <ul className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {groupedEvents[mode].map(event => (
                 <li key={event.id}>
                   <BattleEvent battleEvent={event} />
@@ -69,6 +70,6 @@ export default async function BattleEventList({ battleEvents }: Readonly<Props>)
             </ul>
           </div>
         ))}
-    </div>
+    </>
   );
 }
