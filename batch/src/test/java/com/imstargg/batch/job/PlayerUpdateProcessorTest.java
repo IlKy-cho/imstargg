@@ -1,7 +1,7 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.client.brawlstars.BrawlStarsClient;
-import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
+import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntityFixture;
@@ -31,7 +31,7 @@ class PlayerUpdateProcessorTest {
         PlayerCollectionEntity playerEntity = new PlayerCollectionEntityFixture()
                 .build();
 
-        BrawlStarsClientNotFoundException notFoundException = mock(BrawlStarsClientNotFoundException.class);
+        BrawlStarsClientException.NotFound notFoundException = mock(BrawlStarsClientException.NotFound.class);
         given(brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag()))
                 .willThrow(notFoundException);
 

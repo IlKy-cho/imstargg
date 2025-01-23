@@ -31,7 +31,7 @@ class BrawlStarsClientTest {
         // when
         // then
         assertThatThrownBy(() -> brawlstarsClient.getPlayerRecentBattles(playerTag))
-                .isInstanceOf(BrawlStarsClientNotFoundException.class);
+                .isInstanceOf(BrawlStarsClientException.NotFound.class);
     }
 
     @Test
@@ -44,7 +44,7 @@ class BrawlStarsClientTest {
         // when
         // then
         assertThatThrownBy(() -> brawlstarsClient.getPlayerInformation(playerTag))
-                .isInstanceOf(BrawlStarsClientNotFoundException.class);
+                .isInstanceOf(BrawlStarsClientException.NotFound.class);
     }
 
 

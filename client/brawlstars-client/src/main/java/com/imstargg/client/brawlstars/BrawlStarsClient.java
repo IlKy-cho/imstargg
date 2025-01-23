@@ -26,7 +26,7 @@ public class BrawlStarsClient {
         try {
             return brawlstarsApi.getLogOfRecentBattlesForAPlayer(playerTag);
         } catch (FeignException.NotFound ex) {
-            throw new BrawlStarsClientNotFoundException("playerTag=" + playerTag, ex);
+            throw new BrawlStarsClientException.NotFound("playerTag=" + playerTag, ex);
         }
     }
 
@@ -35,7 +35,7 @@ public class BrawlStarsClient {
         try {
             return brawlstarsApi.getPlayerInformation(playerTag);
         } catch (FeignException.NotFound ex) {
-            throw new BrawlStarsClientNotFoundException("playerTag=" + playerTag, ex);
+            throw new BrawlStarsClientException.NotFound("playerTag=" + playerTag, ex);
         }
     }
 
