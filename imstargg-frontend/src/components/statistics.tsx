@@ -6,7 +6,7 @@ import {
   BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel
 } from "@/model/statistics/BrawlerEnemyResultStatistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
-import {ColumnDef} from "@tanstack/react-table";
+import {ColumnDef, createColumnHelper} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
 import {DataTable} from "@/components/ui/datatable/data-table";
 import {
@@ -21,6 +21,7 @@ import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
 import {BrawlerClassIcon} from "./brawler-class";
 import {brawlerRarityTitle} from "./brawler-rarity";
 import {BrawlerLink} from "@/components/brawler-link";
+import {useMediaQuery} from "usehooks-ts";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
@@ -259,7 +260,6 @@ export function BrawlersResultStatistics(
     },
     {
       accessorKey: "totalBattleCount",
-      enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
       cell: ({row}) =>
@@ -313,7 +313,7 @@ export function BrawlerListStatistics(
     };
   });
 
-  const columns: ColumnDef<BrawlerListStatisticsData>[] = [
+  let columns: ColumnDef<BrawlerListStatisticsData>[] = [
     {
       accessorKey: "brawler",
       enableSorting: false,
@@ -326,6 +326,7 @@ export function BrawlerListStatistics(
       },
     },
     {
+      id: "brawlerRole",
       accessorKey: "brawlerRole",
       enableSorting: false,
       header: ({column}) =>
@@ -333,6 +334,7 @@ export function BrawlerListStatistics(
       cell: ({row}) => <BrawlerClassIcon brawlerRole={row.original.brawler.role}/>,
     },
     {
+      id: "brawlerRarity",
       accessorKey: "brawlerRarity",
       enableSorting: false,
       header: ({column}) =>
@@ -369,6 +371,13 @@ export function BrawlerListStatistics(
         <TextCell value={row.original.totalBattleCount?.toLocaleString() || "N/A"}/>,
     },
   ];
+
+  const isMobile = useMediaQuery('(max-width: 480px)');
+  if (isMobile) {
+    columns = columns
+      .filter(column => column.id !== "brawlerRole")
+      .filter(column => column.id !== "brawlerRarity");
+  }
 
   return (
     <DataTable columns={columns} data={data}/>
