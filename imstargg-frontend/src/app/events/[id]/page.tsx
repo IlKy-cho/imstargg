@@ -18,10 +18,10 @@ import {
   BrawlersResultStatistics
 } from "@/components/statistics";
 import {getBrawlers} from "@/lib/api/brawler";
-import {BrawlerResultStatistics as IBrawlerResultStatistics} from "@/model/statistics/BrawlerResultStatistics";
-import {BrawlersResultStatistics as IBrawlersResultStatistics} from "@/model/statistics/BrawlersResultStatistics";
-import {BrawlerRankStatistics as IBrawlerRankStatistics} from "@/model/statistics/BrawlerRankStatistics";
-import {BrawlersRankStatistics as IBrawlersRankStatistics} from "@/model/statistics/BrawlersRankStatistics";
+import {BrawlerResultStatistics as BrawlerResultStatisticsModel} from "@/model/statistics/BrawlerResultStatistics";
+import {BrawlersResultStatistics as BrawlersResultStatisticsModel} from "@/model/statistics/BrawlersResultStatistics";
+import {BrawlerRankStatistics as BrawlerRankStatisticsModel} from "@/model/statistics/BrawlerRankStatistics";
+import {BrawlersRankStatistics as BrawlersRankStatisticsModel} from "@/model/statistics/BrawlersRankStatistics";
 import {Brawler} from "@/model/Brawler";
 import {
   searchParamsToStatisticsParams,
@@ -29,6 +29,7 @@ import {
   StatisticsSearchParams
 } from "@/model/statistics/StatisticsParams";
 import {battleEventModeTitle} from "@/components/title";
+import {BattleEvent} from "@/model/BattleEvent";
 
 type Props = {
   params: Promise<{
@@ -46,11 +47,14 @@ export async function generateMetadata({params}: Readonly<Props>) {
   return {
     title: `${battleEventModeTitle(battleEvent.mode)} ${battleEvent.map.name}`,
     description: `브롤스타즈 이벤트 ${battleEvent.mode} ${battleEvent.map.name}의 정보 및 통계입니다.`,
+    openGraph: {
+      images: battleEvent.map.imageUrl || "",
+    },
   }
 }
 
-export default async function EventPage({ params, searchParams }: Readonly<Props>) {
-  const { id } = await params;
+export default async function EventPage({params, searchParams}: Readonly<Props>) {
+  const {id} = await params;
   const battleEvent = await getBattleEvent(id);
   if (!battleEvent) {
     notFound();
@@ -59,17 +63,16 @@ export default async function EventPage({ params, searchParams }: Readonly<Props
   const date = new Date();
   const brawlerList = await getBrawlers();
   const statsParams = searchParamsToStatisticsParams(await searchParams);
-  const resulted = isResultBattleEventMode(battleEvent.mode);
-  const statistics = await fetchStatistics(id, date, statsParams, resulted);
+  const statistics = await fetchStatistics(battleEvent, date, statsParams);
 
   return (
     <div className="space-y-2">
       <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
         <div className="flex-1">
-          <BattleEventProfile battleEvent={battleEvent} />
+          <BattleEventProfile battleEvent={battleEvent}/>
         </div>
       </div>
-      <div>
+      <div className="flex flex-col gap-2 p-1">
         <BattleEventStatisticsOption
           battleEvent={battleEvent}
           battleType={statsParams.type}
@@ -77,22 +80,94 @@ export default async function EventPage({ params, searchParams }: Readonly<Props
           trophy={statsParams.trophy}
           soloRankTier={statsParams.soloRankTier}
         />
+        <StatisticsContent statistics={statistics} brawlers={brawlerList}/>
       </div>
-      <div className="flex justify-center items-center gap-2 m-2 w-full">
+    </div>
+  );
+};
+
+
+type Statistics = {
+  brawlerRankStats?: BrawlerRankStatisticsModel[];
+  brawlersRankStats?: BrawlersRankStatisticsModel[];
+  brawlerResultStats?: BrawlerResultStatisticsModel[];
+  brawlersResultStats?: BrawlersResultStatisticsModel[];
+};
+
+async function fetchStatistics(battleEvent: BattleEvent, date: Date, statsParams: StatisticsParams)
+  : Promise<Statistics> {
+  if (isResultBattleEventMode(battleEvent.mode)) {
+    const [brawlerResultStats, brawlersResultStats] = await Promise.all([
+      getBattleEventBrawlerResultStatistics(
+        battleEvent.id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
+      getBattleEventBrawlersResultStatistics(
+        battleEvent.id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())
+    ]);
+    return {
+      brawlerResultStats,
+      brawlersResultStats,
+    }
+  }
+
+  const [brawlerRankStats, brawlersRankStats] = await Promise.all([
+    getBattleEventBrawlerRankStatistics(battleEvent.id, date, statsParams.trophy),
+    getBattleEventBrawlersRankStatistics(battleEvent.id, date, statsParams.trophy)
+  ]);
+
+  return {
+    brawlerRankStats,
+    brawlersRankStats,
+  }
+}
+
+function StatisticsContent({statistics, brawlers}: { statistics: Statistics, brawlers: Brawler[] }) {
+  const {brawlerRankStats, brawlersRankStats, brawlerResultStats, brawlersResultStats} = statistics;
+
+  if (!hasStatistics(brawlerRankStats, brawlersRankStats, brawlerResultStats, brawlersResultStats)) {
+    return <StatisticsAbsence/>;
+  }
+
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
+          브롤러 티어
+        </h2>
         {
-          hasStatistics(statistics) ? (
-            <StatisticsContent
-              statistics={statistics}
-              brawlerList={brawlerList}
-            />
-          ) : (
-            <StatisticsAbsence />
+          hasStatistics(brawlerRankStats) && (
+            <BrawlerRankStatistics statsList={brawlerRankStats!} brawlers={brawlers}/>)
+        }
+        {
+          hasStatistics(brawlerResultStats) && (
+            <BrawlerResultStatistics statsList={brawlerResultStats!} brawlers={brawlers}/>
+          )
+        }
+      </div>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
+          브롤러 조합
+        </h2>
+        {
+          hasStatistics(brawlersRankStats) && (
+            <BrawlersRankStatistics statsList={brawlersRankStats!} brawlers={brawlers}/>
+          )
+        }
+        {
+          hasStatistics(brawlersResultStats) && (
+            <BrawlersResultStatistics statsList={brawlersResultStats!} brawlers={brawlers}/>
           )
         }
       </div>
     </div>
   );
-};
+}
+
+
+const hasStatistics = (...statisticsList: (BrawlerResultStatisticsModel[] | BrawlersResultStatisticsModel[] | BrawlerRankStatisticsModel[] | BrawlersRankStatisticsModel[] | undefined)[]): boolean => {
+  return statisticsList
+    .filter(statistics => statistics !== undefined)
+    .some(statistics => statistics.length > 0);
+}
 
 function StatisticsAbsence() {
   return (
@@ -123,113 +198,3 @@ function StatisticsAbsence() {
   );
 }
 
-const hasStatistics = (statistics: Statistics): boolean => {
-  return (
-    (statistics.brawlerRankStats && statistics.brawlerRankStats.length > 0) ||
-    (statistics.brawlerResultStats && statistics.brawlerResultStats.length > 0) ||
-    (statistics.brawlersRankStats && statistics.brawlersRankStats.length > 0) ||
-    (statistics.brawlersResultStats && statistics.brawlersResultStats.length > 0)
-  ) ?? false;
-}
-
-const hasBrawlerStats = (statistics: Statistics): boolean => {
-  return (
-    (statistics.brawlerRankStats && statistics.brawlerRankStats.length > 0) ||
-    (statistics.brawlerResultStats && statistics.brawlerResultStats.length > 0)
-  ) ?? false;
-}
-
-const hasBrawlersStats = (statistics: Statistics): boolean => {
-  return (
-    (statistics.brawlersRankStats && statistics.brawlersRankStats.length > 0) ||
-    (statistics.brawlersResultStats && statistics.brawlersResultStats.length > 0)
-  ) ?? false;
-}
-
-const hasBrawlerRankStats = (statistics: Statistics): boolean => {
-  return (statistics.brawlerRankStats && statistics.brawlerRankStats.length > 0) ?? false;
-}
-
-const hasBrawlerResultStats = (statistics: Statistics): boolean => {
-  return (statistics.brawlerResultStats && statistics.brawlerResultStats.length > 0) ?? false;
-}
-
-const hasBrawlersRankStats = (statistics: Statistics): boolean => {
-  return (statistics.brawlersRankStats && statistics.brawlersRankStats.length > 0) ?? false;
-}
-
-const hasBrawlersResultStats = (statistics: Statistics): boolean => {
-  return (statistics.brawlersResultStats && statistics.brawlersResultStats.length > 0) ?? false;
-}
-
-
-type Statistics = {
-  brawlerRankStats: IBrawlerRankStatistics[] | null;
-  brawlersRankStats: IBrawlersRankStatistics[] | null;
-  brawlerResultStats: IBrawlerResultStatistics[] | null;
-  brawlersResultStats: IBrawlersResultStatistics[] | null;
-};
-
-async function fetchStatistics(id: number, date: Date, statsParams: StatisticsParams, resulted: boolean): Promise<Statistics> {
-
-  return {
-    brawlerRankStats: !resulted ? await getBattleEventBrawlerRankStatistics(id, date, statsParams.trophy) : null,
-    brawlersRankStats: !resulted ? await getBattleEventBrawlersRankStatistics(id, date, statsParams.trophy) : null,
-    brawlerResultStats: resulted ? await getBattleEventBrawlerResultStatistics(
-      id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()) : null,
-    brawlersResultStats: resulted ? await getBattleEventBrawlersResultStatistics(
-      id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()) : null,
-  };
-}
-
-
-function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics, brawlerList: Brawler[] }) {
-  const { brawlerRankStats, brawlersRankStats, brawlerResultStats, brawlersResultStats } = statistics;
-
-  return (
-    <div className="flex flex-col gap-4">
-      {
-        hasBrawlerStats(statistics) && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-              브롤러 티어
-            </h2>
-            {hasBrawlerRankStats(statistics) ? (
-              <BrawlerRankStatistics
-                statsList={brawlerRankStats!}
-                brawlers={brawlerList}
-              />
-            ) : null}
-            {hasBrawlerResultStats(statistics) ? (
-              <BrawlerResultStatistics
-                statsList={brawlerResultStats!}
-                brawlers={brawlerList}
-              />
-            ) : null}
-          </div>
-        )
-      }
-      {
-        hasBrawlersStats(statistics) && (
-          <div className="flex flex-col gap-2">
-            <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-              브롤러 조합
-            </h2>
-            {hasBrawlersRankStats(statistics) ? (
-              <BrawlersRankStatistics
-                statsList={brawlersRankStats!}
-                brawlers={brawlerList}
-              />
-            ) : null}
-            {hasBrawlersResultStats(statistics) ? (
-              <BrawlersResultStatistics
-                statsList={brawlersResultStats!}
-                brawlers={brawlerList}
-              />
-            ) : null}
-          </div>
-        )
-      }
-    </div>
-  );
-}
