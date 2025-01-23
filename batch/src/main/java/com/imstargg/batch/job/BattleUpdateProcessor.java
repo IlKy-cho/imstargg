@@ -2,7 +2,7 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
-import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
+import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.collection.domain.BattleUpdateApplier;
@@ -47,7 +47,7 @@ public class BattleUpdateProcessor implements ItemProcessor<PlayerCollectionEnti
                     .update(item, battleListResponse);
 
             return new PlayerBattleUpdateResult(item, updatedBattleEntities);
-        } catch (BrawlStarsClientNotFoundException ex) {
+        } catch (BrawlStarsClientException.NotFound ex) {
             log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}",
                     item.getBrawlStarsTag());
             item.deleted();

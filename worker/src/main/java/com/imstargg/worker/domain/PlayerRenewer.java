@@ -1,7 +1,7 @@
 package com.imstargg.worker.domain;
 
 import com.imstargg.client.brawlstars.BrawlStarsClient;
-import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
+import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.client.brawlstars.response.AccessoryResponse;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
@@ -90,7 +90,7 @@ public class PlayerRenewer {
 
             playerEntity.playerUpdated(clock);
             playerRepository.update(playerEntity, updatedBattleEntities);
-        } catch (BrawlStarsClientNotFoundException ex) {
+        } catch (BrawlStarsClientException.NotFound ex) {
             log.warn("플레이어가 존재하지 않아 삭제합니다. tag={}", playerEntity.getBrawlStarsTag());
             playerEntity.deleted();
             playerRepository.save(playerEntity);
@@ -137,7 +137,7 @@ public class PlayerRenewer {
 
             playerEntity.playerUpdated(clock);
             playerRepository.update(unknownPlayerEntity, playerEntity, updatedBattleEntities);
-        } catch (BrawlStarsClientNotFoundException ex) {
+        } catch (BrawlStarsClientException.NotFound ex) {
             log.warn("플레이어가 존재하지 않아 삭제합니다. tag={}", unknownPlayerEntity.getBrawlStarsTag());
             unknownPlayerEntity.notFound();
             playerRepository.update(unknownPlayerEntity);

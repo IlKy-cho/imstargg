@@ -1,7 +1,7 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.client.brawlstars.BrawlStarsClient;
-import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
+import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.client.brawlstars.response.AccessoryResponse;
 import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
 import com.imstargg.client.brawlstars.response.GearStatResponse;
@@ -66,7 +66,7 @@ public class PlayerUpdateProcessor implements ItemProcessor<PlayerCollectionEnti
                 );
             }
             return item;
-        } catch (BrawlStarsClientNotFoundException ex) {
+        } catch (BrawlStarsClientException.NotFound ex) {
             log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", item.getBrawlStarsTag());
             item.deleted();
             return item;

@@ -2,7 +2,7 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerTagFilter;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
-import com.imstargg.client.brawlstars.BrawlStarsClientNotFoundException;
+import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.client.brawlstars.response.AccessoryResponse;
 import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
 import com.imstargg.client.brawlstars.response.GearStatResponse;
@@ -69,7 +69,7 @@ public class NewPlayerJobItemProcessor
                     );
                 }
                 newPlayers.add(playerEntity);
-            } catch (BrawlStarsClientNotFoundException e) {
+            } catch (BrawlStarsClientException.NotFound e) {
                 log.info("새로운 Player 가 존재하지 않는 것으로 확인되어 스킵. playerTag={}", newPlayerTag);
             }
         }
