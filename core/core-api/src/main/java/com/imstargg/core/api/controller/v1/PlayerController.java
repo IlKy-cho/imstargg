@@ -69,8 +69,4 @@ public class PlayerController {
         return new RenewalStatusResponse(playerService.isRenewing(new BrawlStarsTag(tag)));
     }
 
-    @GetMapping("/api/v1/players/{tag}/renewal-status-new")
-    public RenewalStatusResponse getRenewalStatusNew(@PathVariable String tag) {
-        return new RenewalStatusResponse(playerService.isRenewingNew(new BrawlStarsTag(tag)));
-    }
 }
