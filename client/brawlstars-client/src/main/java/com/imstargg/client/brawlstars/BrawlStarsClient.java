@@ -12,7 +12,7 @@ import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
-@CacheConfig(cacheNames = "brawlstars-client")
+@CacheConfig(cacheNames = BrawlStarsClientCacheNames.BRAWLSTARS_CLIENT)
 public class BrawlStarsClient {
 
     private final BrawlStarsApi brawlstarsApi;
