@@ -1,10 +1,9 @@
 import {getBattleEvents} from "@/lib/api/battle-event";
 import {Metadata} from "next";
-import {meta} from "@/config/site";
 import BattleEventList from "@/components/battle-event-list";
 
 export const metadata: Metadata = {
-  title: `브롤스타즈 이벤트 | ${meta.name}`,
+  title: `브롤스타즈 이벤트`,
   description: "브롤스타즈의 이벤트 목록입니다. 각 이벤트의 통계 정보를 확인할 수 있습니다.",
 };
 

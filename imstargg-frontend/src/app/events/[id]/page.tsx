@@ -29,6 +29,70 @@ import {
   StatisticsSearchParams
 } from "@/model/statistics/StatisticsParams";
 
+type Props = {
+  params: Promise<{
+    id: number;
+  }>;
+  searchParams: Promise<StatisticsSearchParams>;
+};
+
+export async function generateMetadata({params}: Readonly<Props>) {
+  const {id} = await params;
+  const battleEvent = await getBattleEvent(id);
+  if (!battleEvent) {
+    notFound();
+  }
+  return {
+    title: `${battleEvent.mode} ${battleEvent.map.name}`,
+    description: `브롤스타즈 이벤트 ${battleEvent.mode} ${battleEvent.map.name}의 정보 및 통계입니다.`,
+  }
+}
+
+export default async function EventPage({ params, searchParams }: Readonly<Props>) {
+  const { id } = await params;
+  const battleEvent = await getBattleEvent(id);
+  if (!battleEvent) {
+    notFound();
+  }
+
+  const date = new Date();
+  const brawlerList = await getBrawlers();
+  const statsParams = searchParamsToStatisticsParams(await searchParams);
+  const resulted = isResultBattleEventMode(battleEvent.mode);
+  const statistics = await fetchStatistics(id, date, statsParams, resulted);
+
+  return (
+    <div className="space-y-2">
+      <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
+        <div className="flex-1">
+          <BattleEventProfile battleEvent={battleEvent} />
+        </div>
+      </div>
+      <div>
+        <BattleEventStatisticsOption
+          battleEvent={battleEvent}
+          battleType={statsParams.type}
+          duplicateBrawler={statsParams.duplicateBrawler}
+          trophy={statsParams.trophy}
+          soloRankTier={statsParams.soloRankTier}
+        />
+      </div>
+      <div className="flex justify-center items-center gap-2 m-2 w-full">
+        {
+          hasStatistics(statistics) ? (
+            <StatisticsContent
+              statistics={statistics}
+              brawlerList={brawlerList}
+            />
+          ) : (
+            <StatisticsAbsence />
+          )
+        }
+      </div>
+    </div>
+  );
+};
+
 function StatisticsAbsence() {
   return (
     <div className="flex flex-col items-center justify-center text-center p-4">
@@ -127,7 +191,7 @@ function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics
         hasBrawlerStats(statistics) && (
           <div className="flex flex-col gap-2">
             <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-            브롤러 티어
+              브롤러 티어
             </h2>
             {hasBrawlerRankStats(statistics) ? (
               <BrawlerRankStatistics
@@ -148,7 +212,7 @@ function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics
         hasBrawlersStats(statistics) && (
           <div className="flex flex-col gap-2">
             <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-            브롤러 조합
+              브롤러 조합
             </h2>
             {hasBrawlersRankStats(statistics) ? (
               <BrawlersRankStatistics
@@ -168,55 +232,3 @@ function StatisticsContent({ statistics, brawlerList }: { statistics: Statistics
     </div>
   );
 }
-
-type Props = {
-  params: Promise<{
-    id: number;
-  }>;
-  searchParams: Promise<StatisticsSearchParams>;
-};
-
-export default async function EventPage({ params, searchParams }: Readonly<Props>) {
-  const { id } = await params;
-  const battleEvent = await getBattleEvent(id);
-  if (!battleEvent) {
-    notFound();
-  }
-
-  const date = new Date();
-  const brawlerList = await getBrawlers();
-  const statsParams = searchParamsToStatisticsParams(await searchParams);
-  const resulted = isResultBattleEventMode(battleEvent.mode);
-  const statistics = await fetchStatistics(id, date, statsParams, resulted);  
-
-  return (
-    <div className="space-y-2">
-      <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
-        <div className="flex-1">
-          <BattleEventProfile battleEvent={battleEvent} />
-        </div>
-      </div>
-      <div>
-        <BattleEventStatisticsOption
-          battleEvent={battleEvent}
-          battleType={statsParams.type}
-          duplicateBrawler={statsParams.duplicateBrawler}
-          trophy={statsParams.trophy}
-          soloRankTier={statsParams.soloRankTier}
-        />
-      </div>
-      <div className="flex justify-center items-center gap-2 m-2 w-full">
-        {
-          hasStatistics(statistics) ? (
-            <StatisticsContent
-              statistics={statistics}
-              brawlerList={brawlerList}
-            />
-          ) : (
-            <StatisticsAbsence />
-          )
-        }
-      </div>
-    </div>
-  );
-};
