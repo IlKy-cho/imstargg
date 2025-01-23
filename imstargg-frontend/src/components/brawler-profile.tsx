@@ -13,7 +13,7 @@ type BrawlerProfileProps = { brawler: Brawler };
 
 export function BrawlerProfile({brawler}: Readonly<BrawlerProfileProps>) {
   return (
-    <div className="flex gap-2 p-6 rounded-lg shadow-md border bg-zinc-100 bg-opacity-90 m-2 max-w-screen-sm">
+    <div className="flex gap-2 p-6 rounded-lg shadow-lg border bg-zinc-100 bg-opacity-90 m-2 max-w-screen-sm">
       <BrawlerProfileImage brawler={brawler} size="2xl"/>
       <div className="flex flex-col gap-1">
         <div className="flex gap-1 items-center">

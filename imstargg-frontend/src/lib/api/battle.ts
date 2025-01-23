@@ -57,7 +57,7 @@ export async function getBattles(tag: string, page: number = 1): Promise<SliceRe
             ...battle.event,
             map: {
               name: battle.event.mapName,
-              imageUrl: battle.event.mapImagePath ? new URL(battle.event.mapImagePath, process.env.NEXT_PUBLIC_API_BASE_URL).toString() : null
+              imageUrl: battle.event.mapImagePath ? new URL(battle.event.mapImagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
             }
           },
           teams: battle.teams.map(team =>

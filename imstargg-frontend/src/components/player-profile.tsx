@@ -22,7 +22,7 @@ const PlayerInfoContainer = ({label, children}: { label: string, children: React
 
 export default function PlayerProfile({player}: Readonly<Props>) {
   return (
-    <div className="p-6 space-y-1 rounded-lg shadow-md border bg-zinc-100 bg-opacity-90 m-2 max-w-screen-sm">
+    <div className="p-4 md:p-6 space-y-1 rounded-lg shadow-lg bg-zinc-100/90 max-w-screen-sm">
       <div>
         <PlayerInfoContainer label="이름">
           <span>{player.name}</span>
@@ -35,7 +35,7 @@ export default function PlayerProfile({player}: Readonly<Props>) {
         <PlayerInfoContainer label="클럽 태그">
           {player.clubTag ?
             <span>{player.clubTag}</span>
-            : <span className="text-gray-400">❌</span>
+            : <span>❌</span>
           }
         </PlayerInfoContainer>
 

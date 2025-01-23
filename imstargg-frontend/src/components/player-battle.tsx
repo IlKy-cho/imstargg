@@ -22,6 +22,7 @@ import {battleEventModeIconSrc, battleModeIconSrc} from "@/components/battle-mod
 import {battleTypeTitle} from "@/components/battle-type";
 import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
+import { PowerLevel } from "./brawler";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -41,7 +42,7 @@ const BattleResultInfo = ({battle}: { battle: IPlayerBattle }) => {
     );
   }
 
-  return <div></div>;
+  return null;
 }
 
 const BattleTypeIcon = ({type}: { type: BattleType }) => {
@@ -149,24 +150,6 @@ const battleBorderColor = (battle: IPlayerBattle) => {
   }
   return 'border-l-4 border-zinc-300';
 }
-
-const PowerLevel = ({value}: { value: number }) => {
-  return (
-    <div className="relative inline-flex items-center justify-center">
-      <div
-        className="w-6 h-6 rounded-full bg-gradient-to-br from-[#E84BCE] to-[#CF30B5] flex items-center justify-center shadow-lg border-[0.5px] border-black">
-        <div className="w-4 h-4 rounded-full bg-[#6c1473] flex items-center justify-center border-[0.5px] border-black">
-          <span className="text-white font-bold text-xs" style={{
-            textShadow: '-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000'
-          }}>
-            {value}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 
 const PlayerTierContainer = ({children}: { children: React.ReactNode }) => (
   <div className="flex items-center gap-1">

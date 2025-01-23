@@ -12,7 +12,7 @@ export default function BattleEventProfile({battleEvent}: Readonly<Props>) {
   const modeIconSrc = battleEventModeIconSrc(battleEvent.mode);
   const modeTitle = battleEventModeTitle(battleEvent.mode);
   return (
-    <div className="flex flex-col md:flex-row gap-2 p-4 md:p-6 rounded-lg shadow-md bg-zinc-100 bg-opacity-90 m-2 max-w-screen-sm">
+    <div className="flex flex-col md:flex-row gap-2 p-4 md:p-6 rounded-lg shadow-lg bg-zinc-100 bg-opacity-90 m-2 max-w-screen-sm">
       <BattleEventMapImage battleEventMap={battleEvent.map} size="xl"/>
       <div className="flex-1">
         <div className="flex items-center gap-2 text-2xl md:text-3xl font-bold">
