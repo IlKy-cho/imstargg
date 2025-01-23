@@ -1,6 +1,5 @@
 import {getBrawlers} from "@/lib/api/brawler";
 import {Metadata} from "next";
-import {meta} from "@/config/site";
 import {getBrawlerResultStatistics} from "@/lib/api/statistics";
 import {BrawlerStatisticsOption} from "@/components/statistics-option";
 import {TrophyRange, TrophyRangeValue} from "@/model/enums/TrophyRange";
