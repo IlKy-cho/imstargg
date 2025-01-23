@@ -29,6 +29,9 @@ export async function generateMetadata({params}: Readonly<Props>): Promise<Metad
   return {
     title: `${brawler.name}`,
     description: `브롤스타즈 브롤러 ${brawler.name}의 정보 및 통계입니다.`,
+    openGraph: {
+      images: brawler.imageUrl || "",
+    },
   }
 }
 
@@ -56,7 +59,7 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
           <BrawlerProfile brawler={brawler}/>
         </div>
       </div>
-      <div className="p-1 md:p-4">
+      <div className="flex flex-col gap-2 p-1">
         <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
                                  soloRankTier={statsParams.soloRankTier}/>
         <StatisticsContent brawlers={brawlers} enemyResultStatistics={enemyResultStatistics}
