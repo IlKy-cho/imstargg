@@ -20,7 +20,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: `${meta.name} | 브롤스타즈 데이터 분석 전적 검색 아임스타지지`,
+  title: {
+    template: `%s | ${meta.name}`,
+    default: meta.name,
+    absolute: meta.name,
+  },
   description: "브롤스타즈 전적 검색부터 데이터 분석, 메타 분석까지 다양한 정보를 제공합니다.",
 };
 

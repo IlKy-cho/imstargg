@@ -11,9 +11,8 @@ import Image from "next/image";
 import kitSadPinSrc from "@/../public/icon/brawler/kit/kit_sad_pin.png";
 import {BrawlerEnemyResultStatistics, BrawlersResultStatistics} from "@/components/statistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
-import {searchParamsToStatisticsParams} from "@/model/statistics/StatisticsParams";
-import {StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
-import {meta} from "@/config/site";
+import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
+import {Metadata} from "next";
 
 
 type Props = {
@@ -21,14 +20,14 @@ type Props = {
   searchParams: Promise<StatisticsSearchParams>;
 };
 
-export async function generateMetadata({params}: Readonly<Props>) {
+export async function generateMetadata({params}: Readonly<Props>): Promise<Metadata> {
   const {id} = await params;
   const brawler = await getBrawler(id);
   if (!brawler) {
     notFound();
   }
   return {
-    title: `${brawler.name} | ${meta.name}`,
+    title: `${brawler.name}`,
     description: `브롤스타즈 브롤러 ${brawler.name}의 정보 및 통계입니다.`,
   }
 }

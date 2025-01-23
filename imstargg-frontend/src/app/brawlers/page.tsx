@@ -10,7 +10,7 @@ import React from "react";
 import {BrawlerListStatistics} from "@/components/statistics";
 
 export const metadata: Metadata = {
-  title: `브롤러 | ${meta.name}`,
+  title: `브롤러`,
   description: "브롤스타즈의 모든 브롤러 목록과 통계 정보 입니다.",
 };
 
