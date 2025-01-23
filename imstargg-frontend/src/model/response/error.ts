@@ -2,6 +2,7 @@ export const ApiErrorTypeValue = {
   PLAYER_NOT_FOUND : 'PLAYER_NOT_FOUND',
   PLAYER_ALREADY_RENEWED : 'PLAYER_ALREADY_RENEWED',
   PLAYER_RENEW_UNAVAILABLE : 'PLAYER_RENEW_UNAVAILABLE',
+  BRAWLSTARS_IN_MAINTENANCE: 'BRAWLSTARS_IN_MAINTENANCE',
 } as const;
 
 export type ApiErrorType = typeof ApiErrorTypeValue[keyof typeof ApiErrorTypeValue];
