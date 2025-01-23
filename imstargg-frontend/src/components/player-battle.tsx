@@ -67,7 +67,7 @@ export function PlayerBattleList({tag, brawlerList}: Readonly<PlayerBattleListPr
         <PlayerBattle
           key={index}
           battle={battle}
-          brawlerList={brawlerList}
+          brawlers={brawlerList}
           myTag={tag}
         />
       ))}
@@ -80,38 +80,109 @@ export function PlayerBattleList({tag, brawlerList}: Readonly<PlayerBattleListPr
 
 type PlayerBattleProps = {
   battle: PlayerBattleModel;
-  brawlerList: Brawler[];
+  brawlers: Brawler[];
   myTag: string;
 }
 
-export default function PlayerBattle({battle, brawlerList, myTag}: Readonly<PlayerBattleProps>) {
+export default function PlayerBattle({battle, brawlers, myTag}: Readonly<PlayerBattleProps>) {
   return (
-    <div className={`flex p-4 space-x-2 rounded-lg ${battleBackgroundColor(battle)} ${battleBorderColor(battle)}`}>
-      <div className="flex gap-2">
-        <BattleInfo battle={battle}/>
-      </div>
+    <div className={`flex p-2 space-x-2 rounded-lg ${battleBackgroundColor(battle)} ${battleBorderColor(battle)}`}>
       <div className="flex flex-1">
-        <div className="flex items-center">
+        <BattleInfo battle={battle}/>
+        <Separator className="m-1" orientation="vertical" />
+        <div className="flex items-center justify-center w-28">
           <BattleEventMapImage battleEventMap={battle.event.map}/>
         </div>
-        <div className="flex flex-1 items-center">
-          <BattleTeams battle={battle} myTag={myTag} brawlerList={brawlerList}/>
+        <Separator className="m-1" orientation="vertical" />
+        <div className="flex items-center justify-center flex-1">
+          <BattleTeams battle={battle} myTag={myTag} brawlers={brawlers}/>
         </div>
       </div>
     </div>
   );
 }
 
-const BattleResultInfo = ({battle}: { battle: PlayerBattleModel }) => {
+function battleBackgroundColor (battle: PlayerBattleModel) {
+  if (battle.result) {
+    switch (battle.result) {
+      case BattleResultValue.VICTORY:
+        return 'bg-blue-100/50';
+      case BattleResultValue.DEFEAT:
+        return 'bg-red-100/50';
+      case BattleResultValue.DRAW:
+        return 'bg-amber-100/50';
+    }
+  }
+
+  return 'bg-zinc-100/50';
+}
+
+function battleBorderColor (battle: PlayerBattleModel) {
+  if (battle.result) {
+    switch (battle.result) {
+      case BattleResultValue.VICTORY:
+        return 'border-l-4 border-blue-500';
+      case BattleResultValue.DEFEAT:
+        return 'border-l-4 border-red-500';
+      case BattleResultValue.DRAW:
+        return 'border-l-4 border-amber-500';
+    }
+  }
+  return 'border-l-4 border-zinc-300';
+}
+
+function BattleInfo({battle}: { battle: PlayerBattleModel }) {
+  const modeTitle = playerBattleModeTitle(battle);
+  const mapName = battle.event ? battle.event.map.name : '❓';
+  return (
+    <div className="flex flex-col w-20 sm:w-24">
+      <div className="flex items-center gap-1">
+        <BattleTypeIcon type={battle.type}/>
+        {battleTypeTitle(battle.type) && (
+          <span className="font-bold text-sm sm:text-base">{battleTypeTitle(battle.type)}</span>
+        )}
+      </div>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className="text-xs sm:text-sm text-zinc-600 text-left">
+              {dayjs(battle.battleTime).fromNow()}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            {dayjs(battle.battleTime).format('YYYY-MM-DD HH:mm')}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <Separator className="my-1"/>
+      <BattleResultInfo battle={battle}/>
+      <div className="text-xs sm:text-sm text-zinc-600">
+        {battle.duration && (
+          <span>{battle.duration}초</span>
+        )}
+      </div>
+      <Separator className="my-1"/>
+      <div className="flex items-center gap-1">
+        <BattleModeIcon battle={battle}/>
+        <span className="font-bold text-sm sm:text-base">{modeTitle}</span>
+      </div>
+      <div className="text-xs sm:text-sm text-zinc-600">
+        <span>{mapName}</span>
+      </div>
+    </div>
+  );
+}
+
+function BattleResultInfo({battle}: { battle: PlayerBattleModel }) {
   if (battle.result) {
     return (
-      <div className='font-bold'>
+      <div className='font-bold text-sm sm:text-base'>
         {battleResultTitle(battle.result)}
       </div>
     );
   } else if (battle.rank) {
     return (
-      <div className='font-bold'>
+      <div className='font-bold text-sm sm:text-base'>
         {battle.rank}위
       </div>
     );
@@ -120,7 +191,7 @@ const BattleResultInfo = ({battle}: { battle: PlayerBattleModel }) => {
   return null;
 }
 
-const BattleTypeIcon = ({type}: { type: BattleType }) => {
+function BattleTypeIcon ({type}: { type: BattleType }) {
   const iconSrc = battleTypeIconSrc(type);
   if (!iconSrc) {
     return null;
@@ -136,54 +207,12 @@ const BattleTypeIcon = ({type}: { type: BattleType }) => {
   );
 }
 
-const BattleInfo = ({battle}: { battle: PlayerBattleModel }) => {
-  const modeTitle = playerBattleModeTitle(battle);
-  const mapName = battle.event ? battle.event.map.name : '❓';
-  return (
-    <div>
-      <div className="flex items-center gap-1">
-        <BattleTypeIcon type={battle.type}/>
-        {battleTypeTitle(battle.type) && (
-          <span className="font-bold">{battleTypeTitle(battle.type)}</span>
-        )}
-      </div>
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger>
-            <div className="text-sm text-zinc-600">
-              {dayjs(battle.battleTime).fromNow()}
-            </div>
-          </TooltipTrigger>
-          <TooltipContent>
-            {dayjs(battle.battleTime).format('YYYY-MM-DD HH:mm')}
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      <Separator className="my-1"/>
-      <BattleResultInfo battle={battle}/>
-      <div className="text-sm text-zinc-600">
-        {battle.duration && (
-          <span>{battle.duration}초</span>
-        )}
-      </div>
-      <Separator className="my-1"/>
-      <div className="flex items-center gap-1">
-        <BattleModeIcon battle={battle}/>
-        <span className="font-bold">{modeTitle}</span>
-      </div>
-      <div className="text-sm text-zinc-600">
-        <span>{mapName}</span>
-      </div>
-    </div>
-  );
-}
-
-const playerBattleIconSrc = (battle: PlayerBattleModel) => {
+function playerBattleIconSrc (battle: PlayerBattleModel) {
   const eventModeIcon = battle.event.mode ? battleEventModeIconSrc(battle.event.mode) : null;
   return eventModeIcon || battleModeIconSrc(battle.mode);
 }
 
-const BattleModeIcon = ({battle}: { battle: PlayerBattleModel }) => {
+function BattleModeIcon ({battle}: { battle: PlayerBattleModel }) {
   const iconSrc = playerBattleIconSrc(battle);
   if (!iconSrc) {
     return null;
@@ -194,67 +223,38 @@ const BattleModeIcon = ({battle}: { battle: PlayerBattleModel }) => {
   );
 }
 
-const battleBackgroundColor = (battle: PlayerBattleModel) => {
-  if (battle.result) {
-    switch (battle.result) {
-      case BattleResultValue.VICTORY:
-        return 'bg-blue-100/50';
-      case BattleResultValue.DEFEAT:
-        return 'bg-red-100/50';
-      case BattleResultValue.DRAW:
-        return 'bg-amber-100/50';
-    }
-  }
 
-  return 'bg-zinc-100/50';
+function BattleTeams (
+  {battle, myTag, brawlers}: { battle: PlayerBattleModel, myTag: string, brawlers: Brawler[] }
+) {
+  const brawlerCollection = new BrawlerCollection(brawlers);
+  return (
+    <div className="flex flex-col items-center justify-center">
+      {battle.teams.map((team, i) => (
+        <div key={i} className="flex items-center gap-4">
+          {team.map((player, j) => (
+            <BattleTeamPlayer
+              key={j}
+              player={player}
+              myTag={myTag}
+              starPlayerTag={battle.starPlayerTag}
+              brawler={brawlerCollection.find(player.brawler.id)}
+            />
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
 
-const battleBorderColor = (battle: PlayerBattleModel) => {
-  if (battle.result) {
-    switch (battle.result) {
-      case BattleResultValue.VICTORY:
-        return 'border-l-4 border-blue-500';
-      case BattleResultValue.DEFEAT:
-        return 'border-l-4 border-red-500';
-      case BattleResultValue.DRAW:
-        return 'border-l-4 border-amber-500';
-    }
-  }
-  return 'border-l-4 border-zinc-300';
-}
-
-const PlayerTierContainer = ({children}: { children: React.ReactNode }) => (
-  <div className="flex items-center gap-1">
-    {children}
-  </div>
-);
-
-const PlayerTier = ({player}: { player: BattlePlayer }) => {
-  if (player.soloRankTier) {
-    return (
-      <PlayerTierContainer>
-        <SoloRankTier tier={player.soloRankTier}/>
-      </PlayerTierContainer>
-    );
-  } else if (player.brawler.trophies) {
-    return (
-      <PlayerTierContainer>
-        <Trophy value={player.brawler.trophies}/>
-      </PlayerTierContainer>
-    );
-  }
-
-  return null;
-}
-
-const BattleTeamPlayer = (
+function BattleTeamPlayer (
   {player, brawler, myTag, starPlayerTag}: {
     player: BattlePlayer,
     brawler: Brawler | null,
     myTag: string,
     starPlayerTag: string | null
   }
-) => {
+) {
   const nameStyle = player.tag === myTag
     ? 'font-bold text-zinc-800' : 'text-zinc-500';
 
@@ -289,25 +289,28 @@ const BattleTeamPlayer = (
   );
 }
 
-const BattleTeams = (
-  {battle, myTag, brawlerList}: { battle: PlayerBattleModel, myTag: string, brawlerList: Brawler[] }
-) => {
-  const brawlers = new BrawlerCollection(brawlerList);
+function PlayerTierContainer ({children}: { children: React.ReactNode }){
   return (
-    <div className="flex flex-col h-full w-full items-center justify-center">
-      {battle.teams.map((team, i) => (
-        <div key={i} className="flex items-center gap-4">
-          {team.map((player, j) => (
-            <BattleTeamPlayer
-              key={j}
-              player={player}
-              myTag={myTag}
-              starPlayerTag={battle.starPlayerTag}
-              brawler={brawlers.find(player.brawler.id)}
-            />
-          ))}
-        </div>
-      ))}
+    <div className="flex items-center gap-1">
+      {children}
     </div>
   );
+}
+
+function PlayerTier ({player}: { player: BattlePlayer }) {
+  if (player.soloRankTier) {
+    return (
+      <PlayerTierContainer>
+        <SoloRankTier tier={player.soloRankTier}/>
+      </PlayerTierContainer>
+    );
+  } else if (player.brawler.trophies) {
+    return (
+      <PlayerTierContainer>
+        <Trophy value={player.brawler.trophies}/>
+      </PlayerTierContainer>
+    );
+  }
+
+  return null;
 }
