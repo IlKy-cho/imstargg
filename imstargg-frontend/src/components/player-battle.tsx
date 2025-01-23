@@ -1,10 +1,8 @@
 'use client';
 
-import {PlayerBattle as IPlayerBattle} from "@/model/PlayerBattle";
 import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {battleResultTitle, playerBattleModeTitle} from "./title";
 import {BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
@@ -22,12 +20,89 @@ import {battleEventModeIconSrc, battleModeIconSrc} from "@/components/battle-mod
 import {battleTypeTitle} from "@/components/battle-type";
 import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
-import { PowerLevel } from "./brawler";
+import {PowerLevel} from "./brawler";
+import {useEffect, useState} from "react";
+import {PlayerBattle as PlayerBattleModel} from "@/model/PlayerBattle";
+import {getBattles} from "@/lib/api/battle";
+import {Brawler, BrawlerCollection} from "@/model/Brawler";
+import {LoadingButton} from "@/components/ui/expansion/loading-button";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
 
-const BattleResultInfo = ({battle}: { battle: IPlayerBattle }) => {
+type PlayerBattleListProps = {
+  tag: string;
+  brawlerList: Brawler[];
+};
+
+export function PlayerBattleList({tag, brawlerList}: Readonly<PlayerBattleListProps>) {
+  const [battles, setBattles] = useState<PlayerBattleModel[]>([]);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchBattles = async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const newBattleSlice = await getBattles(tag, page);
+      setHasMore(newBattleSlice.hasNext);
+      setBattles(prev => [...prev, ...newBattleSlice.content]);
+      setPage(prev => prev + 1);
+    } catch (error) {
+      console.error('Failed to fetch battles:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBattles();
+  });
+
+  return (
+    <div className="flex flex-col gap-2">
+      {battles.map((battle, index) => (
+        <PlayerBattle
+          key={index}
+          battle={battle}
+          brawlerList={brawlerList}
+          myTag={tag}
+        />
+      ))}
+      <LoadingButton loading={loading} disabled={!hasMore} onClick={fetchBattles} variant='outline'>
+        {hasMore ? '더보기' : '더 이상 배틀 기록이 없습니다.'}
+      </LoadingButton>
+    </div>
+  );
+}
+
+type PlayerBattleProps = {
+  battle: PlayerBattleModel;
+  brawlerList: Brawler[];
+  myTag: string;
+}
+
+export default function PlayerBattle({battle, brawlerList, myTag}: Readonly<PlayerBattleProps>) {
+  return (
+    <div className={`flex p-4 space-x-2 rounded-lg ${battleBackgroundColor(battle)} ${battleBorderColor(battle)}`}>
+      <div className="flex gap-2">
+        <BattleInfo battle={battle}/>
+      </div>
+      <div className="flex flex-1">
+        <div className="flex items-center">
+          <BattleEventMapImage battleEventMap={battle.event.map}/>
+        </div>
+        <div className="flex flex-1 items-center">
+          <BattleTeams battle={battle} myTag={myTag} brawlerList={brawlerList}/>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const BattleResultInfo = ({battle}: { battle: PlayerBattleModel }) => {
   if (battle.result) {
     return (
       <div className='font-bold'>
@@ -61,57 +136,54 @@ const BattleTypeIcon = ({type}: { type: BattleType }) => {
   );
 }
 
-const BattleInfo = ({battle}: { battle: IPlayerBattle }) => {
+const BattleInfo = ({battle}: { battle: PlayerBattleModel }) => {
   const modeTitle = playerBattleModeTitle(battle);
   const mapName = battle.event ? battle.event.map.name : '❓';
   return (
-    <div className="flex items-center gap-1">
-      <div>
-        <div className="flex items-center gap-1">
-          <BattleTypeIcon type={battle.type}/>
-          {battleTypeTitle(battle.type) && (
-            <span className="font-bold">{battleTypeTitle(battle.type)}</span>
-          )}
-        </div>
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <div className="text-sm text-zinc-600">
-                {dayjs(battle.battleTime).fromNow()}
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              {dayjs(battle.battleTime).format('YYYY-MM-DD HH:mm')}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        <Separator className="my-1"/>
-        <BattleResultInfo battle={battle}/>
-        <div className="text-sm text-zinc-600">
-          {battle.duration && (
-            <span>{battle.duration}초</span>
-          )}
-        </div>
-        <Separator className="my-1"/>
-        <div className="flex items-center gap-1">
-          <BattleModeIcon battle={battle}/>
-          <span className="font-bold">{modeTitle}</span>
-        </div>
-        <div className="text-sm text-zinc-600">
-          <span>{mapName}</span>
-        </div>
+    <div>
+      <div className="flex items-center gap-1">
+        <BattleTypeIcon type={battle.type}/>
+        {battleTypeTitle(battle.type) && (
+          <span className="font-bold">{battleTypeTitle(battle.type)}</span>
+        )}
       </div>
-      <BattleEventMapImage battleEventMap={battle.event.map}/>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className="text-sm text-zinc-600">
+              {dayjs(battle.battleTime).fromNow()}
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            {dayjs(battle.battleTime).format('YYYY-MM-DD HH:mm')}
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <Separator className="my-1"/>
+      <BattleResultInfo battle={battle}/>
+      <div className="text-sm text-zinc-600">
+        {battle.duration && (
+          <span>{battle.duration}초</span>
+        )}
+      </div>
+      <Separator className="my-1"/>
+      <div className="flex items-center gap-1">
+        <BattleModeIcon battle={battle}/>
+        <span className="font-bold">{modeTitle}</span>
+      </div>
+      <div className="text-sm text-zinc-600">
+        <span>{mapName}</span>
+      </div>
     </div>
   );
 }
 
-const playerBattleIconSrc = (battle: IPlayerBattle) => {
+const playerBattleIconSrc = (battle: PlayerBattleModel) => {
   const eventModeIcon = battle.event.mode ? battleEventModeIconSrc(battle.event.mode) : null;
   return eventModeIcon || battleModeIconSrc(battle.mode);
 }
 
-const BattleModeIcon = ({battle}: { battle: IPlayerBattle }) => {
+const BattleModeIcon = ({battle}: { battle: PlayerBattleModel }) => {
   const iconSrc = playerBattleIconSrc(battle);
   if (!iconSrc) {
     return null;
@@ -122,7 +194,7 @@ const BattleModeIcon = ({battle}: { battle: IPlayerBattle }) => {
   );
 }
 
-const battleBackgroundColor = (battle: IPlayerBattle) => {
+const battleBackgroundColor = (battle: PlayerBattleModel) => {
   if (battle.result) {
     switch (battle.result) {
       case BattleResultValue.VICTORY:
@@ -137,7 +209,7 @@ const battleBackgroundColor = (battle: IPlayerBattle) => {
   return 'bg-zinc-100/50';
 }
 
-const battleBorderColor = (battle: IPlayerBattle) => {
+const battleBorderColor = (battle: PlayerBattleModel) => {
   if (battle.result) {
     switch (battle.result) {
       case BattleResultValue.VICTORY:
@@ -218,11 +290,11 @@ const BattleTeamPlayer = (
 }
 
 const BattleTeams = (
-  {battle, myTag, brawlerList}: { battle: IPlayerBattle, myTag: string, brawlerList: Brawler[] }
+  {battle, myTag, brawlerList}: { battle: PlayerBattleModel, myTag: string, brawlerList: Brawler[] }
 ) => {
   const brawlers = new BrawlerCollection(brawlerList);
   return (
-    <div className="flex flex-col h-full items-center justify-center">
+    <div className="flex flex-col h-full w-full items-center justify-center">
       {battle.teams.map((team, i) => (
         <div key={i} className="flex items-center gap-4">
           {team.map((player, j) => (
@@ -236,26 +308,6 @@ const BattleTeams = (
           ))}
         </div>
       ))}
-    </div>
-  );
-}
-
-type Props = {
-  battle: IPlayerBattle;
-  brawlerList: Brawler[];
-  myTag: string;
-}
-
-export default function PlayerBattle({battle, brawlerList, myTag}: Readonly<Props>) {
-  return (
-    <div className={`flex p-4 space-x-2 rounded-lg ${battleBackgroundColor(battle)} ${battleBorderColor(battle)}`}>
-      <div className="flex gap-2">
-        <BattleInfo battle={battle}/>
-        <Separator orientation="vertical" className="my-2"/>
-      </div>
-      <div className="flex-1">
-        <BattleTeams battle={battle} myTag={myTag} brawlerList={brawlerList}/>
-      </div>
     </div>
   );
 }
