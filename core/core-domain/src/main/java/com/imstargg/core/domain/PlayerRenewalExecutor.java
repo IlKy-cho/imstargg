@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
+import java.util.Optional;
 
 @Component
 public class PlayerRenewalExecutor {
@@ -69,10 +70,20 @@ public class PlayerRenewalExecutor {
     }
 
     public boolean isRenewing(Player player) {
-        return playerRenewalRepository.find(player.tag())
-                .map(PlayerRenewal::status)
-                .map(PlayerRenewalStatus::renewing)
-                .orElse(false);
+        Optional<PlayerRenewal> playerRenewalOpt = playerRenewalRepository.find(player.tag());
+        if (playerRenewalOpt.isEmpty()) {
+            return false;
+        }
+        PlayerRenewal playerRenewal = playerRenewalOpt.get();
+        if (playerRenewal.status().renewing()) {
+            return true;
+        }
+
+        if (PlayerRenewalStatus.IN_MAINTENANCE.equals(playerRenewal.status())) {
+            throw new CoreException(CoreErrorType.BRAWLSTARS_IN_MAINTENANCE, "playerTag=" + player.tag());
+        }
+
+        return false;
     }
 
     public boolean isRenewingNew(BrawlStarsTag tag) {

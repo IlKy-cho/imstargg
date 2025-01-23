@@ -17,6 +17,8 @@ public enum CoreErrorType {
     BATTLE_EVENT_NOT_FOUND(CoreErrorKind.NOT_FOUND, "존재하지 않는 이벤트 입니다.", INFO),
 
     BRAWLER_NOT_FOUND(CoreErrorKind.NOT_FOUND, "존재하지 않는 브롤러 입니다.", INFO),
+
+    BRAWLSTARS_IN_MAINTENANCE(CoreErrorKind.UNAVAILABLE, "브롤스타즈 서버가 점검중입니다.", INFO),
     ;
 
     private final CoreErrorKind kind;
