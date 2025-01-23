@@ -38,6 +38,10 @@ public class PlayerRenewalCollectionEntity extends BaseEntity {
         this.status = PlayerRenewalStatus.COMPLETE;
     }
 
+    public void inMaintenance() {
+        this.status = PlayerRenewalStatus.IN_MAINTENANCE;
+    }
+
     public void failed() {
         this.status = PlayerRenewalStatus.FAILED;
     }

@@ -30,14 +30,20 @@ public class PlayerRenewalRepository {
     }
 
     @Transactional
-    public void failed(PlayerRenewalCollectionEntity playerRenewalEntity) {
-        playerRenewalCollectionJpaRepository.findById(playerRenewalEntity.getId())
-                .ifPresent(PlayerRenewalCollectionEntity::failed);
-    }
-
-    @Transactional
     public void complete(PlayerRenewalCollectionEntity playerRenewalEntity) {
         playerRenewalCollectionJpaRepository.findById(playerRenewalEntity.getId())
                 .ifPresent(PlayerRenewalCollectionEntity::complete);
+    }
+
+    @Transactional
+    public void inMaintenance(PlayerRenewalCollectionEntity playerRenewalEntity) {
+        playerRenewalCollectionJpaRepository.findById(playerRenewalEntity.getId())
+                .ifPresent(PlayerRenewalCollectionEntity::inMaintenance);
+    }
+
+    @Transactional
+    public void failed(PlayerRenewalCollectionEntity playerRenewalEntity) {
+        playerRenewalCollectionJpaRepository.findById(playerRenewalEntity.getId())
+                .ifPresent(PlayerRenewalCollectionEntity::failed);
     }
 }

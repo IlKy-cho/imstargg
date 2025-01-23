@@ -62,22 +62,22 @@ public class PlayerRenewer {
             Optional<PlayerCollectionEntity> playerEntityOpt = playerRepository.find(tag);
             if (playerEntityOpt.isPresent()) {
                 renewPlayer(playerEntityOpt.get());
-                log.info("플레이어 갱신 완료. tag={}", tag);
+                log.debug("플레이어 갱신 완료. tag={}", tag);
                 return;
             }
             Optional<UnknownPlayerCollectionEntity> unknownPlayerEntityOpt = playerRepository.findUnknown(tag);
             if (unknownPlayerEntityOpt.isPresent()) {
                 renewNewPlayer(unknownPlayerEntityOpt.get());
-                log.info("신규 플레이어 갱신 완료. tag={}", tag);
+                log.debug("신규 플레이어 갱신 완료. tag={}", tag);
                 return;
             }
-
-            log.warn("플레이어가 존재하지 않습니다. tag={}", tag);
+            playerRenewalRepository.complete(playerRenewalEntity);
+            throw new IllegalStateException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
+        } catch(BrawlStarsClientException.InMaintenance e) {
+            playerRenewalRepository.inMaintenance(playerRenewalEntity);
         } catch(Exception e) {
             playerRenewalRepository.failed(playerRenewalEntity);
             throw e;
-        } finally {
-            playerRenewalRepository.complete(playerRenewalEntity);
         }
     }
 

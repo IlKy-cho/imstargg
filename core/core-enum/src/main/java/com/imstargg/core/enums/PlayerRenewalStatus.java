@@ -8,6 +8,7 @@ public enum PlayerRenewalStatus {
     PENDING,
     EXECUTING,
     COMPLETE,
+    IN_MAINTENANCE,
     FAILED
     ;
 
@@ -18,7 +19,7 @@ public enum PlayerRenewalStatus {
     }
 
     public boolean finished() {
-        return this == COMPLETE || this == FAILED;
+        return this == COMPLETE || this == FAILED || this == IN_MAINTENANCE;
     }
 
     public boolean renewing() {
