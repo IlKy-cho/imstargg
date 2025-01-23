@@ -21,7 +21,7 @@ class BrawlStarsClientCacheConfig {
                         .maximumSize(1000)
         );
         cacheManager.setCacheNames(List.of(
-                "brawlstars-client"
+                BrawlStarsClientCacheNames.BRAWLSTARS_CLIENT
         ));
         return cacheManager;
     }
