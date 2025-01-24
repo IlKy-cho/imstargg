@@ -1,80 +1,97 @@
 package com.imstargg.core.domain.statistics;
 
-import com.imstargg.core.config.CacheNames;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
+import com.imstargg.core.support.FutureUtils;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-@CacheConfig(cacheNames = CacheNames.STATISTICS)
+@Async
 public class BattleEventStatisticsReaderWithCache {
 
-    private final BattleEventResultStatisticsRepository battleEventResultStatisticsRepository;
-    private final BattleEventRankStatisticsRepository battleEventRankStatisticsRepository;
+    private final BattleEventStatisticsCountReaderWithAsync reader;
+    private final StatisticsCache cache;
 
     public BattleEventStatisticsReaderWithCache(
-            BattleEventResultStatisticsRepository battleEventResultStatisticsRepository,
-            BattleEventRankStatisticsRepository battleEventRankStatisticsRepository
+            BattleEventStatisticsCountReaderWithAsync reader,
+            StatisticsCache cache
     ) {
-        this.battleEventResultStatisticsRepository = battleEventResultStatisticsRepository;
-        this.battleEventRankStatisticsRepository = battleEventRankStatisticsRepository;
+        this.reader = reader;
+        this.cache = cache;
     }
 
-    @Cacheable(key = "'battle-event-brawler-result-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public BrawlerResultCounts getBattleEventBrawlerResultCounts(
-            BattleEventBrawlerResultCountParam param
+    public List<BrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
+            BattleEventBrawlerResultStatisticsParam params
     ) {
-        return new BrawlerResultCounts(
-                battleEventResultStatisticsRepository.findBrawlerResultCounts(
-                        param.eventId(),
-                        param.battleDate(),
-                        param.trophyRange(),
-                        param.soloRankTierRange(),
-                        param.duplicateBrawler()
-                )
-        );
+        return cache.find(params)
+                .orElseGet(() -> {
+                    List<BrawlerResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
+                            .map(reader::getBattleEventBrawlerResultCounts)
+                            .toList());
+
+                    BrawlerResultCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlerResultCounts::merge)
+                            .orElseGet(BrawlerResultCounts::empty);
+
+                    List<BrawlerResultStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(params, statistics);
+                    return statistics;
+                });
     }
 
-    @Cacheable(key = "'battle-event-brawlers-result-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()  + ':brawlersNum' + #param.brawlersNum() + ':duplicateBrawler' + #param.duplicateBrawler()")
-    public BrawlersResultCounts getBattleEventBrawlersResultCounts(
-            BattleEventBrawlersResultCountParam param
-    ) {
-        return new BrawlersResultCounts(
-                battleEventResultStatisticsRepository.findBrawlersResultCounts(
-                        param.eventId(),
-                        param.battleDate(),
-                        param.trophyRange(),
-                        param.soloRankTierRange(),
-                        param.brawlersNum(),
-                        param.duplicateBrawler()
-                )
-        );
+    public List<BrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
+            BattleEventBrawlersResultStatisticsParam param) {
+        return cache.find(param)
+                .orElseGet(() -> {
+                    List<BrawlersResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                            .map(reader::getBattleEventBrawlersResultCounts)
+                            .toList());
+
+                    BrawlersResultCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlersResultCounts::merge)
+                            .orElseGet(BrawlersResultCounts::empty);
+
+                    List<BrawlersResultStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(param, statistics);
+                    return statistics;
+                });
     }
 
-    @Cacheable(key = "'battle-event-brawler-rank-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange()")
-    public BrawlerRankCounts getBattleEventBrawlerRankCounts(
-            BattleEventBrawlerRankCountParam param
+    public List<BrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
+            BattleEventBrawlerRankStatisticsParam params
     ) {
-        return new BrawlerRankCounts(
-                battleEventRankStatisticsRepository.findBrawlerRankCounts(
-                        param.eventId(),
-                        param.battleDate(),
-                        param.trophyRange()
-                )
-        );
+        return cache.find(params)
+                .orElseGet(() -> {
+                    List<BrawlerRankCounts> countsList = FutureUtils.get(params.toCountParams().stream()
+                            .map(reader::getBattleEventBrawlerRankCounts)
+                            .toList());
+
+                    BrawlerRankCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlerRankCounts::merge)
+                            .orElseGet(BrawlerRankCounts::empty);
+
+                    List<BrawlerRankStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(params, statistics);
+                    return statistics;
+                });
     }
 
-    @Cacheable(key = "'battle-event-brawlers-rank-counts:v1:events:' + #param.eventId().value() + ':date' + #param.battleDate() + ':trophyRange' + #param.trophyRange() + ':brawlersNum' + #param.brawlersNum()")
-    public BrawlersRankCounts getBattleEventBrawlersRankCounts(
-            BattleEventBrawlersRankCountParam param
-    ) {
-        return new BrawlersRankCounts(
-                battleEventRankStatisticsRepository.findBrawlersRankCounts(
-                        param.eventId(),
-                        param.battleDate(),
-                        param.trophyRange(),
-                        param.brawlersNum()
-                )
-        );
+    public List<BrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
+            BattleEventBrawlersRankStatisticsParam params) {
+        return cache.find(params)
+                .orElseGet(() -> {
+                    List<BrawlersRankCounts> countsList = FutureUtils.get(params.toCountParams().stream()
+                            .map(reader::getBattleEventBrawlersRankCounts)
+                            .toList());
+
+                    BrawlersRankCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlersRankCounts::merge)
+                            .orElseGet(BrawlersRankCounts::empty);
+
+                    List<BrawlersRankStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(params, statistics);
+                    return statistics;
+                });
     }
 }
