@@ -1,7 +1,9 @@
 package com.imstargg.core.domain.brawlstars;
 
-import com.imstargg.core.domain.Slice;
+import com.imstargg.core.enums.Language;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BrawlStarsNewsService {
@@ -12,7 +14,7 @@ public class BrawlStarsNewsService {
         this.brawlStarsNewsReader = brawlStarsNewsReader;
     }
 
-    public Slice<BrawlStarsNews> getNews(BrawlStarsNewsPageParam pageParam) {
-        return brawlStarsNewsReader.read(pageParam);
+    public List<BrawlStarsNews> getNews(Language language) {
+        return brawlStarsNewsReader.read(language);
     }
 }

@@ -8,6 +8,7 @@ import static com.imstargg.core.error.CoreErrorLevel.WARN;
 public enum CoreErrorType {
 
     DEFAULT_ERROR(SERVER_ERROR, "서버에 문제가 발생했습니다.", ERROR),
+    EXTERNAL_ERROR(SERVER_ERROR, "외부 서버에 문제가 발생했습니다.", ERROR),
 
     PLAYER_NOT_FOUND(CoreErrorKind.NOT_FOUND, "플레이어를 찾을 수 없습니다.", INFO),
     PLAYER_RENEWAL_UNAVAILABLE(CoreErrorKind.FORBIDDEN, "현재 플레이어 갱신이 불가능 합니다. 잠시후에 다시 시도해주세요.", INFO),

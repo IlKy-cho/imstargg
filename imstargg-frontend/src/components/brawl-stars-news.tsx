@@ -1,41 +1,48 @@
-"use client";
-
-import type {BrawlStarsNews} from "@/model/brawlstars/BrawlStarsNews";
+import type {BrawlStarsNews as BrawlStarsNewsModel} from "@/model/brawlstars/BrawlStarsNews";
 import Link from "next/link";
 import dayjs from "dayjs";
-import {Skeleton} from "@/components/ui/skeleton";
 
-
-type Props = {
-  news: BrawlStarsNews | null;
+type NewsListProps = {
+  newsList: BrawlStarsNewsModel[];
 }
 
-const NewsContainer = ({ news } : Props) => {
+export function BrawlStarsNewsList({newsList}: Readonly<NewsListProps>) {
+
+
   return (
-    <div className="p-4 border rounded-lg cursor-pointer hover:bg-zinc-100">
-      <div className="flex items-center gap-2">
-        {news ?
-          <h2 className="text-lg font-semibold">{news.title}</h2>
-          : <Skeleton className="h-6 w-[300px] my-1"/>
-        }
-      </div>
-      <div className="text-sm text-zinc-600">
-        {news ?
-          dayjs(news.publishDate).format('YYYY.MM.DD')
-          : <Skeleton className="h-3 w-[80px]"/>
+    <div className="flex flex-col gap-4 max-w-2xl w-full my-5">
+      <Link href='https://supercell.com/en/games/brawlstars/ko/blog/'>
+        <h1 className="text-xl sm:text-2xl font-bold">브롤스타즈 뉴스</h1>
+      </Link>
+
+
+      <div className="flex flex-col gap-1">
+        {
+          newsList.map((news) => (
+            <BrawlStarsNews key={news.linkUrl} news={news}/>
+          ))
         }
       </div>
     </div>
   );
-};
+}
 
-export default function BrawlStarsNews({news}: Props) {
+type NewsProps = {
+  news: BrawlStarsNewsModel;
+}
+
+
+function BrawlStarsNews({news}: NewsProps) {
   return (
-    news ?
-      <Link href={news.linkUrl} target="_blank">
-        <NewsContainer news={news}/>
-      </Link>
-      :
-      <NewsContainer news={news}/>
+    <Link href={news.linkUrl} target="_blank">
+      <div className="p-3 sm:p-4 border rounded-lg hover:bg-zinc-100">
+        <div className="flex items-center justify-between gap-2">
+          <h2 className="text-base sm:text-lg font-semibold">{news.title}</h2>
+          <div className="text-xs sm:text-sm text-zinc-600">
+            {dayjs(news.publishDate).format('YYYY.MM.DD')}
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 }
