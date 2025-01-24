@@ -1,67 +1,97 @@
 package com.imstargg.core.domain.statistics;
 
-import com.imstargg.core.config.CacheNames;
-import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.cache.annotation.Cacheable;
+import com.imstargg.core.support.FutureUtils;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
-@CacheConfig(cacheNames = CacheNames.STATISTICS)
 public class BrawlerStatisticsReaderWithCache {
 
-    private final BrawlerResultStatisticsRepository brawlerResultStatisticsRepository;
+    private final BrawlerStatisticsCountReaderWithAsync reader;
+    private final StatisticsCache cache;
 
     public BrawlerStatisticsReaderWithCache(
-            BrawlerResultStatisticsRepository brawlerResultStatisticsRepository
+            BrawlerStatisticsCountReaderWithAsync reader,
+            StatisticsCache cache
     ) {
-        this.brawlerResultStatisticsRepository = brawlerResultStatisticsRepository;
+        this.reader = reader;
+        this.cache = cache;
     }
 
-    @Cacheable(key = "'brawler-result-counts:v1:date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
-    public BrawlerResultCounts getBrawlerResultCounts(BrawlerResultCountParam param) {
-        return new BrawlerResultCounts(
-                brawlerResultStatisticsRepository.findBrawlerResultCounts(
-                        param.date(),
-                        param.trophyRange(),
-                        param.soloRankTierRange()
-                )
-        );
+    public List<BrawlerResultStatistics> getBrawlerResultStatistics(
+            BrawlerResultStatisticsParam param
+    ) {
+        return cache.find(param)
+                .orElseGet(() -> {
+                    List<BrawlerResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                            .map(reader::getBrawlerResultCounts)
+                            .toList());
+
+                    BrawlerResultCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlerResultCounts::merge)
+                            .orElseGet(BrawlerResultCounts::empty);
+
+                    List<BrawlerResultStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(param, statistics);
+                    return statistics;
+                });
     }
 
-    @Cacheable(key = "'brawler-battle-event-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
-    public BattleEventResultCounts getBrawlerBattleEventResultCounts(BrawlerBattleEventResultCountParam param) {
-        return new BattleEventResultCounts(
-                brawlerResultStatisticsRepository.findBrawlerBattleEventResultCounts(
-                        param.brawlerId(),
-                        param.date(),
-                        param.trophyRange(),
-                        param.soloRankTierRange()
-                )
-        );
+    public List<BattleEventResultStatistics> getBrawlerBattleEventResultStatistics(
+            BrawlerBattleEventResultStatisticsParam param
+    ) {
+        return cache.find(param)
+                .orElseGet(() -> {
+                    List<BattleEventResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                            .map(reader::getBrawlerBattleEventResultCounts)
+                            .toList());
+
+                    BattleEventResultCounts mergedCounts = countsList.stream()
+                            .reduce(BattleEventResultCounts::merge)
+                            .orElseGet(BattleEventResultCounts::empty);
+
+                    List<BattleEventResultStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(param, statistics);
+                    return statistics;
+                });
     }
 
-    @Cacheable(key = "'brawler-brawlers-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange() + ':brawlersNum' + #param.brawlersNum()")
-    public BrawlersResultCounts getBrawlerBrawlersResultCounts(BrawlerBrawlersResultCountParam param) {
-        return new BrawlersResultCounts(
-                brawlerResultStatisticsRepository.findBrawlerBrawlersResultCounts(
-                        param.brawlerId(),
-                        param.date(),
-                        param.trophyRange(),
-                        param.soloRankTierRange(),
-                        param.brawlersNum()
-                )
-        );
+    public List<BrawlersResultStatistics> getBrawlerBrawlersResultStatistics(
+            BrawlerBrawlersResultStatisticsParam param
+    ) {
+        return cache.find(param)
+                .orElseGet(() -> {
+                    List<BrawlersResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                            .map(reader::getBrawlerBrawlersResultCounts)
+                            .toList());
+
+                    BrawlersResultCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlersResultCounts::merge)
+                            .orElseGet(BrawlersResultCounts::empty);
+
+                    List<BrawlersResultStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(param, statistics);
+                    return statistics;
+                });
     }
 
-    @Cacheable(key = "'brawler-enemy-result-counts:v1:brawlerId' + #param.brawlerId() + ':date' + #param.date() + ':trophyRange' + #param.trophyRange() + ':soloRankTierRange' + #param.soloRankTierRange()")
-    public BrawlerEnemyResultCounts getBrawlerEnemyResultCounts(BrawlerEnemyResultCountParam param) {
-        return new BrawlerEnemyResultCounts(
-                brawlerResultStatisticsRepository.findBrawlerEnemyResultCounts(
-                        param.brawlerId(),
-                        param.date(),
-                        param.trophyRange(),
-                        param.soloRankTierRange()
-                )
-        );
+    public List<BrawlerEnemyResultStatistics> getBrawlerEnemyResultStatistics(
+            BrawlerEnemyResultStatisticsParam param
+    ) {
+        return cache.find(param)
+                .orElseGet(() -> {
+                    List<BrawlerEnemyResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                            .map(reader::getBrawlerEnemyResultCounts)
+                            .toList());
+
+                    BrawlerEnemyResultCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlerEnemyResultCounts::merge)
+                            .orElseGet(BrawlerEnemyResultCounts::empty);
+
+                    List<BrawlerEnemyResultStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(param, statistics);
+                    return statistics;
+                });
     }
 }

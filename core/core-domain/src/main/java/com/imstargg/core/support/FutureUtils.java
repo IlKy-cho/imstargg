@@ -1,4 +1,4 @@
-package com.imstargg.core.domain.utils;
+package com.imstargg.core.support;
 
 import com.imstargg.core.error.CoreException;
 

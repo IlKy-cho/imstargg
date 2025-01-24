@@ -2,15 +2,13 @@ dependencies {
     api(project(":core:core-enum"))
     implementation(project(":core:core-event"))
     implementation(project(":storage:db-core"))
+    implementation(project(":storage:cache-core"))
     implementation(project(":support:aws-sqs"))
     implementation(project(":client:brawlstars-news-client"))
 
     implementation("org.springframework:spring-context")
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.boot:spring-boot-starter-logging")
-    implementation("org.springframework.boot:spring-boot-starter-cache")
-
-    implementation("com.github.ben-manes.caffeine:caffeine")
 
     testImplementation(testFixtures(project(":storage:db-core")))
 }
