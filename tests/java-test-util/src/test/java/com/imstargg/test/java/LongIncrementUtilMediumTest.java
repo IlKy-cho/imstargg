@@ -23,7 +23,7 @@ class LongIncrementUtilMediumTest {
         // when
         List<Future<Long>> futures = new ArrayList<>();
         for (int i = 0; i < 10_000; i++) {
-            futures.add(executorService.submit(LongIncrementUtil::next));
+            futures.add(executorService.submit(() -> LongIncrementUtil.next()));
         }
 
         // then
