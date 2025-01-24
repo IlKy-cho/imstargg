@@ -12,17 +12,20 @@ import {
 
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {DataTablePagination} from "@/components/ui/datatable/data-table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  paginated?: boolean;
+  pagination?: {
+    enabled?: boolean;
+    size?: number;
+  }
 }
 
 export function DataTable<TData, TValue>(
-  {columns, data, paginated}: DataTableProps<TData, TValue>
+  {columns, data, pagination}: DataTableProps<TData, TValue>
 ) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -35,8 +38,14 @@ export function DataTable<TData, TValue>(
     state: {
       sorting,
     },
-    ...(paginated && { getPaginationRowModel: getPaginationRowModel() }),
+    ...(pagination?.enabled && { getPaginationRowModel: getPaginationRowModel() }),
   });
+
+  useEffect(() => {
+    if (pagination?.enabled) {
+      table.setPageSize(pagination.size ?? 10);
+    }
+  }, [pagination?.enabled, pagination?.size, table]);
 
   return (
     <div className="flex flex-col gap-1">
@@ -85,7 +94,7 @@ export function DataTable<TData, TValue>(
         </Table>
       </div>
 
-      {paginated &&
+      {pagination?.enabled &&
         <DataTablePagination table={table}/>
       }
     </div>
