@@ -100,10 +100,9 @@ export async function fetchGetBrawler(id: number, options?: CacheOptions): Promi
   });
 }
 
-export async function fetchGetBrawlStarsNews(page: number, options?: CacheOptions): Promise<Response> {
+export async function fetchGetBrawlStarsNews(options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/brawlstars/news`);
   url.searchParams.append('language', 'KOREAN');
-  url.searchParams.append('page', page.toString());
   if (!options) {
     return await fetch(url);
   }

@@ -1,9 +1,13 @@
 import Image from "next/image";
-import BrawlStarsNewsList from "@/components/brawl-stars-news-list";
 import React from "react";
 import PlayerSearchForm from "@/components/player-search-form";
+import {getBrawlStarsNews} from "@/lib/api/brawlstars";
+import {BrawlStarsNewsList} from "@/components/brawl-stars-news";
 
-export default function Home() {
+export default async function Home() {
+
+  const newsList = await  getBrawlStarsNews();
+
   return (
     <div className="flex flex-col items-center justify-center my-4 p-2">
       <div className="mb-8">
@@ -18,7 +22,7 @@ export default function Home() {
       
       <PlayerSearchForm/>
 
-      <BrawlStarsNewsList />
+      <BrawlStarsNewsList newsList={newsList}/>
     </div>
   );
 }
