@@ -42,7 +42,7 @@ public class BattleRepository {
     public Slice<PlayerBattle> find(Player player, int page, Language language) {
         var battleEntitySlice = battleJpaRepository
                 .findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
-                        player.id().value(), PageRequest.of(page, PAGE_SIZE));
+                        player.id().value(), PageRequest.of(page - 1, PAGE_SIZE));
 
         Map<BrawlStarsId, BattleEvent> eventIdToEvent = findEventIdToEvent(
                 language, battleEntitySlice.getContent());
