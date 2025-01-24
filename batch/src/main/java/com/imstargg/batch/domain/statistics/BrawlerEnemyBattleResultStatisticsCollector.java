@@ -4,6 +4,7 @@ import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsCollectionEntity;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -11,12 +12,15 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public class BrawlerEnemyBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerEnemyBattleResultStatisticsCollectionEntity> {
 
+    private final Clock clock;
     private final ConcurrentMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache;
     private final ConcurrentSkipListSet<String> battleKeySet = new ConcurrentSkipListSet<>();
 
     public BrawlerEnemyBattleResultStatisticsCollector(
+            Clock clock,
             ConcurrentMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache
     ) {
+        this.clock = clock;
         this.cache = cache;
     }
 
@@ -28,10 +32,10 @@ public class BrawlerEnemyBattleResultStatisticsCollector
         BattleResult battleResult = BattleResult.map(battle.getResult());
         battle.playerCombinations().forEach(playerCombination -> {
             getBrawlerEnemyBattleResultStats(BrawlerEnemyBattleResultStatisticsKey
-                    .of(battle, playerCombination.myTeamPlayer(), playerCombination.enemyTeamPlayer())
+                    .of(clock, battle, playerCombination.myTeamPlayer(), playerCombination.enemyTeamPlayer())
             ).countUp(battleResult);
             getBrawlerEnemyBattleResultStats(BrawlerEnemyBattleResultStatisticsKey
-                    .of(battle, playerCombination.enemyTeamPlayer(), playerCombination.myTeamPlayer())
+                    .of(clock, battle, playerCombination.enemyTeamPlayer(), playerCombination.myTeamPlayer())
             ).countUp(battleResult.opposite());
         });
 

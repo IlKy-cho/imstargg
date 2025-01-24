@@ -4,6 +4,7 @@ import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,17 +12,21 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.imstargg.storage.db.core.statistics.QBrawlerBattleResultStatisticsCollectionEntity.brawlerBattleResultStatisticsCollectionEntity;
 
 public class BrawlerBattleResultStatisticsCollectorFactory
-        extends StatisticsCollectorFactory<BrawlerBattleResultStatisticsCollectionEntity> {
+        implements StatisticsCollectorFactory<BrawlerBattleResultStatisticsCollectionEntity> {
 
-    public BrawlerBattleResultStatisticsCollectorFactory(EntityManagerFactory emf) {
-        super(emf);
+    private final Clock clock;
+    private final EntityManagerFactory emf;
+
+    public BrawlerBattleResultStatisticsCollectorFactory(Clock clock, EntityManagerFactory emf) {
+        this.clock = clock;
+        this.emf = emf;
     }
 
     @Override
     public StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> create(
             long eventBrawlStarsId, LocalDate battleDate) {
         var cache = new ConcurrentHashMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity>();
-        List<BrawlerBattleResultStatisticsCollectionEntity> entities = JPAQueryFactoryUtils.getQueryFactory(getEntityManagerFactory())
+        List<BrawlerBattleResultStatisticsCollectionEntity> entities = JPAQueryFactoryUtils.getQueryFactory(emf)
                 .selectFrom(brawlerBattleResultStatisticsCollectionEntity)
                 .where(
                         brawlerBattleResultStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
@@ -30,6 +35,6 @@ public class BrawlerBattleResultStatisticsCollectorFactory
         entities.forEach(BrawlerBattleResultStatisticsCollectionEntity::init);
         entities.forEach(entity -> cache.put(BrawlerBattleResultStatisticsKey.of(entity), entity));
 
-        return new BrawlerBattleResultStatisticsCollector(cache);
+        return new BrawlerBattleResultStatisticsCollector(clock, cache);
     }
 } 

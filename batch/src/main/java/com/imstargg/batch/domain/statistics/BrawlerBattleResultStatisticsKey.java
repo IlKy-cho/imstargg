@@ -8,6 +8,7 @@ import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 import jakarta.annotation.Nullable;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -21,16 +22,17 @@ public record BrawlerBattleResultStatisticsKey(
 ) {
 
     public static BrawlerBattleResultStatisticsKey of(
+            Clock clock,
             BattleCollectionEntity battle,
-            BattleCollectionEntityTeamPlayer myPlayer
+            BattleCollectionEntityTeamPlayer player
     ) {
         BattleType battleType = BattleType.find(battle.getType());
         return new BrawlerBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
-                battle.getBattleTime().toLocalDate(),
-                myPlayer.getBrawler().getBrawlStarsId(),
-                TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies()),
-                SoloRankTierRange.of(battleType, myPlayer.getBrawler().getTrophies()),
+                battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
+                player.getBrawler().getBrawlStarsId(),
+                TrophyRange.of(battleType, player.getBrawler().getTrophies()),
+                SoloRankTierRange.of(battleType, player.getBrawler().getTrophies()),
                 battle.containsDuplicateBrawler()
         );
     }
