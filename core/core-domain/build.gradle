@@ -11,4 +11,5 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-logging")
 
     testImplementation(testFixtures(project(":storage:db-core")))
+    testFixturesImplementation(project(":tests:java-test-util"))
 }
