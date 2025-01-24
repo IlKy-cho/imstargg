@@ -1,4 +1,4 @@
-package com.imstargg.core.enums;
+package com.imstargg.storage.db.core.brawlstars;
 
 import java.util.function.Function;
 

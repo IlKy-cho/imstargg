@@ -2,7 +2,7 @@ package com.imstargg.admin.domain;
 
 import com.imstargg.admin.support.error.AdminErrorKind;
 import com.imstargg.admin.support.error.AdminException;
-import com.imstargg.core.enums.BrawlStarsImageType;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.MessageCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionJpaRepository;

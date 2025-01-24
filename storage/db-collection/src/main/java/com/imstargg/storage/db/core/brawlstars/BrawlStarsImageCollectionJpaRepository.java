@@ -1,6 +1,5 @@
 package com.imstargg.storage.db.core.brawlstars;
 
-import com.imstargg.core.enums.BrawlStarsImageType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

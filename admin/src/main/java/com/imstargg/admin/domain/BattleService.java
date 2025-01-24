@@ -1,8 +1,8 @@
 package com.imstargg.admin.domain;
 
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.BrawlStarsImageType;
-import com.imstargg.core.enums.MessageCodes;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
+import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityEvent;
 import com.imstargg.storage.db.core.BattleJpaRepository;

@@ -1,4 +1,4 @@
-package com.imstargg.core.enums;
+package com.imstargg.storage.db.core;
 
 import java.util.regex.Pattern;
 
