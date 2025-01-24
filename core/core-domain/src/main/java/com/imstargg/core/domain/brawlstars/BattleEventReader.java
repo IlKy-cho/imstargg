@@ -12,10 +12,10 @@ import java.util.List;
 @Component
 public class BattleEventReader {
 
-    private final BattleEventRepository battleEventRepository;
+    private final BattleEventRepositoryWithCache battleEventRepository;
 
     public BattleEventReader(
-            BattleEventRepository battleEventRepository
+            BattleEventRepositoryWithCache battleEventRepository
     ) {
         this.battleEventRepository = battleEventRepository;
     }

@@ -2,7 +2,7 @@ package com.imstargg.core.domain;
 
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.domain.brawlstars.BattleEventMap;
-import com.imstargg.core.domain.brawlstars.BattleEventRepository;
+import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
@@ -29,11 +29,11 @@ public class BattleRepository {
     private static final int PAGE_SIZE = 25;
 
     private final BattleJpaRepository battleJpaRepository;
-    private final BattleEventRepository battleEventRepository;
+    private final BattleEventRepositoryWithCache battleEventRepository;
 
     public BattleRepository(
             BattleJpaRepository battleJpaRepository,
-            BattleEventRepository battleEventRepository
+            BattleEventRepositoryWithCache battleEventRepository
     ) {
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventRepository = battleEventRepository;

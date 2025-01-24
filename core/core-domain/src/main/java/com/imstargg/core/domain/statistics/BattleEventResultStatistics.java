@@ -1,9 +1,9 @@
 package com.imstargg.core.domain.statistics;
 
-import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.brawlstars.BattleEvent;
 
 public record BattleEventResultStatistics(
-        BrawlStarsId eventId,
+        BattleEvent event,
         long totalBattleCount,
         double winRate,
         double starPlayerRate

@@ -103,7 +103,7 @@ public class StatisticsCache {
 
     private static String key(BattleEventBrawlerResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawler-result-stats", "v1")
-                .add("eventId", param.eventId())
+                .add("event", param.eventId())
                 .add("date", param.date())
                 .add("trophyRange", param.trophyRangeRange())
                 .add("soloRankTierRange", param.soloRankTierRangeRange())
@@ -124,7 +124,7 @@ public class StatisticsCache {
 
     private static String key(BattleEventBrawlersResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-result-stats", "v1")
-                .add("eventId", param.eventId())
+                .add("event", param.eventId())
                 .add("date", param.date())
                 .add("trophyRange", param.trophyRangeRange())
                 .add("soloRankTierRange", param.soloRankTierRangeRange())
@@ -146,7 +146,7 @@ public class StatisticsCache {
 
     private static String key(BattleEventBrawlerRankStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawler-rank-stats", "v1")
-                .add("eventId", param.eventId())
+                .add("event", param.eventId())
                 .add("date", param.date())
                 .add("trophyRange", param.trophyRangeRange())
                 .build();
@@ -165,7 +165,7 @@ public class StatisticsCache {
 
     private static String key(BattleEventBrawlersRankStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-rank-stats", "v1")
-                .add("eventId", param.eventId())
+                .add("event", param.eventId())
                 .add("date", param.date())
                 .add("trophyRange", param.trophyRangeRange())
                 .add("brawlersNum", param.brawlersNum())

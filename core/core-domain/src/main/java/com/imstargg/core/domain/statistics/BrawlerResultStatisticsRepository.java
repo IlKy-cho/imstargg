@@ -1,6 +1,9 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.brawlstars.BattleEvent;
+import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
+import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
@@ -19,6 +22,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class BrawlerResultStatisticsRepository {
@@ -28,14 +33,18 @@ public class BrawlerResultStatisticsRepository {
     private final BrawlerBattleResultStatisticsJpaRepository brawlerBattleResultStatisticsJpaRepository;
     private final BrawlersBattleResultStatisticsJpaRepository brawlersBattleResultStatisticsJpaRepository;
     private final BrawlerEnemyBattleResultStatisticsJpaRepository brawlerEnemyBattleResultStatisticsJpaRepository;
+    private final BattleEventRepositoryWithCache battleEventRepository;
 
     public BrawlerResultStatisticsRepository(
             BrawlerBattleResultStatisticsJpaRepository brawlerBattleResultStatisticsJpaRepository,
             BrawlersBattleResultStatisticsJpaRepository brawlersBattleResultStatisticsJpaRepository,
-            BrawlerEnemyBattleResultStatisticsJpaRepository brawlerEnemyBattleResultStatisticsJpaRepository) {
+            BrawlerEnemyBattleResultStatisticsJpaRepository brawlerEnemyBattleResultStatisticsJpaRepository,
+            BattleEventRepositoryWithCache battleEventRepository
+    ) {
         this.brawlerBattleResultStatisticsJpaRepository = brawlerBattleResultStatisticsJpaRepository;
         this.brawlersBattleResultStatisticsJpaRepository = brawlersBattleResultStatisticsJpaRepository;
         this.brawlerEnemyBattleResultStatisticsJpaRepository = brawlerEnemyBattleResultStatisticsJpaRepository;
+        this.battleEventRepository = battleEventRepository;
     }
 
     public List<BrawlerResultCount> findBrawlerResultCounts(
@@ -88,12 +97,20 @@ public class BrawlerResultStatisticsRepository {
             @Nullable TrophyRange trophyRange,
             @Nullable SoloRankTierRange soloRankTierRange
     ) {
-        return brawlerBattleResultStatisticsJpaRepository
+        List<BrawlerBattleResultStatisticsEntity> eventResultStatsEntities = brawlerBattleResultStatisticsJpaRepository
                 .findAllByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
                         date, trophyRange, soloRankTierRange, brawlerId.value()
-                ).stream()
+                );
+        Map<BrawlStarsId, BattleEvent> idToEvent = battleEventRepository.findAllEvents(
+                eventResultStatsEntities.stream()
+                        .map(statsEntity -> new BrawlStarsId(statsEntity.getEventBrawlStarsId()))
+                        .toList(), Language.KOREAN
+        ).stream().collect(Collectors.toMap(BattleEvent::id, Function.identity()));
+
+        return eventResultStatsEntities.stream()
+                .filter(statsEntity -> idToEvent.containsKey(new BrawlStarsId(statsEntity.getEventBrawlStarsId())))
                 .map(statsEntity -> new BattleEventResultCount(
-                        new BrawlStarsId(statsEntity.getEventBrawlStarsId()),
+                        idToEvent.get(new BrawlStarsId(statsEntity.getEventBrawlStarsId())),
                         new ResultCount(
                                 statsEntity.getVictoryCount(),
                                 statsEntity.getDefeatCount(),

@@ -1,21 +1,21 @@
 package com.imstargg.core.domain.statistics;
 
-import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.brawlstars.BattleEvent;
 
 public record BattleEventResultCount(
-        BrawlStarsId eventId,
+        BattleEvent event,
         ResultCount resultCount,
         StarPlayerCount starPlayerCount
 ) {
 
     public BattleEventResultCount merge(BattleEventResultCount other) {
-        if (!eventId.equals(other.eventId)) {
+        if (!event.id().equals(other.event.id())) {
             throw new IllegalArgumentException(
-                    "Event ID is not matched. " + eventId + " != " + other.eventId);
+                    "Event ID is not matched. " + event.id() + " != " + other.event.id());
         }
 
         return new BattleEventResultCount(
-                eventId,
+                event,
                 resultCount.merge(other.resultCount),
                 starPlayerCount.merge(other.starPlayerCount)
         );

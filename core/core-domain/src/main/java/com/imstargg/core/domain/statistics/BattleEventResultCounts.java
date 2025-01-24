@@ -22,14 +22,14 @@ public record BattleEventResultCounts(
 
     public BattleEventResultCounts merge(BattleEventResultCounts other) {
         var eventIdToCount = new HashMap<>(counts.stream().collect(
-                Collectors.toMap(BattleEventResultCount::eventId, Function.identity())
+                Collectors.toMap(BattleEventResultCount::event, Function.identity())
         ));
         other.counts.forEach(otherCount -> {
-            BattleEventResultCount count = eventIdToCount.get(otherCount.eventId());
+            BattleEventResultCount count = eventIdToCount.get(otherCount.event());
             if (count == null) {
-                eventIdToCount.put(otherCount.eventId(), otherCount);
+                eventIdToCount.put(otherCount.event(), otherCount);
             } else {
-                eventIdToCount.put(otherCount.eventId(), count.merge(otherCount));
+                eventIdToCount.put(otherCount.event(), count.merge(otherCount));
             }
         });
 
@@ -39,7 +39,7 @@ public record BattleEventResultCounts(
     public List<BattleEventResultStatistics> toStatistics() {
         return counts.stream()
                 .map(count -> new BattleEventResultStatistics(
-                        count.eventId(),
+                        count.event(),
                         count.resultCount().totalBattleCount(),
                         count.resultCount().winRate(),
                         count.starPlayerCount().starPlayerRate(count.resultCount())

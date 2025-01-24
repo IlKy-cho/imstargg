@@ -27,7 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
-public class BattleEventRepository {
+public class BattleEventRepositoryWithCache {
 
     private final Clock clock;
     private final BattleJpaRepository battleJpaRepository;
@@ -36,7 +36,7 @@ public class BattleEventRepository {
     private final MessageRepository messageRepository;
     private final BattleEventCache battleEventCache;
 
-    public BattleEventRepository(
+    public BattleEventRepositoryWithCache(
             Clock clock,
             BattleJpaRepository battleJpaRepository,
             BattleEventJpaRepository battleEventJpaRepository,
