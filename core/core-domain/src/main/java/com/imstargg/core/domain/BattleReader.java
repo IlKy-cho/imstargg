@@ -13,6 +13,6 @@ public class BattleReader {
     }
 
     public Slice<PlayerBattle> getList(Player player, int page, Language language) {
-        return battleRepository.find(player, page - 1, language);
+        return battleRepository.find(player, page, language);
     }
 }
