@@ -5,6 +5,7 @@ import com.imstargg.storage.db.core.statistics.BattleStatisticsCollectionEntityB
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsCollectionEntity;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentMap;
@@ -12,11 +13,14 @@ import java.util.concurrent.ConcurrentMap;
 public class BrawlersBattleRankStatisticsCollector
         implements StatisticsCollector<BrawlersBattleRankStatisticsCollectionEntity> {
 
+    private final Clock clock;
     private final ConcurrentMap<BrawlersBattleRankStatisticsKey, BrawlersBattleRankStatisticsCollectionEntity> cache;
 
     public BrawlersBattleRankStatisticsCollector(
+            Clock clock,
             ConcurrentMap<BrawlersBattleRankStatisticsKey, BrawlersBattleRankStatisticsCollectionEntity> cache
     ) {
+        this.clock = clock;
         this.cache = cache;
     }
 
@@ -29,7 +33,7 @@ public class BrawlersBattleRankStatisticsCollector
                 .stream()
                 .filter(myTeamCombination -> myTeamCombination.players().size() == 2)
                 .forEach(myTeamCombination ->
-                        BrawlersBattleRankStatisticsKey.of(battle, myTeamCombination.players()).forEach(key -> {
+                        BrawlersBattleRankStatisticsKey.of(clock, battle, myTeamCombination.players()).forEach(key -> {
                             var brawlersBattleResultStats = getBrawlersBattleResult(key);
                             brawlersBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
                         })

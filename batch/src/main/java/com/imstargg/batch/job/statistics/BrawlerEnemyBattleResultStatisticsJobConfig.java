@@ -104,7 +104,7 @@ public class BrawlerEnemyBattleResultStatisticsJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     StatisticsJobItemProcessor<BrawlerEnemyBattleResultStatisticsCollectionEntity> processor() {
-        var factory = new BrawlerEnemyBattleResultStatisticsCollectorFactory(emf);
+        var factory = new BrawlerEnemyBattleResultStatisticsCollectorFactory(clock, emf);
         return new StatisticsJobItemProcessor<>(
                 factory, battleCollectionJpaRepository, clock, dateJobParameter().getDate()
         );

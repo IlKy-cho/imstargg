@@ -7,6 +7,7 @@ import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsCollectionEntity;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -21,7 +22,7 @@ public record BrawlersBattleRankStatisticsKey(
 ) {
 
     public static List<BrawlersBattleRankStatisticsKey> of(
-            BattleCollectionEntity battle, List<BattleCollectionEntityTeamPlayer> players
+            Clock clock, BattleCollectionEntity battle, List<BattleCollectionEntityTeamPlayer> players
     ) {
         BattleType battleType = BattleType.find(battle.getType());
         List<Long> brawlerBrawlStarsIds = players.stream()
@@ -30,7 +31,7 @@ public record BrawlersBattleRankStatisticsKey(
         BrawlerIdHash brawlerIdHash = BrawlerIdHash.of(brawlerBrawlStarsIds);
         return players.stream().map(player -> new BrawlersBattleRankStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
-                battle.getBattleTime().toLocalDate(),
+                battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
                 player.getBrawler().getBrawlStarsId(),
                 brawlerIdHash.value(),
                 TrophyRange.of(battleType, player.getBrawler().getTrophies())

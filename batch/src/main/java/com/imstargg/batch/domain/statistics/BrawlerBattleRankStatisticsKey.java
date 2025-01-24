@@ -6,6 +6,7 @@ import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +19,7 @@ public record BrawlerBattleRankStatisticsKey(
 ) {
 
     public static BrawlerBattleRankStatisticsKey of(
+            Clock clock,
             BattleCollectionEntity battle
     ) {
         List<BattleCollectionEntityTeamPlayer> me = battle.findMe();
@@ -29,7 +31,7 @@ public record BrawlerBattleRankStatisticsKey(
         BattleType battleType = BattleType.find(battle.getType());
         return new BrawlerBattleRankStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
-                battle.getBattleTime().toLocalDate(),
+                battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
                 myPlayer.getBrawler().getBrawlStarsId(),
                 TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies())
         );

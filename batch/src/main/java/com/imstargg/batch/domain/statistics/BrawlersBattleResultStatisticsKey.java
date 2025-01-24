@@ -9,6 +9,7 @@ import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
 import jakarta.annotation.Nullable;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,7 @@ public record BrawlersBattleResultStatisticsKey(
 ) {
 
     public static List<BrawlersBattleResultStatisticsKey> of(
+            Clock clock,
             BattleCollectionEntity battle,
             List<BattleCollectionEntityTeamPlayer> players
     ) {
@@ -36,7 +38,7 @@ public record BrawlersBattleResultStatisticsKey(
         boolean battleContainsDuplicateBrawler = battle.containsDuplicateBrawler();
         return players.stream().map(player -> new BrawlersBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
-                battle.getBattleTime().toLocalDate(),
+                battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
                 player.getBrawler().getBrawlStarsId(),
                 brawlerIdHash.value(),
                 TrophyRange.of(battleType, player.getBrawler().getTrophies()),
