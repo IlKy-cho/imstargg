@@ -10,6 +10,8 @@ dependencies {
     implementation("org.springframework.retry:spring-retry")
     implementation("org.springframework.boot:spring-boot-starter-logging")
 
+    implementation("com.github.ben-manes.caffeine:caffeine")
+
     testImplementation(testFixtures(project(":storage:db-core")))
     testFixturesImplementation(project(":tests:java-test-util"))
 }
