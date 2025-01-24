@@ -1,6 +1,8 @@
+import {BattleEvent} from "@/model/BattleEvent";
+
 export interface BattleEventResultStatistics {
+    event: BattleEvent;
     totalBattleCount: number;
     winRate: number;
-    eventId: number;
     starPlayerRate: number;
 }

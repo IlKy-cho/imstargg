@@ -9,6 +9,19 @@ import {BrawlersResultStatistics} from "@/model/statistics/BrawlersResultStatist
 import {ApiError} from "@/model/response/error";
 import { BrawlerEnemyResultStatistics } from "@/model/statistics/BrawlerEnemyResultStatistics";
 import { BattleEventResultStatistics } from "@/model/statistics/BattleEventResultStatistics";
+import {BattleEventMode} from "@/model/enums/BattleEventMode";
+
+interface BattleEventResultStatisticsResponse {
+  event: {
+    id: number;
+    mode: BattleEventMode;
+    mapName: string | null;
+    mapImagePath: string | null;
+  };
+  totalBattleCount: number;
+  winRate: number;
+  starPlayerRate: number;
+}
 
 export async function getBattleEventBrawlerResultStatistics(
   eventId: number,
@@ -116,8 +129,22 @@ export async function getBrawlerBattleEventResultStatistics(
   );
 
   if (response.ok) {
-    const data = await response.json() as ListResponse<BattleEventResultStatistics>;
-    return data.content.sort((a, b) => b.winRate - a.winRate);
+    const data = await response.json() as ListResponse<BattleEventResultStatisticsResponse>;
+    return data.content
+      .sort((a, b) => b.winRate - a.winRate)
+      .map(stat => ({
+        event: {
+          id: stat.event.id,
+          mode: stat.event.mode,
+          map: {
+            name: stat.event.mapName,
+            imageUrl: stat.event.mapImagePath ? new URL(stat.event.mapImagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+          }
+        },
+        totalBattleCount: stat.totalBattleCount,
+        winRate: stat.winRate,
+        starPlayerRate: stat.starPlayerRate
+      }));
   }
 
   throw await ApiError.create(response);
