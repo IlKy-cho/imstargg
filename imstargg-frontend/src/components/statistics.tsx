@@ -5,6 +5,9 @@ import {BrawlersRankStatistics as BrawlersRankStatisticsModel} from "@/model/sta
 import {
   BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel
 } from "@/model/statistics/BrawlerEnemyResultStatistics";
+import {
+  BattleEventResultStatistics as BattleEventResultStatisticsModel
+} from "@/model/statistics/BattleEventResultStatistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
@@ -105,7 +108,7 @@ export function BrawlerRankStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} paginated={true}/>
+    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
   )
 }
 
@@ -156,7 +159,7 @@ export function BrawlersRankStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} paginated={true}/>
+    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
   )
 }
 
@@ -214,7 +217,7 @@ export function BrawlerResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} paginated={true}/>
+    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
   )
 }
 
@@ -256,6 +259,7 @@ export function BrawlersResultStatistics(
     },
     {
       accessorKey: "totalBattleCount",
+      enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
       cell: ({row}) =>
@@ -264,7 +268,7 @@ export function BrawlersResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} paginated={true}/>
+    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
   );
 }
 
@@ -361,6 +365,7 @@ export function BrawlerListStatistics(
     },
     {
       accessorKey: "totalBattleCount",
+      enableSorting: false,
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"표본수"}/>,
       cell: ({row}) =>
@@ -420,7 +425,48 @@ export function BrawlerEnemyResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} paginated={true}/>
+    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
+  )
+}
+
+type BattleEventResultStatisticsProps = {
+  statsList: BattleEventResultStatisticsModel[];
+}
+
+export function BattleEventResultStatistics(
+  {statsList}: Readonly<BattleEventResultStatisticsProps>
+) {
+  const columns: ColumnDef<BattleEventResultStatisticsModel>[] = [
+    {
+      accessorKey: "event",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"이벤트"}/>,
+      cell: ({row}) => {
+        return (
+          <TextCell value={row.original.event.map.name || "❓"}/>
+        );
+      },
+    },
+    {
+      accessorKey: "winRate",
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"승률"}/>,
+      cell: ({row}) =>
+        <TextCell value={toPercentage(row.original.winRate)}/>,
+    },
+    {
+      accessorKey: "totalBattleCount",
+      enableSorting: false,
+      header: ({column}) =>
+        <DataTableColumnHeader column={column} title={"표본수"}/>,
+      cell: ({row}) =>
+        <TextCell value={row.original.totalBattleCount.toLocaleString()}/>,
+    }
+  ];
+
+  return (
+    <DataTable columns={columns} data={statsList} pagination={{ enabled: true, size: 5 }} />
   )
 }
 
