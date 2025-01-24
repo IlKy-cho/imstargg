@@ -1,6 +1,6 @@
 package com.imstargg.admin.domain;
 
-import com.imstargg.core.enums.BrawlStarsImageType;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
 import com.imstargg.support.aws.s3.Image;

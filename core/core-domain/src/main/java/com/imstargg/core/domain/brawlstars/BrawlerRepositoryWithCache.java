@@ -3,7 +3,7 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
-import com.imstargg.core.enums.BrawlStarsImageType;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;

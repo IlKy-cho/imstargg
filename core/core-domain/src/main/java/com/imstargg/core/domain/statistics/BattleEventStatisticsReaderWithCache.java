@@ -1,13 +1,11 @@
 package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.support.FutureUtils;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-@Async
 public class BattleEventStatisticsReaderWithCache {
 
     private final BattleEventStatisticsCountReaderWithAsync reader;

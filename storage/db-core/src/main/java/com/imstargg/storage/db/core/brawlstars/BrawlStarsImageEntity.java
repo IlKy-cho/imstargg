@@ -1,6 +1,5 @@
 package com.imstargg.storage.db.core.brawlstars;
 
-import com.imstargg.core.enums.BrawlStarsImageType;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
