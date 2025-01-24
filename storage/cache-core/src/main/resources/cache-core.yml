@@ -1,0 +1,19 @@
+spring:
+  data:
+    redis:
+      connect-timeout: 1000ms
+      timeout: 1000ms
+      lettuce:
+        pool:
+          max-active: 5
+          max-idle: 5
+          min-idle: 1
+          enabled: true
+          max-wait: 1000ms
+          time-between-eviction-runs: 1000ms
+
+---
+spring:
+  config:
+    activate:
+      on-profile: live
