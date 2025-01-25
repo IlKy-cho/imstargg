@@ -1,11 +1,12 @@
 import {Brawler} from "@/model/Brawler";
 import React from "react";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
-import {BrawlerClassIcon, brawlerClassTitle} from "@/components/brawler-class";
-import {brawlerRarityTitle} from "@/components/brawler-rarity";
+import {BrawlerClassIcon} from "@/components/brawler-class";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { brawlerBackgroundColor } from "./brawler";
+import {brawlerRarityTitle} from "@/lib/brawler-rarity";
+import {brawlerClassTitle} from "@/lib/brawler-class";
 
 
 

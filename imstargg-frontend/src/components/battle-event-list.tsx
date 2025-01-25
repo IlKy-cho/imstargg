@@ -1,11 +1,10 @@
 import {BattleEvent as IBattleEvent} from "@/model/BattleEvent";
 import {BattleEventMode, BattleEventModeValues} from "@/model/enums/BattleEventMode";
-import {battleEventModeTitle} from "@/components/title";
 import Image from 'next/image';
-import {battleEventModeIconSrc} from "@/components/battle-mode";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import Link from "next/link";
 import {battleEventHref} from "@/config/site";
+import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
 
 function BattleEvent({battleEvent}: Readonly<{battleEvent: IBattleEvent}>) {
   return (

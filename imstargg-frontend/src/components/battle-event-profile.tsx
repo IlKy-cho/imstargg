@@ -1,8 +1,7 @@
 import Image from "next/image";
 import {BattleEvent} from "@/model/BattleEvent";
 import BattleEventMapImage from "@/components/battle-event-map-image";
-import {battleEventModeIconSrc} from "@/components/battle-mode";
-import {battleEventModeTitle} from "@/components/title";
+import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
 
 type Props = {
   battleEvent: BattleEvent;

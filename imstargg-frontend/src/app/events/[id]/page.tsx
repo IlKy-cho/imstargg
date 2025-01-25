@@ -28,8 +28,8 @@ import {
   StatisticsParams,
   StatisticsSearchParams
 } from "@/model/statistics/StatisticsParams";
-import {battleEventModeTitle} from "@/components/title";
 import {BattleEvent} from "@/model/BattleEvent";
+import {battleEventModeTitle} from "@/lib/battle-mode";
 
 type Props = {
   params: Promise<{

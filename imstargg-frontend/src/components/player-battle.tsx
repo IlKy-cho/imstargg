@@ -3,10 +3,8 @@
 import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {battleResultTitle, playerBattleModeTitle} from "./title";
 import {BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
-import {battleTypeIconSrc} from "@/components/icon";
 import Image from "next/image";
 import {Separator} from "@/components/ui/separator";
 import {BattlePlayer} from "@/model/BattlePlayer";
@@ -16,8 +14,6 @@ import {cn} from "@/lib/utils";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
-import {battleEventModeIconSrc, battleModeIconSrc} from "@/components/battle-mode";
-import {battleTypeTitle} from "@/components/battle-type";
 import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 import {PowerLevel} from "./brawler";
@@ -26,6 +22,9 @@ import {PlayerBattle as PlayerBattleModel} from "@/model/PlayerBattle";
 import {getBattles} from "@/lib/api/battle";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {LoadingButton} from "@/components/ui/expansion/loading-button";
+import {battleTypeIconSrc, battleTypeTitle} from "@/lib/battle-type";
+import {battleResultTitle} from "@/lib/battle-result";
+import {playerBattleIconSrc, playerBattleModeTitle} from "@/lib/player-battle";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -205,11 +204,6 @@ function BattleTypeIcon ({type}: { type: BattleType }) {
       height={24}
     />
   );
-}
-
-function playerBattleIconSrc (battle: PlayerBattleModel) {
-  const eventModeIcon = battle.event.mode ? battleEventModeIconSrc(battle.event.mode) : null;
-  return eventModeIcon || battleModeIconSrc(battle.mode);
 }
 
 function BattleModeIcon ({battle}: { battle: PlayerBattleModel }) {
