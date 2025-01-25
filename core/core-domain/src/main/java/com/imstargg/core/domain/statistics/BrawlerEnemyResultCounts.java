@@ -41,6 +41,7 @@ public record BrawlerEnemyResultCounts(
 
     public List<BrawlerEnemyResultStatistics> toStatistics() {
         long totalBattleCount = totalBattleCount();
+
         return counts.stream()
                 .map(count -> new BrawlerEnemyResultStatistics(
                         count.brawlerId(),

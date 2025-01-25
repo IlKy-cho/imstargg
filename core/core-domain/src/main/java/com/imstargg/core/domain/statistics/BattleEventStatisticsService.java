@@ -35,6 +35,16 @@ public class BattleEventStatisticsService {
                 .toList();
     }
 
+    // 브롤러 & 상대 브롤러 조합으로 나와서
+    public List<BrawlerEnemyResultStatistics> getBattleEventBrawlerEnemyResultStatistics(
+            BattleEventBrawlerEnemyResultStatisticsParam param
+    ) {
+        return battleEventStatisticsReader.getBattleEventBrawlerEnemyResultStatistics(param)
+                .stream()
+                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
+                .toList();
+    }
+
     public List<BrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
             BattleEventBrawlerRankStatisticsParam param
     ) {
