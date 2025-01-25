@@ -18,9 +18,11 @@ import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {BrawlerRole} from "@/model/enums/BrawlerRole";
 import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
 import {BrawlerClassIcon} from "./brawler-class";
-import {brawlerRarityTitle} from "./brawler-rarity";
 import {BrawlerLink} from "@/components/brawler-link";
 import {useMediaQuery} from "usehooks-ts";
+import {BattleEvent} from "@/model/BattleEvent";
+import BattleEventMapImage from "@/components/battle-event-map-image";
+import {brawlerRarityTitle} from "@/lib/brawler-rarity";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
@@ -49,6 +51,18 @@ function BrawlersCell({brawlers}: { brawlers: Array<Brawler | null> }) {
           />
         </BrawlerLink>
       ))}
+    </div>
+  )
+}
+
+function EventCell({event}: { event: BattleEvent }) {
+  return (
+    <div className="flex gap-1">
+      <BattleEventMapImage size="sm" battleEventMap={event.map} />
+      <div className="flex flex-col gap-1 justify-center">
+        <div className="text-xs sm:text-sm">{event.mode}</div>
+        <div className="text-xs">{event.map.name}</div>
+      </div>
     </div>
   )
 }
@@ -444,7 +458,7 @@ export function BattleEventResultStatistics(
         <DataTableColumnHeader column={column} title={"이벤트"}/>,
       cell: ({row}) => {
         return (
-          <TextCell value={row.original.event.map.name || "❓"}/>
+          <EventCell event={row.original.event}/>
         );
       },
     },
@@ -466,7 +480,7 @@ export function BattleEventResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{ enabled: true, size: 5 }} />
+    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
   )
 }
 

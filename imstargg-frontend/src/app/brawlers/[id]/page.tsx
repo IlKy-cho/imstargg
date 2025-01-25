@@ -1,15 +1,26 @@
 import {notFound} from "next/navigation";
 import {getBrawler, getBrawlers} from "@/lib/api/brawler";
 import {BrawlerProfile} from "@/components/brawler-profile";
-import {getBrawlerBrawlersResultStatistics, getBrawlerEnemyResultStatistics} from "@/lib/api/statistics";
+import {
+  getBrawlerBattleEventResultStatistics,
+  getBrawlerBrawlersResultStatistics,
+  getBrawlerEnemyResultStatistics
+} from "@/lib/api/statistics";
 import {BrawlerStatisticsOption} from "@/components/statistics-option";
 import {
   BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel
 } from "@/model/statistics/BrawlerEnemyResultStatistics";
 import {BrawlersResultStatistics as BrawlersResultStatisticsModel} from "@/model/statistics/BrawlersResultStatistics";
+import {
+  BattleEventResultStatistics as BattleEventResultStatisticsModel
+} from "@/model/statistics/BattleEventResultStatistics";
 import Image from "next/image";
 import kitSadPinSrc from "@/../public/icon/brawler/kit/kit_sad_pin.png";
-import {BrawlerEnemyResultStatistics, BrawlersResultStatistics} from "@/components/statistics";
+import {
+  BattleEventResultStatistics,
+  BrawlerEnemyResultStatistics,
+  BrawlersResultStatistics
+} from "@/components/statistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 import {Metadata} from "next";
@@ -47,7 +58,8 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
   const date = new Date();
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 
-  const [enemyResultStatistics, brawlersResultStatistics] = await Promise.all([
+  const [eventResultStats, enemyResultStats, brawlersResultStats] = await Promise.all([
+    getBrawlerBattleEventResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
     getBrawlerEnemyResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
     getBrawlerBrawlersResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())
   ]);
@@ -62,22 +74,26 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
       <div className="flex flex-col gap-2 p-1">
         <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
                                  soloRankTier={statsParams.soloRankTier}/>
-        <StatisticsContent brawlers={brawlers} enemyResultStatistics={enemyResultStatistics}
-                           brawlersResultStatistics={brawlersResultStatistics}/>
+        <StatisticsContent brawlers={brawlers}
+                           eventResultStats={eventResultStats}
+                           enemyResultStats={enemyResultStats}
+                           brawlersResultStats={brawlersResultStats}
+        />
       </div>
     </div>
   );
 }
 
 function StatisticsContent(
-  {brawlers, enemyResultStatistics, brawlersResultStatistics}
+  {brawlers, eventResultStats, enemyResultStats, brawlersResultStats}
   : Readonly<{
     brawlers: Brawler[],
-    enemyResultStatistics: BrawlerEnemyResultStatisticsModel[],
-    brawlersResultStatistics: BrawlersResultStatisticsModel[]
+    eventResultStats: BattleEventResultStatisticsModel[],
+    enemyResultStats: BrawlerEnemyResultStatisticsModel[],
+    brawlersResultStats: BrawlersResultStatisticsModel[]
   }>) {
 
-  if (!hasStatistics(enemyResultStatistics, brawlersResultStatistics)) {
+  if (!hasStatistics(enemyResultStats, brawlersResultStats)) {
     return <StatisticsAbsence/>;
   }
 
@@ -85,11 +101,22 @@ function StatisticsContent(
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
+          이벤트
+        </h2>
+        {
+          hasStatistics(eventResultStats) && (
+            <BattleEventResultStatistics statsList={eventResultStats}/>
+          )
+        }
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
           브롤러 조합
         </h2>
         {
-          hasStatistics(brawlersResultStatistics) && (
-            <BrawlersResultStatistics statsList={brawlersResultStatistics} brawlers={brawlers}/>
+          hasStatistics(brawlersResultStats) && (
+            <BrawlersResultStatistics statsList={brawlersResultStats} brawlers={brawlers}/>
           )
         }
       </div>
@@ -99,8 +126,8 @@ function StatisticsContent(
           상대 브롤러
         </h2>
         {
-          hasStatistics(enemyResultStatistics) && (
-            <BrawlerEnemyResultStatistics statsList={enemyResultStatistics} brawlers={brawlers}/>
+          hasStatistics(enemyResultStats) && (
+            <BrawlerEnemyResultStatistics statsList={enemyResultStats} brawlers={brawlers}/>
           )
         }
       </div>
@@ -109,7 +136,7 @@ function StatisticsContent(
   );
 }
 
-const hasStatistics = (...statisticsArrays: (BrawlerEnemyResultStatisticsModel[] | BrawlersResultStatisticsModel[])[]): boolean => {
+const hasStatistics = (...statisticsArrays: (BrawlerEnemyResultStatisticsModel[] | BrawlersResultStatisticsModel[] | BattleEventResultStatisticsModel[])[]): boolean => {
   return statisticsArrays.some(statistics => statistics.length > 0);
 }
 

@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import {BrawlStarsIconSrc} from "@/components/icon";
+import {BrawlStarsIconSrc} from "@/lib/icon";
 
 
 export default function Trophy({value}: Readonly<{ value: number }>) {

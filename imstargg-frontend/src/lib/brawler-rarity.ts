@@ -1,6 +1,6 @@
 import {BrawlerRarity, BrawlerRarityValue} from "@/model/enums/BrawlerRarity";
 
-export const brawlerRarityTitle = (rarity: BrawlerRarity) => {
+export function brawlerRarityTitle(rarity: BrawlerRarity) {
   switch(rarity) {
     case BrawlerRarityValue.STARTING_BRAWLER:
       return '기본 브롤러';
