@@ -29,6 +29,7 @@ import JellyfishingIcon from '@/../public/mode/해파리사냥.png';
 import HuntersIcon from '@/../public/mode/헌터즈.webp';
 import TrioShowdownIcon from '@/../public/mode/트리오 쇼다운.png';
 import {BattleMode, BattleModeValue} from "@/model/enums/BattleMode";
+import {StaticImageData} from "next/image";
 
 export function battleModeIconSrc(mode: BattleMode) {
   switch (mode) {
@@ -77,12 +78,8 @@ export function battleModeIconSrc(mode: BattleMode) {
   }
 }
 
-export function battleEventModeIconSrc (mode: BattleEventMode) {
+export function battleEventModeIconSrc (mode: BattleEventMode): StaticImageData | undefined {
   switch (mode) {
-    case BattleEventModeValue.NOT_FOUND:
-      return null;
-    case BattleEventModeValue.UNKNOWN:
-      return null;
     case BattleEventModeValue.SOLO_SHOWDOWN:
       return SoloShowdownIcon;
     case BattleEventModeValue.DUO_SHOWDOWN:
@@ -121,8 +118,6 @@ export function battleEventModeIconSrc (mode: BattleEventMode) {
       return KnockoutIcon;
     case BattleEventModeValue.KNOCKOUT_5V5:
       return KnockoutIcon;
-    case BattleEventModeValue.PAINT_BRAWL:
-      return null;
     case BattleEventModeValue.PAYLOAD:
       return PayloadIcon;
     case BattleEventModeValue.PRESENT_PLUNDER:
@@ -131,8 +126,6 @@ export function battleEventModeIconSrc (mode: BattleEventMode) {
       return RoboRumbleIcon;
     case BattleEventModeValue.TAKEDOWN:
       return TakedownIcon;
-    case BattleEventModeValue.TROPHY_ESCAPE:
-      return null;
     case BattleEventModeValue.VOLLEY_BRAWL:
       return VolleyBrawlIcon;
     case BattleEventModeValue.WIPEOUT:
@@ -149,14 +142,8 @@ export function battleEventModeIconSrc (mode: BattleEventMode) {
       return TrophyThievesIcon;
     case BattleEventModeValue.LAST_STAND:
       return LastStandIcon;
-    case BattleEventModeValue.SNOWTEL_THIEVES:
-      return null;
-    case BattleEventModeValue.PUMPKIN_PLUNDER:
-      return null;
     case BattleEventModeValue.GODZILLA_CITY_SMASH:
       return GodzillaCitySmashIcon;
-    case BattleEventModeValue.ZOMBIE_PLUNDER:
-      return null;
   }
 }
 

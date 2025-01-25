@@ -23,6 +23,10 @@ import {useMediaQuery} from "usehooks-ts";
 import {BattleEvent} from "@/model/BattleEvent";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import {brawlerRarityTitle} from "@/lib/brawler-rarity";
+import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
+import Image from "next/image";
+import Link from "next/link";
+import {battleEventHref} from "@/config/site";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
@@ -56,11 +60,23 @@ function BrawlersCell({brawlers}: { brawlers: Array<Brawler | null> }) {
 }
 
 function EventCell({event}: { event: BattleEvent }) {
+  const modeIconSrc = battleEventModeIconSrc(event.mode);
   return (
     <div className="flex gap-1">
-      <BattleEventMapImage size="sm" battleEventMap={event.map} />
+      <Link href={battleEventHref(event.id)}>
+        <BattleEventMapImage size="sm" battleEventMap={event.map}/>
+      </Link>
       <div className="flex flex-col gap-1 justify-center">
-        <div className="text-xs sm:text-sm">{event.mode}</div>
+        <div className="flex gap-1">
+          {modeIconSrc && (
+            <Image
+              src={modeIconSrc}
+              alt={`${event.mode} icon`}
+              height={18}
+            />)
+          }
+          <div className="text-xs sm:text-sm">{battleEventModeTitle(event.mode)}</div>
+        </div>
         <div className="text-xs">{event.map.name}</div>
       </div>
     </div>
@@ -122,7 +138,7 @@ export function BrawlerRankStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
+    <DataTable columns={columns} data={statsList} pagination={{enabled: true}}/>
   )
 }
 
@@ -173,7 +189,7 @@ export function BrawlersRankStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
+    <DataTable columns={columns} data={statsList} pagination={{enabled: true}}/>
   )
 }
 
@@ -231,7 +247,7 @@ export function BrawlerResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
+    <DataTable columns={columns} data={statsList} pagination={{enabled: true}}/>
   )
 }
 
@@ -282,7 +298,7 @@ export function BrawlersResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
+    <DataTable columns={columns} data={statsList} pagination={{enabled: true}}/>
   );
 }
 
@@ -439,7 +455,7 @@ export function BrawlerEnemyResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
+    <DataTable columns={columns} data={statsList} pagination={{enabled: true}}/>
   )
 }
 
@@ -480,7 +496,7 @@ export function BattleEventResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{ enabled: true }} />
+    <DataTable columns={columns} data={statsList} pagination={{enabled: true}}/>
   )
 }
 
