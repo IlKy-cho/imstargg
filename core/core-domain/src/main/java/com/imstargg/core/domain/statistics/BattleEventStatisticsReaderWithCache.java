@@ -92,4 +92,22 @@ public class BattleEventStatisticsReaderWithCache {
                     return statistics;
                 });
     }
+
+    public List<BrawlerEnemyResultStatistics> getBattleEventBrawlerEnemyResultStatistics(
+            BattleEventBrawlerEnemyResultStatisticsParam param) {
+        return cache.find(param)
+                .orElseGet(() -> {
+                    List<BrawlerEnemyResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                            .map(reader::getBattleEventBrawlerEnemyResultCounts)
+                            .toList());
+
+                    BrawlerEnemyResultCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlerEnemyResultCounts::merge)
+                            .orElseGet(BrawlerEnemyResultCounts::empty);
+
+                    List<BrawlerEnemyResultStatistics> statistics = mergedCounts.toStatistics();
+                    cache.set(param, statistics);
+                    return statistics;
+                });
+    }
 }

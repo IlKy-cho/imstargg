@@ -1,6 +1,7 @@
 package com.imstargg.core.api.controller.v1;
 
 import com.imstargg.core.api.controller.response.ListResponse;
+import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerEnemyResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerRankStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersRankStatisticsRequest;
@@ -62,6 +63,20 @@ public class StatisticsController {
                                 request.toParam(new BrawlStarsId(eventId)))
                         .stream()
                         .map(BrawlersResultStatisticsResponse::of)
+                        .toList()
+        );
+    }
+
+    @GetMapping("/api/v1/statistics/events/{eventId}/result/brawler-enemy")
+    public ListResponse<BrawlerEnemyResultStatisticsResponse> getBattleEventResultBrawlerEnemyStatistics(
+            @PathVariable long eventId,
+            @ModelAttribute @Validated BattleEventBrawlerEnemyResultStatisticsRequest request
+    ) {
+        return new ListResponse<>(
+                battleEventStatisticsService.getBattleEventBrawlerEnemyResultStatistics(
+                                request.toParam(new BrawlStarsId(eventId)))
+                        .stream()
+                        .map(BrawlerEnemyResultStatisticsResponse::of)
                         .toList()
         );
     }

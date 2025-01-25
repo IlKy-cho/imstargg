@@ -182,4 +182,24 @@ public class StatisticsCache {
     public void set(BattleEventBrawlersRankStatisticsParam param, List<BrawlersRankStatistics> statistics) {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
+
+    private static String key(BattleEventBrawlerEnemyResultStatisticsParam param) {
+        return new CacheKeyBuilder("battle-event-brawler-enemy-result-stats", "v1")
+                .add("event", param.eventId())
+                .add("date", param.date())
+                .add("trophyRange", param.trophyRangeRange())
+                .add("soloRankTierRange", param.soloRankTierRangeRange())
+                .build();
+    }
+
+    public Optional<List<BrawlerEnemyResultStatistics>> find(BattleEventBrawlerEnemyResultStatisticsParam param) {
+        return Optional.ofNullable(
+                redisTemplate.opsForValue().get(key(param))
+        ).map(value -> objectMapper.read(value, new TypeReference<>() {
+        }));
+    }
+
+    public void set(BattleEventBrawlerEnemyResultStatisticsParam param, List<BrawlerEnemyResultStatistics> statistics) {
+        redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
+    }
 }

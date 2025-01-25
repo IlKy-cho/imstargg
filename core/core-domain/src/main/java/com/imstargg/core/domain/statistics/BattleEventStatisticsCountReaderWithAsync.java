@@ -82,4 +82,19 @@ public class BattleEventStatisticsCountReaderWithAsync {
                 )
         );
     }
+
+    public Future<BrawlerEnemyResultCounts> getBattleEventBrawlerEnemyResultCounts(
+            BattleEventBrawlerEnemyResultCountParam param) {
+        return CompletableFuture.completedFuture(
+                new BrawlerEnemyResultCounts(
+                        battleEventResultStatisticsRepository.findBrawlerEnemyResultCounts(
+                                param.eventId(),
+                                param.battleDate(),
+                                param.trophyRange(),
+                                param.soloRankTierRange(),
+                                param.duplicateBrawler()
+                        )
+                )
+        );
+    }
 }
