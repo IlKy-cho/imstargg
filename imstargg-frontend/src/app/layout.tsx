@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import React from "react";
 import SiteHeader from "@/components/site-header";
-import Footer from "@/components/footer";
+import SiteFooter from "@/components/site-footer";
 import {meta} from "@/config/site";
 import {GoogleAnalytics} from "@/lib/third-parties";
 
@@ -47,7 +47,7 @@ export default function RootLayout({
         </main>
 
       </div>
-      <Footer/>
+      <SiteFooter/>
     </div>
     </body>
     </html>
