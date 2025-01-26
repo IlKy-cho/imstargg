@@ -3,7 +3,7 @@ package com.imstargg.core.domain.statistics;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsJpaRepository;
-import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
+import com.imstargg.storage.db.core.statistics.IdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleRankStatisticsJpaRepository;
 import org.springframework.data.domain.PageRequest;
@@ -49,7 +49,7 @@ public class BattleEventRankStatisticsRepository {
     public List<BrawlersRankCount> findBrawlersRankCounts(
             BrawlStarsId eventId, LocalDate battleDate, TrophyRange trophyRange, int brawlersNum
     ) {
-        Map<BrawlerIdHash, RankCounter> brawlersCounters = new HashMap<>();
+        Map<IdHash, RankCounter> brawlersCounters = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
 
@@ -63,7 +63,7 @@ public class BattleEventRankStatisticsRepository {
 
             brawlersBattleRankStatsSlice.forEach(stats -> {
                 RankCounter brawlersCounter = brawlersCounters.computeIfAbsent(
-                        new BrawlerIdHash(stats.getBrawlers().getIdHash()),
+                        new IdHash(stats.getBrawlers().getIdHash()),
                         k -> new RankCounter()
                 );
                 brawlersCounter.add(stats.getRankToCounts());

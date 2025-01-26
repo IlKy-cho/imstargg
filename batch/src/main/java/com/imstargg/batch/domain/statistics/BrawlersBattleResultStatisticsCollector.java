@@ -2,8 +2,7 @@ package com.imstargg.batch.domain.statistics;
 
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.statistics.BattleStatisticsCollectionEntityBrawlers;
-import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
+import com.imstargg.storage.db.core.statistics.BattleStatisticsEntityBrawlers;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
 
 import java.time.Clock;
@@ -59,21 +58,15 @@ public class BrawlersBattleResultStatisticsCollector
     }
 
     private BrawlersBattleResultStatisticsCollectionEntity getBrawlersBattleResult(BrawlersBattleResultStatisticsKey key) {
-        return cache.computeIfAbsent(key, k -> {
-            BrawlerIdHash brawlerIdHash = new BrawlerIdHash(k.brawlerBrawlStarsIdHash());
-            return new BrawlersBattleResultStatisticsCollectionEntity(
-                    k.eventBrawlStarsId(),
-                    k.battleDate(),
-                    k.soloRankTierRange(),
-                    k.trophyRange(),
-                    k.duplicateBrawler(),
-                    k.brawlerBrawlStarsId(),
-                    new BattleStatisticsCollectionEntityBrawlers(
-                            brawlerIdHash.num(),
-                            brawlerIdHash.value()
-                    )
-            );
-        });
+        return cache.computeIfAbsent(key, k -> new BrawlersBattleResultStatisticsCollectionEntity(
+                k.eventBrawlStarsId(),
+                k.battleDate(),
+                k.trophyRange(),
+                k.soloRankTierRange(),
+                k.duplicateBrawler(),
+                k.brawlerBrawlStarsId(),
+                new BattleStatisticsEntityBrawlers(k.brawlerBrawlStarsIdHash())
+        ));
     }
 
 }

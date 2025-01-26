@@ -14,8 +14,8 @@ import java.util.Objects;
 public record BrawlerBattleRankStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
-        long brawlerBrawlStarsId,
-        TrophyRange trophyRange
+        TrophyRange trophyRange,
+        long brawlerBrawlStarsId
 ) {
 
     public static BrawlerBattleRankStatisticsKey of(
@@ -32,8 +32,8 @@ public record BrawlerBattleRankStatisticsKey(
         return new BrawlerBattleRankStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
-                myPlayer.getBrawler().getBrawlStarsId(),
-                TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies())
+                TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies()),
+                myPlayer.getBrawler().getBrawlStarsId()
         );
     }
 
@@ -43,8 +43,8 @@ public record BrawlerBattleRankStatisticsKey(
         return new BrawlerBattleRankStatisticsKey(
                 entity.getEventBrawlStarsId(),
                 entity.getBattleDate(),
-                entity.getBrawlerBrawlStarsId(),
-                entity.getTrophyRange()
+                entity.getTrophyRange(),
+                entity.getBrawlerBrawlStarsId()
         );
     }
 }

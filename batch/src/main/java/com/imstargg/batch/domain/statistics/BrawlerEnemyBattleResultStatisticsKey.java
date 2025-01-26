@@ -17,9 +17,9 @@ public record BrawlerEnemyBattleResultStatisticsKey(
         LocalDate battleDate,
         @Nullable TrophyRange trophyRange,
         @Nullable SoloRankTierRange soloRankTierRange,
+        boolean duplicateBrawler,
         long brawlerBrawlStarsId,
-        long enemyBrawlerBrawlStarsId,
-        boolean duplicateBrawler
+        long enemyBrawlerBrawlStarsId
 ) {
 
     public static BrawlerEnemyBattleResultStatisticsKey of(
@@ -34,9 +34,9 @@ public record BrawlerEnemyBattleResultStatisticsKey(
                 battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
                 TrophyRange.of(battleType, myPlayer.getBrawler().getTrophies()),
                 SoloRankTierRange.of(battleType, myPlayer.getBrawler().getTrophies()),
+                battle.containsDuplicateBrawler(),
                 myPlayer.getBrawler().getBrawlStarsId(),
-                enemyPlayer.getBrawler().getBrawlStarsId(),
-                battle.containsDuplicateBrawler()
+                enemyPlayer.getBrawler().getBrawlStarsId()
         );
     }
 
@@ -46,9 +46,9 @@ public record BrawlerEnemyBattleResultStatisticsKey(
                 entity.getBattleDate(),
                 entity.getTrophyRange(),
                 entity.getSoloRankTierRange(),
+                entity.isDuplicateBrawler(),
                 entity.getBrawlerBrawlStarsId(),
-                entity.getEnemyBrawlerBrawlStarsId(),
-                entity.isDuplicateBrawler()
+                entity.getEnemyBrawlerBrawlStarsId()
         );
     }
 }

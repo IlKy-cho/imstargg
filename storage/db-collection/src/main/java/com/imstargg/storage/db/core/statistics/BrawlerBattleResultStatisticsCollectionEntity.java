@@ -33,12 +33,12 @@ public class BrawlerBattleResultStatisticsCollectionEntity extends BrawlerBattle
     public BrawlerBattleResultStatisticsCollectionEntity(
             long battleEventId,
             LocalDate battleDate,
-            @Nullable SoloRankTierRange soloRankTierRange,
             @Nullable TrophyRange trophyRange,
+            @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler,
             long brawlerBrawlStarsId
     ) {
-        super(battleEventId, battleDate, soloRankTierRange, trophyRange, duplicateBrawler);
+        super(battleEventId, battleDate, trophyRange, soloRankTierRange, duplicateBrawler);
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.starPlayerCount = 0;
     }
