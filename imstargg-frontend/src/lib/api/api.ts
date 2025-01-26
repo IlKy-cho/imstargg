@@ -1,353 +1,76 @@
-import {TrophyRange} from "@/model/enums/TrophyRange";
-import {SoloRankTierRange} from "@/model/enums/SoloRankTierRange";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-interface CacheOptions {
+export interface CacheOptions {
   revalidate?: number | false;
 }
 
-export async function fetchSearchPlayer(query: string, options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/player/search`);
-  url.searchParams.append('query', query);
-  if (!options) {
-    return await fetch(url);
+export interface ListResponse<T> {
+  content: T[];
+}
+
+export interface SliceResponse<T> {
+  content: T[];
+  hasNext: boolean;
+}
+
+export const ApiErrorTypeValue = {
+  PLAYER_NOT_FOUND : 'PLAYER_NOT_FOUND',
+  PLAYER_ALREADY_RENEWED : 'PLAYER_ALREADY_RENEWED',
+  PLAYER_RENEW_UNAVAILABLE : 'PLAYER_RENEW_UNAVAILABLE',
+  BRAWLSTARS_IN_MAINTENANCE: 'BRAWLSTARS_IN_MAINTENANCE',
+} as const;
+
+export type ApiErrorType = typeof ApiErrorTypeValue[keyof typeof ApiErrorTypeValue];
+
+export interface ErrorResponse {
+  type: ApiErrorType;
+  message: string;
+}
+
+export interface ProblemDetail {
+  type: URL;
+  title: string | null;
+  status: number;
+  detail: string | null;
+  instance: URL | null;
+  properties: Map<string, object> | null;
+}
+
+export class ApiError extends Error {
+  private constructor(
+    public readonly response: Response,
+    public readonly error?: ErrorResponse,
+    public readonly problemDetail?: ProblemDetail,
+    message = `Failed to fetch from ${response.url}. status: ${response.status}`
+  ) {
+    super(message);
   }
 
-  return await fetch(url, {
-    next: {
-      tags: ['player', 'search', query],
-      revalidate: options.revalidate,
+  private static isApiErrorType(type: unknown): type is ApiErrorType {
+    return typeof type === 'string' && (type as ApiErrorType) in ApiErrorTypeValue;
+  }
+
+  static async create(response: Response): Promise<ApiError> {
+    try {
+      const json = await response.json();
+
+      if (json && ApiError.isApiErrorType(json.type)) {
+        return new ApiError(response, json as ErrorResponse);
+      } else {
+        const { type, title, status, detail, instance, ...remainingProperties } = json;
+        const problemDetail = {
+          type: new URL(type),
+          title,
+          status,
+          detail,
+          instance: instance ? new URL(instance) : null,
+          properties: remainingProperties
+        };
+        return new ApiError(response, undefined, problemDetail);
+      }
+    } catch (e) {
+      console.log('Failed to parse error response:', e);
+      return new ApiError(response);
     }
-  });
-}
-
-export async function fetchGetRenewalStatus(tag: string): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renewal-status`);
-  return await fetch(url);
-}
-
-export async function fetchRenewPlayer(tag: string): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renew`);
-
-  return await fetch(url, {
-    method: 'POST',
-  });
-}
-
-export async function fetchRenewNewPlayer(tag: string): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renew-new`);
-
-  return await fetch(url, {
-    method: 'POST',
-  });
-}
-
-export async function fetchGetPlayer(tag: string, options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/players/${tag}`);
-  if (!options) {
-    return await fetch(url);
   }
-
-  return await fetch(url, {
-    next: {
-      tags: ['players', tag],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBattles(tag: string, page: number = 1, options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/battles`);
-  url.searchParams.append('page', page.toString());
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['players', tag, 'battles', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBrawlers(options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/brawlstars/brawlers`);
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['brawlers'],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBrawler(id: number, options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/brawlstars/brawlers/${id}`);
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['brawlers', id.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBrawlStarsNews(options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/brawlstars/news`);
-  url.searchParams.append('language', 'KOREAN');
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['brawlstars', 'news', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBattleEvents(date: Date, options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/brawlstars/events`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['brawlstars', 'events', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBattleEvent(id: number, options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/brawlstars/events/${id}`);
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['brawlstars', 'events', id.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBattleEventBrawlerResultStatistics(
-  eventId: number,
-  date: Date,
-  duplicateBrawler: boolean,
-  trophyRange?: TrophyRange | null,
-  soloRankTierRange?: SoloRankTierRange | null,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawler`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  url.searchParams.append('duplicateBrawler', duplicateBrawler.toString());
-  if (trophyRange) {
-    url.searchParams.append('trophyRange', trophyRange);
-  }
-  if (soloRankTierRange) {
-    url.searchParams.append('soloRankTierRange', soloRankTierRange);
-  }
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'events', eventId.toString(), 'result', 'brawler', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBattleEventBrawlersResultStatistics(
-  eventId: number,
-  date: Date,
-  duplicateBrawler: boolean,
-  trophyRange?: TrophyRange | null,
-  soloRankTierRange?: SoloRankTierRange | null,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawlers`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  url.searchParams.append('duplicateBrawler', duplicateBrawler.toString());
-  if (trophyRange) {
-    url.searchParams.append('trophyRange', trophyRange);
-  }
-  if (soloRankTierRange) {
-    url.searchParams.append('soloRankTierRange', soloRankTierRange);
-  }
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'events', eventId.toString(), 'result', 'brawlers', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBattleEventBrawlerRankStatistics(
-  eventId: number,
-  date: Date,
-  trophyRange: TrophyRange,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank/brawler`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  url.searchParams.append('trophyRange', trophyRange);
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'events', eventId.toString(), 'rank', 'brawler', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBattleEventBrawlersRankStatistics(
-  eventId: number,
-  date: Date,
-  trophyRange: TrophyRange,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank/brawlers`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  url.searchParams.append('trophyRange', trophyRange);
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'events', eventId.toString(), 'rank', 'brawlers', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBrawlerResultStatistics(
-  date: Date,
-  trophyRange?: TrophyRange | null,
-  soloRankTierRange?: SoloRankTierRange | null,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/brawler-result`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  if (trophyRange) {
-    url.searchParams.append('trophyRange', trophyRange);
-  }
-  if (soloRankTierRange) {
-    url.searchParams.append('soloRankTierRange', soloRankTierRange);
-  }
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'brawler-result', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBrawlerBattleEventResultStatistics(
-  brawlerId: number,
-  date: Date,
-  trophyRange?: TrophyRange | null,
-  soloRankTierRange?: SoloRankTierRange | null,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  if (trophyRange) {
-    url.searchParams.append('trophyRange', trophyRange);
-  }
-  if (soloRankTierRange) {
-    url.searchParams.append('soloRankTierRange', soloRankTierRange);
-  }
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'brawlers', brawlerId.toString(), 'result', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-export async function fetchGetBrawlerBrawlersResultStatistics(
-  brawlerId: number,
-  date: Date,
-  trophyRange?: TrophyRange | null,
-  soloRankTierRange?: SoloRankTierRange | null,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/brawlers-result`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  if (trophyRange) {
-    url.searchParams.append('trophyRange', trophyRange);
-  }
-  if (soloRankTierRange) {
-    url.searchParams.append('soloRankTierRange', soloRankTierRange);
-  }
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'brawlers', brawlerId.toString(), 'brawlers-result', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
-}
-
-
-export async function fetchGetBrawlerEnemyResultStatistics(
-  brawlerId: number,
-  date: Date,
-  trophyRange?: TrophyRange | null,
-  soloRankTierRange?: SoloRankTierRange | null,
-  options?: CacheOptions
-): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/enemy-result`);
-  url.searchParams.append('date', date.toISOString().split('T')[0]);
-  if (trophyRange) {
-    url.searchParams.append('trophyRange', trophyRange);
-  }
-  if (soloRankTierRange) {
-    url.searchParams.append('soloRankTierRange', soloRankTierRange);
-  }
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['statistics', 'brawlers', brawlerId.toString(), 'enemy-result', url.searchParams.toString()],
-      revalidate: options.revalidate
-    }
-  });
 }

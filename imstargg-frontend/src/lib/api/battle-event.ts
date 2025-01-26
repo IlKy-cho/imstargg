@@ -1,8 +1,21 @@
-import {fetchGetBattleEvent, fetchGetBattleEvents} from "@/lib/api/api";
+import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import {BattleEvent} from "@/model/BattleEvent";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
-import {ListResponse} from "@/model/response/ListResponse";
-import {ApiError} from "@/model/response/error";
+
+export async function fetchGetBattleEvents(date: Date, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/events`);
+  url.searchParams.append('date', date.toISOString().split('T')[0]);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlstars', 'events', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
 
 interface BattleEventResponse {
   id: number;
@@ -31,6 +44,21 @@ export async function getBattleEvents(): Promise<BattleEvent[]> {
   }
 
   throw await ApiError.create(response);
+}
+
+
+export async function fetchGetBattleEvent(id: number, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/events/${id}`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlstars', 'events', id.toString()],
+      revalidate: options.revalidate
+    }
+  });
 }
 
 export async function getBattleEvent(id: number): Promise<BattleEvent | null> {
