@@ -120,6 +120,55 @@ export async function getBattleEventBrawlersResultStatistics(
   throw await ApiError.create(response);
 }
 
+export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
+  eventId: number,
+  date: Date,
+  duplicateBrawler: boolean,
+  trophyRange?: TrophyRange,
+  soloRankTierRange?: SoloRankTierRange,
+  options?: CacheOptions
+) {
+  const url = new URL(`${BASE_URL}/api/v1/statistics/events/{eventId}/result/brawler-enemy`);
+  url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('duplicateBrawler', duplicateBrawler.toString());
+  if (trophyRange) {
+    url.searchParams.append('trophyRange', trophyRange);
+  }
+  if (soloRankTierRange) {
+    url.searchParams.append('soloRankTierRange', soloRankTierRange);
+  }
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['statistics', 'events', eventId.toString(), 'result', 'brawler-enemy', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
+
+export async function getBattleEventResultBrawlerEnemyStatistics(
+  eventId: number,
+  date: Date,
+  duplicateBrawler: boolean,
+  trophyRange?: TrophyRange,
+  soloRankTierRange?: SoloRankTierRange
+) {
+  const response = await fetchGetBattleEventResultBrawlerEnemyStatistics(
+    eventId, date, duplicateBrawler, trophyRange, soloRankTierRange,
+    {revalidate: 60 * 60}
+  );
+
+  if (response.ok) {
+    const data = await response.json() as ListResponse<BrawlerEnemyResultStatistics>;
+    return data.content.sort((a, b) => b.winRate - a.winRate);
+  }
+
+  throw await ApiError.create(response);
+}
+
 
 export async function fetchGetBattleEventBrawlerRankStatistics(
   eventId: number,
