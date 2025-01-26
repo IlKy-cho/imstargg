@@ -2,6 +2,7 @@ package com.imstargg.batch.domain.statistics;
 
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 
 import java.time.Clock;
@@ -31,15 +32,22 @@ public class BrawlerBattleResultStatisticsCollector
         }
         BattleResult battleResult = BattleResult.map(battle.getResult());
         battle.playerCombinations().forEach(playerCombination -> {
-            getBrawlerBattleResultStats(BrawlerBattleResultStatisticsKey
-                    .of(clock, battle, playerCombination.myTeamPlayer())
-            ).countUp(battleResult);
-            getBrawlerBattleResultStats(BrawlerBattleResultStatisticsKey
-                    .of(clock, battle, playerCombination.enemyTeamPlayer())
-            ).countUp(battleResult.opposite());
+            doCollect(battle, playerCombination.myTeamPlayer(), battleResult);
+            doCollect(battle, playerCombination.enemyTeamPlayer(), battleResult);
         });
 
         return true;
+    }
+
+    private void doCollect(
+            BattleCollectionEntity battle, BattleCollectionEntityTeamPlayer player, BattleResult battleResult
+    ) {
+        BrawlerBattleResultStatisticsKey key = BrawlerBattleResultStatisticsKey.of(clock, battle, player);
+        BrawlerBattleResultStatisticsCollectionEntity stats = getBrawlerBattleResultStats(key);
+        stats.countUp(battleResult);
+        if (battle.isStarPlayer(player)) {
+            stats.starPlayer();
+        }
     }
 
     @Override
