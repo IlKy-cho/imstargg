@@ -1,4 +1,3 @@
-import {Separator} from "@/components/ui/separator";
 import Image from "next/image";
 import {meta} from "@/config/site";
 import Link from "next/link";
@@ -22,7 +21,7 @@ export default function SiteFooter() {
         </div>
         <div className="text-zinc-600 text-xs">
           <p>ImStarGG 입니다. 열심히 만들어보겠습니다.</p>
-          <p>이메일: imstargg2024@gmail.com</p>
+          <p>이메일: {meta.email}</p>
         </div>
       </div>
     </footer>

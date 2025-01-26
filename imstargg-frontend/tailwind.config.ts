@@ -19,7 +19,8 @@ export default {
         sm: 'calc(var(--radius) - 4px)'
       },
       backgroundImage: {
-        'brawl-stars-lobby': "url('/image/lobby/brawl_stars_lobby.jpg')",
+        'brawl-stars-lobby': "url('/image/brawl_stars_lobby.jpg')",
+        'loading-screen': "url('/image/loading_2018_original.png')",
       }
     }
   },

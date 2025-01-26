@@ -3,7 +3,8 @@ import ImStarGgLogo from "@/../public/logo.png"
 
 export const meta = {
   name: "ImStarGG",
-  logo: ImStarGgLogo
+  logo: ImStarGgLogo,
+  email: "imstargg2024@gmail.com",
 } as const;
 
 export const metadataTitle = (title: string) => `${title} | ${meta.name}`;
