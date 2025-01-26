@@ -3,6 +3,7 @@ package com.imstargg.core.domain.statistics;
 import com.imstargg.core.domain.BrawlStarsId;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,8 @@ public record BrawlerEnemyResultCounts(
     }
 
     public List<BrawlerEnemyResultStatistics> toStatistics() {
-        long totalBattleCount = totalBattleCount();
+        Map<BrawlStarsId, List<BrawlerEnemyResultCount>> brawlerIdToCounts = counts.stream()
+                .collect(Collectors.groupingBy(BrawlerEnemyResultCount::brawlerId));
 
         return counts.stream()
                 .map(count -> new BrawlerEnemyResultStatistics(
@@ -48,7 +50,13 @@ public record BrawlerEnemyResultCounts(
                         count.enemyBrawlerId(),
                         count.resultCount().totalBattleCount(),
                         count.resultCount().winRate(),
-                        count.resultCount().pickRate(totalBattleCount)
+                        count.resultCount().pickRate(
+                                brawlerIdToCounts.get(count.brawlerId())
+                                        .stream()
+                                        .map(BrawlerEnemyResultCount::resultCount)
+                                        .mapToLong(ResultCount::totalBattleCount)
+                                        .sum()
+                        )
                 )).toList();
     }
 }
