@@ -1,7 +1,5 @@
 import {Brawler} from "@/model/Brawler";
-import {fetchGetBrawler, fetchGetBrawlers} from "@/lib/api/api";
-import {ListResponse} from "@/model/response/ListResponse";
-import {ApiError} from "@/model/response/error";
+import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import { BrawlerRole } from "@/model/enums/BrawlerRole";
 import { BrawlerRarity } from "@/model/enums/BrawlerRarity";
 import { Gadget } from "@/model/Gadget";
@@ -19,6 +17,20 @@ interface BrawlerResponse {
   imagePath: string | null;
 }
 
+export async function fetchGetBrawlers(options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/brawlers`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlers'],
+      revalidate: options.revalidate
+    }
+  });
+}
+
 export async function getBrawlers() : Promise<Brawler[]> {
   const response = await fetchGetBrawlers({revalidate: 60 * 60});
 
@@ -32,6 +44,20 @@ export async function getBrawlers() : Promise<Brawler[]> {
   }
 
   throw await ApiError.create(response);
+}
+
+export async function fetchGetBrawler(id: number, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/brawlers/${id}`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlers', id.toString()],
+      revalidate: options.revalidate
+    }
+  });
 }
 
 export async function getBrawler(id: number) : Promise<Brawler | null> {

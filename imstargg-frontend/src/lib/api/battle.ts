@@ -2,11 +2,24 @@ import {PlayerBattle} from "@/model/PlayerBattle";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {BattleResult} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
-import {fetchGetBattles} from "@/lib/api/api";
 import {SoloRankTier} from "@/model/enums/SoloRankTier";
-import {SliceResponse} from "@/model/response/SliceResponse";
 import {BattleMode} from "@/model/enums/BattleMode";
-import {ApiError} from "@/model/response/error";
+import {ApiError, BASE_URL, CacheOptions, SliceResponse} from "@/lib/api/api";
+
+export async function fetchGetBattles(tag: string, page: number = 1, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/battles`);
+  url.searchParams.append('page', page.toString());
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['players', tag, 'battles', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
 
 
 interface PlayerBattleResponse {

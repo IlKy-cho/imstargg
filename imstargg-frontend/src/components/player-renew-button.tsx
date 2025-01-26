@@ -6,8 +6,8 @@ import {Player} from "@/model/Player";
 import {getPlayerRenewalStatus, renewPlayer} from "@/lib/api/player";
 import {toast} from "sonner";
 import {useInterval} from "usehooks-ts";
-import {ApiError, ApiErrorTypeValue} from "@/model/response/error";
 import {useRouter} from 'next/navigation';
+import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
 
 export default function PlayerRenewButton({player}: Readonly<{ player: Player }>) {
   const [renewalEnabled, setRenewalEnabled] = useState(false);

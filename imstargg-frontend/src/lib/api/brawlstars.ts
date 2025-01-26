@@ -1,7 +1,20 @@
 import {BrawlStarsNews} from "@/model/brawlstars/BrawlStarsNews";
-import {fetchGetBrawlStarsNews} from "@/lib/api/api";
-import {ApiError} from "@/model/response/error";
-import {ListResponse} from "@/model/response/ListResponse";
+import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
+
+export async function fetchGetBrawlStarsNews(options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/news`);
+  url.searchParams.append('language', 'KOREAN');
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['brawlstars', 'news', url.searchParams.toString()],
+      revalidate: options.revalidate
+    }
+  });
+}
 
 export async function getBrawlStarsNews(): Promise<BrawlStarsNews[]> {
   const response = await fetchGetBrawlStarsNews({revalidate: 60 * 60});
