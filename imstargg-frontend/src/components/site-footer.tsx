@@ -1,6 +1,7 @@
 import Image from "next/image";
 import {meta} from "@/config/site";
 import Link from "next/link";
+import {policyItems} from "@/config/docs";
 
 export default function SiteFooter() {
   return (
@@ -18,6 +19,10 @@ export default function SiteFooter() {
           <Menu title="ImStarGG" elements={[
             {title: "About", href: "/about"},
           ]}/>
+          <Menu title="Resources" elements={[
+            {title: policyItems.agreement.label, href: policyItems.agreement.href},
+          ]}
+          />
         </div>
         <div className="text-zinc-600 text-xs">
           <p>ImStarGG 입니다. 열심히 만들어보겠습니다.</p>
@@ -35,11 +40,11 @@ function Menu({title, elements}: Readonly<{ title: string, elements: MenuElement
         {title}
       </div>
       {elements.map((element) => (
-          <Link href={element.href}>
-            <div className="text-sm text-zinc-500">
-              {element.title}
-            </div>
-          </Link>
+        <Link key={element.title} href={element.href}>
+          <div className="text-sm text-zinc-500">
+            {element.title}
+          </div>
+        </Link>
       ))}
     </div>
   );

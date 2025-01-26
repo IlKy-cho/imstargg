@@ -1,13 +1,6 @@
 import Image from 'next/image';
 import {SoloRankTier as SoloRankTierType, SoloRankTierValue} from "@/model/enums/SoloRankTier";
 import {cn} from "@/lib/utils";
-import BronzeIconSrc from '@/../public/rank/icon_ranked_bronze.png';
-import SilverIconSrc from '@/../public/rank/icon_ranked_silver.png';
-import GoldIconSrc from '@/../public/rank/icon_ranked_gold.png';
-import DiamondIconSrc from '@/../public/rank/icon_ranked_diamond.png';
-import MythicIconSrc from '@/../public/rank/icon_ranked_mythic.png';
-import LegendaryIconSrc from '@/../public/rank/icon_ranked_legendary.png';
-import MastersIconSrc from '@/../public/rank/icon_ranked_masters.png';
 import {soloRankTierIconSrc} from "@/lib/solo-rank-tier";
 
 const soloRankTierTextColor = (tier: SoloRankTierType) => {
