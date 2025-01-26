@@ -1,6 +1,5 @@
-package com.imstargg.batch.job;
+package com.imstargg.batch.job.statistics;
 
-import com.imstargg.batch.job.support.DateIncrementer;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -10,19 +9,14 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.time.Clock;
-import java.time.LocalDate;
-
 @Configuration
-public class DailyJobConfig {
+public class StatisticsJobConfig {
 
-    private static final String JOB_NAME = "dailyJob";
+    private static final String JOB_NAME = "statisticsJob";
 
-    private final Clock clock;
     private final JobRepository jobRepository;
 
-    public DailyJobConfig(Clock clock, JobRepository jobRepository) {
-        this.clock = clock;
+    public StatisticsJobConfig(JobRepository jobRepository) {
         this.jobRepository = jobRepository;
     }
 
@@ -30,22 +24,11 @@ public class DailyJobConfig {
     public Job job() {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
-                .incrementer(new DateIncrementer(LocalDate.now(clock).minusDays(1)))
-                .start(dormantReturnedPlayerJobStep(null))
-                .next(brawlerBattleRankStatisticsJobStep(null))
+                .start(brawlerBattleRankStatisticsJobStep(null))
                 .next(brawlersBattleRankStatisticsJobStep(null))
                 .next(brawlerBattleResultStatisticsJobStep(null))
                 .next(brawlerEnemyBattleResultStatisticsJobStep(null))
                 .next(brawlersBattleResultStatisticsJobStep(null))
-                .build();
-    }
-
-    @Bean(JOB_NAME + "DormantReturnedPlayerJobStep")
-    @JobScope
-    public Step dormantReturnedPlayerJobStep(Job dormantReturnedPlayerJob) {
-        StepBuilder stepBuilder = new StepBuilder("dormantReturnedPlayerJobStep", jobRepository);
-        return stepBuilder
-                .job(dormantReturnedPlayerJob)
                 .build();
     }
 
