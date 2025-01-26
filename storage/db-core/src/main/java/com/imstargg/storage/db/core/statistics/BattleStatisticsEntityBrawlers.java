@@ -17,8 +17,13 @@ public class BattleStatisticsEntityBrawlers {
     protected BattleStatisticsEntityBrawlers() {
     }
 
+    public BattleStatisticsEntityBrawlers(IdHash idHash) {
+        this.num = idHash.num();
+        this.idHash = idHash.value();
+    }
+
     public List<Long> getBrawlerBrawlStarsIds() {
-        return new BrawlerIdHash(idHash).ids();
+        return new IdHash(idHash).ids();
     }
 
     public int getNum() {

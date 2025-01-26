@@ -42,8 +42,8 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
     protected BrawlerBattleResultStatisticsBaseCollectionEntity(
             long battleEventId,
             LocalDate battleDate,
-            @Nullable SoloRankTierRange soloRankTierRange,
             @Nullable TrophyRange trophyRange,
+            @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler
     ) {
         super(battleEventId, battleDate);

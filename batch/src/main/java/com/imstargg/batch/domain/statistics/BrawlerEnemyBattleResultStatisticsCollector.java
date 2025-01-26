@@ -52,8 +52,8 @@ public class BrawlerEnemyBattleResultStatisticsCollector
         return cache.computeIfAbsent(key, k -> new BrawlerEnemyBattleResultStatisticsCollectionEntity(
                 k.eventBrawlStarsId(),
                 k.battleDate(),
-                k.soloRankTierRange(),
                 k.trophyRange(),
+                k.soloRankTierRange(),
                 k.duplicateBrawler(),
                 k.brawlerBrawlStarsId(),
                 k.enemyBrawlerBrawlStarsId()

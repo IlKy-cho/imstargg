@@ -15,10 +15,10 @@ import java.util.Objects;
 public record BrawlerBattleResultStatisticsKey(
         long eventBrawlStarsId,
         LocalDate battleDate,
-        long brawlerBrawlStarsId,
         @Nullable TrophyRange trophyRange,
         @Nullable SoloRankTierRange soloRankTierRange,
-        boolean duplicateBrawler
+        boolean duplicateBrawler,
+        long brawlerBrawlStarsId
 ) {
 
     public static BrawlerBattleResultStatisticsKey of(
@@ -30,10 +30,10 @@ public record BrawlerBattleResultStatisticsKey(
         return new BrawlerBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
                 battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
-                player.getBrawler().getBrawlStarsId(),
                 TrophyRange.of(battleType, player.getBrawler().getTrophies()),
                 SoloRankTierRange.of(battleType, player.getBrawler().getTrophies()),
-                battle.containsDuplicateBrawler()
+                battle.containsDuplicateBrawler(),
+                player.getBrawler().getBrawlStarsId()
         );
     }
 
@@ -43,10 +43,10 @@ public record BrawlerBattleResultStatisticsKey(
         return new BrawlerBattleResultStatisticsKey(
                 entity.getEventBrawlStarsId(),
                 entity.getBattleDate(),
-                entity.getBrawlerBrawlStarsId(),
                 entity.getTrophyRange(),
                 entity.getSoloRankTierRange(),
-                entity.isDuplicateBrawler()
+                entity.isDuplicateBrawler(),
+                entity.getBrawlerBrawlStarsId()
         );
     }
 }

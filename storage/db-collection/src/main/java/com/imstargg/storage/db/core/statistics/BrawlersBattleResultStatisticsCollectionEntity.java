@@ -26,7 +26,7 @@ public class BrawlersBattleResultStatisticsCollectionEntity extends BrawlerBattl
     private long brawlerBrawlStarsId;
 
     @Embedded
-    private BattleStatisticsCollectionEntityBrawlers brawlers;
+    private BattleStatisticsEntityBrawlers brawlers;
 
     protected BrawlersBattleResultStatisticsCollectionEntity() {
     }
@@ -34,14 +34,14 @@ public class BrawlersBattleResultStatisticsCollectionEntity extends BrawlerBattl
     public BrawlersBattleResultStatisticsCollectionEntity(
             long battleEventId,
             LocalDate battleDate,
-            @Nullable SoloRankTierRange soloRankTierRange,
             @Nullable TrophyRange trophyRange,
+            @Nullable SoloRankTierRange soloRankTierRange,
             boolean duplicateBrawler,
             long brawlerBrawlStarsId,
-            BattleStatisticsCollectionEntityBrawlers brawlers
+            BattleStatisticsEntityBrawlers brawlers
     ) {
 
-        super(battleEventId, battleDate, soloRankTierRange, trophyRange, duplicateBrawler);
+        super(battleEventId, battleDate, trophyRange, soloRankTierRange, duplicateBrawler);
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.brawlers = brawlers;
     }
@@ -54,7 +54,7 @@ public class BrawlersBattleResultStatisticsCollectionEntity extends BrawlerBattl
         return brawlerBrawlStarsId;
     }
 
-    public BattleStatisticsCollectionEntityBrawlers getBrawlers() {
+    public BattleStatisticsEntityBrawlers getBrawlers() {
         return brawlers;
     }
 }

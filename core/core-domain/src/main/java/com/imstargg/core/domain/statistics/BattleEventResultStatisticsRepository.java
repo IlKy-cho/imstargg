@@ -5,7 +5,7 @@ import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsJpaRepository;
-import com.imstargg.storage.db.core.statistics.BrawlerIdHash;
+import com.imstargg.storage.db.core.statistics.IdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsJpaRepository;
 import jakarta.annotation.Nullable;
@@ -63,7 +63,7 @@ public class BattleEventResultStatisticsRepository {
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             int brawlNum, boolean duplicateBrawler
     ) {
-        Map<BrawlerIdHash, ResultCounter> brawlersCounters = new HashMap<>();
+        Map<IdHash, ResultCounter> brawlersCounters = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
 
@@ -79,7 +79,7 @@ public class BattleEventResultStatisticsRepository {
 
             brawlersBattleResultStatsSlice.forEach(stats -> {
                 ResultCounter brawlersCounter = brawlersCounters.computeIfAbsent(
-                        new BrawlerIdHash(stats.getBrawlers().getIdHash()),
+                        new IdHash(stats.getBrawlers().getIdHash()),
                         k -> new ResultCounter()
                 );
                 brawlersCounter.addVictory(stats.getVictoryCount());

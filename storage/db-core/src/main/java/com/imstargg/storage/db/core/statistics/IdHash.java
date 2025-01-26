@@ -7,16 +7,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public record BrawlerIdHash(
+public record IdHash(
         byte[] value
 ) {
 
-    public static BrawlerIdHash of(List<Long> brawlerIds) {
+    public static IdHash of(List<Long> brawlerIds) {
         ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES * brawlerIds.size());
         brawlerIds.stream()
                 .sorted()
                 .forEach(buffer::putLong);
-        return new BrawlerIdHash(buffer.array());
+        return new IdHash(buffer.array());
     }
 
     public int num() {
@@ -35,7 +35,7 @@ public record BrawlerIdHash(
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        BrawlerIdHash that = (BrawlerIdHash) o;
+        IdHash that = (IdHash) o;
         return Objects.deepEquals(value, that.value);
     }
 
@@ -46,7 +46,7 @@ public record BrawlerIdHash(
 
     @Override
     public String toString() {
-        return "BrawlerIdHash{" +
+        return "IdHash{" +
                 "value=" + Arrays.toString(value) +
                 '}';
     }
