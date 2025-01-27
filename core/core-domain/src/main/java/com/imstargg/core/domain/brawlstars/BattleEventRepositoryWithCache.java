@@ -86,7 +86,7 @@ public class BattleEventRepositoryWithCache {
                 .map(MessageCodes.BATTLE_MAP_NAME::code)
                 .toList();
         Map<String, MessageCollection> codeToMessage = messageRepository.getCollectionList(nameMessageCodes).stream()
-                .collect(Collectors.toMap(MessageCollection::getCode, Function.identity()));
+                .collect(Collectors.toMap(MessageCollection::code, Function.identity()));
         Map<String, BrawlStarsImageEntity> codeToImage = brawlStarsImageJpaRepository.findAllByCodeIn(
                         eventBrawlStarsIdsNotInCache.stream()
                                 .map(BrawlStarsImageType.BATTLE_MAP::code)
