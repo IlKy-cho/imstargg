@@ -8,21 +8,18 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class MessageCollection {
-
-    private final String code;
-
-    private final Map<Language, Message> messages;
+public record MessageCollection(
+        String code,
+        Map<Language, Message> messages
+) {
 
     public MessageCollection(String code, List<Message> messages) {
-        this.code = code;
-        this.messages = messages.stream().collect(Collectors.toMap(
-                Message::language, Function.identity()
-        ));
-    }
-
-    public String getCode() {
-        return code;
+        this(
+                code,
+                messages.stream().collect(Collectors.toMap(
+                        Message::language, Function.identity()
+                ))
+        );
     }
 
     public Optional<Message> find(Language language) {

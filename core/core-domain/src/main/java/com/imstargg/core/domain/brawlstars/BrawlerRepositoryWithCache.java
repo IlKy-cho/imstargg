@@ -134,7 +134,7 @@ public class BrawlerRepositoryWithCache {
         ).flatMap(List::stream).toList();
 
         messageRepository.getCollectionList(codes).forEach(messageCollection ->
-                codeToMessageCollectionCache.put(messageCollection.getCode(), messageCollection)
+                codeToMessageCollectionCache.put(messageCollection.code(), messageCollection)
         );
     }
 
