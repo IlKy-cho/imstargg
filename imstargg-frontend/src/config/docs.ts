@@ -1,4 +1,5 @@
 export const navItems = [
+  { label: '플레이어', href: '/players' },
   { label: '브롤러', href: '/brawlers' },
   { label: '이벤트', href: '/events' },
 ];
