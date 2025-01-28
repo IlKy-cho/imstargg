@@ -427,3 +427,45 @@ create table star_power
 alter table star_power
     add constraint uk_brawlstarsid unique (brawlstars_id);
 
+-- ranking
+create table player_ranking
+(
+    player_ranking_id         bigint       not null auto_increment,
+    country                   varchar(25)  not null,
+    player_brawlstars_tag     varchar(45)  not null,
+    player_name               varchar(105) not null,
+    player_name_color         varchar(45),
+    player_icon_brawlstars_id bigint       not null,
+    player_club_name          varchar(105),
+    trophies                  int          not null,
+    rank_value                int          not null,
+    created_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                   boolean      not null default false,
+    primary key (player_ranking_id)
+) engine = innodb;
+
+alter table player_ranking
+    add constraint uk_player_ranking__country_rank unique (country, rank_value);
+
+
+create table brawler_ranking
+(
+    brawler_ranking_id         bigint       not null auto_increment,
+    country                   varchar(25)  not null,
+    brawler_brawlstars_id     bigint       not null,
+    player_brawlstars_tag     varchar(45)  not null,
+    player_name               varchar(105) not null,
+    player_name_color         varchar(45),
+    player_icon_brawlstars_id bigint       not null,
+    player_club_name          varchar(105),
+    trophies                  int          not null,
+    rank_value                int          not null,
+    created_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                   boolean      not null default false,
+    primary key (brawler_ranking_id)
+) engine = innodb;
+
+alter table brawler_ranking
+    add constraint uk_brawler_ranking__country_brawler_rank unique (country, brawler_brawlstars_id, rank_value);
