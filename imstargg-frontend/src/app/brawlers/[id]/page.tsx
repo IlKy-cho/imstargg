@@ -25,7 +25,7 @@ import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 import {Metadata} from "next";
 import {getBrawlerRanking} from "@/lib/api/ranking";
-import {Country, CountryValue} from "@/model/enums/Country";
+import {Country} from "@/model/enums/Country";
 import {Ranking} from "@/components/ranking";
 import {countryOrDefault} from "@/lib/country";
 
