@@ -19,8 +19,10 @@ export default async function Home() {
           priority
         />
       </div>
-      
-      <PlayerSearchForm/>
+
+      <div className="w-full max-w-xl m-1">
+        <PlayerSearchForm/>
+      </div>
 
       <BrawlStarsNewsList newsList={newsList}/>
     </div>
