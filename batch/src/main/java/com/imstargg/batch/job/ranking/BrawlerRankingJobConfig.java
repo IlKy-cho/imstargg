@@ -2,9 +2,10 @@ package com.imstargg.batch.job.ranking;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.client.brawlstars.response.BrawlerResponse;
 import com.imstargg.core.enums.Country;
-import com.imstargg.storage.db.core.ranking.PlayerRankingCollectionEntity;
-import com.imstargg.storage.db.core.ranking.PlayerRankingCollectionJpaRepository;
+import com.imstargg.storage.db.core.ranking.BrawlerRankingCollectionEntity;
+import com.imstargg.storage.db.core.ranking.BrawlerRankingCollectionJpaRepository;
 import com.imstargg.storage.db.core.ranking.RankingEntityPlayer;
 import com.imstargg.support.alert.AlertManager;
 import org.slf4j.Logger;
@@ -22,33 +23,35 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.util.List;
+
 @Configuration
-public class PlayerRankingJobConfig {
+public class BrawlerRankingJobConfig {
 
-    private static final Logger log = LoggerFactory.getLogger(PlayerRankingJobConfig.class);
+    private static final Logger log = LoggerFactory.getLogger(BrawlerRankingJobConfig.class);
 
-    private static final String JOB_NAME = "playerRankingJob";
-    private static final String STEP_NAME = "playerRankingStep";
+    private static final String JOB_NAME = "brawlerRankingJob";
+    private static final String STEP_NAME = "brawlerRankingStep";
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
 
     private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
-    private final PlayerRankingCollectionJpaRepository playerRankingJpaRepository;
+    private final BrawlerRankingCollectionJpaRepository brawlerRankingJpaRepository;
 
-    public PlayerRankingJobConfig(
+    public BrawlerRankingJobConfig(
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             AlertManager alertManager,
             BrawlStarsClient brawlStarsClient,
-            PlayerRankingCollectionJpaRepository playerRankingJpaRepository
+            BrawlerRankingCollectionJpaRepository brawlerRankingJpaRepository
     ) {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
-        this.playerRankingJpaRepository = playerRankingJpaRepository;
+        this.brawlerRankingJpaRepository = brawlerRankingJpaRepository;
     }
 
     @Bean(JOB_NAME)
@@ -66,25 +69,33 @@ public class PlayerRankingJobConfig {
     Step step() {
         TaskletStepBuilder taskletStepBuilder = new TaskletStepBuilder(new StepBuilder(STEP_NAME, jobRepository));
         return taskletStepBuilder.tasklet((contribution, chunkContext) -> {
+            List<Long> brawlerBrawlerStarsIds = brawlStarsClient.getBrawlers().items().stream()
+                    .map(BrawlerResponse::id).toList();
             for (Country country : Country.values()) {
-                log.debug("processing country: {}", country);
-                var entities = brawlStarsClient.getPlayerRanking(country.getCode()).items().stream()
-                        .map(response -> new PlayerRankingCollectionEntity(
-                                country,
-                                new RankingEntityPlayer(
-                                        response.tag(),
-                                        response.name(),
-                                        response.nameColor(),
-                                        response.icon().id(),
-                                        response.club() != null ? response.club().name() : null
-                                ),
-                                response.trophies(),
-                                response.rank()
-                        )).toList();
+                for (long brawlerBrawlerStarsId : brawlerBrawlerStarsIds) {
+                    log.debug("processing country={}, brawlerId={}", country, brawlerBrawlerStarsId);
+                    var entities = brawlStarsClient.getBrawlerRanking(country.getCode(), brawlerBrawlerStarsId)
+                            .items().stream()
+                            .map(response -> new BrawlerRankingCollectionEntity(
+                                    country,
+                                    brawlerBrawlerStarsId,
+                                    new RankingEntityPlayer(
+                                            response.tag(),
+                                            response.name(),
+                                            response.nameColor(),
+                                            response.icon().id(),
+                                            response.club() != null ? response.club().name() : null
+                                    ),
+                                    response.trophies(),
+                                    response.rank()
+                            )).toList();
 
-                playerRankingJpaRepository.deleteAllInBatch(
-                        playerRankingJpaRepository.findAllByCountry(country));
-                playerRankingJpaRepository.saveAll(entities);
+                    brawlerRankingJpaRepository.deleteAllInBatch(
+                            brawlerRankingJpaRepository
+                                    .findAllByCountryAndBrawlerBrawlStarsId(country, brawlerBrawlerStarsId)
+                    );
+                    brawlerRankingJpaRepository.saveAll(entities);
+                }
             }
             return RepeatStatus.FINISHED;
         }, txManager).build();
