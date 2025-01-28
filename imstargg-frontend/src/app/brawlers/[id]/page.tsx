@@ -24,11 +24,18 @@ import {
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 import {Metadata} from "next";
+import {getBrawlerRanking} from "@/lib/api/ranking";
+import {Country, CountryValue} from "@/model/enums/Country";
+import {Ranking} from "@/components/ranking";
+import {countryOrDefault} from "@/lib/country";
 
+interface SearchParams extends StatisticsSearchParams{
+  country?: Country;
+}
 
 type Props = {
   params: Promise<{ id: number; }>;
-  searchParams: Promise<StatisticsSearchParams>;
+  searchParams: Promise<SearchParams>;
 };
 
 export async function generateMetadata({params}: Readonly<Props>): Promise<Metadata> {
@@ -55,6 +62,9 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
     notFound();
   }
 
+  const country = countryOrDefault((await searchParams).country);
+  const brawlerRankings = await getBrawlerRanking(country, brawler.id);
+
   const date = new Date();
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 
@@ -71,6 +81,7 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
           <BrawlerProfile brawler={brawler}/>
         </div>
       </div>
+      <Ranking rankings={brawlerRankings} country={country}/>
       <div className="flex flex-col gap-2 p-1">
         <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
                                  soloRankTier={statsParams.soloRankTier}/>
@@ -81,6 +92,14 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
         />
       </div>
     </div>
+  );
+}
+
+function Title({value}: Readonly<{ value: string }>) {
+  return (
+    <h2 className="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
+      {value}
+    </h2>
   );
 }
 
@@ -100,9 +119,7 @@ function StatisticsContent(
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-          이벤트
-        </h2>
+        <Title value="이벤트"/>
         {
           hasStatistics(eventResultStats) && (
             <BattleEventResultStatistics statsList={eventResultStats}/>
@@ -111,9 +128,7 @@ function StatisticsContent(
       </div>
 
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-          브롤러 조합
-        </h2>
+        <Title value="브롤러 조합"/>
         {
           hasStatistics(brawlersResultStats) && (
             <BrawlersResultStatistics statsList={brawlersResultStats} brawlers={brawlers}/>
@@ -122,9 +137,7 @@ function StatisticsContent(
       </div>
 
       <div className="flex flex-col gap-2">
-        <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
-          상대 브롤러
-        </h2>
+        <Title value="상대 브롤러"/>
         {
           hasStatistics(enemyResultStats) && (
             <BrawlerEnemyResultStatistics statsList={enemyResultStats} brawlers={brawlers}/>
