@@ -6,7 +6,7 @@ import {useRouter, useSearchParams} from "next/navigation";
 import SearchedPlayer from "@/components/searched-player";
 import PlayerSearchForm from "@/components/player-search-form";
 import {searchPlayer} from "@/lib/api/player";
-import {metadataTitle} from "@/config/site";
+import {metadataTitle, playerHref} from "@/config/site";
 
 export default function PlayerSearchResultPage() {
   const [players, setPlayers] = useState<Player[] | null>(null);
@@ -27,7 +27,7 @@ export default function PlayerSearchResultPage() {
         console.log(`검색어: ${query}`);
         const results = await searchPlayer(query);
         if (results.length === 1) {
-          router.push(`/players/${encodeURIComponent(results[0].tag)}`);
+          router.push(playerHref(results[0].tag));
           return;
         }
 
