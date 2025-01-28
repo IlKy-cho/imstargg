@@ -25,6 +25,7 @@ import {LoadingButton} from "@/components/ui/expansion/loading-button";
 import {battleTypeIconSrc, battleTypeTitle} from "@/lib/battle-type";
 import {battleResultTitle} from "@/lib/battle-result";
 import {playerBattleIconSrc, playerBattleModeTitle} from "@/lib/player-battle";
+import {playerHref} from "@/config/site";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -269,7 +270,7 @@ function BattleTeamPlayer (
       <div className="w-full">
         <div className="flex gap-1">
           <Link
-            href={`/players/${encodeURIComponent(player.tag)}`}
+            href={playerHref(player.tag)}
             className={cn(nameStyle, 'text-xs', 'flex-1', 'truncate')}
           >
             {player.name}

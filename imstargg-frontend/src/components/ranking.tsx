@@ -6,6 +6,8 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import {Separator} from "@/components/ui/separator";
 import {cva, VariantProps} from "class-variance-authority";
 import {cn} from "@/lib/utils";
+import Link from "next/link";
+import {playerHref} from "@/config/site";
 
 interface RankingProps extends RankingListProps, RankingTitleProps {}
 
@@ -54,10 +56,20 @@ export async function RankingList({rankings, size}: Readonly<RankingListProps>) 
         <TableBody>
           {rankings.map((ranking) => (
             <TableRow key={ranking.tag}>
-              <TableCell>{ranking.rank}</TableCell>
-              <TableCell>{ranking.name}</TableCell>
-              <TableCell>{ranking.clubName}</TableCell>
-              <TableCell>{ranking.trophies === 1 ? "100000+" : ranking.trophies}</TableCell>
+              <TableCell className="text-xs sm:text-sm">
+                {ranking.rank}
+              </TableCell>
+              <TableCell className="text-xs sm:text-sm">
+                <Link href={playerHref(ranking.tag)}>
+                  {ranking.name} <span className="hidden sm:inline text-zinc-500">{ranking.tag}</span>
+                </Link>
+              </TableCell>
+              <TableCell className="text-xs sm:text-sm">
+                {ranking.clubName}
+              </TableCell>
+              <TableCell className="text-xs sm:text-sm">
+                {ranking.trophies === 1 ? "100000+" : ranking.trophies}
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
