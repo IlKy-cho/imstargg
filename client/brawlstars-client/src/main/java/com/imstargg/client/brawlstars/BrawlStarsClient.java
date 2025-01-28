@@ -11,8 +11,6 @@ import feign.FeignException;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.List;
 
 @CacheConfig(cacheNames = BrawlStarsClientCacheNames.BRAWLSTARS_CLIENT)
@@ -32,11 +30,6 @@ public class BrawlStarsClient {
             return brawlstarsApi.getLogOfRecentBattlesForAPlayer(playerTag);
         } catch (FeignException.NotFound ex) {
             throw new BrawlStarsClientException.NotFound("playerTag=" + playerTag, ex);
-        } catch (FeignException.ServiceUnavailable ex) {
-            if (isInMaintenance(ex)) {
-                throw new BrawlStarsClientException.InMaintenance("현재 서비스 점검 중입니다.", ex);
-            }
-            throw ex;
         }
     }
 
@@ -46,25 +39,7 @@ public class BrawlStarsClient {
             return brawlstarsApi.getPlayerInformation(playerTag);
         } catch (FeignException.NotFound ex) {
             throw new BrawlStarsClientException.NotFound("playerTag=" + playerTag, ex);
-        } catch (FeignException.ServiceUnavailable ex) {
-            if (isInMaintenance(ex)) {
-                throw new BrawlStarsClientException.InMaintenance("현재 서비스 점검 중입니다.", ex);
-            }
-            throw ex;
         }
-    }
-
-    private boolean isInMaintenance(FeignException.ServiceUnavailable ex) {
-        return ex.responseBody()
-                .map(body -> {
-                    try {
-                        return objectMapper.readValue(body.array(), BrawlStarsClientErrorResponse.class);
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                })
-                .filter(BrawlStarsClientErrorResponse::isInMaintenance)
-                .isPresent();
     }
 
     @Cacheable(key = "'brawlstars-client:brawlers'")

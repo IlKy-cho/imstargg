@@ -8,6 +8,10 @@ public class BrawlStarsClientException extends RuntimeException {
         super(message, ex);
     }
 
+    BrawlStarsClientException(String message) {
+        super(message);
+    }
+
     private FeignException getFeignException() {
         return ((FeignException) getCause());
     }
@@ -21,8 +25,8 @@ public class BrawlStarsClientException extends RuntimeException {
 
     public static class InMaintenance extends BrawlStarsClientException {
 
-        public InMaintenance(String message, FeignException.ServiceUnavailable ex) {
-            super(message, ex);
+        public InMaintenance(String message) {
+            super(message);
         }
     }
 }

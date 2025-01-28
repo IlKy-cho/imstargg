@@ -14,8 +14,4 @@ public class DefaultClientRetryConfig {
         return new Retryer.Default(1000, SECONDS.toMillis(10), 5);
     }
 
-    @Bean
-    public DefaultClientErrorDecoder defaultClientErrorDecoder() {
-        return new DefaultClientErrorDecoder();
-    }
 }
