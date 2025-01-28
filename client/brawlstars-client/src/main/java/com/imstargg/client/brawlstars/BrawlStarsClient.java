@@ -55,4 +55,8 @@ public class BrawlStarsClient {
     public ListResponse<PlayerRankingResponse> getPlayerRanking(String country) {
         return brawlstarsApi.getPlayerRankingsForACountryOrGlobalRankings(country, PagingParam.DEFAULT);
     }
+
+    public ListResponse<PlayerRankingResponse> getBrawlerRanking(String country, long brawlerId) {
+        return brawlstarsApi.getBrawlerRankingsForACountryOrGlobalRankings(country, brawlerId, PagingParam.DEFAULT);
+    }
 }
