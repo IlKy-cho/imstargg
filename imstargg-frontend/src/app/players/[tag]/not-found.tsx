@@ -11,7 +11,9 @@ export default async function PlayerNotFound() {
         <p className="text-gray-500">다른 플레이어를 검색해보세요.</p>
       </div>
 
-      <PlayerSearchForm/>
+      <div className="w-full max-w-xl m-1">
+        <PlayerSearchForm/>
+      </div>
 
       <div className="mb-8">
         <Image

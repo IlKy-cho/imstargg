@@ -22,7 +22,7 @@ export default function PlayerSearchResultPage() {
         setPlayers([]);
         return;
       }
-      
+
       try {
         console.log(`검색어: ${query}`);
         const results = await searchPlayer(query);
@@ -43,8 +43,10 @@ export default function PlayerSearchResultPage() {
 
   return (
     <div className="w-full max-w-xl mx-auto p-1">
-      <PlayerSearchForm />
-      
+      <div className="w-full max-w-xl m-1">
+        <PlayerSearchForm/>
+      </div>
+
       {players === null ? (
         <div className="w-full text-center py-8">검색 중...</div>
       ) : players.length === 0 ? (
@@ -58,11 +60,11 @@ export default function PlayerSearchResultPage() {
           </h2>
           <div className="space-y-2">
             {players.map((player) => (
-              <SearchedPlayer key={player.tag} player={player} />
+              <SearchedPlayer key={player.tag} player={player}/>
             ))}
           </div>
         </>
       )}
     </div>
   );
-} 
+}

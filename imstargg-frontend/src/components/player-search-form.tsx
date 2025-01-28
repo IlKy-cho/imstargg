@@ -34,27 +34,25 @@ export default function PlayerSearchForm() {
   }
 
   return (
-    <div className="w-full max-w-xl m-1">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-1">
-          <FormField
-            control={form.control}
-            name="nameOrTag"
-            render={({ field }) => (
-              <FormItem className="flex-1">
-                <FormControl>
-                  <Input
-                    className="bg-white"
-                    placeholder="플레이어 태그 혹은 이름을 선택해주세요." {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit">검색</Button>
-        </form>
-      </Form>
-    </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-1">
+        <FormField
+          control={form.control}
+          name="nameOrTag"
+          render={({field}) => (
+            <FormItem className="flex-1">
+              <FormControl>
+                <Input
+                  className="bg-white"
+                  placeholder="플레이어 태그 / 이름" {...field}
+                />
+              </FormControl>
+              <FormMessage/>
+            </FormItem>
+          )}
+        />
+        <Button type="submit">검색</Button>
+      </form>
+    </Form>
   );
 }
