@@ -10,6 +10,7 @@ import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.ScheduledEventResponse;
+import com.imstargg.client.core.DefaultClientErrorDecoderConfig;
 import com.imstargg.client.core.DefaultClientRetryConfig;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -23,7 +24,7 @@ import java.util.List;
 @FeignClient(
         value = "brawlstars",
         url = "${app.client.brawlstars.url}",
-        configuration = {DefaultClientRetryConfig.class, BrawlStarsApiConfig.class}
+        configuration = {DefaultClientRetryConfig.class, DefaultClientErrorDecoderConfig.class, BrawlStarsApiConfig.class}
 )
 @RateLimiter(name = "brawlstars-api")
 interface BrawlStarsApi {

@@ -1,5 +1,6 @@
 package com.imstargg.client.brawlstars.news;
 
+import com.imstargg.client.core.DefaultClientErrorDecoderConfig;
 import com.imstargg.client.core.DefaultClientRetryConfig;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
@@ -9,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(
         value = "brawlstars-news",
         url = "${app.client.brawlstars-news.url}",
-        configuration = DefaultClientRetryConfig.class
+        configuration = {DefaultClientRetryConfig.class, DefaultClientErrorDecoderConfig.class}
 )
 interface BrawlStarsNewsHtmlApi {
 
