@@ -5,30 +5,27 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import {navItems} from "@/config/docs";
 
 export default function MainNav() {
   return (
     <NavigationMenu>
-      <div className="flex gap-5">
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            {navItems.map((item) => {
-              return (
-                <NavigationMenuLink
-                  key={item.href}
-                  href={item.href}
-                  className={`${navigationMenuTriggerStyle()} bg-zinc-900 text-white hover:bg-zinc-500`}
-                >
-                  {item.label}
-                </NavigationMenuLink>
-              );
-            })}
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </div>
+      <NavigationMenuList>
+        <NavigationMenuItem className="flex gap-4">
+          {navItems.map((item) => {
+            return (
+              <NavigationMenuLink
+                key={item.href}
+                href={item.href}
+                className="font-medium text-white hover:text-zinc-400 focus:text-zinc-400"
+              >
+                {item.label}
+              </NavigationMenuLink>
+            );
+          })}
+        </NavigationMenuItem>
+      </NavigationMenuList>
     </NavigationMenu>
   );
 }
