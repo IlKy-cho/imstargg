@@ -43,7 +43,10 @@ export default function PlayerSearchForm() {
             render={({ field }) => (
               <FormItem className="flex-1">
                 <FormControl>
-                  <Input placeholder="플레이어 태그 혹은 이름을 선택해주세요." {...field}/>
+                  <Input
+                    className="bg-white"
+                    placeholder="플레이어 태그 혹은 이름을 선택해주세요." {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>

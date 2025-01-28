@@ -4,27 +4,44 @@ import {CountrySelect} from "@/components/ranking-option";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Separator} from "@/components/ui/separator";
+import {cva, VariantProps} from "class-variance-authority";
+import {cn} from "@/lib/utils";
 
 interface RankingProps extends RankingListProps, RankingTitleProps {}
 
-export async function Ranking({rankings, country}: Readonly<RankingProps>) {
+export async function Ranking({rankings, country, size}: Readonly<RankingProps>) {
   return (
     <div className="flex flex-col p-2 gap-2 border border-zinc-200 rounded">
       <RankingTitle country={country}/>
       <Separator/>
-      <RankingList rankings={rankings}/>
+      <RankingList rankings={rankings} size={size}/>
     </div>
   )
 }
 
-interface RankingListProps {
+const listVariants = cva(
+  "",
+  {
+    variants: {
+      size: {
+        default: 'h-80 sm:h-96',
+        screen: 'h-dvh'
+      },
+    },
+    defaultVariants: {
+      size: 'default',
+    },
+  },
+);
+
+interface RankingListProps extends VariantProps<typeof listVariants> {
   rankings: PlayerRankingModel[];
 }
 
-export async function RankingList({rankings}: Readonly<RankingListProps>) {
+export async function RankingList({rankings, size}: Readonly<RankingListProps>) {
 
   return (
-    <ScrollArea className="h-80 sm:h-96">
+    <ScrollArea className={cn(listVariants({size}))}>
       <Table>
         <TableHeader>
           <TableRow>
@@ -40,7 +57,7 @@ export async function RankingList({rankings}: Readonly<RankingListProps>) {
               <TableCell>{ranking.rank}</TableCell>
               <TableCell>{ranking.name}</TableCell>
               <TableCell>{ranking.clubName}</TableCell>
-              <TableCell>{ranking.trophies}</TableCell>
+              <TableCell>{ranking.trophies === 1 ? "100000+" : ranking.trophies}</TableCell>
             </TableRow>
           ))}
         </TableBody>
