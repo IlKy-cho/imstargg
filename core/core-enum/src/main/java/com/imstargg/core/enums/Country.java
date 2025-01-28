@@ -11,4 +11,8 @@ public enum Country {
     Country(String code) {
         this.code = code;
     }
+
+    public String getCode() {
+        return code;
+    }
 }
