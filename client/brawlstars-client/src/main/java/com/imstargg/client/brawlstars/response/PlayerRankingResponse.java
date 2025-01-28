@@ -5,7 +5,7 @@ import jakarta.annotation.Nullable;
 public record PlayerRankingResponse(
         String tag,
         String name,
-        String nameColor,
+        @Nullable String nameColor,
         PlayerIconResponse icon,
         int trophies,
         int rank,

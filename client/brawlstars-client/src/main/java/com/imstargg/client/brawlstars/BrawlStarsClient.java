@@ -5,6 +5,7 @@ import com.imstargg.client.brawlstars.request.PagingParam;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
+import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.ScheduledEventResponse;
 import feign.FeignException;
@@ -49,5 +50,9 @@ public class BrawlStarsClient {
 
     public List<ScheduledEventResponse> getEventRotation() {
         return brawlstarsApi.getEventRotation();
+    }
+
+    public ListResponse<PlayerRankingResponse> getPlayerRanking(String country) {
+        return brawlstarsApi.getPlayerRankingsForACountryOrGlobalRankings(country, PagingParam.DEFAULT);
     }
 }
