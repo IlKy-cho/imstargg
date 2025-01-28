@@ -1,6 +1,6 @@
 export const CountryValue = {
-  GLOBAL: 'global',
-  KOREA: 'kr',
+  GLOBAL: 'GLOBAL',
+  KOREA: 'KOREA',
 } as const;
 
 export type Country = typeof CountryValue[keyof typeof CountryValue];
