@@ -3,6 +3,7 @@ import {Country} from "@/model/enums/Country";
 import {CountrySelect} from "@/components/ranking-option";
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 import {ScrollArea} from "@/components/ui/scroll-area";
+import {Separator} from "@/components/ui/separator";
 
 interface RankingProps extends RankingListProps, RankingTitleProps {}
 
@@ -10,6 +11,7 @@ export async function Ranking({rankings, country}: Readonly<RankingProps>) {
   return (
     <div className="flex flex-col p-2 gap-2 border border-zinc-200 rounded">
       <RankingTitle country={country}/>
+      <Separator/>
       <RankingList rankings={rankings}/>
     </div>
   )
