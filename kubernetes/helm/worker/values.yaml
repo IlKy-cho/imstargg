@@ -14,7 +14,7 @@ app:
 replicaCount: 1
 
 image:
-  repository: worker
+  repository: imstargg/worker
   pullPolicy: Never
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
