@@ -90,7 +90,7 @@ export default function PlayerBattle({battle, brawlers, myTag}: Readonly<PlayerB
       <div className="flex flex-1">
         <BattleInfo battle={battle}/>
         <Separator className="m-1" orientation="vertical" />
-        <div className="flex items-center justify-center w-28">
+        <div className="flex items-center justify-center w-20 sm:w-28">
           <BattleEventMapImage battleEventMap={battle.event.map}/>
         </div>
         <Separator className="m-1" orientation="vertical" />
@@ -292,7 +292,7 @@ function PlayerTierContainer ({children}: { children: React.ReactNode }){
   );
 }
 
-function PlayerTier ({player}: { player: BattlePlayer }) {
+export function PlayerTier ({player}: { player: BattlePlayer }) {
   if (player.soloRankTier) {
     return (
       <PlayerTierContainer>

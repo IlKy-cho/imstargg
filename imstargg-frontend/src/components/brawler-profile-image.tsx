@@ -12,12 +12,12 @@ const imageVariants = cva(
   {
     variants: {
       size: {
-        default: 'w-20',
-        xs: 'w-12',
-        sm: 'w-16',
-        lg: 'w-24',
-        xl: 'w-28',
-        '2xl': 'w-32',
+        default: 'sm:w-20 w-16',
+        xs: 'sm:w-12 w-10',
+        sm: 'sm:w-16 w-12',
+        lg: 'sm:w-24 w-18',
+        xl: 'sm:w-28 w-20',
+        '2xl': 'sm:w-32',
       },
     },
     defaultVariants: {
