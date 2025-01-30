@@ -5,7 +5,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {ScrollArea} from "@/components/ui/scroll-area";
 import {Separator} from "@/components/ui/separator";
 import {cva, VariantProps} from "class-variance-authority";
-import {cn} from "@/lib/utils";
+import {cn, cnWithDefault} from "@/lib/utils";
 import Link from "next/link";
 import {playerHref} from "@/config/site";
 
@@ -13,7 +13,7 @@ interface RankingProps extends RankingListProps, RankingTitleProps {}
 
 export async function Ranking({rankings, country, size}: Readonly<RankingProps>) {
   return (
-    <div className="flex flex-col p-2 gap-2 border border-zinc-200 rounded">
+    <div className={cnWithDefault("flex flex-col gap-2")}>
       <RankingTitle country={country}/>
       <Separator/>
       <RankingList rankings={rankings} size={size}/>
