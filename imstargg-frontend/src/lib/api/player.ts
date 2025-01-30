@@ -4,6 +4,7 @@ import {
   CacheOptions, ListResponse,
 } from "@/lib/api/api";
 import {Player} from "@/model/Player";
+import { PlayerBrawler } from "@/model/PlayerBrawler";
 
 export async function fetchGetPlayer(tag: string, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}`);
@@ -107,5 +108,29 @@ export async function searchPlayer(query: string): Promise<Player[]> {
   }
 
   const data = await response.json() as ListResponse<Player>;
+  return data.content;
+}
+
+export async function fetchGetPlayerBrawlers(tag: string, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/brawlers`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['player', tag, 'brawlers'],
+      revalidate: options.revalidate,
+    }
+  });
+}
+
+export async function getPlayerBrawlers(tag: string): Promise<PlayerBrawler[]> {
+  const response = await fetchGetPlayerBrawlers(encodeURIComponent(tag));
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+
+  const data = await response.json() as ListResponse<PlayerBrawler>;
   return data.content;
 }

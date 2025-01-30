@@ -14,7 +14,7 @@ type Props = {
 }
 
 const PlayerInfoContainer = ({label, children}: { label: string, children: React.ReactNode }) => (
-  <div className="flex justify-between items-center">
+  <div className="flex justify-between items-center text-sm sm:text-base">
     <span className="text-zinc-500">{label}</span>
     {children}
   </div>
@@ -54,7 +54,7 @@ export default function PlayerProfile({player}: Readonly<Props>) {
           }
         </PlayerInfoContainer>
 
-        <div className="text-sm text-gray-400">
+        <div className="text-xs sm:text-sm text-gray-400">
           마지막 업데이트: {dayjs(player.updatedAt).fromNow()}
         </div>
       </div>

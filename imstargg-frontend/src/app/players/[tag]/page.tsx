@@ -1,10 +1,13 @@
 import React from "react";
 import PlayerProfile from "@/components/player-profile";
 import {getBrawlers} from "@/lib/api/brawler";
-import {getPlayer} from "@/lib/api/player";
+import {getPlayer, getPlayerBrawlers} from "@/lib/api/player";
 import {notFound} from "next/navigation";
 import {Metadata} from "next";
 import {PlayerBattleList} from "@/components/player-battle";
+import { Brawler } from "@/model/Brawler";
+import { BrawlerCollection } from "@/model/Brawler";
+import { PlayerBrawlerList } from "@/components/player-brawler";
 
 
 type Props = {
@@ -42,9 +45,19 @@ export default async function PlayerPage({params}: Readonly<Props>) {
           <PlayerProfile player={player}/>
         </div>
       </div>
-      <div className="p-1">
+      <PagePlayerBrawlerList tag={decodedTag} brawlers={brawlers}/>
+      <div>
         <PlayerBattleList tag={decodedTag} brawlerList={brawlers}/>
       </div>
     </div>
+  );
+}
+
+async function PagePlayerBrawlerList({tag, brawlers}: Readonly<{tag: string, brawlers: Brawler[]}>) {
+  const playerBrawlers = await getPlayerBrawlers(tag);
+  const brawlerCollection = new BrawlerCollection(brawlers);
+
+  return (
+    <PlayerBrawlerList brawlers={brawlers} playerBrawlers={playerBrawlers} />
   );
 }
