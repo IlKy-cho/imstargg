@@ -4,7 +4,7 @@ import EventList from "@/app/events/event-list";
 export default async function EventsPage() {
   const battleEvents = await getEvents();
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex flex-col">
       <h1>이벤트 목록</h1>
       <EventList battleEvents={battleEvents}></EventList>
     </div>

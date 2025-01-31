@@ -4,7 +4,7 @@ import { GearList } from "./gear-list";
 
 export default async function BrawlersPage() {
   return (
-    <main>
+    <>
       <div className="flex justify-between items-center">
         <h1>브롤러 목록</h1>
         <div className="space-x-2">
@@ -13,6 +13,6 @@ export default async function BrawlersPage() {
         </div>
       </div>
       <BrawlerList />
-    </main>
+    </>
   );
 }

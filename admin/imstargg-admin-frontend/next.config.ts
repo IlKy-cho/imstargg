@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'brawlstars.s3.ap-northeast-2.amazonaws.com'
+        hostname: 'cdn.imstargg.com',
       },
     ],
   }
