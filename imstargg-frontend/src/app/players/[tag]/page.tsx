@@ -5,9 +5,8 @@ import {getPlayer, getPlayerBrawlers} from "@/lib/api/player";
 import {notFound} from "next/navigation";
 import {Metadata} from "next";
 import {PlayerBattleList} from "@/components/player-battle";
-import { Brawler } from "@/model/Brawler";
-import { BrawlerCollection } from "@/model/Brawler";
-import { PlayerBrawlerList } from "@/components/player-brawler";
+import {Brawler} from "@/model/Brawler";
+import {PlayerBrawlerList} from "@/components/player-brawler";
 
 
 type Props = {
@@ -55,7 +54,6 @@ export default async function PlayerPage({params}: Readonly<Props>) {
 
 async function PagePlayerBrawlerList({tag, brawlers}: Readonly<{tag: string, brawlers: Brawler[]}>) {
   const playerBrawlers = await getPlayerBrawlers(tag);
-  const brawlerCollection = new BrawlerCollection(brawlers);
 
   return (
     <PlayerBrawlerList brawlers={brawlers} playerBrawlers={playerBrawlers} />
