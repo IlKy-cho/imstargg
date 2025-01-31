@@ -7,10 +7,12 @@ import SearchedPlayer from "@/components/searched-player";
 import PlayerSearchForm from "@/components/player-search-form";
 import {searchPlayer} from "@/lib/api/player";
 import {metadataTitle, playerHref} from "@/config/site";
+import {useRecentSearches} from "@/hooks/useRecentSearchs";
 
 export default function PlayerSearchResultPage() {
   const [players, setPlayers] = useState<Player[] | null>(null);
   const searchParams = useSearchParams();
+  const {addSearchTerm} = useRecentSearches();
   const query = searchParams.get('q');
   const router = useRouter();
 
@@ -27,8 +29,12 @@ export default function PlayerSearchResultPage() {
         console.log(`검색어: ${query}`);
         const results = await searchPlayer(query);
         if (results.length === 1) {
-          router.push(playerHref(results[0].tag));
+          const player = results[0];
+          addSearchTerm({type: 'player', value: {name: player.name, tag: player.tag}});
+          router.push(playerHref(player.tag));
           return;
+        } else {
+          addSearchTerm({type: 'query', value: query});
         }
 
         setPlayers(results);
