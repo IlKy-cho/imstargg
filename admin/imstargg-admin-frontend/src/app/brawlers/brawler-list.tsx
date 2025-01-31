@@ -17,6 +17,7 @@ import {
 import getBrawlerList from "@/lib/api/getBrawlerList";
 import { BrawlerImageUpload } from './brawler-image-upload';
 import {messagesToTitle} from "@/components/title";
+import {imageUrl} from "@/lib/image";
 
 export async function BrawlerList() {
   const brawlers = await getBrawlerList();
@@ -41,7 +42,7 @@ export async function BrawlerList() {
             <TableCell>
               {brawler.image ? (
                 <Image
-                  src={brawler.image.url}
+                  src={imageUrl(brawler.image)}
                   alt={brawler.entity.id + " 이미지"}
                   width={100}
                   height={100}

@@ -5,5 +5,4 @@ export default interface BrawlStarsImageEntity extends BaseEntity {
   type: string;
   code: string;
   storedName: string;
-  url: string;
 }

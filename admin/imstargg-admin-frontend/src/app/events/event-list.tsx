@@ -12,6 +12,7 @@ import BattleEvent from "@/model/BattleEvent";
 import {messagesToTitle} from "@/components/title";
 import React from "react";
 import {EventMapImageUpload} from "@/app/events/event-map-image-upload";
+import {imageUrl} from "@/lib/image";
 
 type Props = {
   battleEvents: BattleEvent[];
@@ -43,7 +44,7 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                 <TableCell>
                   {battleEvent.map.image ? (
                     <Image
-                      src={battleEvent.map.image.url}
+                      src={imageUrl(battleEvent.map.image)}
                       alt={battleEvent.entity.brawlStarsId + " 이벤트 이미지"}
                       width={100}
                       height={100}

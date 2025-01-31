@@ -64,7 +64,7 @@ export function EventMapImageUpload({ battleEvent }: MapImageUploadProps) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>맵 이미지 업로드</DialogTitle>
+          <DialogTitle>{battleEvent.entity.brawlStarsId} 맵 이미지 업로드</DialogTitle>
           <DialogDescription>
             맵의 이미지를 선택하여 업로드해주세요.
           </DialogDescription>
