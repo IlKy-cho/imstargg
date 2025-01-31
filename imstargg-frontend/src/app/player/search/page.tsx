@@ -28,15 +28,6 @@ export default function PlayerSearchResultPage() {
       try {
         console.log(`검색어: ${query}`);
         const results = await searchPlayer(query);
-        if (results.length === 1) {
-          const player = results[0];
-          addSearchTerm({type: 'player', value: {name: player.name, tag: player.tag}});
-          router.push(playerHref(player.tag));
-          return;
-        } else {
-          addSearchTerm({type: 'query', value: query});
-        }
-
         setPlayers(results);
       } catch (error) {
         console.error('검색 결과를 불러오는 중 오류가 발생했습니다:', error);
@@ -45,7 +36,21 @@ export default function PlayerSearchResultPage() {
     };
 
     fetchPlayers();
-  }, [query, router, addSearchTerm]);
+  }, [query]);
+
+  useEffect(() => {
+    if (!players || players.length === 0) return;
+
+    if (players.length === 1) {
+      const player = players[0];
+      addSearchTerm({type: 'player', value: {name: player.name, tag: player.tag}});
+      router.replace(playerHref(player.tag));
+    } else {
+      if (query) {
+        addSearchTerm({type: 'query', value: query});
+      }
+    }
+  }, [players, query]);
 
   return (
     <div className="w-full max-w-xl mx-auto p-1">
