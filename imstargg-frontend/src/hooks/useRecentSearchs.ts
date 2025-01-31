@@ -3,9 +3,11 @@ import { useState, useEffect } from "react";
 const STORAGE_KEY = "recent-searches";
 const MAX_ITEMS = 10;
 
-type SearchItem = 
-  | { type: "player"; value: { name: string; tag: string } }
-  | { type: "query"; value: string };
+type SearchItemQuery = { type: "query"; value: string };
+
+type SearchItemPlayer = { type: "player"; value: { name: string; tag: string } };
+
+type SearchItem = SearchItemQuery | SearchItemPlayer;
 
 export const useRecentSearches = () => {
   const [recentSearches, setRecentSearches] = useState<SearchItem[]>([]);

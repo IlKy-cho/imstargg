@@ -1,3 +1,5 @@
+
+
 import {Player} from "@/model/Player";
 import {useRouter} from "next/navigation";
 import dayjs from "dayjs";
@@ -5,6 +7,8 @@ import 'dayjs/locale/ko';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
+import { useRecentSearches } from "@/hooks/useRecentSearchs";
+import {playerHref} from "@/config/site";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -16,11 +20,17 @@ interface SearchedPlayerProps {
 
 export default function SearchedPlayer({player}: SearchedPlayerProps) {
   const router = useRouter();
+  const {addSearchTerm} = useRecentSearches();
+
+  const handleClick = () => {
+    addSearchTerm({type: 'player', value: {tag: player.tag, name: player.name}});
+    router.push(playerHref(player.tag));
+  }
 
   return (
     <div
       className="p-4 border rounded-lg cursor-pointer hover:bg-zinc-100"
-      onClick={() => router.push(`/players/${encodeURIComponent(player.tag)}`)}
+      onClick={handleClick}
     >
       <div className="flex items-center gap-2">
         <span style={{color: player.nameColor}}>{player.name}</span>
