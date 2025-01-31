@@ -91,7 +91,6 @@ public class PlayerRenewalRepository {
                     .orElseThrow(() -> new CoreException("플레이어 갱신 요청을 찾을 수 없습니다. playerTag=" + playerRenewal.tag()));
 
             entity.pending(OffsetDateTime.now(clock));
-            playerRenewalJpaRepository.save(entity);
         }
     }
 }
