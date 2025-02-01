@@ -8,12 +8,10 @@ export default function Trophy({value}: Readonly<{ value: number }>) {
       <Image
         src={BrawlStarsIconSrc.TROPHY}
         alt="trophy icon"
-        width={20}
-        height={20}
-        className="h-full w-auto object-contain"
+        className="w-4 sm:w-5"
       />
       <span
-        className="text-base text-amber-500"
+        className="text-xs sm:text-sm text-amber-500"
         style={{
           textShadow: '-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000'
         }}

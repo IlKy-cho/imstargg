@@ -69,12 +69,10 @@ export default function SoloRankTier({tier}: Readonly<{ tier: SoloRankTierType }
       <Image
         src={soloRankTierIconSrc(tier)}
         alt="rank tier icon"
-        width={24}
-        height={24}
-        className="h-full w-auto object-contain"
+        className="w-4 sm:w-5"
       />
       <span
-        className={cn(soloRankTierTextColor(tier), "text-base")}
+        className={cn(soloRankTierTextColor(tier), "text-xs sm:text-sm")}
         style={{
           textShadow: '-0.5px -0.5px 0 #000, 0.5px -0.5px 0 #000, -0.5px 0.5px 0 #000, 0.5px 0.5px 0 #000'
         }}
