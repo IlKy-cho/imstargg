@@ -3,14 +3,14 @@
 import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import {BattleResultValue} from "@/model/enums/BattleResult";
+import {BattleResult, BattleResultValue} from "@/model/enums/BattleResult";
 import {BattleType} from "@/model/enums/BattleType";
 import Image from "next/image";
 import {Separator} from "@/components/ui/separator";
 import {BattlePlayer} from "@/model/BattlePlayer";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import Link from "next/link";
-import {cn} from "@/lib/utils";
+import {cn, cnWithDefault} from "@/lib/utils";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
@@ -18,7 +18,7 @@ import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 import {PowerLevel} from "./brawler";
 import {createContext, useContext, useEffect, useState} from "react";
-import {PlayerBattle as PlayerBattleModel} from "@/model/PlayerBattle";
+import {PlayerBattle as PlayerBattleModel, playerBattleMyTeam} from "@/model/PlayerBattle";
 import {getBattles} from "@/lib/api/battle";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {LoadingButton} from "@/components/ui/expansion/loading-button";
@@ -77,7 +77,14 @@ export function PlayerBattleContent({ tag, brawlers }: Readonly<PlayerBattleCont
 
   return (
     <BattleContext.Provider value={{ battles, page, loading, hasMore, fetchBattles }}>
-      <PlayerBattleList tag={tag} brawlerList={brawlers} />
+      <div className="flex flex-col sm:flex-row gap-1">
+        <div className="flex flex-col gap-1 w-full sm:w-72">
+          <PlayerBattleMyTeamStatistics myTag={tag} />
+        </div>
+        <div className="flex-1">
+          <PlayerBattleList tag={tag} brawlerList={brawlers} />
+        </div>
+      </div>
     </BattleContext.Provider>
   )
 }
@@ -397,4 +404,111 @@ export function PlayerTier({ player }: { player: BattlePlayer }) {
   }
 
   return null;
+}
+
+class BattleResultCounter {
+  private victoryCount: number = 0;
+  private defeatCount: number = 0;
+  private drawCount: number = 0;
+
+  constructor() {
+    this.victoryCount = 0;
+    this.defeatCount = 0;
+    this.drawCount = 0;
+  }
+
+  public add(battleResult: BattleResult) {
+    if (battleResult === BattleResultValue.VICTORY) {
+      this.victoryCount++;
+    } else if (battleResult === BattleResultValue.DEFEAT) {
+      this.defeatCount++;
+    } else if (battleResult === BattleResultValue.DRAW) {
+      this.drawCount++;
+    }
+  }
+
+  public getVictoryCount() {
+    return this.victoryCount;
+  }
+
+  public getDefeatCount() {
+    return this.defeatCount;
+  }
+
+  public getDrawCount() {
+    return this.drawCount;
+  }
+
+  public getTotalCount() {
+    return this.victoryCount + this.defeatCount + this.drawCount;
+  }
+
+  public getWinRate() {
+    return (this.victoryCount / (this.victoryCount + this.defeatCount)) * 100;
+  }
+}
+
+function PlayerBattleMyTeamStatistics({ myTag }: Readonly<{ myTag: string }>) {
+  const { battles } = useContext(BattleContext);
+  const myTeamPlayerTagToCounter = new Map<string, BattleResultCounter>();
+  const tagToName = new Map<string, string>();
+
+  battles.forEach(battle => {
+    if (!battle.result) return;
+
+    const myTeam = playerBattleMyTeam(battle);
+    myTeam.forEach(player => {
+      if (player.tag === myTag) return;
+
+      // 플레이어 이름 저장
+      if (!tagToName.has(player.tag)) {
+        tagToName.set(player.tag, player.name);
+      }
+
+      // 전적 카운터 업데이트
+      let counter = myTeamPlayerTagToCounter.get(player.tag);
+      if (!counter) {
+        counter = new BattleResultCounter();
+        myTeamPlayerTagToCounter.set(player.tag, counter);
+      }
+      counter.add(battle.result!);
+    });
+  });
+
+  const teamStats = Array.from(myTeamPlayerTagToCounter.entries())
+    .map(([tag, counter]) => ({
+      tag,
+      name: tagToName.get(tag)!,
+      victories: counter.getVictoryCount(),
+      defeats: counter.getDefeatCount(),
+      draws: counter.getDrawCount(),
+      total: counter.getTotalCount(),
+      winRate: counter.getWinRate()
+    }))
+    .filter(stat => stat.total >= 2)
+    .sort((a, b) => b.total - a.total);
+
+  return (
+    <div className={cnWithDefault('flex flex-col gap-1')}>
+      <h2 className="text-xs sm:text-sm font-bold">
+        같은 팀으로 게임한 플레이어 (최근 {battles.length}게임)
+      </h2>
+      <div className="flex flex-col gap-1">
+        {teamStats.map(stat => (
+          <div key={stat.tag} className="flex flex-col p-2 border rounded-lg">
+            <Link href={playerHref(stat.tag)} className="font-bold text-sm">
+              {stat.name}<span className="text-zinc-500">{stat.tag}</span>
+            </Link>
+            <div className="text-xs flex gap-1">
+              <span className="text-blue-600">{stat.victories}승</span>
+              <span className="text-red-600">{stat.defeats}패</span>
+              {stat.draws > 0 && <span className="text-amber-600">{stat.draws}무</span>}
+              <span className="text-zinc-500">{stat.total}게임</span>
+              <span className="text-zinc-800">{stat.winRate.toFixed(0)}%</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
