@@ -1,7 +1,8 @@
 import {BattleType, BattleTypeValue} from "@/model/enums/BattleType";
 import {BrawlStarsIconSrc} from "@/lib/icon";
+import {StaticImageData} from "next/image";
 
-export function battleTypeIconSrc(type: BattleType) {
+export function battleTypeIconSrc(type: BattleType): StaticImageData | null {
   switch (type) {
     case BattleTypeValue.NOT_FOUND:
       return null;
@@ -13,11 +14,17 @@ export function battleTypeIconSrc(type: BattleType) {
       return BrawlStarsIconSrc.FAMILY_FRIENDLY;
     case BattleTypeValue.CHALLENGE:
       return null;
+    case BattleTypeValue.TOURNAMENT:
+      return null;
+    case BattleTypeValue.CHAMPIONSHIP_CHALLENGE:
+      return null;
   }
 }
 
-export function battleTypeTitle (type: BattleType) {
+export function battleTypeTitle (type: BattleType): string | null {
   switch (type) {
+    case BattleTypeValue.NOT_FOUND:
+      return null;
     case BattleTypeValue.RANKED:
       return '트로피전';
     case BattleTypeValue.SOLO_RANKED:
@@ -26,7 +33,9 @@ export function battleTypeTitle (type: BattleType) {
       return '친선전';
     case BattleTypeValue.CHALLENGE:
       return '챌린지';
-    default:
-      return null;
+    case BattleTypeValue.TOURNAMENT:
+      return '토너먼트';
+    case BattleTypeValue.CHAMPIONSHIP_CHALLENGE:
+      return '챔피언십 챌린지';
   }
 }
