@@ -11,7 +11,7 @@ export function BrawlStarsNewsList({newsList}: Readonly<NewsListProps>) {
 
   return (
     <div className="flex flex-col gap-4 max-w-2xl w-full my-5">
-      <Link href='https://supercell.com/en/games/brawlstars/ko/blog/'>
+      <Link href='https://supercell.com/en/games/brawlstars/ko/blog/' target="_blank">
         <h1 className="text-xl sm:text-2xl font-bold">브롤스타즈 뉴스</h1>
       </Link>
 
