@@ -17,7 +17,7 @@ import Trophy from "@/components/trophy";
 import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 import {PowerLevel} from "./brawler";
-import {useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import {PlayerBattle as PlayerBattleModel} from "@/model/PlayerBattle";
 import {getBattles} from "@/lib/api/battle";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
@@ -30,12 +30,30 @@ import {battleEventHref, playerHref} from "@/config/site";
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
 
-type PlayerBattleListProps = {
-  tag: string;
-  brawlerList: Brawler[];
+interface BattleContextType {
+  battles: PlayerBattleModel[];
+  page: number;
+  loading: boolean;
+  hasMore: boolean;
+  fetchBattles: () => Promise<void>;
+}
+
+const initialState: BattleContextType = {
+  battles: [],
+  page: 0,
+  loading: false,
+  hasMore: true,
+  fetchBattles: async () => {},
 };
 
-export function PlayerBattleList({ tag, brawlerList }: Readonly<PlayerBattleListProps>) {
+const BattleContext = createContext<BattleContextType>(initialState);
+
+type PlayerBattleContentProps = {
+  tag: string;
+  brawlers: Brawler[];
+};
+
+export function PlayerBattleContent({ tag, brawlers }: Readonly<PlayerBattleContentProps>) {
   const [battles, setBattles] = useState<PlayerBattleModel[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -55,7 +73,22 @@ export function PlayerBattleList({ tag, brawlerList }: Readonly<PlayerBattleList
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  return (
+    <BattleContext.Provider value={{ battles, page, loading, hasMore, fetchBattles }}>
+      <PlayerBattleList tag={tag} brawlerList={brawlers} />
+    </BattleContext.Provider>
+  )
+}
+
+type PlayerBattleListProps = {
+  tag: string;
+  brawlerList: Brawler[];
+};
+
+export function PlayerBattleList({ tag, brawlerList }: Readonly<PlayerBattleListProps>) {
+  const { battles, loading, hasMore, fetchBattles } = useContext(BattleContext);
 
   useEffect(() => {
     fetchBattles();
