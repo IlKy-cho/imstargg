@@ -18,14 +18,14 @@ import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 import {PowerLevel} from "./brawler";
 import {createContext, useContext, useEffect, useState} from "react";
-import {PlayerBattle as PlayerBattleModel, playerBattleMyTeam} from "@/model/PlayerBattle";
+import {playerBattleMe, PlayerBattle as PlayerBattleModel, playerBattleMyTeam} from "@/model/PlayerBattle";
 import {getBattles} from "@/lib/api/battle";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {LoadingButton} from "@/components/ui/expansion/loading-button";
 import {battleTypeIconSrc, battleTypeTitle} from "@/lib/battle-type";
 import {battleResultTitle} from "@/lib/battle-result";
 import {playerBattleIconSrc, playerBattleModeTitle} from "@/lib/player-battle";
-import {battleEventHref, playerHref} from "@/config/site";
+import {battleEventHref, brawlerHref, playerHref} from "@/config/site";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -79,7 +79,8 @@ export function PlayerBattleContent({ tag, brawlers }: Readonly<PlayerBattleCont
     <BattleContext.Provider value={{ battles, page, loading, hasMore, fetchBattles }}>
       <div className="flex flex-col sm:flex-row gap-1">
         <div className="flex flex-col gap-1 w-full sm:w-72">
-          <PlayerBattleMyTeamStatistics myTag={tag} />
+          <PlayerBattleRecentMyTeamStatistics myTag={tag} />
+          <PlayerBattleRecentBrawlerStatistics myTag={tag} brawlers={brawlers} />
         </div>
         <div className="flex-1">
           <PlayerBattleList tag={tag} brawlerList={brawlers} />
@@ -448,7 +449,8 @@ class BattleResultCounter {
   }
 }
 
-function PlayerBattleMyTeamStatistics({ myTag }: Readonly<{ myTag: string }>) {
+
+function PlayerBattleRecentMyTeamStatistics({ myTag }: Readonly<{ myTag: string }>) {
   const { battles } = useContext(BattleContext);
   const myTeamPlayerTagToCounter = new Map<string, BattleResultCounter>();
   const tagToName = new Map<string, string>();
@@ -499,16 +501,72 @@ function PlayerBattleMyTeamStatistics({ myTag }: Readonly<{ myTag: string }>) {
             <Link href={playerHref(stat.tag)} className="font-bold text-sm">
               {stat.name}<span className="text-zinc-500">{stat.tag}</span>
             </Link>
-            <div className="text-xs flex gap-1">
-              <span className="text-blue-600">{stat.victories}승</span>
-              <span className="text-red-600">{stat.defeats}패</span>
-              {stat.draws > 0 && <span className="text-amber-600">{stat.draws}무</span>}
-              <span className="text-zinc-500">{stat.total}게임</span>
-              <span className="text-zinc-800">{stat.winRate.toFixed(0)}%</span>
-            </div>
+            <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total} winRate={stat.winRate} />
           </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function PlayerBattleRecentBrawlerStatistics({ myTag, brawlers }: Readonly<{ myTag: string, brawlers: Brawler[] }>) {
+  const { battles } = useContext(BattleContext);
+  const brawlerCollection = new BrawlerCollection(brawlers);
+  const brawlerIdToCounter = new Map<number, BattleResultCounter>();
+
+  battles.forEach(battle => {
+    if (!battle.result) return;
+    const me = playerBattleMe(battle, myTag);
+    me.forEach(player => {
+      const brawler = brawlerCollection.find(player.brawler.id);
+      if (!brawler) return;
+
+      let counter = brawlerIdToCounter.get(brawler.id);
+      if (!counter) {
+        counter = new BattleResultCounter();
+        brawlerIdToCounter.set(brawler.id, counter);
+      }
+      counter.add(battle.result!);
+    });
+  });
+
+  const brawlerStats = Array.from(brawlerIdToCounter.entries())
+    .map(([id, counter]) => ({
+      id,
+      name: brawlerCollection.find(id)!.name,
+      victories: counter.getVictoryCount(),
+      defeats: counter.getDefeatCount(),
+      draws: counter.getDrawCount(),
+      total: counter.getTotalCount(),
+      winRate: counter.getWinRate()
+    }))
+    .sort((a, b) => b.total - a.total);
+
+  return (
+    <div className={cnWithDefault('flex flex-col gap-1')}>
+      <h2 className="text-xs sm:text-sm font-bold">
+        플레이한 브롤러 (최근 {battles.length}게임)
+      </h2>
+      <div className="flex flex-col gap-1">
+        {brawlerStats.map(stat => (
+          <div key={stat.id} className="flex p-2 gap-2 items-center border rounded-lg">
+            <Link href={brawlerHref(stat.id)} className="font-bold text-sm">{stat.name}</Link>
+            <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total} winRate={stat.winRate} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ResultStatistics({ victories, defeats, draws, total, winRate }: Readonly<{ victories: number, defeats: number, draws: number, total: number, winRate: number }>) {
+  return (
+    <div className="text-xs flex gap-1">
+      <span className="text-blue-600">{victories}승</span>
+      <span className="text-red-600">{defeats}패</span>
+      {draws > 0 && <span className="text-amber-600">{draws}무</span>}
+      <span className="text-zinc-500">{total}게임</span>
+      <span className="text-zinc-800">{winRate.toFixed(0)}%</span>
     </div>
   );
 }

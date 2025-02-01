@@ -14,7 +14,7 @@ export function BrawlerLink({ brawler, children }: Readonly<BrawlerLinkProps>) {
   }
 
   return (
-    <Link href={brawlerHref(brawler)}>
+    <Link href={brawlerHref(brawler.id)}>
       {children}
     </Link>
   );
