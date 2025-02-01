@@ -5,6 +5,8 @@ export const BattleTypeValue = {
   SOLO_RANKED: 'SOLO_RANKED',
   FRIENDLY: 'FRIENDLY',
   CHALLENGE: 'CHALLENGE',
+  TOURNAMENT: 'TOURNAMENT',
+  CHAMPIONSHIP_CHALLENGE: 'CHAMPIONSHIP_CHALLENGE',
 } as const;
 
 export type BattleType = typeof BattleTypeValue[keyof typeof BattleTypeValue];
