@@ -3,30 +3,29 @@
 import 'dayjs/locale/ko';
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { BattleResultValue } from "@/model/enums/BattleResult";
-import { BattleType } from "@/model/enums/BattleType";
+import {BattleResultValue} from "@/model/enums/BattleResult";
+import {BattleType} from "@/model/enums/BattleType";
 import Image from "next/image";
-import { Separator } from "@/components/ui/separator";
-import { BattlePlayer } from "@/model/BattlePlayer";
+import {Separator} from "@/components/ui/separator";
+import {BattlePlayer} from "@/model/BattlePlayer";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import {cn} from "@/lib/utils";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import SoloRankTier from "@/components/solo-rank-tier";
 import Trophy from "@/components/trophy";
-import { BrawlerLink } from "@/components/brawler-link";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
-import { PowerLevel } from "./brawler";
-import { useEffect, useState } from "react";
-import { PlayerBattle as PlayerBattleModel } from "@/model/PlayerBattle";
-import { getBattles } from "@/lib/api/battle";
-import { Brawler, BrawlerCollection } from "@/model/Brawler";
-import { LoadingButton } from "@/components/ui/expansion/loading-button";
-import { battleTypeIconSrc, battleTypeTitle } from "@/lib/battle-type";
-import { battleResultTitle } from "@/lib/battle-result";
-import { playerBattleIconSrc, playerBattleModeTitle } from "@/lib/player-battle";
-import { battleEventHref, playerHref } from "@/config/site";
-import { Button } from './ui/button';
+import {BrawlerLink} from "@/components/brawler-link";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
+import {PowerLevel} from "./brawler";
+import {useEffect, useState} from "react";
+import {PlayerBattle as PlayerBattleModel} from "@/model/PlayerBattle";
+import {getBattles} from "@/lib/api/battle";
+import {Brawler, BrawlerCollection} from "@/model/Brawler";
+import {LoadingButton} from "@/components/ui/expansion/loading-button";
+import {battleTypeIconSrc, battleTypeTitle} from "@/lib/battle-type";
+import {battleResultTitle} from "@/lib/battle-result";
+import {playerBattleIconSrc, playerBattleModeTitle} from "@/lib/player-battle";
+import {battleEventHref, playerHref} from "@/config/site";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -253,21 +252,18 @@ function BattleModeIcon({ battle }: { battle: PlayerBattleModel }) {
 function BattleTeams(
   { battle, myTag, brawlers }: { battle: PlayerBattleModel, myTag: string, brawlers: Brawler[] }
 ) {
-  const brawlerCollection = new BrawlerCollection(brawlers);
+  const shouldUseGrid = battle.teams.length > 5;
+
   return (
-    <div className="flex flex-col gap-1 items-center justify-center">
+    <div className={`${shouldUseGrid ? 'grid grid-cols-2' : 'flex flex-col'} gap-1 items-center justify-center`}>
       {battle.teams.map((team, i) => (
-        <div key={i} className="flex items-center gap-2">
-          {team.map((player, j) => (
-            <BattleTeamPlayer
-              key={j}
-              player={player}
-              myTag={myTag}
-              starPlayerTag={battle.starPlayerTag}
-              brawler={brawlerCollection.find(player.brawler.id)}
-            />
-          ))}
-        </div>
+        <BattleTeam
+          key={i}
+          team={team}
+          myTag={myTag}
+          starPlayerTag={battle.starPlayerTag}
+          brawlers={brawlers}
+        />
       ))}
     </div>
   );
@@ -275,17 +271,37 @@ function BattleTeams(
 
 function BattleTeam({ team, myTag, starPlayerTag, brawlers }: { team: BattlePlayer[], myTag: string, starPlayerTag: string | null, brawlers: Brawler[] }) {
   const brawlerCollection = new BrawlerCollection(brawlers);
+  const shouldSplit = team.length > 3;
+  const halfLength = shouldSplit ? Math.ceil(team.length / 2) : team.length;
+  
   return (
-    <div className="flex items-center gap-2">
-      {team.map((player, j) => (
-        <BattleTeamPlayer
-          key={j}
-          player={player}
-          myTag={myTag}
-          starPlayerTag={starPlayerTag}
-          brawler={brawlerCollection.find(player.brawler.id)}
-        />
-      ))}
+    <div className="border border-zinc-200 rounded-lg p-1 sm:p-2">
+      <div className={`flex ${shouldSplit ? 'flex-col sm:flex-row' : 'flex-row'} items-center gap-2`}>
+        <div className="flex items-center gap-2">
+          {team.slice(0, halfLength).map((player, j) => (
+            <BattleTeamPlayer
+              key={j}
+              player={player}
+              myTag={myTag}
+              starPlayerTag={starPlayerTag}
+              brawler={brawlerCollection.find(player.brawler.id)}
+            />
+          ))}
+        </div>
+        {shouldSplit && team.length > halfLength && (
+          <div className="flex items-center gap-2">
+            {team.slice(halfLength).map((player, j) => (
+              <BattleTeamPlayer
+                key={j + halfLength}
+                player={player}
+                myTag={myTag}
+                starPlayerTag={starPlayerTag}
+                brawler={brawlerCollection.find(player.brawler.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -302,7 +318,7 @@ function BattleTeamPlayer(
     ? 'font-bold text-zinc-800' : 'text-zinc-500';
 
   return (
-    <div className="flex flex-col items-center w-20">
+    <div className="flex flex-col items-center w-16 sm:w-20">
       <BrawlerLink brawler={brawler}>
         <div className="relative">
           <div className="absolute top-0 left-0 z-10 bg-zinc-200/50">
@@ -316,15 +332,15 @@ function BattleTeamPlayer(
         </div>
       </BrawlerLink>
       <div className="w-full">
-        <div className="flex gap-1">
+        <div className="flex gap-1 sm:text-xs text-[0.625rem]">
           <Link
             href={playerHref(player.tag)}
-            className={cn(nameStyle, 'text-xs', 'flex-1', 'truncate')}
+            className={cn(nameStyle, 'flex-1', 'truncate')}
           >
             {player.name}
           </Link>
           {starPlayerTag === player.tag && (
-            <span className="text-xs">⭐️</span>
+            <span>⭐️</span>
           )}
         </div>
       </div>
