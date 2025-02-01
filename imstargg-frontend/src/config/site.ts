@@ -1,4 +1,3 @@
-import {Brawler} from "@/model/Brawler";
 import ImStarGgLogo from "@/../public/logo.png"
 
 export const meta = {
@@ -11,6 +10,6 @@ export const metadataTitle = (title: string) => `${title} | ${meta.name}`;
 
 export const battleEventHref = (id: number) => `/events/${id}`;
 
-export const brawlerHref = (brawler: Brawler) => `/brawlers/${brawler.id}`;
+export const brawlerHref = (id: number) => `/brawlers/${id}`;
 
 export const playerHref = (tag: string) => `/players/${encodeURIComponent(tag)}`;

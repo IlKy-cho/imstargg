@@ -20,3 +20,8 @@ export interface PlayerBattle {
 export function playerBattleMyTeam(battle: PlayerBattle): BattlePlayer[] {
   return battle.teams.find((team) => team.some((player) => player.tag === battle.starPlayerTag)) ?? [];
 }
+
+export function playerBattleMe(battle: PlayerBattle, tag: string): BattlePlayer[] {
+  const myTeam = playerBattleMyTeam(battle);
+  return myTeam.filter((player) => player.tag === tag);
+}
