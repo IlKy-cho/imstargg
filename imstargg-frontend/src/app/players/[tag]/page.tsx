@@ -4,7 +4,7 @@ import {getBrawlers} from "@/lib/api/brawler";
 import {getPlayer, getPlayerBrawlers} from "@/lib/api/player";
 import {notFound} from "next/navigation";
 import {Metadata} from "next";
-import {PlayerBattleList} from "@/components/player-battle";
+import {PlayerBattleContent} from "@/components/player-battle";
 import {Brawler} from "@/model/Brawler";
 import {PlayerBrawlerList} from "@/components/player-brawler";
 
@@ -45,9 +45,7 @@ export default async function PlayerPage({params}: Readonly<Props>) {
         </div>
       </div>
       <PagePlayerBrawlerList tag={decodedTag} brawlers={brawlers}/>
-      <div>
-        <PlayerBattleList tag={decodedTag} brawlerList={brawlers}/>
-      </div>
+      <PlayerBattleContent tag={decodedTag} brawlers={brawlers}/>
     </div>
   );
 }

@@ -16,3 +16,7 @@ export interface PlayerBattle {
   starPlayerTag: string | null;
   teams: BattlePlayer[][];
 }
+
+export function playerBattleMyTeam(battle: PlayerBattle): BattlePlayer[] {
+  return battle.teams.find((team) => team.some((player) => player.tag === battle.starPlayerTag)) ?? [];
+}
