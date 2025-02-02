@@ -17,8 +17,8 @@ import Trophy from "@/components/trophy";
 import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 import {PowerLevel} from "./brawler";
-import {createContext, useContext, useEffect, useState} from "react";
-import {playerBattleMe, PlayerBattle as PlayerBattleModel, playerBattleMyTeam} from "@/model/PlayerBattle";
+import {createContext, useContext, useEffect, useMemo, useState} from "react";
+import {PlayerBattle as PlayerBattleModel, playerBattleMe, playerBattleMyTeam} from "@/model/PlayerBattle";
 import {getBattles} from "@/lib/api/battle";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {LoadingButton} from "@/components/ui/expansion/loading-button";
@@ -26,6 +26,10 @@ import {battleTypeIconSrc, battleTypeTitle} from "@/lib/battle-type";
 import {battleResultTitle} from "@/lib/battle-result";
 import {playerBattleIconSrc, playerBattleModeTitle} from "@/lib/player-battle";
 import {battleEventHref, brawlerHref, playerHref} from "@/config/site";
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from './ui/chart';
+import {Card, CardContent, CardHeader, CardTitle} from './ui/card';
+import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
+import {Player} from "@/model/Player";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -49,11 +53,12 @@ const initialState: BattleContextType = {
 const BattleContext = createContext<BattleContextType>(initialState);
 
 type PlayerBattleContentProps = {
-  tag: string;
+  player: Player;
   brawlers: Brawler[];
 };
 
-export function PlayerBattleContent({ tag, brawlers }: Readonly<PlayerBattleContentProps>) {
+export function PlayerBattleContent({ player, brawlers }: Readonly<PlayerBattleContentProps>) {
+  const tag = player.tag;
   const [battles, setBattles] = useState<PlayerBattleModel[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -81,6 +86,7 @@ export function PlayerBattleContent({ tag, brawlers }: Readonly<PlayerBattleCont
         <div className="flex flex-col gap-1 w-full sm:w-72">
           <PlayerBattleRecentMyTeamStatistics myTag={tag} />
           <PlayerBattleRecentBrawlerStatistics myTag={tag} brawlers={brawlers} />
+          <RecentTrophyChange player={player} />
         </div>
         <div className="flex-1">
           <PlayerBattleList tag={tag} brawlerList={brawlers} />
@@ -480,7 +486,6 @@ function PlayerBattleRecentMyTeamStatistics({ myTag }: Readonly<{ myTag: string 
   const teamStats = Array.from(myTeamPlayerTagToCounter.entries())
     .map(([tag, counter]) => ({
       tag,
-      name: tagToName.get(tag)!,
       victories: counter.getVictoryCount(),
       defeats: counter.getDefeatCount(),
       draws: counter.getDrawCount(),
@@ -499,7 +504,7 @@ function PlayerBattleRecentMyTeamStatistics({ myTag }: Readonly<{ myTag: string 
         {teamStats.map(stat => (
           <div key={stat.tag} className="flex flex-col p-2 border rounded-lg">
             <Link href={playerHref(stat.tag)} className="font-bold text-sm">
-              {stat.name}<span className="text-zinc-500">{stat.tag}</span>
+              {tagToName.get(stat.tag)!}<span className="text-zinc-500">{stat.tag}</span>
             </Link>
             <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total} winRate={stat.winRate} />
           </div>
@@ -533,7 +538,6 @@ function PlayerBattleRecentBrawlerStatistics({ myTag, brawlers }: Readonly<{ myT
   const brawlerStats = Array.from(brawlerIdToCounter.entries())
     .map(([id, counter]) => ({
       id,
-      name: brawlerCollection.find(id)!.name,
       victories: counter.getVictoryCount(),
       defeats: counter.getDefeatCount(),
       draws: counter.getDrawCount(),
@@ -550,7 +554,7 @@ function PlayerBattleRecentBrawlerStatistics({ myTag, brawlers }: Readonly<{ myT
       <div className="flex flex-col gap-1">
         {brawlerStats.map(stat => (
           <div key={stat.id} className="flex p-2 gap-2 items-center border rounded-lg">
-            <Link href={brawlerHref(stat.id)} className="font-bold text-sm">{stat.name}</Link>
+            <Link href={brawlerHref(stat.id)} className="font-bold text-sm">{brawlerCollection.find(stat.id)!.name}</Link>
             <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total} winRate={stat.winRate} />
           </div>
         ))}
@@ -568,5 +572,88 @@ function ResultStatistics({ victories, defeats, draws, total, winRate }: Readonl
       <span className="text-zinc-500">{total}게임</span>
       <span className="text-zinc-800">{winRate.toFixed(0)}%</span>
     </div>
+  );
+}
+
+function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
+  const { battles } = useContext(BattleContext);
+
+  const chartConfig = useMemo(() => ({
+    trophy: {
+      label: '트로피',
+    }
+  } satisfies ChartConfig), []);
+
+  const data = useMemo(() => {
+    let currentTrophy = player.trophies;
+    const battleTrophies: {battleTime: Date, trophy: number}[] = [];
+    for (let i = 0; i < battles.length; i++) {
+      const battle = battles[i];
+      if (battle.trophyChange) {
+        battleTrophies.push({
+          battleTime: battle.battleTime,
+          trophy: currentTrophy
+        });
+        currentTrophy -= battle.trophyChange;
+      } else {
+        const battleBrawlersTrophyChange = playerBattleMe(battle, player.tag)
+          .map(p => p.brawler.trophyChange)
+          .filter((change): change is number => change !== undefined)
+          .reduce((acc, change) => acc + change, 0);
+        if (battleBrawlersTrophyChange !== 0) {
+          battleTrophies.push({
+            battleTime: battle.battleTime,
+            trophy: currentTrophy
+          });
+          currentTrophy -= battleBrawlersTrophyChange;
+        }
+      }
+    }
+    return battleTrophies.reverse();
+  }, [battles]);
+
+  const minTrophy = Math.min(...data.map(d => d.trophy));
+  const maxTrophy = Math.max(...data.map(d => d.trophy));
+
+  const padding = Math.round((maxTrophy - minTrophy) * 0.05);
+
+  return (
+    <Card>
+      <CardHeader className="p-2">
+        <CardTitle className="text-xs sm:text-sm">
+          트로피 (최근 {battles.length}게임)
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-2">
+        <ChartContainer config={chartConfig}>
+          <LineChart
+            accessibilityLayer
+            data={data}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis 
+              dataKey="battleTime" 
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => dayjs(value).format('MM/DD')}
+            />
+            <YAxis
+              domain={[minTrophy - padding, maxTrophy + padding]}
+              tickLine={false}
+              axisLine={false}
+            />
+            <ChartTooltip
+              content={<ChartTooltipContent hideLabel />}
+            />
+            <Line
+              dataKey="trophy"
+              type="linear"
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }

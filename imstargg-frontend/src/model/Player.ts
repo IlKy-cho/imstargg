@@ -7,7 +7,7 @@ export interface Player {
   iconId: number;
   trophies: number;
   highestTrophies: number;
-  soloRankTier: SoloRankTier;
+  soloRankTier: SoloRankTier | null;
   clubTag: string | null;
   updatedAt: Date;
 }
