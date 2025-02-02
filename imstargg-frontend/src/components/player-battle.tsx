@@ -30,6 +30,8 @@ import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from './
 import {Card, CardContent, CardHeader, CardTitle} from './ui/card';
 import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
 import {Player} from "@/model/Player";
+import { SoloRankTier as SoloRankTierType, soloRankTierValue, valueToSoloRankTier } from '@/model/enums/SoloRankTier';
+import { soloRankTierTitle } from '@/lib/solo-rank-tier';
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -87,6 +89,7 @@ export function PlayerBattleContent({ player, brawlers }: Readonly<PlayerBattleC
           <PlayerBattleRecentMyTeamStatistics myTag={tag} />
           <PlayerBattleRecentBrawlerStatistics myTag={tag} brawlers={brawlers} />
           <RecentTrophyChange player={player} />
+          <RecentSoloRankTierChange myTag={tag} />
         </div>
         <div className="flex-1">
           <PlayerBattleList tag={tag} brawlerList={brawlers} />
@@ -610,7 +613,7 @@ function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
       }
     }
     return battleTrophies.reverse();
-  }, [battles]);
+  }, [battles, player.tag, player.trophies]);
 
   const minTrophy = Math.min(...data.map(d => d.trophy));
   const maxTrophy = Math.max(...data.map(d => d.trophy));
@@ -650,6 +653,75 @@ function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
               type="linear"
               strokeWidth={2}
               dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
+  );
+}
+
+function RecentSoloRankTierChange({ myTag }: Readonly<{ myTag: string }>) {
+  const { battles } = useContext(BattleContext);
+  const chartConfig = useMemo(() => ({
+    tier: {
+      label: '경쟁전',
+    }
+  } satisfies ChartConfig), []); 
+
+  const data = useMemo(() => {
+    const soloRankTiers: {battleTime: Date, tier: number}[] = [];
+    for (let i = 0; i < battles.length; i++) {
+      const battle = battles[i];
+      playerBattleMe(battle, myTag)
+        .map(p => p.soloRankTier)
+        .filter((tier): tier is SoloRankTierType => tier !== undefined)
+        .forEach(tier => {
+          soloRankTiers.push({
+            battleTime: battle.battleTime,
+            tier: soloRankTierValue(tier)
+          });
+        });
+    }
+    return soloRankTiers.reverse();
+  }, [battles, myTag]);
+
+
+  const minTier = Math.min(...data.map(d => d.tier));
+  const maxTier = Math.max(...data.map(d => d.tier));
+
+  return (
+    <Card>
+      <CardHeader className="p-2">
+        <CardTitle className="text-xs sm:text-sm">
+          경쟁전 (최근 {battles.length}게임)
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="p-2">
+        <ChartContainer config={chartConfig}>
+          <LineChart
+            accessibilityLayer
+            data={data}
+          >
+            <CartesianGrid vertical={false} />
+            <XAxis 
+              dataKey="battleTime" 
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => dayjs(value).format('MM/DD')}
+            />
+            <YAxis
+              domain={[Math.max(1, minTier - 1), Math.min(19, maxTier + 1)]}
+              tickLine={false}
+              axisLine={false}
+              allowDecimals={false}
+              tickFormatter={(value) => soloRankTierTitle(valueToSoloRankTier(value))}
+            />
+            <Line
+              type="linear"
+              strokeWidth={2}
+              dot={false}
+              dataKey="tier"
             />
           </LineChart>
         </ChartContainer>

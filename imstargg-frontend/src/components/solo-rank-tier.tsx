@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import {SoloRankTier as SoloRankTierType, SoloRankTierValue} from "@/model/enums/SoloRankTier";
 import {cn} from "@/lib/utils";
-import {soloRankTierIconSrc} from "@/lib/solo-rank-tier";
+import {soloRankTierIconSrc, soloRankTierNumber} from "@/lib/solo-rank-tier";
 
 const soloRankTierTextColor = (tier: SoloRankTierType) => {
   switch (tier) {
@@ -31,34 +31,6 @@ const soloRankTierTextColor = (tier: SoloRankTierType) => {
       return 'text-[#EB4A59]';
     case SoloRankTierValue.MASTER:
       return 'text-[#FCEF67]';
-  }
-}
-
-const soloRankTierNumber = (tier: SoloRankTierType) => {
-  switch (tier) {
-    case SoloRankTierValue.BRONZE_1:
-    case SoloRankTierValue.SILVER_1:
-    case SoloRankTierValue.GOLD_1:
-    case SoloRankTierValue.DIAMOND_1:
-    case SoloRankTierValue.MYTHIC_1:
-    case SoloRankTierValue.LEGENDARY_1:
-      return 'I';
-    case SoloRankTierValue.BRONZE_2:
-    case SoloRankTierValue.SILVER_2:
-    case SoloRankTierValue.GOLD_2:
-    case SoloRankTierValue.DIAMOND_2:
-    case SoloRankTierValue.MYTHIC_2:
-    case SoloRankTierValue.LEGENDARY_2:
-      return 'II';
-    case SoloRankTierValue.BRONZE_3:
-    case SoloRankTierValue.SILVER_3:
-    case SoloRankTierValue.GOLD_3:
-    case SoloRankTierValue.DIAMOND_3:
-    case SoloRankTierValue.MYTHIC_3:
-    case SoloRankTierValue.LEGENDARY_3:
-      return 'III';
-    default:
-      return null;
   }
 }
 
