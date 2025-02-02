@@ -45,7 +45,7 @@ export default async function PlayerPage({params}: Readonly<Props>) {
         </div>
       </div>
       <PagePlayerBrawlerList tag={decodedTag} brawlers={brawlers}/>
-      <PlayerBattleContent tag={decodedTag} brawlers={brawlers}/>
+      <PlayerBattleContent player={player} brawlers={brawlers}/>
     </div>
   );
 }
