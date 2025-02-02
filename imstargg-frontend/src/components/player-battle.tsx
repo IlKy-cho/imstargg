@@ -109,7 +109,7 @@ export function PlayerBattleList({ tag, brawlerList }: Readonly<PlayerBattleList
 
   useEffect(() => {
     fetchBattles();
-  });
+  }, [tag]);
 
   return (
     <div className="flex flex-col gap-2">
