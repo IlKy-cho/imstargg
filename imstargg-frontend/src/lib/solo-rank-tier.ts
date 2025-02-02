@@ -47,3 +47,66 @@ export function soloRankTierIconSrc(tier: SoloRankTier) {
       return SoloRankTierIconSrc.MASTER;
   }
 }
+
+export function soloRankTierNumber(tier: SoloRankTier): 'I'| 'II' | 'III' | null {
+  switch (tier) {
+    case SoloRankTierValue.BRONZE_1:
+    case SoloRankTierValue.SILVER_1:
+    case SoloRankTierValue.GOLD_1:
+    case SoloRankTierValue.DIAMOND_1:
+    case SoloRankTierValue.MYTHIC_1:
+    case SoloRankTierValue.LEGENDARY_1:
+      return 'I';
+    case SoloRankTierValue.BRONZE_2:
+    case SoloRankTierValue.SILVER_2:
+    case SoloRankTierValue.GOLD_2:
+    case SoloRankTierValue.DIAMOND_2:
+    case SoloRankTierValue.MYTHIC_2:
+    case SoloRankTierValue.LEGENDARY_2:
+      return 'II';
+    case SoloRankTierValue.BRONZE_3:
+    case SoloRankTierValue.SILVER_3:
+    case SoloRankTierValue.GOLD_3:
+    case SoloRankTierValue.DIAMOND_3:
+    case SoloRankTierValue.MYTHIC_3:
+    case SoloRankTierValue.LEGENDARY_3:
+      return 'III';
+    case SoloRankTierValue.MASTER:
+      return null;
+  }
+}
+
+export function soloRankTierGroupName(tier: SoloRankTier) {
+  switch (tier) {
+    case SoloRankTierValue.BRONZE_1:
+    case SoloRankTierValue.BRONZE_2:
+    case SoloRankTierValue.BRONZE_3:
+      return '브론즈';
+    case SoloRankTierValue.SILVER_1:
+    case SoloRankTierValue.SILVER_2:
+    case SoloRankTierValue.SILVER_3:
+      return '실버';
+    case SoloRankTierValue.GOLD_1:
+    case SoloRankTierValue.GOLD_2:
+    case SoloRankTierValue.GOLD_3:
+      return '골드';
+    case SoloRankTierValue.DIAMOND_1:
+    case SoloRankTierValue.DIAMOND_2:
+    case SoloRankTierValue.DIAMOND_3:
+      return '다이아';
+    case SoloRankTierValue.MYTHIC_1:
+    case SoloRankTierValue.MYTHIC_2:
+    case SoloRankTierValue.MYTHIC_3:
+      return '신화';
+    case SoloRankTierValue.LEGENDARY_1:
+    case SoloRankTierValue.LEGENDARY_2:
+    case SoloRankTierValue.LEGENDARY_3:
+      return '전설';
+    case SoloRankTierValue.MASTER:
+      return '마스터';
+  }
+}
+
+export function soloRankTierTitle(tier: SoloRankTier) {
+  return `${soloRankTierGroupName(tier)}${soloRankTierNumber(tier) || ''}`;
+}
