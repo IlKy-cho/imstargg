@@ -465,18 +465,18 @@ function PlayerBattleRecentMyTeamStatistics({ myTag }: Readonly<{ myTag: string 
   const tagToName = new Map<string, string>();
 
   battles.forEach(battle => {
-    if (!battle.result) return;
+    if (!battle.result) {
+      return;
+    }
 
-    const myTeam = playerBattleMyTeam(battle);
+    const myTeam = playerBattleMyTeam(battle, myTag);
     myTeam.forEach(player => {
       if (player.tag === myTag) return;
 
-      // 플레이어 이름 저장
       if (!tagToName.has(player.tag)) {
         tagToName.set(player.tag, player.name);
       }
 
-      // 전적 카운터 업데이트
       let counter = myTeamPlayerTagToCounter.get(player.tag);
       if (!counter) {
         counter = new BattleResultCounter();
