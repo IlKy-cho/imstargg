@@ -32,13 +32,15 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
 
   const handleRenew = async () => {
     setLoading(true);
+    setRenewalEnabled(false);
     try {
       await renewPlayer(player.tag);
-      setRenewalEnabled(false);
 
       const checkRenewalStatus = async () => {
         const status = await getPlayerRenewalStatus(player.tag);
+        console.log("Renewal status:", status);
         if (!status.renewing) {
+          console.log("Renewal finished");
           window.location.reload();
         } else {
           setTimeout(checkRenewalStatus, 1000);
@@ -75,7 +77,7 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
       size="sm" value="outline"
       className="bg-blue-400 rounded-sm"
     >
-      {renewalEnabled ? '새로고침' : `${remainingSeconds}초 후 시도`}
+      {remainingSeconds === 0 ? '새로고침' : `${remainingSeconds}초 후 시도`}
     </LoadingButton>
   );
 }
