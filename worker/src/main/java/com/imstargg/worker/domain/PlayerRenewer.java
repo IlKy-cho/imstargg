@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class PlayerRenewer {
@@ -58,21 +57,17 @@ public class PlayerRenewer {
 
         try {
             playerRenewalRepository.executing(playerRenewalEntity);
+            playerRepository.find(tag).ifPresentOrElse(
+                    this::renewPlayer,
+                    () -> playerRepository.findUnknown(tag).ifPresentOrElse(
+                            this::renewNewPlayer,
+                            () -> {
+                                throw new IllegalStateException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
+                            }
+                    )
+            );
 
-            Optional<PlayerCollectionEntity> playerEntityOpt = playerRepository.find(tag);
-            if (playerEntityOpt.isPresent()) {
-                renewPlayer(playerEntityOpt.get());
-                log.debug("플레이어 갱신 완료. tag={}", tag);
-                return;
-            }
-            Optional<UnknownPlayerCollectionEntity> unknownPlayerEntityOpt = playerRepository.findUnknown(tag);
-            if (unknownPlayerEntityOpt.isPresent()) {
-                renewNewPlayer(unknownPlayerEntityOpt.get());
-                log.debug("신규 플레이어 갱신 완료. tag={}", tag);
-                return;
-            }
             playerRenewalRepository.complete(playerRenewalEntity);
-            throw new IllegalStateException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
         } catch(BrawlStarsClientException.InMaintenance e) {
             playerRenewalRepository.inMaintenance(playerRenewalEntity);
         } catch(Exception e) {
