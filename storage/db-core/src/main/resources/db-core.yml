@@ -34,6 +34,8 @@ spring:
         default_batch_fetch_size: 500
         query.fail_on_pagination_over_collection_fetch: true
         timezone.default_storage: NORMALIZE
+        jdbc:
+          time_zone: UTC
     open-in-view: false
 
   sql:
