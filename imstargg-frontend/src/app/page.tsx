@@ -1,15 +1,13 @@
 import Image from "next/image";
 import React from "react";
 import PlayerSearchForm from "@/components/player-search-form";
-import {getBrawlStarsNews} from "@/lib/api/brawlstars";
-import {BrawlStarsNewsList} from "@/components/brawl-stars-news";
+import {BrawlStarsNewsChannel} from "@/components/brawl-stars-news";
+
 
 export default async function Home() {
 
-  const newsList = await  getBrawlStarsNews();
-
   return (
-    <div className="flex flex-col items-center justify-center my-4 p-2">
+    <div className="flex flex-col items-center justify-center my-4 p-8">
       <div className="mb-8">
         <Image
           src="/zBrawl Stars Logo 2_starr_parkk.png"
@@ -24,7 +22,10 @@ export default async function Home() {
         <PlayerSearchForm/>
       </div>
 
-      <BrawlStarsNewsList newsList={newsList}/>
+      <div className="mt-8">
+        <BrawlStarsNewsChannel/>
+      </div>
+
     </div>
   );
 }
