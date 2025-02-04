@@ -1,25 +1,19 @@
 import type {BrawlStarsNews as BrawlStarsNewsModel} from "@/model/brawlstars/BrawlStarsNews";
 import Link from "next/link";
-import dayjs from "dayjs";
+import {NewsChannelItem, newsChannelItems} from "@/config/docs";
+import Image from "next/image";
 
-type NewsListProps = {
-  newsList: BrawlStarsNewsModel[];
-}
-
-export function BrawlStarsNewsList({newsList}: Readonly<NewsListProps>) {
+export function BrawlStarsNewsChannel() {
 
 
   return (
-    <div className="flex flex-col gap-4 max-w-2xl w-full my-5">
-      <Link href='https://supercell.com/en/games/brawlstars/ko/blog/' target="_blank">
-        <h1 className="text-xl sm:text-2xl font-bold">브롤스타즈 뉴스</h1>
-      </Link>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-xl sm:text-2xl font-bold">브롤스타즈 소식 채널</h1>
 
-
-      <div className="flex flex-col gap-1">
+      <div className="flex gap-1">
         {
-          newsList.map((news) => (
-            <BrawlStarsNews key={news.linkUrl} news={news}/>
+          newsChannelItems.map((item) => (
+            <BrawlStarsNewsChannelItem key={item.label} item={item} />
           ))
         }
       </div>
@@ -32,17 +26,10 @@ type NewsProps = {
 }
 
 
-function BrawlStarsNews({news}: NewsProps) {
+function BrawlStarsNewsChannelItem({item}: Readonly<{item: NewsChannelItem}>) {
   return (
-    <Link href={news.linkUrl} target="_blank">
-      <div className="p-3 sm:p-4 border rounded-lg hover:bg-zinc-100">
-        <div className="flex items-center justify-between gap-2">
-          <h2 className="text-base sm:text-lg font-semibold">{news.title}</h2>
-          <div className="text-xs sm:text-sm text-zinc-600">
-            {dayjs(news.publishDate).format('YYYY.MM.DD')}
-          </div>
-        </div>
-      </div>
+    <Link href={item.href} target="_blank">
+      <Image src={item.icon} alt={item.label} className="w-10 h-10" />
     </Link>
   );
 }
