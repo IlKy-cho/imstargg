@@ -25,6 +25,9 @@ export const metadata: Metadata = {
     absolute: meta.name,
   },
   description: "브롤스타즈 전적 검색부터 데이터 분석, 메타 분석까지 다양한 정보를 제공합니다.",
+  verification: {
+    google: "uQrYhlLwg8iK4cdK3ZXPT1F676PDjvoTd7IdE6nxkak"
+  }
 };
 
 export default function RootLayout({
