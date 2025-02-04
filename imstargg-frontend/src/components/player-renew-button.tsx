@@ -56,16 +56,11 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
           toast("현재 새로고침 요청이 많아서 처리할 수 없습니다. 잠시 후 다시 시도해주세요.");
         } else if (error.error?.type === ApiErrorTypeValue.BRAWLSTARS_IN_MAINTENANCE) {
           toast("브롤스타즈 서버 점검 중입니다. 잠시 후 다시 시도해주세요.");
-        } else {
-          console.error('Failed to renew player:', error);
-          toast("플레이어 정보 새로고침 중 오류가 발생했습니다.");
         }
       } else {
         console.error('Unexpected error:', error);
         toast("예기치 않은 오류가 발생했습니다.");
       }
-    } finally {
-      setLoading(false);
     }
   }
 
