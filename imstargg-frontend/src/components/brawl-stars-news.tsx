@@ -1,4 +1,3 @@
-import type {BrawlStarsNews as BrawlStarsNewsModel} from "@/model/brawlstars/BrawlStarsNews";
 import Link from "next/link";
 import {NewsChannelItem, newsChannelItems} from "@/config/docs";
 import Image from "next/image";
@@ -20,11 +19,6 @@ export function BrawlStarsNewsChannel() {
     </div>
   );
 }
-
-type NewsProps = {
-  news: BrawlStarsNewsModel;
-}
-
 
 function BrawlStarsNewsChannelItem({item}: Readonly<{item: NewsChannelItem}>) {
   return (
