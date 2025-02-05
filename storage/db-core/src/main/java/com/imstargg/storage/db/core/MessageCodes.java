@@ -41,7 +41,7 @@ public abstract class MessageCodes {
         }
 
         public String code(T key) {
-            return template.replace(keyPlaceholder, key.toString());
+            return template.replace(keyPlaceholder, key.toString()).toLowerCase();
         }
 
         public String key(String code) {
