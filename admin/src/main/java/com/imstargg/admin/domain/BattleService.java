@@ -106,7 +106,7 @@ public class BattleService {
 
     @Transactional
     public void updateBattleEvent(long eventBrawlStarsId, BattleEventUpdate update) {
-        update.names().validate();
+        update.map().names().validate();
         BattleEventCollectionEntity eventEntity = battleEventCollectionJpaRepository.findByBrawlStarsId(eventBrawlStarsId)
                 .orElseThrow(() -> new AdminException(
                         AdminErrorKind.NOT_FOUND, "해당 이벤트를 찾을 수 없습니다. 이벤트 ID: " + eventBrawlStarsId));
@@ -115,9 +115,8 @@ public class BattleService {
         }
         messageRepository.findAllByCode(MessageCodes.BATTLE_MAP_NAME.code(eventEntity.getMapBrawlStarsName()))
                 .stream()
-                .filter(messageEntity -> update.names().messages().containsKey(messageEntity.getLang()))
-                .forEach(messageEntity -> messageEntity.update(update.names().messages().get(messageEntity.getLang())));
-
+                .filter(messageEntity -> update.map().names().messages().containsKey(messageEntity.getLang()))
+                .forEach(messageEntity -> messageEntity.update(update.map().names().messages().get(messageEntity.getLang())));
     }
 
     public void uploadMapImage(long eventBrawlStarsId, Resource resource) {
