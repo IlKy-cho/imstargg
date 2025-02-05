@@ -98,6 +98,7 @@ public class BattleService {
                                 battle.getEvent().getBrawlStarsId() == null ? null :
                                         mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(battle.getEvent().getBrawlStarsId()))
                         ),
+                        battle.getMode(),
                         battle.getBattleTime().toLocalDateTime()
                 ))
                 .toList();
