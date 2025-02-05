@@ -1,10 +1,10 @@
 package com.imstargg.admin.controller.request;
 
 import com.imstargg.admin.domain.BattleEventUpdate;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public record BattleEventUpdateRequest(
-        @NotEmpty BattleEventMapUpdateRequest map
+        @NotNull BattleEventMapUpdateRequest map
 ) {
 
     public BattleEventUpdate toBattleEventUpdate() {
