@@ -73,9 +73,13 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                     : "X"
                   }
                 </TableCell>
-                <TableCell>
+                <TableCell className="flex flex-col">
                     {battleEvent.entity.brawlStarsId !== null && battleEvent.entity.brawlStarsId !== 0 ?
                       <EventMapImageUpload battleEvent={battleEvent}/>
+                      : null
+                    }
+                    {battleEvent.entity.brawlStarsId !== null && battleEvent.entity.brawlStarsId !== 0 ?
+                      <EventUpdate battleEvent={battleEvent}/>
                       : null
                     }
                 </TableCell>
