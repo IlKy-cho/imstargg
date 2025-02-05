@@ -11,7 +11,7 @@ import Image from "next/image"
 import BattleEvent from "@/model/BattleEvent";
 import {messagesToTitle} from "@/components/title";
 import React from "react";
-import {EventMapImageUpload} from "@/app/events/event-map-image-upload";
+import {EventMapImageUpload} from "./event-map-image-upload";
 import {imageUrl} from "@/lib/image";
 
 type Props = {
