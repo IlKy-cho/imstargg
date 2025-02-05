@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table"
 import { useEffect, useState } from "react"
 import getGearList from "@/lib/api/getGearList"
-import type Gear from "@/model/Gear"
+import {Gear} from "@/model/Gear"
 
 export function GearList() {
   const [gears, setGears] = useState<Gear[]>([]);

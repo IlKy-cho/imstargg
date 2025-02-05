@@ -1,7 +1,7 @@
-import MessageEntity from "@/model/entity/MessageEntity";
-import GearEntity from "@/model/entity/GearEntity";
+import {MessageEntity} from "@/model/entity/MessageEntity";
+import {GearEntity} from "@/model/entity/GearEntity";
 
-export default interface Gear {
+export interface Gear {
   entity: GearEntity;
   names: MessageEntity[];
 }

@@ -8,7 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import Image from "next/image"
-import BattleEvent from "@/model/BattleEvent";
+import { BattleEvent } from "@/model/BattleEvent";
 import {messagesToTitle} from "@/components/title";
 import React from "react";
 import {EventMapImageUpload} from "./event-map-image-upload";

@@ -1,8 +1,8 @@
-import BattleEventMap from "@/model/BattleEventMap";
-import BattleEventEntity from "@/model/entity/BattleEntityEvent";
+import {BattleEventMap} from "@/model/BattleEventMap";
+import {BattleEntityEvent} from "@/model/entity/BattleEntityEvent";
 
-export default interface BattleEvent {
-  entity: BattleEventEntity;
+export interface BattleEvent {
+  entity: BattleEntityEvent;
   map: BattleEventMap;
   latestBattleTime: Date | null;
 }

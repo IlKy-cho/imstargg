@@ -1,7 +1,7 @@
-import BaseEntity from "@/model/entity/BaseEntity";
+import {BaseEntity} from "@/model/entity/BaseEntity";
 import {GearRarity} from "@/model/enums/GearRarity";
 
-export default interface GearEntity extends BaseEntity {
+export interface GearEntity extends BaseEntity {
   id: number;
   brawlStarsId: string;
   nameMessageCode: string;

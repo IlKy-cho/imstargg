@@ -1,6 +1,6 @@
-import BaseEntity from "@/model/entity/BaseEntity";
+import {BaseEntity} from "@/model/entity/BaseEntity";
 
-export default interface BrawlStarsImageEntity extends BaseEntity {
+export interface BrawlStarsImageEntity extends BaseEntity {
   id: number;
   type: string;
   code: string;

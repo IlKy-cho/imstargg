@@ -1,7 +1,7 @@
-import MessageEntity from "@/model/entity/MessageEntity";
-import StarPowerEntity from "@/model/entity/StarPowerEntity";
+import {MessageEntity} from "@/model/entity/MessageEntity";
+import {StarPowerEntity} from "@/model/entity/StarPowerEntity";
 
-export default interface StarPower {
+export interface StarPower {
   entity: StarPowerEntity;
   names: MessageEntity[];
 }

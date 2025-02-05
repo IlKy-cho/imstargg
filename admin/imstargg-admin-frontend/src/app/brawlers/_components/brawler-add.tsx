@@ -23,7 +23,7 @@ import { useState, useEffect } from "react"
 import registerBrawler from "@/lib/api/registerBrawler"
 import { XIcon } from "lucide-react"
 import getGearList from "@/lib/api/getGearList"
-import Gear from "@/model/Gear"
+import {Gear} from "@/model/Gear"
 import {Language, LanguageValues} from "@/model/enums/Language";
 import {BrawlerRarity, BrawlerRarityValue, BrawlerRarityValues} from "@/model/enums/BrawlerRarity";
 import {BrawlerRole, BrawlerRoleValue, BrawlerRoleValues} from "@/model/enums/BrawlerRole";

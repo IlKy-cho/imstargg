@@ -1,11 +1,11 @@
-import BrawlerEntity from "@/model/entity/BrawlerEntity";
-import MessageEntity from "@/model/entity/MessageEntity";
-import BrawlStarsImageEntity from "@/model/entity/BrawlStarsImageEntity";
-import Gadget from "@/model/Gadget";
-import StarPower from "@/model/StarPower";
-import Gear from "@/model/Gear";
+import {BrawlerEntity} from "@/model/entity/BrawlerEntity";
+import {MessageEntity} from "@/model/entity/MessageEntity";
+import {BrawlStarsImageEntity} from "@/model/entity/BrawlStarsImageEntity";
+import {Gadget} from "@/model/Gadget";
+import {StarPower} from "@/model/StarPower";
+import {Gear} from "@/model/Gear";
 
-export default interface Brawler {
+export interface Brawler {
   entity: BrawlerEntity;
   names: MessageEntity[];
   image: BrawlStarsImageEntity | null;
