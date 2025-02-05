@@ -1,19 +1,21 @@
 package com.imstargg.admin.domain;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
-import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityEvent;
 import com.imstargg.storage.db.core.BattleJpaRepository;
+import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.MessageCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import java.time.Clock;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -26,20 +28,20 @@ import static java.util.stream.Collectors.toMap;
 @Service
 public class BattleService {
 
-    private final Clock clock;
+    private final Cache<Long, Optional<BattleEntity>> eventBrawlStarsIdToLastBattleCache = Caffeine.newBuilder()
+            .expireAfterWrite(Duration.ofMinutes(30))
+            .build();
     private final BrawlStarsImageUploader brawlStarsImageUploader;
     private final BattleJpaRepository battleJpaRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
 
     public BattleService(
-            Clock clock,
             BrawlStarsImageUploader brawlStarsImageUploader,
             BattleJpaRepository battleMapRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
             MessageCollectionJpaRepository messageRepository
     ) {
-        this.clock = clock;
         this.brawlStarsImageUploader = brawlStarsImageUploader;
         this.battleJpaRepository = battleMapRepository;
         this.brawlStarsImageRepository = brawlStarsImageRepository;
@@ -49,12 +51,16 @@ public class BattleService {
 
     public List<BattleEvent> getEventList() {
         List<BattleEntity> battles = battleJpaRepository.findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
-                null,
-                null
+                        null,
+                        null
                 )
                 .stream()
-                .map(eventBrawlStarsId -> battleJpaRepository
-                        .findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(eventBrawlStarsId, BattleType.regularTypes()))
+                .map(eventBrawlStarsId ->
+                        eventBrawlStarsIdToLastBattleCache.get(eventBrawlStarsId, key ->
+                                battleJpaRepository
+                                        .findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(eventBrawlStarsId, BattleType.regularTypes())
+                        )
+                )
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
@@ -77,10 +83,12 @@ public class BattleService {
                 .map(battle -> new BattleEvent(
                         battle.getEvent(),
                         new BattleEventMap(
-                                battle.getEvent().getMap() == null ? List.of() :
-                                mapCodeToNames.get(MessageCodes.BATTLE_MAP_NAME.code(battle.getEvent().getMap())),
+                                Optional.ofNullable(battle.getEvent().getMap())
+                                        .map(MessageCodes.BATTLE_MAP_NAME::code)
+                                        .map(mapCodeToNames::get)
+                                        .orElse(List.of()),
                                 battle.getEvent().getBrawlStarsId() == null ? null :
-                                mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(battle.getEvent().getBrawlStarsId()))
+                                        mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(battle.getEvent().getBrawlStarsId()))
                         ),
                         battle.getBattleTime().toLocalDateTime()
                 ))
