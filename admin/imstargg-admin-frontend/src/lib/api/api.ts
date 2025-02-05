@@ -13,23 +13,3 @@ export class ApiError extends Error {
 export interface ListResponse<T> {
   content: T[];
 }
-
-
-export async function fetchGetEvents(): Promise<Response> {
-  const url = new URL(`${API_BASE_URL}/admin/api/events`);
-  console.log(`Fetch from ${url}`);
-  return await fetch(url);
-}
-
-export async function fetchUploadMapImage(eventId: number, image: File): Promise<Response> {
-  const url = new URL(`${API_BASE_URL}/admin/api/events/${eventId}/image`);
-  console.log(`PUT to ${url}`);
-
-  const formData = new FormData();
-  formData.append('image', image);
-
-  return await fetch(url, {
-    method: 'PUT',
-    body: formData
-  });
-}
