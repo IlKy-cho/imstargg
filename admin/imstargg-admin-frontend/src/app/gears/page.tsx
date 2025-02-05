@@ -1,8 +1,8 @@
-import getGearList from "@/lib/api/getGearList";
 import {GearList} from "./_components/gear-list";
+import {getGears} from "@/lib/api/brawler";
 
 export default async function GearsPage() {
-  const gears = await getGearList();
+  const gears = await getGears();
   
   return (
     <div>

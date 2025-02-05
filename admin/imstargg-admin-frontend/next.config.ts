@@ -8,7 +8,13 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.imstargg.com',
       },
     ],
-  }
+  },
+  logging: {
+    fetches: {
+      fullUrl: true,
+      hmrRefreshes: true,
+    }
+  },
 };
 
 export default nextConfig;

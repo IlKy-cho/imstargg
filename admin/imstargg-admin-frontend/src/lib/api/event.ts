@@ -1,6 +1,5 @@
-import {ApiError, fetchGetEvents, fetchUploadMapImage,} from "@/lib/api/api";
-import {ListResponse} from "@/model/response/ListResponse";
-import BattleEvent from "@/model/BattleEvent";
+import {ApiError, fetchGetEvents, fetchUploadMapImage, ListResponse,} from "@/lib/api/api";
+import {BattleEvent} from "@/model/BattleEvent";
 
 export async function getEvents(): Promise<BattleEvent[]> {
   const response = await fetchGetEvents();
@@ -13,16 +12,12 @@ export async function getEvents(): Promise<BattleEvent[]> {
       }));
   }
 
-  const apiError = new ApiError(response);
-  apiError.log();
-  throw apiError;
+  throw await ApiError.create(response);
 }
 
 export async function uploadMapImage(eventId: number, image: File) {
   const response = await fetchUploadMapImage(eventId, image);
   if (!response.ok) {
-    const apiError = new ApiError(response);
-    apiError.log();
-    throw apiError;
+    throw await ApiError.create(response);
   }
 }
