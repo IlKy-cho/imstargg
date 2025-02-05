@@ -1,5 +1,5 @@
-import {Language} from "@/model/enums/Language";
+import {EventMapUpdateRequest} from "@/model/request/EventMapUpdateRequest";
 
 export interface EventUpdateRequest {
-  names: Record<Language, string>;
+  map: EventMapUpdateRequest;
 }

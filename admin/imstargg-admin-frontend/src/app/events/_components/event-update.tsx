@@ -21,8 +21,8 @@ interface EventUpdateProps {
   battleEvent: BattleEvent;
 }
 
-export function EventUpdate({ battleEvent }: EventUpdateProps) {
-  // 초기값 설정: battleEvent.map.names에서 language를 key로 하는 Record 생성
+export function EventUpdate({battleEvent}: EventUpdateProps) {
+
   const initialNames = Object.fromEntries(
     LanguageValues.map(lang => [
       lang,
@@ -38,7 +38,7 @@ export function EventUpdate({ battleEvent }: EventUpdateProps) {
     }
 
     try {
-      await updateEvent(battleEvent.entity.brawlStarsId, { names });
+      await updateEvent(battleEvent.entity.brawlStarsId, {map: {names}});
       window.location.reload();
     } catch (error) {
       console.error("이벤트 업데이트 실패:", error);
@@ -66,7 +66,7 @@ export function EventUpdate({ battleEvent }: EventUpdateProps) {
               <Input
                 id={`name-${language}`}
                 value={names[language]}
-                onChange={(e) => setNames({ ...names, [language]: e.target.value })}
+                onChange={(e) => setNames({...names, [language]: e.target.value})}
                 className="col-span-3"
               />
             </div>
