@@ -34,6 +34,10 @@ public class BattleEventEntity extends BaseEntity {
     private String mapBrawlStarsName;
 
     @Nullable
+    @Column(name = "battle_mode", length = 45, updatable = false)
+    private String battleMode;
+
+    @Nullable
     @Column(name = "latest_battle_time", updatable = false)
     private OffsetDateTime latestBattleTime;
 
@@ -55,6 +59,11 @@ public class BattleEventEntity extends BaseEntity {
     @Nullable
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
+    }
+
+    @Nullable
+    public String getBattleMode() {
+        return battleMode;
     }
 
     @Nullable

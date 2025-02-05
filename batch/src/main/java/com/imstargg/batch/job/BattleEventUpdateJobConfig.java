@@ -99,11 +99,13 @@ class BattleEventUpdateJobConfig {
                                                             battleEntity.getEvent().getBrawlStarsId(),
                                                             battleEntity.getEvent().getMode(),
                                                             battleEntity.getEvent().getMap(),
+                                                            battleEntity.getMode(),
                                                             battleEntity.getBattleTime()
                                                     )
                                     ).update(
                                             battleEntity.getEvent().getMode(),
                                             battleEntity.getEvent().getMap(),
+                                            battleEntity.getMode(),
                                             battleEntity.getBattleTime()
                                     )
                             );
