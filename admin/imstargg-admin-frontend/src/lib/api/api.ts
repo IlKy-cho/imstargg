@@ -22,7 +22,7 @@ export async function fetchGetEvents(): Promise<Response> {
 }
 
 export async function fetchUploadMapImage(eventId: number, image: File): Promise<Response> {
-  const url = new URL(`${API_BASE_URL}/admin/api/battle-events/${eventId}/image`);
+  const url = new URL(`${API_BASE_URL}/admin/api/events/${eventId}/image`);
   console.log(`PUT to ${url}`);
 
   const formData = new FormData();

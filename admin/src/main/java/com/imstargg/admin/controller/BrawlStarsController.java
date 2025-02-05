@@ -1,5 +1,6 @@
 package com.imstargg.admin.controller;
 
+import com.imstargg.admin.controller.request.BattleEventUpdateRequest;
 import com.imstargg.admin.controller.request.BrawlerUpdateRequest;
 import com.imstargg.admin.controller.request.NewBrawlerRequest;
 import com.imstargg.admin.controller.request.NewGearRequest;
@@ -67,7 +68,7 @@ public class BrawlStarsController {
         brawlerService.registerGear(request.toNewGear());
     }
 
-    @PutMapping("/admin/api/battle-events/{brawlStarsId}/image")
+    @PutMapping("/admin/api/events/{brawlStarsId}/image")
     public void uploadMapImage(
             @PathVariable long brawlStarsId, MultipartFile image) {
         battleService.uploadMapImage(brawlStarsId, image.getResource());
@@ -78,4 +79,11 @@ public class BrawlStarsController {
         return new ListResponse<>(battleService.getEventList());
     }
 
+    @PostMapping("/admin/api/events/{brawlStarsId}")
+    public void updateEvent(
+            @PathVariable long brawlStarsId,
+            @RequestBody @Validated BattleEventUpdateRequest request
+    ) {
+        battleService.updateBattleEvent(brawlStarsId, request.toBattleEventUpdate());
+    }
 }

@@ -2,6 +2,8 @@ package com.imstargg.admin.domain;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.imstargg.admin.support.error.AdminErrorKind;
+import com.imstargg.admin.support.error.AdminException;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityEvent;
@@ -9,11 +11,14 @@ import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.MessageCollectionEntity;
 import com.imstargg.storage.db.core.MessageCollectionJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
+import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.List;
@@ -33,17 +38,20 @@ public class BattleService {
             .build();
     private final BrawlStarsImageUploader brawlStarsImageUploader;
     private final BattleJpaRepository battleJpaRepository;
+    private final BattleEventCollectionJpaRepository battleEventCollectionJpaRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
 
     public BattleService(
             BrawlStarsImageUploader brawlStarsImageUploader,
             BattleJpaRepository battleMapRepository,
+            BattleEventCollectionJpaRepository battleEventCollectionJpaRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
             MessageCollectionJpaRepository messageRepository
     ) {
         this.brawlStarsImageUploader = brawlStarsImageUploader;
         this.battleJpaRepository = battleMapRepository;
+        this.battleEventCollectionJpaRepository = battleEventCollectionJpaRepository;
         this.brawlStarsImageRepository = brawlStarsImageRepository;
         this.messageRepository = messageRepository;
     }
@@ -93,6 +101,22 @@ public class BattleService {
                         battle.getBattleTime().toLocalDateTime()
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public void updateBattleEvent(long eventBrawlStarsId, BattleEventUpdate update) {
+        update.names().validate();
+        BattleEventCollectionEntity eventEntity = battleEventCollectionJpaRepository.findByBrawlStarsId(eventBrawlStarsId)
+                .orElseThrow(() -> new AdminException(
+                        AdminErrorKind.NOT_FOUND, "해당 이벤트를 찾을 수 없습니다. 이벤트 ID: " + eventBrawlStarsId));
+        if (eventEntity.getMapBrawlStarsName() == null) {
+            throw new AdminException(AdminErrorKind.VALIDATION_FAILED, "맵 이름이 없는 이벤트는 수정할 수 없습니다.");
+        }
+        messageRepository.findAllByCode(MessageCodes.BATTLE_MAP_NAME.code(eventEntity.getMapBrawlStarsName()))
+                .stream()
+                .filter(messageEntity -> update.names().messages().containsKey(messageEntity.getLang()))
+                .forEach(messageEntity -> messageEntity.update(update.names().messages().get(messageEntity.getLang())));
+
     }
 
     public void uploadMapImage(long eventBrawlStarsId, Resource resource) {
