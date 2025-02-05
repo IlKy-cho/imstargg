@@ -371,7 +371,7 @@ function BattleTeamPlayer(
     <div className="flex flex-col items-center w-16 sm:w-20">
       <BrawlerLink brawler={brawler}>
         <div className="relative">
-          <div className="absolute top-0 left-0 z-10 bg-zinc-200/50">
+          <div className="absolute sm:top-0 -top-1 left-0 z-10 bg-zinc-200/50">
             <PowerLevel value={player.brawler.power} />
           </div>
           <div className="absolute bottom-0 right-0 z-10 bg-zinc-200/50">
