@@ -5,6 +5,7 @@ import com.imstargg.core.domain.Message;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
 import com.imstargg.core.enums.BattleEventMode;
+import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
@@ -111,9 +112,8 @@ public class BattleEventRepositoryWithCache {
                                         ).map(BrawlStarsImageEntity::getStoredName)
                                         .orElse(null)
                         ),
-                        eventEntity.getLatestBattleTime() != null
-                                ? eventEntity.getLatestBattleTime().toLocalDateTime()
-                                : null
+                        eventEntity.getBattleMode() != null ? BattleMode.find(eventEntity.getBattleMode()) : null,
+                        eventEntity.getLatestBattleTime() != null ? eventEntity.getLatestBattleTime() : null
                 )).map(event -> {
                     battleEventCache.set(event.id(), language, event);
                     return event;
@@ -148,9 +148,8 @@ public class BattleEventRepositoryWithCache {
                                                 ).map(BrawlStarsImageEntity::getStoredName)
                                                 .orElse(null)
                                 ),
-                                eventEntity.getLatestBattleTime() != null
-                                        ? eventEntity.getLatestBattleTime().toLocalDateTime()
-                                        : null
+                                eventEntity.getBattleMode() != null ? BattleMode.find(eventEntity.getBattleMode()) : null,
+                                eventEntity.getLatestBattleTime() != null ? eventEntity.getLatestBattleTime() : null
                         )
                 ).map(event -> {
                     battleEventCache.set(id, language, event);
