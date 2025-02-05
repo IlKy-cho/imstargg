@@ -13,6 +13,7 @@ import React from "react";
 import {EventMapImageUpload} from "./event-map-image-upload";
 import {imageUrl} from "@/lib/image";
 import {messagesContent} from "@/lib/message";
+import { EventUpdate } from "./event-update";
 
 type Props = {
   battleEvents: BattleEvent[];
@@ -26,7 +27,8 @@ export default function EventList({battleEvents}: Readonly<Props>) {
         <TableRow>
           <TableHead className="w-12">ID</TableHead>
           <TableHead className="w-[100px]">이미지</TableHead>
-          <TableHead>모드</TableHead>
+          <TableHead>이벤트 모드</TableHead>
+          <TableHead>배틀 모드</TableHead>
           <TableHead>맵 이름</TableHead>
           <TableHead>최근 전투 일시</TableHead>
           <TableHead className="text-right">메뉴</TableHead>
@@ -58,6 +60,9 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                 </TableCell>
                 <TableCell>
                   {battleEvent.entity.mode}
+                </TableCell>
+                <TableCell>
+                  {battleEvent.battleMode}
                 </TableCell>
                 <TableCell>
                   <span className="font-bold">{battleEvent.entity.map}</span>: {messagesContent(battleEvent.map.names)}
