@@ -31,7 +31,7 @@ import TrioShowdownIcon from '@/../public/mode/트리오 쇼다운.png';
 import {BattleMode, BattleModeValue} from "@/model/enums/BattleMode";
 import {StaticImageData} from "next/image";
 
-export function battleModeIconSrc(mode: BattleMode) {
+export function battleModeIconSrc(mode: BattleMode): StaticImageData | null {
   switch (mode) {
     case BattleModeValue.NOT_FOUND:
       return null;
@@ -75,11 +75,19 @@ export function battleModeIconSrc(mode: BattleMode) {
       return TakedownIcon;
     case BattleModeValue.HUNTERS:
       return HuntersIcon;
+    case BattleModeValue.BOT_DROP:
+      return BotDropIcon;
+    case BattleModeValue.HOLD_THE_TROPHY:
+      return HoldTheTrophyIcon;
   }
 }
 
-export function battleEventModeIconSrc (mode: BattleEventMode): StaticImageData | undefined {
+export function battleEventModeIconSrc(mode: BattleEventMode): StaticImageData | null {
   switch (mode) {
+    case BattleEventModeValue.NOT_FOUND:
+      return null;
+    case BattleEventModeValue.UNKNOWN:
+      return null;
     case BattleEventModeValue.SOLO_SHOWDOWN:
       return SoloShowdownIcon;
     case BattleEventModeValue.DUO_SHOWDOWN:
@@ -144,10 +152,22 @@ export function battleEventModeIconSrc (mode: BattleEventMode): StaticImageData 
       return LastStandIcon;
     case BattleEventModeValue.GODZILLA_CITY_SMASH:
       return GodzillaCitySmashIcon;
+    case BattleEventModeValue.ZOMBIE_PLUNDER:
+      return null;
+    case BattleEventModeValue.PUMPKIN_PLUNDER:
+      return null;
+    case BattleEventModeValue.SNOWTEL_THIEVES:
+      return null;
+    case BattleEventModeValue.TROPHY_ESCAPE:
+      return null;
+    case BattleEventModeValue.SIEGE:
+      return SiegeIcon;
+    case BattleEventModeValue.PAINT_BRAWL:
+      return null;
   }
 }
 
-export function battleEventModeTitle (mode: BattleEventMode) {
+export function battleEventModeTitle(mode: BattleEventMode): string | null {
   switch (mode) {
     case BattleEventModeValue.NOT_FOUND:
       return null;
@@ -227,10 +247,14 @@ export function battleEventModeTitle (mode: BattleEventMode) {
       return '고질라 시티 스매시';
     case BattleEventModeValue.ZOMBIE_PLUNDER:
       return '좀비 훔치기';
+    case BattleEventModeValue.SIEGE:
+      return '시즈';
+    case BattleEventModeValue.PAINT_BRAWL:
+      return '페인트 브롤';
   }
 }
 
-export function battleModeTitle (mode: BattleMode) {
+export function battleModeTitle(mode: BattleMode): string | null {
   switch (mode) {
     case BattleModeValue.NOT_FOUND:
       return null;
