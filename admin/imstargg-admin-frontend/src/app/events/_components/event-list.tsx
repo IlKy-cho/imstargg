@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/table"
 import Image from "next/image"
 import { BattleEvent } from "@/model/BattleEvent";
-import {messagesToTitle} from "@/components/title";
 import React from "react";
 import {EventMapImageUpload} from "./event-map-image-upload";
 import {imageUrl} from "@/lib/image";
+import {messagesContent} from "@/lib/message";
 
 type Props = {
   battleEvents: BattleEvent[];
@@ -59,7 +59,7 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                   {battleEvent.entity.mode}
                 </TableCell>
                 <TableCell>
-                  <span className="font-bold">{battleEvent.entity.map}</span>: {messagesToTitle(battleEvent.map.names)}
+                  <span className="font-bold">{battleEvent.entity.map}</span>: {messagesContent(battleEvent.map.names)}
                 </TableCell>
                 <TableCell>
                   {battleEvent.latestBattleTime !== null
