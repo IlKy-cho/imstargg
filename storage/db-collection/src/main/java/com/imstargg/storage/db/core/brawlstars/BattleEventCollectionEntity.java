@@ -32,6 +32,10 @@ public class BattleEventCollectionEntity extends BaseEntity {
     private String mapBrawlStarsName;
 
     @Nullable
+    @Column(name = "battle_mode", length = 45, nullable = false)
+    private String battleMode;
+
+    @Nullable
     @Column(name = "latest_battle_time")
     private OffsetDateTime latestBattleTime;
 
@@ -42,17 +46,20 @@ public class BattleEventCollectionEntity extends BaseEntity {
             long brawlStarsId,
             String mode,
             String mapBrawlStarsName,
+            @Nullable String battleMode,
             @Nullable OffsetDateTime latestBattleTime
     ) {
         this.brawlStarsId = brawlStarsId;
         this.mode = mode;
         this.mapBrawlStarsName = mapBrawlStarsName;
+        this.battleMode = battleMode;
         this.latestBattleTime = latestBattleTime;
     }
 
     public void update(
             String mode,
             @Nullable String mapBrawlStarsName,
+            @Nullable String battleMode,
             @Nullable OffsetDateTime latestBattleTime
     ) {
         if (BattleEventMode.UNKNOWN.getCode().equals(mode)) {
@@ -60,6 +67,9 @@ public class BattleEventCollectionEntity extends BaseEntity {
         }
         if (mapBrawlStarsName != null) {
             this.mapBrawlStarsName = mapBrawlStarsName;
+        }
+        if (battleMode != null) {
+            this.battleMode = battleMode;
         }
         if (latestBattleTime != null
                 && (this.latestBattleTime == null || latestBattleTime.isAfter(this.latestBattleTime))) {
@@ -82,6 +92,11 @@ public class BattleEventCollectionEntity extends BaseEntity {
     @Nullable
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
+    }
+
+    @Nullable
+    public String getBattleMode() {
+        return battleMode;
     }
 
     @Nullable
