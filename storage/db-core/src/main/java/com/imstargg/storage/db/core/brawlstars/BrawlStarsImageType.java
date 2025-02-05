@@ -5,7 +5,7 @@ import java.util.function.Function;
 public enum BrawlStarsImageType {
 
     BRAWLER_PROFILE(brawlStarsId -> "brawlers." + brawlStarsId + ".profile"),
-    GEAR(brawlStarsId -> "brawlers." + brawlStarsId + ".gear"),
+    GEAR(brawlStarsId -> "gears." + brawlStarsId),
     BATTLE_MAP(brawlStarsId -> "battle-events." + brawlStarsId + ".map")
     ;
 
