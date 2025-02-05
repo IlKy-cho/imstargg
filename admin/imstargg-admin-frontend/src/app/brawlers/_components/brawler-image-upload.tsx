@@ -11,8 +11,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react"
-import Image from "next/image"
 import {uploadBrawlerProfileImage} from "@/lib/api/brawler";
+import { ImageSelect } from "@/components/image-select";
 
 interface BrawlerImageUploadProps {
   brawlStarsId: number;
@@ -20,16 +20,9 @@ interface BrawlerImageUploadProps {
 
 export function BrawlerImageUpload({ brawlStarsId }: BrawlerImageUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
   };
 
   const handleSubmit = async () => {
@@ -44,10 +37,6 @@ export function BrawlerImageUpload({ brawlStarsId }: BrawlerImageUploadProps) {
   };
 
   const handleClose = () => {
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
     setSelectedFile(null);
   };
 
@@ -64,22 +53,7 @@ export function BrawlerImageUpload({ brawlStarsId }: BrawlerImageUploadProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mb-4"
-          />
-          {previewUrl && (
-            <div className="relative w-full h-[200px]">
-              <Image
-                src={previewUrl}
-                alt="미리보기"
-                fill
-                className="object-contain"
-              />
-            </div>
-          )}
+          <ImageSelect onFileSelect={handleFileSelect} />
         </div>
         <DialogFooter>
           <Button 

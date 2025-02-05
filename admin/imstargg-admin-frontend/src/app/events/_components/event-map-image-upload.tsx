@@ -11,9 +11,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import {useState} from "react"
-import Image from "next/image"
 import {BattleEvent} from "@/model/BattleEvent";
 import {uploadMapImage} from "@/lib/api/event";
+import {ImageSelect} from "@/components/image-select";
 
 interface MapImageUploadProps {
   battleEvent: BattleEvent;
@@ -21,17 +21,9 @@ interface MapImageUploadProps {
 
 export function EventMapImageUpload({ battleEvent }: MapImageUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      setSelectedFile(file);
-      
-      // 이미지 미리보기 URL 생성
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
+  const handleFileSelect = (file: File) => {
+    setSelectedFile(file);
   };
 
   const handleSubmit = async () => {
@@ -48,12 +40,7 @@ export function EventMapImageUpload({ battleEvent }: MapImageUploadProps) {
     }
   };
 
-  // 컴포넌트가 언마운트될 때 미리보기 URL 해제
   const handleClose = () => {
-    if (previewUrl) {
-      URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(null);
-    }
     setSelectedFile(null);
   };
 
@@ -70,22 +57,7 @@ export function EventMapImageUpload({ battleEvent }: MapImageUploadProps) {
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleFileChange}
-            className="mb-4"
-          />
-          {previewUrl && (
-            <div className="relative w-full h-[200px]">
-              <Image
-                src={previewUrl}
-                alt="미리보기"
-                fill
-                className="object-contain"
-              />
-            </div>
-          )}
+          <ImageSelect onFileSelect={handleFileSelect} />
         </div>
         <DialogFooter>
           <Button 

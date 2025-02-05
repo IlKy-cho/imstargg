@@ -19,6 +19,7 @@ type Props = {
 }
 
 export default function EventList({battleEvents}: Readonly<Props>) {
+  console.log(battleEvents);
   return (
     <Table>
       <TableHeader>
