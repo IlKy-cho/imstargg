@@ -95,10 +95,7 @@ export async function BrawlerList({brawlers}: Readonly<{ brawlers: Brawler[] }>)
                         key={starPower.entity.brawlStarsId} 
                         className={`items-center block py-2 ${index !== array.length - 1 ? 'border-b' : ''}`}
                       >
-                        {starPower.names
-                          .sort((a, b) => a.lang.localeCompare(b.lang))
-                          .map(message => `${message.lang}(${message.content})`)
-                          .join(' ')}
+                        {messagesContent(starPower.names)}
                       </div>
                     ))
                   }
