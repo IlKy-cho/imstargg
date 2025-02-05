@@ -12,6 +12,7 @@ import com.imstargg.admin.domain.BrawlerService;
 import com.imstargg.admin.domain.Gear;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -79,7 +80,7 @@ public class BrawlStarsController {
         return new ListResponse<>(battleService.getEventList());
     }
 
-    @PostMapping("/admin/api/events/{brawlStarsId}")
+    @PatchMapping("/admin/api/events/{brawlStarsId}")
     public void updateEvent(
             @PathVariable long brawlStarsId,
             @RequestBody @Validated BattleEventUpdateRequest request
