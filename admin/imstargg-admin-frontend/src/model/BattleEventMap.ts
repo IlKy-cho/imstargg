@@ -1,7 +1,7 @@
-import MessageEntity from "@/model/entity/MessageEntity";
-import BrawlStarsImageEntity from "@/model/entity/BrawlStarsImageEntity";
+import {MessageEntity} from "@/model/entity/MessageEntity";
+import {BrawlStarsImageEntity} from "@/model/entity/BrawlStarsImageEntity";
 
-export default interface BattleEventMap {
+export interface BattleEventMap {
   names: MessageEntity[];
   image: BrawlStarsImageEntity | null;
 }

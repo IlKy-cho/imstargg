@@ -1,6 +1,6 @@
-import BaseEntity from "@/model/entity/BaseEntity";
+import {BaseEntity} from "@/model/entity/BaseEntity";
 
-export default interface GadgetEntity extends BaseEntity {
+export interface GadgetEntity extends BaseEntity {
   id: number;
   brawlStarsId: string;
   nameMessageCode: string;

@@ -1,5 +1,5 @@
-import { LanguageType } from "../enums/Language";
+import { Language } from "../enums/Language";
 
-export default interface NewMapRequest {
-    names: Record<LanguageType, string>;
+export interface NewMapRequest {
+    names: Record<Language, string>;
 }

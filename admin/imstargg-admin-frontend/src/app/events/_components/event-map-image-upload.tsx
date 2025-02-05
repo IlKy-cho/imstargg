@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import {useState} from "react"
 import Image from "next/image"
-import BattleEvent from "@/model/BattleEvent";
+import {BattleEvent} from "@/model/BattleEvent";
 import {uploadMapImage} from "@/lib/api/event";
 
 interface MapImageUploadProps {
