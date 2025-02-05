@@ -11,8 +11,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { useState } from "react"
-import uploadBrawlerProfileImage from "@/lib/api/uploadBrawlerProfileImage"
 import Image from "next/image"
+import {uploadBrawlerProfileImage} from "@/lib/api/brawler";
 
 interface BrawlerImageUploadProps {
   brawlStarsId: number;

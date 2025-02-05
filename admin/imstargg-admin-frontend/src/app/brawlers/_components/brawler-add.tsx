@@ -20,13 +20,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { useState, useEffect } from "react"
-import registerBrawler from "@/lib/api/registerBrawler"
 import { XIcon } from "lucide-react"
-import getGearList from "@/lib/api/getGearList"
 import {Gear} from "@/model/Gear"
 import {Language, LanguageValues} from "@/model/enums/Language";
 import {BrawlerRarity, BrawlerRarityValue, BrawlerRarityValues} from "@/model/enums/BrawlerRarity";
 import {BrawlerRole, BrawlerRoleValue, BrawlerRoleValues} from "@/model/enums/BrawlerRole";
+import {getGears, registerBrawler} from "@/lib/api/brawler";
 
 interface GadgetForm {
   brawlStarsId: string;
@@ -53,7 +52,7 @@ export function BrawlerAdd() {
   useEffect(() => {
     const fetchGears = async () => {
       try {
-        const gearList = await getGearList();
+        const gearList = await getGears();
         setGears(gearList);
       } catch (error) {
         console.error("기어 목록 로딩 실패:", error);

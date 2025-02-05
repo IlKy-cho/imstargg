@@ -1,26 +1,13 @@
 import Image from 'next/image';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import getBrawlerList from "@/lib/api/getBrawlerList";
-import { BrawlerImageUpload } from './brawler-image-upload';
+import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import {Button} from "@/components/ui/button"
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover"
+import {BrawlerImageUpload} from './brawler-image-upload';
 import {imageUrl} from "@/lib/image";
 import {messagesContent} from "@/lib/message";
+import {Brawler} from "@/model/Brawler";
 
-export async function BrawlerList() {
-  const brawlers = await getBrawlerList();
+export async function BrawlerList({brawlers}: Readonly<{ brawlers: Brawler[] }>) {
 
   return (
     <Table>
