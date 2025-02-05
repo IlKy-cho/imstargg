@@ -1,6 +1,7 @@
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import {BattleEvent} from "@/model/BattleEvent";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
+import {BattleMode} from "@/model/enums/BattleMode";
 
 export async function fetchGetBattleEvents(date: Date, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/brawlstars/events`);
@@ -22,6 +23,7 @@ interface BattleEventResponse {
   mode: BattleEventMode;
   mapName: string | null;
   mapImagePath: string | null;
+  battleMode: BattleMode | null;
 }
 
 export async function getBattleEvents(): Promise<BattleEvent[]> {

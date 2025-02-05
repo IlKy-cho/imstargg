@@ -1,15 +1,15 @@
 import Image from "next/image";
 import {BattleEvent} from "@/model/BattleEvent";
 import BattleEventMapImage from "@/components/battle-event-map-image";
-import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
+import {battleEventModeIconSrc, battleEventModeTitle, battleModeIconSrc, battleModeTitle} from "@/lib/battle-mode";
 
 type Props = {
   battleEvent: BattleEvent;
 }
 
 export default function BattleEventProfile({battleEvent}: Readonly<Props>) {
-  const modeIconSrc = battleEventModeIconSrc(battleEvent.mode);
-  const modeTitle = battleEventModeTitle(battleEvent.mode);
+  const modeIconSrc = battleEventModeIconSrc(battleEvent.mode) || (battleEvent.battleMode && battleModeIconSrc(battleEvent.battleMode));
+  const modeTitle = battleEventModeTitle(battleEvent.mode) || (battleEvent.battleMode && battleModeTitle(battleEvent.battleMode));
   return (
     <div className="flex flex-col md:flex-row gap-2 p-4 md:p-6 rounded-lg shadow-lg bg-zinc-100 bg-opacity-90 m-2 max-w-screen-sm">
       <BattleEventMapImage battleEventMap={battleEvent.map} size="xl"/>
