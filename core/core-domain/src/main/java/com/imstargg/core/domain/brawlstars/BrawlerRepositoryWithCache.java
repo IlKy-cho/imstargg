@@ -3,10 +3,10 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
-import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import com.imstargg.storage.db.core.brawlstars.BrawlerEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlerGearEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlerGearJpaRepository;
@@ -21,6 +21,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -155,6 +156,7 @@ public class BrawlerRepositoryWithCache {
     public List<Brawler> findAll(Language language) {
         return brawlerIdToEntityCache.values().stream()
                 .map(brawlerEntity -> mapToBrawler(brawlerEntity, language))
+                .sorted(Comparator.comparingLong(brawler -> brawler.id().value()))
                 .toList();
     }
 
