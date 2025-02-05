@@ -1,6 +1,6 @@
-import { BrawlerList } from "@/app/brawlers/brawler-list";
-import { BrawlerAdd } from "./brawler-add";
-import { GearList } from "./gear-list";
+import { BrawlerList } from "./_components/brawler-list";
+import { BrawlerAdd } from "./_components/brawler-add";
+import { GearList } from "./_components/gear-list";
 
 export default async function BrawlersPage() {
   return (

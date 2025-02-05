@@ -1,5 +1,5 @@
 import {getEvents} from "@/lib/api/event";
-import EventList from "@/app/events/event-list";
+import EventList from "./_components/event-list";
 
 export default async function EventsPage() {
   const battleEvents = await getEvents();
