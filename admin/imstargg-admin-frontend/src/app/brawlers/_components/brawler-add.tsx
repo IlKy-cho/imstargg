@@ -26,6 +26,7 @@ import {Language, LanguageValues} from "@/model/enums/Language";
 import {BrawlerRarity, BrawlerRarityValue, BrawlerRarityValues} from "@/model/enums/BrawlerRarity";
 import {BrawlerRole, BrawlerRoleValue, BrawlerRoleValues} from "@/model/enums/BrawlerRole";
 import {getGears, registerBrawler} from "@/lib/api/brawler";
+import { initialNewMessages } from "@/lib/message";
 
 interface GadgetForm {
   brawlStarsId: string;
@@ -42,7 +43,7 @@ export function BrawlerAdd() {
   const [rarity, setRarity] = useState<BrawlerRarity>(BrawlerRarityValue.STARTING_BRAWLER);
   const [role, setRole] = useState<BrawlerRole>(BrawlerRoleValue.DAMAGE_DEALER);
   const [names, setNames] = useState<Record<Language, string>>(
-    Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
+    initialNewMessages
   );
   const [gadgets, setGadgets] = useState<GadgetForm[]>([]);
   const [starPowers, setStarPowers] = useState<StarPowerForm[]>([]);
@@ -50,16 +51,9 @@ export function BrawlerAdd() {
   const [gears, setGears] = useState<Gear[]>([]);
 
   useEffect(() => {
-    const fetchGears = async () => {
-      try {
-        const gearList = await getGears();
-        setGears(gearList);
-      } catch (error) {
-        console.error("기어 목록 로딩 실패:", error);
-      }
-    };
-    
-    fetchGears();
+    getGears()
+      .then(setGears)
+      .catch(error => console.error("기어 목록 로딩 실패:", error));
   }, []);
 
   const handleSubmit = async () => {
