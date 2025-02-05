@@ -5,6 +5,7 @@ import com.github.benmanes.caffeine.cache.Caffeine;
 import com.imstargg.admin.support.error.AdminErrorKind;
 import com.imstargg.admin.support.error.AdminException;
 import com.imstargg.core.enums.BattleType;
+import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityEvent;
 import com.imstargg.storage.db.core.BattleJpaRepository;
@@ -113,10 +114,25 @@ public class BattleService {
         if (eventEntity.getMapBrawlStarsName() == null) {
             throw new AdminException(AdminErrorKind.VALIDATION_FAILED, "맵 이름이 없는 이벤트는 수정할 수 없습니다.");
         }
-        messageRepository.findAllByCode(MessageCodes.BATTLE_MAP_NAME.code(eventEntity.getMapBrawlStarsName()))
+        Map<Language, MessageCollectionEntity> langToMessageEntity = messageRepository
+                .findAllByCode(MessageCodes.BATTLE_MAP_NAME.code(eventEntity.getMapBrawlStarsName()))
                 .stream()
-                .filter(messageEntity -> update.map().names().messages().containsKey(messageEntity.getLang()))
-                .forEach(messageEntity -> messageEntity.update(update.map().names().messages().get(messageEntity.getLang())));
+                .collect(Collectors.toMap(MessageCollectionEntity::getLang, Function.identity()));
+
+        messageRepository.saveAll(
+                update.map().names().messages().entrySet().stream()
+                        .map(entry -> Optional.ofNullable(langToMessageEntity.get(entry.getKey()))
+                                .map(entity -> {
+                                    entity.update(entry.getValue());
+                                    return entity;
+                                })
+                                .orElseGet(() -> new MessageCollectionEntity(
+                                        MessageCodes.BATTLE_MAP_NAME.code(eventEntity.getMapBrawlStarsName()),
+                                        entry.getKey(),
+                                        entry.getValue()
+                                ))
+                        ).toList()
+        );
     }
 
     public void uploadMapImage(long eventBrawlStarsId, Resource resource) {

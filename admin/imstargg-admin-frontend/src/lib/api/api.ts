@@ -6,7 +6,7 @@ export class ApiError extends Error {
   }
 
   static async create(response: Response) {
-    return new ApiError(`Failed to fetch from ${response.url}.\n- status: ${response.status}\nbody: ${await response.json()}`);
+    return new ApiError(`Failed to fetch from ${response.url}.\n- status: ${response.status}\nbody: ${JSON.stringify(await response.json())}`);
   }
 }
 
