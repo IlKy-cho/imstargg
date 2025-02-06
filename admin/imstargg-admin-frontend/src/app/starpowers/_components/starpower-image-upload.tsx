@@ -1,6 +1,6 @@
 "use client"
 
-import { ImageSelect } from "@/components/image-select"
+import {ImageSelect} from "@/components/image-select"
 import {Button} from "@/components/ui/button"
 import {
   Dialog,
@@ -11,9 +11,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { uploadGadgetImage } from "@/lib/api/brawler"
-import { messagesContent } from "@/lib/message"
-import { StarPower } from "@/model/StarPower"
+import {uploadStarPowerImage} from "@/lib/api/brawler"
+import {messagesContent} from "@/lib/message"
+import {StarPower} from "@/model/StarPower"
 import {useState} from "react"
 
 interface StarPowerImageUploadProps {
@@ -31,7 +31,7 @@ export function StarPowerImageUpload({starPower}: StarPowerImageUploadProps) {
     if (!selectedFile) return;
 
     try {
-      await uploadGadgetImage(starPower.entity.brawlStarsId, selectedFile);
+      await uploadStarPowerImage(starPower.entity.brawlStarsId, selectedFile);
       window.location.reload();
     } catch (error) {
       console.error("이미지 업로드 실패:", error);
