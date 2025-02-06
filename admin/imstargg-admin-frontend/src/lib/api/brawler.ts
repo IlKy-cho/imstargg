@@ -66,3 +66,39 @@ export async function uploadBrawlerProfileImage(brawlerId: number, image: File) 
     throw await ApiError.create(response);
   }
 }
+
+export async function fetchUploadGadgetImage(id: number, image: File) {
+  const url = new URL(`${API_BASE_URL}/admin/api/gadgets/${id}/image`);
+  const formData = new FormData();
+  formData.append('image', image);
+
+  return await fetch(url, {
+    method: 'PUT',
+    body: formData
+  });
+}
+
+export async function uploadGadgetImage(id: number, image: File) {
+  const response = await fetchUploadGadgetImage(id, image);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
+
+export async function fetchUploadStarPowerImage(id: number, image: File) {
+  const url = new URL(`${API_BASE_URL}/admin/api/star-powers/${id}/image`);
+  const formData = new FormData();
+  formData.append('image', image);
+
+  return await fetch(url, {
+    method: 'PUT',
+    body: formData
+  });
+}
+
+export async function uploadStarPowerImage(id: number, image: File) {
+  const response = await fetchUploadStarPowerImage(id, image);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
