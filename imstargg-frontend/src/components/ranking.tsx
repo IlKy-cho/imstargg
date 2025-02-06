@@ -47,16 +47,16 @@ export async function RankingList({rankings, size}: Readonly<RankingListProps>) 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-xs sm:text-sm">순위</TableHead>
+            <TableHead className="text-xs sm:text-sm sm:w-12 w-10">순위</TableHead>
             <TableHead className="text-xs sm:text-sm">플레이어</TableHead>
-            <TableHead className="text-xs sm:text-sm">클럽</TableHead>
-            <TableHead className="text-xs sm:text-sm">트로피</TableHead>
+            <TableHead className="text-xs sm:text-sm w-24 sm:w-36">클럽</TableHead>
+            <TableHead className="text-xs sm:text-sm sm:w-16 w-14">트로피</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {rankings.map((ranking) => (
             <TableRow key={ranking.tag}>
-              <TableCell className="text-xs sm:text-sm">
+              <TableCell className="text-xs sm:text-sm sm:w-12 w-10">
                 {ranking.rank}
               </TableCell>
               <TableCell className="text-xs sm:text-sm">
@@ -64,10 +64,12 @@ export async function RankingList({rankings, size}: Readonly<RankingListProps>) 
                   {ranking.name} <span className="hidden sm:inline text-zinc-500">{ranking.tag}</span>
                 </Link>
               </TableCell>
-              <TableCell className="text-xs sm:text-sm">
-                {ranking.clubName}
+              <TableCell className="text-xs sm:text-sm w-24 sm:w-36">
+                <div className="w-24 sm:w-36">
+                  {ranking.clubName}
+                </div>
               </TableCell>
-              <TableCell className="text-xs sm:text-sm">
+              <TableCell className="text-xs sm:text-sm sm:w-16 w-14">
                 {ranking.trophies === 1 ? "100000+" : ranking.trophies}
               </TableCell>
             </TableRow>
