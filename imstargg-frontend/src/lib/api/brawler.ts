@@ -5,15 +5,35 @@ import { BrawlerRarity } from "@/model/enums/BrawlerRarity";
 import { Gadget } from "@/model/Gadget";
 import { Gear } from "@/model/Gear";
 import { StarPower } from "@/model/StarPower";
+import {GearRarity} from "@/model/enums/GearRarity";
 
 interface BrawlerResponse {
   id: number;
   name: string;
   rarity: BrawlerRarity;
   role: BrawlerRole;
-  gadgets: Gadget[];
-  gears: Gear[];
-  starPowers: StarPower[];
+  gadgets: GadgetResponse[];
+  gears: GearResponse[];
+  starPowers: StarPowerResponse[];
+  imagePath: string | null;
+}
+
+interface GadgetResponse {
+  id: number;
+  name: string;
+  imagePath: string | null;
+}
+
+interface GearResponse {
+  id: number;
+  name: string;
+  rarity: GearRarity;
+  imagePath: string | null;
+}
+
+interface StarPowerResponse {
+  id: number;
+  name: string;
   imagePath: string | null;
 }
 
@@ -39,6 +59,18 @@ export async function getBrawlers() : Promise<Brawler[]> {
     return data.content
       .map(brawler => ({
         ...brawler,
+        gadgets: brawler.gadgets.map(gadget => ({
+          ...gadget,
+          imageUrl: gadget.imagePath ? new URL(gadget.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+        })),
+        gears: brawler.gears.map(gear => ({
+          ...gear,
+          imageUrl: gear.imagePath ? new URL(gear.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+        })),
+        starPowers: brawler.starPowers.map(starPower => ({
+          ...starPower,
+          imageUrl: starPower.imagePath ? new URL(starPower.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+        })),
         imageUrl: brawler.imagePath ? new URL(brawler.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
       }));
   }
@@ -67,6 +99,18 @@ export async function getBrawler(id: number) : Promise<Brawler | null> {
     const data = await response.json() as BrawlerResponse;
     return {
       ...data,
+      gadgets: data.gadgets.map(gadget => ({
+        ...gadget,
+        imageUrl: gadget.imagePath ? new URL(gadget.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+      })),
+      gears: data.gears.map(gear => ({
+        ...gear,
+        imageUrl: gear.imagePath ? new URL(gear.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+      })),
+      starPowers: data.starPowers.map(starPower => ({
+        ...starPower,
+        imageUrl: starPower.imagePath ? new URL(starPower.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+      })),
       imageUrl: data.imagePath ? new URL(data.imagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
     };
   } else if (response.status === 404) {
