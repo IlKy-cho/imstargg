@@ -17,7 +17,7 @@ const imageVariants = cva(
         sm: 'sm:w-16 w-12',
         lg: 'sm:w-24 w-18',
         xl: 'sm:w-28 w-20',
-        '2xl': 'sm:w-32',
+        '2xl': 'sm:w-32 w-28',
       },
     },
     defaultVariants: {
