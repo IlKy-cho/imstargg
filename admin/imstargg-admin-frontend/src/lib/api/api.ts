@@ -13,3 +13,7 @@ export class ApiError extends Error {
 export interface ListResponse<T> {
   content: T[];
 }
+
+export interface ValueResponse<T> {
+  value: T;
+}
