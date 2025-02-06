@@ -32,7 +32,7 @@ const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
 function BrawlerCell({brawler}: { brawler: Brawler | null }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-1 items-center">
+    <div className="flex flex-col sm:flex-row gap-1 sm:items-center items-start">
       <BrawlerLink brawler={brawler}>
         <BrawlerProfileImage
           brawler={brawler}
