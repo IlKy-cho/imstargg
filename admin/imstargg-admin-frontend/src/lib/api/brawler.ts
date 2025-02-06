@@ -86,7 +86,7 @@ export async function uploadGadgetImage(id: number, image: File) {
 }
 
 export async function fetchUploadStarPowerImage(id: number, image: File) {
-  const url = new URL(`${API_BASE_URL}/admin/api/star-powers/${id}/image`);
+  const url = new URL(`${API_BASE_URL}/admin/api/starpowers/${id}/image`);
   const formData = new FormData();
   formData.append('image', image);
 
