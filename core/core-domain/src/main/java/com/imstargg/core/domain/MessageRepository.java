@@ -6,6 +6,7 @@ import com.imstargg.storage.db.core.MessageEntity;
 import com.imstargg.storage.db.core.MessageJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ public class MessageRepository {
         );
     }
 
-    public List<MessageCollection> getCollectionList(List<String> codes) {
+    public List<MessageCollection> getCollectionList(Collection<String> codes) {
         Map<String, List<MessageEntity>> codeToMessageEntities = messageJpaRepository.findAllByCodeIn(codes).stream()
                 .collect(groupingBy(MessageEntity::getCode));
 
