@@ -11,6 +11,7 @@ import { imageUrl } from "@/lib/image";
 import { messagesContent } from "@/lib/message";
 import {Brawler} from "@/model/Brawler";
 import Image from "next/image";
+import {GadgetImageUpload} from "@/app/gadgets/_components/gadget-image-upload";
 
 interface GadgetListProps {
   brawlers: Brawler[];
@@ -50,7 +51,7 @@ export default function GadgetList({brawlers}: GadgetListProps) {
               <TableCell>{messagesContent(gadget.names)}</TableCell>
               <TableCell>{messagesContent(brawler.names)}</TableCell>
               <TableCell className="text-right">
-                {/* 메뉴 버튼들이 들어갈 자리 */}
+                <GadgetImageUpload gadget={gadget} />
               </TableCell>
             </TableRow>
           ))
