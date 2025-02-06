@@ -82,6 +82,18 @@ public class BrawlerService {
                 .stream()
                 .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
 
+        Map<String, BrawlStarsImageCollectionEntity> codeToGadgetImage = brawlStarsImageRepository.findAllByType(BrawlStarsImageType.GADGET)
+                .stream()
+                .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
+
+        Map<String, BrawlStarsImageCollectionEntity> codeToStarPowerImage = brawlStarsImageRepository.findAllByType(BrawlStarsImageType.STAR_POWER)
+                .stream()
+                .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
+
+        Map<String, BrawlStarsImageCollectionEntity> codeToGearImage = brawlStarsImageRepository.findAllByType(BrawlStarsImageType.GEAR)
+                .stream()
+                .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
+
         Map<String, List<MessageCollectionEntity>> codeToMessages = messageRepository.findAll()
                 .stream()
                 .collect(groupingBy(MessageCollectionEntity::getCode));
@@ -95,15 +107,18 @@ public class BrawlerService {
                         ),
                         brawlerBrawlStarsIdToGadgets.getOrDefault(brawler.getBrawlStarsId(), List.of()).stream()
                                 .map(gadget ->
-                                        new Gadget(gadget, codeToMessages.get(gadget.getNameMessageCode()))
+                                        new Gadget(gadget, codeToMessages.get(gadget.getNameMessageCode()),
+                                                codeToGadgetImage.get(BrawlStarsImageType.GADGET.code(gadget.getBrawlStarsId())))
                                 ).toList(),
                         brawlerBrawlStarsIdToStarPowers.getOrDefault(brawler.getBrawlStarsId(), List.of()).stream()
                                 .map(starPower ->
-                                        new StarPower(starPower, codeToMessages.get(starPower.getNameMessageCode()))
+                                        new StarPower(starPower, codeToMessages.get(starPower.getNameMessageCode()),
+                                                codeToStarPowerImage.get(BrawlStarsImageType.STAR_POWER.code(starPower.getBrawlStarsId())))
                                 ).toList(),
                         brawlerBrawlStarsIdToGears.getOrDefault(brawler.getBrawlStarsId(), List.of()).stream()
                                 .map(gear ->
-                                        new Gear(gear, codeToMessages.get(gear.getNameMessageCode()))
+                                        new Gear(gear, codeToMessages.get(gear.getNameMessageCode()),
+                                                codeToGearImage.get(BrawlStarsImageType.GEAR.code(gear.getBrawlStarsId())))
                                 ).toList()
                 )
         ).toList();
@@ -209,10 +224,15 @@ public class BrawlerService {
                 .stream()
                 .collect(groupingBy(MessageCollectionEntity::getCode));
 
+        Map<String, BrawlStarsImageCollectionEntity> codeToGearImage = brawlStarsImageRepository.findAllByType(BrawlStarsImageType.GEAR)
+                .stream()
+                .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
+
         return gears.stream().map(gear ->
                 new Gear(
                         gear,
-                        codeToMessages.get(gear.getNameMessageCode())
+                        codeToMessages.get(gear.getNameMessageCode()),
+                        codeToGearImage.get(BrawlStarsImageType.GEAR.code(gear.getBrawlStarsId()))
                 )
         ).toList();
     }
