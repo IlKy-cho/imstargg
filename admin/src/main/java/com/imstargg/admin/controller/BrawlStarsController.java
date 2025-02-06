@@ -87,4 +87,16 @@ public class BrawlStarsController {
     ) {
         battleService.updateBattleEvent(brawlStarsId, request.toBattleEventUpdate());
     }
+
+    @PutMapping("/admin/api/gadgets/{brawlStarsId}/image")
+    public void uploadGadgetImage(
+            @PathVariable long brawlStarsId, MultipartFile image) {
+        brawlerService.uploadGadgetImage(brawlStarsId, image.getResource());
+    }
+
+    @PutMapping("/admin/api/starpowers/{brawlStarsId}/image")
+    public void uploadStarPowerImage(
+            @PathVariable long brawlStarsId, MultipartFile image) {
+        brawlerService.uploadStarPowerImage(brawlStarsId, image.getResource());
+    }
 }

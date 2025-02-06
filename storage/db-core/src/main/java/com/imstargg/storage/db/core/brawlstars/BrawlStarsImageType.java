@@ -6,7 +6,9 @@ public enum BrawlStarsImageType {
 
     BRAWLER_PROFILE(brawlStarsId -> "brawlers." + brawlStarsId + ".profile"),
     GEAR(brawlStarsId -> "gears." + brawlStarsId),
-    BATTLE_MAP(brawlStarsId -> "battle-events." + brawlStarsId + ".map")
+    BATTLE_MAP(brawlStarsId -> "battle-events." + brawlStarsId + ".map"),
+    GADGET(brawlStarsId -> "gadgets." + brawlStarsId),
+    STAR_POWER(brawlStarsId -> "starpowers." + brawlStarsId)
     ;
 
     private final Function<Long, String> codeFunction;

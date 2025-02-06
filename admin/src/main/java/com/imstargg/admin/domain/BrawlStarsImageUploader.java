@@ -18,6 +18,8 @@ public class BrawlStarsImageUploader {
     private static final String PROFILE_DIR = "profiles";
     private static final String GEAR_DIR = "gears";
     private static final String MAPS_DIR = "battle-events";
+    private static final String GADGETS_DIR = "gadgets";
+    private static final String STARPOWERS_DIR = "starpowers";
 
     private final ImageUploader imageUploader;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageJpaRepository;
@@ -64,6 +66,28 @@ public class BrawlStarsImageUploader {
                 .brawlStarsId(eventBrawlStarsId)
                 .image(Image.resource(resource))
                 .directories(MAPS_DIR)
+                .build();
+
+        processImageUpload(imageUpload);
+    }
+
+    public void uploadGadget(long brawlStarsId, Resource resource) {
+        ImageUpload imageUpload = ImageUpload.builder()
+                .type(BrawlStarsImageType.GADGET)
+                .brawlStarsId(brawlStarsId)
+                .image(Image.resource(resource))
+                .directories(GADGETS_DIR)
+                .build();
+
+        processImageUpload(imageUpload);
+    }
+
+    public void uploadStarPower(long brawlStarsId, Resource resource) {
+        ImageUpload imageUpload = ImageUpload.builder()
+                .type(BrawlStarsImageType.STAR_POWER)
+                .brawlStarsId(brawlStarsId)
+                .image(Image.resource(resource))
+                .directories(STARPOWERS_DIR)
                 .build();
 
         processImageUpload(imageUpload);

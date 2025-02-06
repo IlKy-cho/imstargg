@@ -230,4 +230,12 @@ public class BrawlerService {
         newGear.names().messages().forEach((language, name) -> messageRepository.save(
                 new MessageCollectionEntity(gear.getNameMessageCode(), language, name)));
     }
+
+    public void uploadGadgetImage(long brawlStarsId, Resource resource) {
+        brawlStarsImageUploader.uploadGadget(brawlStarsId, resource);
+    }
+
+    public void uploadStarPowerImage(long brawlStarsId, Resource resource) {
+        brawlStarsImageUploader.uploadStarPower(brawlStarsId, resource);
+    }
 }
