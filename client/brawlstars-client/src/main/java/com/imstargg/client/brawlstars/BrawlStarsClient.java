@@ -1,9 +1,10 @@
 package com.imstargg.client.brawlstars;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.imstargg.client.brawlstars.request.PagingParam;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
+import com.imstargg.client.brawlstars.response.ClubRankingResponse;
+import com.imstargg.client.brawlstars.response.ClubResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
@@ -18,8 +19,6 @@ import java.util.List;
 public class BrawlStarsClient {
 
     private final BrawlStarsApi brawlstarsApi;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     BrawlStarsClient(BrawlStarsApi brawlstarsApi) {
         this.brawlstarsApi = brawlstarsApi;
@@ -58,5 +57,17 @@ public class BrawlStarsClient {
 
     public ListResponse<PlayerRankingResponse> getBrawlerRanking(String country, long brawlerId) {
         return brawlstarsApi.getBrawlerRankingsForACountryOrGlobalRankings(country, brawlerId, PagingParam.DEFAULT);
+    }
+
+    public ClubResponse getClub(String clubTag) {
+        try {
+            return brawlstarsApi.getClubInformation(clubTag);
+        } catch (FeignException.NotFound ex) {
+            throw new BrawlStarsClientException.NotFound("clubTag=" + clubTag, ex);
+        }
+    }
+
+    public ListResponse<ClubRankingResponse> getClubRanking(String country) {
+        return brawlstarsApi.getClubRankingsForACountryOrGlobalRankings(country, PagingParam.DEFAULT);
     }
 }
