@@ -5,6 +5,8 @@ import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class ClubReader {
 
@@ -17,5 +19,9 @@ public class ClubReader {
     public Club get(BrawlStarsTag tag) {
         return clubRepository.findByTag(tag)
                 .orElseThrow(() -> new CoreException(CoreErrorType.CLUB_NOT_FOUND, "clubTag=" + tag));
+    }
+
+    public List<ClubMember> getMembers(Club club) {
+        return clubRepository.findMembers(club);
     }
 }
