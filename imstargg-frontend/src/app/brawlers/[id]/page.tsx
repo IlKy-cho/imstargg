@@ -28,6 +28,9 @@ import {getBrawlerRanking} from "@/lib/api/ranking";
 import {Country} from "@/model/enums/Country";
 import {Ranking} from "@/components/ranking";
 import {countryOrDefault} from "@/lib/country";
+import {BrawlerGadgetList} from "@/components/gadget";
+import { BrawlerStarPowerList } from "@/components/starpower";
+import { BrawlerGearList } from "@/components/gear";
 
 interface SearchParams extends StatisticsSearchParams{
   country?: Country;
@@ -81,6 +84,9 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
           <BrawlerProfile brawler={brawler}/>
         </div>
       </div>
+      <BrawlerGadgetList gadgets={brawler.gadgets}/>
+      <BrawlerStarPowerList starPowers={brawler.starPowers}/>
+      <BrawlerGearList gears={brawler.gears}/>
       <Ranking rankings={brawlerRankings} country={country}/>
       <div className="flex flex-col gap-2 p-1">
         <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
