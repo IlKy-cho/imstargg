@@ -38,47 +38,47 @@ public class PlayerEntity extends BaseEntity {
     private String brawlStarsTag;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "status", columnDefinition = "varchar(45)", nullable = false)
+    @Column(name = "status", columnDefinition = "varchar(45)", updatable = false, nullable = false)
     private PlayerStatus status;
 
-    @Column(name = "name", length = 105, nullable = false)
+    @Column(name = "name", length = 105, updatable = false, nullable = false)
     private String name;
 
     @Nullable
-    @Column(name = "name_color", length = 45)
+    @Column(name = "name_color", length = 45, updatable = false)
     private String nameColor;
 
-    @Column(name = "icon_brawlstars_id", nullable = false)
+    @Column(name = "icon_brawlstars_id", nullable = false, updatable = false)
     private long iconBrawlStarsId;
 
-    @Column(name = "trophies", nullable = false)
+    @Column(name = "trophies", nullable = false, updatable = false)
     private int trophies;
 
-    @Column(name = "highest_trophies", nullable = false)
+    @Column(name = "highest_trophies", nullable = false, updatable = false)
     private int highestTrophies;
 
-    @Column(name = "exp_level", nullable = false)
+    @Column(name = "exp_level", nullable = false, updatable = false)
     private int expLevel;
 
-    @Column(name = "exp_points", nullable = false)
+    @Column(name = "exp_points", nullable = false, updatable = false)
     private int expPoints;
 
-    @Column(name = "qualified_from_championship_challenge", nullable = false)
+    @Column(name = "qualified_from_championship_challenge", nullable = false, updatable = false)
     private boolean qualifiedFromChampionshipChallenge;
 
-    @Column(name = "victories_3vs3", nullable = false)
+    @Column(name = "victories_3vs3", nullable = false, updatable = false)
     private int victories3vs3;
 
-    @Column(name = "solo_victories", nullable = false)
+    @Column(name = "solo_victories", nullable = false, updatable = false)
     private int soloVictories;
 
-    @Column(name = "duo_victories", nullable = false)
+    @Column(name = "duo_victories", nullable = false, updatable = false)
     private int duoVictories;
 
-    @Column(name = "best_robo_rumble_time", nullable = false)
+    @Column(name = "best_robo_rumble_time", nullable = false, updatable = false)
     private int bestRoboRumbleTime;
 
-    @Column(name = "best_time_as_big_brawler", nullable = false)
+    @Column(name = "best_time_as_big_brawler", nullable = false, updatable = false)
     private int bestTimeAsBigBrawler;
 
     @Nullable
