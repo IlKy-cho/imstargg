@@ -29,8 +29,8 @@ public class ClubCollectionEntity extends BaseEntity {
     @Column(name = "type", length = 45, nullable = false)
     private String type;
 
-    @Column(name = "badge_id", updatable = false, nullable = false)
-    private long badgeId;
+    @Column(name = "badge_brawlstars_id", updatable = false, nullable = false)
+    private long badgeBrawlStarsId;
 
     @Column(name = "required_trophies", nullable = false)
     private int requiredTrophies;
@@ -46,7 +46,7 @@ public class ClubCollectionEntity extends BaseEntity {
             String name,
             String description,
             String type,
-            long badgeId,
+            long badgeBrawlStarsId,
             int requiredTrophies,
             int trophies
     ) {
@@ -54,7 +54,7 @@ public class ClubCollectionEntity extends BaseEntity {
         this.name = name;
         this.description = description;
         this.type = type;
-        this.badgeId = badgeId;
+        this.badgeBrawlStarsId = badgeBrawlStarsId;
         this.requiredTrophies = requiredTrophies;
         this.trophies = trophies;
     }
@@ -79,8 +79,8 @@ public class ClubCollectionEntity extends BaseEntity {
         return type;
     }
 
-    public long getBadgeId() {
-        return badgeId;
+    public long getBadgeBrawlStarsId() {
+        return badgeBrawlStarsId;
     }
 
     public int getRequiredTrophies() {
