@@ -33,17 +33,18 @@ create index ix_event_type_battletime
 
 create table club
 (
-    club_id           bigint       not null auto_increment,
-    brawlstars_tag    varchar(45)  not null,
-    name              varchar(105) not null,
-    description       varchar(500),
-    type              varchar(45),
-    badge_id          bigint       not null,
-    required_trophies int          not null,
-    trophies          int          not null,
-    created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted           boolean      not null default false,
+    club_id             bigint       not null auto_increment,
+    brawlstars_tag      varchar(45)  not null,
+    status              varchar(45)  not null,
+    name                varchar(105) not null,
+    description         varchar(500),
+    type                varchar(45),
+    badge_brawlstars_id bigint       not null,
+    required_trophies   int          not null,
+    trophies            int          not null,
+    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted             boolean      not null default false,
     primary key (club_id)
 ) engine = innodb;
 

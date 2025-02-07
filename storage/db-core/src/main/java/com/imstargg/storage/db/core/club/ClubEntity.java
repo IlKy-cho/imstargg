@@ -1,8 +1,11 @@
 package com.imstargg.storage.db.core.club;
 
+import com.imstargg.core.enums.ClubStatus;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -29,6 +32,10 @@ public class ClubEntity extends BaseEntity {
 
     @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
     private String brawlStarsTag;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", columnDefinition = "varchar(45)", nullable = false, updatable = false)
+    private ClubStatus status;
 
     @Column(name = "name", length = 105, updatable = false, nullable = false)
     private String name;
@@ -57,6 +64,10 @@ public class ClubEntity extends BaseEntity {
 
     public String getBrawlStarsTag() {
         return brawlStarsTag;
+    }
+
+    public ClubStatus getStatus() {
+        return status;
     }
 
     public String getName() {
