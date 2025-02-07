@@ -30,7 +30,7 @@ public class ClubCollectionEntity extends BaseEntity {
     @Column(name = "name", length = 105, updatable = false, nullable = false)
     private String name;
 
-    @Column(name = "description", length = 500, nullable = false)
+    @Column(name = "description", length = 500)
     private String description;
 
     @Column(name = "type", length = 45, nullable = false)
@@ -65,6 +65,30 @@ public class ClubCollectionEntity extends BaseEntity {
         this.badgeBrawlStarsId = badgeBrawlStarsId;
         this.requiredTrophies = requiredTrophies;
         this.trophies = trophies;
+    }
+
+    public void update(
+            String name,
+            String description,
+            String type,
+            long badgeBrawlStarsId,
+            int requiredTrophies,
+            int trophies
+    ) {
+        this.name = name;
+        this.description = description;
+        this.type = type;
+        this.badgeBrawlStarsId = badgeBrawlStarsId;
+        this.requiredTrophies = requiredTrophies;
+        this.trophies = trophies;
+    }
+
+    public void updated() {
+        this.status = ClubStatus.UPDATED;
+    }
+
+    public void deleted() {
+        this.status = ClubStatus.DELETED;
     }
 
     public Long getId() {

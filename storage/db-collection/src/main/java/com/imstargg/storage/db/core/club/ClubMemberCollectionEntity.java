@@ -64,6 +64,20 @@ public class ClubMemberCollectionEntity extends BaseEntity {
         this.iconBrawlStarsId = iconBrawlStarsId;
     }
 
+    public void update(
+            String name,
+            String nameColor,
+            String role,
+            int trophies,
+            long iconBrawlStarsId
+    ) {
+        this.name = name;
+        this.nameColor = nameColor;
+        this.role = role;
+        this.trophies = trophies;
+        this.iconBrawlStarsId = iconBrawlStarsId;
+    }
+
     public Long getId() {
         return id;
     }

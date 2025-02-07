@@ -40,7 +40,7 @@ public class ClubEntity extends BaseEntity {
     @Column(name = "name", length = 105, updatable = false, nullable = false)
     private String name;
 
-    @Column(name = "description", length = 500, nullable = false, updatable = false)
+    @Column(name = "description", length = 500, updatable = false)
     private String description;
 
     @Column(name = "type", length = 45, nullable = false, updatable = false)
