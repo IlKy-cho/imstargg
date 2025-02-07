@@ -17,7 +17,7 @@ import Trophy from "@/components/trophy";
 import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 import {PowerLevel} from "./brawler";
-import {createContext, useContext, useEffect, useMemo, useState} from "react";
+import {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
 import {PlayerBattle as PlayerBattleModel, playerBattleMe, playerBattleMyTeam} from "@/model/PlayerBattle";
 import {getBattles} from "@/lib/api/battle";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
@@ -30,43 +30,25 @@ import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from './
 import {Card, CardContent, CardHeader, CardTitle} from './ui/card';
 import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
 import {Player} from "@/model/Player";
-import { SoloRankTier as SoloRankTierType, soloRankTierValue, valueToSoloRankTier } from '@/model/enums/SoloRankTier';
-import { soloRankTierTitle } from '@/lib/solo-rank-tier';
+import {SoloRankTier as SoloRankTierType, soloRankTierValue, valueToSoloRankTier} from '@/model/enums/SoloRankTier';
+import {soloRankTierTitle} from '@/lib/solo-rank-tier';
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
-
-interface BattleContextType {
-  battles: PlayerBattleModel[];
-  page: number;
-  loading: boolean;
-  hasMore: boolean;
-  fetchBattles: () => Promise<void>;
-}
-
-const initialState: BattleContextType = {
-  battles: [],
-  page: 0,
-  loading: false,
-  hasMore: true,
-  fetchBattles: async () => {},
-};
-
-const BattleContext = createContext<BattleContextType>(initialState);
 
 type PlayerBattleContentProps = {
   player: Player;
   brawlers: Brawler[];
 };
 
-export function PlayerBattleContent({ player, brawlers }: Readonly<PlayerBattleContentProps>) {
+export function PlayerBattleContent({player, brawlers}: Readonly<PlayerBattleContentProps>) {
   const tag = player.tag;
   const [battles, setBattles] = useState<PlayerBattleModel[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchBattles = async () => {
+  const fetchBattles = useCallback(async () => {
     if (loading || !hasMore) return;
 
     setLoading(true);
@@ -80,36 +62,37 @@ export function PlayerBattleContent({ player, brawlers }: Readonly<PlayerBattleC
     } finally {
       setLoading(false);
     }
-  }
-
-  return (
-    <BattleContext.Provider value={{ battles, page, loading, hasMore, fetchBattles }}>
-      <div className="flex flex-col sm:flex-row gap-1">
-        <div className="flex flex-col gap-1 w-full sm:w-72">
-          <PlayerBattleRecentMyTeamStatistics myTag={tag} />
-          <PlayerBattleRecentBrawlerStatistics myTag={tag} brawlers={brawlers} />
-          <RecentTrophyChange player={player} />
-          <RecentSoloRankTierChange myTag={tag} />
-        </div>
-        <div className="flex-1">
-          <PlayerBattleList tag={tag} brawlerList={brawlers} />
-        </div>
-      </div>
-    </BattleContext.Provider>
-  )
-}
-
-type PlayerBattleListProps = {
-  tag: string;
-  brawlerList: Brawler[];
-};
-
-export function PlayerBattleList({ tag, brawlerList }: Readonly<PlayerBattleListProps>) {
-  const { battles, loading, hasMore, fetchBattles } = useContext(BattleContext);
+  }, [tag, page]);
 
   useEffect(() => {
     fetchBattles();
   }, [tag]);
+
+  return (
+    <div className="flex flex-col sm:flex-row gap-1">
+      <div className="flex flex-col gap-1 w-full sm:w-72">
+        <PlayerBattleRecentMyTeamStatistics myTag={tag} battles={battles}/>
+        <PlayerBattleRecentBrawlerStatistics myTag={tag} brawlers={brawlers} battles={battles}/>
+        <RecentTrophyChange player={player} battles={battles}/>
+        <RecentSoloRankTierChange myTag={tag} battles={battles}/>
+      </div>
+      <div className="flex-1 flex flex-col gap-2">
+        <PlayerBattleList battles={battles} tag={tag} brawlerList={brawlers}/>
+        <LoadingButton loading={loading} disabled={!hasMore} onClick={fetchBattles} variant='outline'>
+          {hasMore ? '더보기' : '더 이상 배틀 기록이 없습니다.'}
+        </LoadingButton>
+      </div>
+    </div>
+  );
+}
+
+type PlayerBattleListProps = {
+  battles: PlayerBattleModel[];
+  tag: string;
+  brawlerList: Brawler[];
+};
+
+export function PlayerBattleList({battles, tag, brawlerList}: Readonly<PlayerBattleListProps>) {
 
   return (
     <div className="flex flex-col gap-2">
@@ -121,9 +104,6 @@ export function PlayerBattleList({ tag, brawlerList }: Readonly<PlayerBattleList
           myTag={tag}
         />
       ))}
-      <LoadingButton loading={loading} disabled={!hasMore} onClick={fetchBattles} variant='outline'>
-        {hasMore ? '더보기' : '더 이상 배틀 기록이 없습니다.'}
-      </LoadingButton>
     </div>
   );
 }
@@ -134,19 +114,20 @@ type PlayerBattleProps = {
   myTag: string;
 }
 
-export default function PlayerBattle({ battle, brawlers, myTag }: Readonly<PlayerBattleProps>) {
+export default function PlayerBattle({battle, brawlers, myTag}: Readonly<PlayerBattleProps>) {
   return (
-    <div className={`flex flex-col rounded-lg overflow-hidden ${battleBackgroundColor(battle)} ${battleBorderColor(battle)}`}>
-      <PlayerBattleHeader battle={battle} />
+    <div
+      className={`flex flex-col rounded-lg overflow-hidden ${battleBackgroundColor(battle)} ${battleBorderColor(battle)}`}>
+      <PlayerBattleHeader battle={battle}/>
       <div className="flex flex-1 p-1 sm:p-2">
         <div className="flex items-center justify-center w-20 sm:w-28">
           <BattleEventLink battle={battle}>
-            <BattleEventMapImage battleEventMap={battle.event.map} />
+            <BattleEventMapImage battleEventMap={battle.event.map}/>
           </BattleEventLink>
         </div>
-        <Separator className="m-1" orientation="vertical" />
+        <Separator className="m-1" orientation="vertical"/>
         <div className="flex items-center justify-center flex-1">
-          <BattleTeams battle={battle} myTag={myTag} brawlers={brawlers} />
+          <BattleTeams battle={battle} myTag={myTag} brawlers={brawlers}/>
         </div>
       </div>
     </div>
@@ -182,18 +163,18 @@ function battleBorderColor(battle: PlayerBattleModel) {
   return 'border-l-4 border-zinc-300';
 }
 
-function PlayerBattleHeader({ battle }: { battle: PlayerBattleModel }) {
+function PlayerBattleHeader({battle}: { battle: PlayerBattleModel }) {
   const modeTitle = playerBattleModeTitle(battle);
   const mapName = battle.event ? battle.event.map.name : '❓';
 
   return (
     <div className={`flex items-center p-1 w-full ${battleHeaderBackgroundColor(battle)}`}>
       <div className="flex items-center gap-1">
-        <BattleTypeIcon type={battle.type} />
+        <BattleTypeIcon type={battle.type}/>
         {battleTypeTitle(battle.type) && (
           <span className="font-bold text-sm sm:text-base">{battleTypeTitle(battle.type)}</span>
         )}
-        <Separator orientation="vertical" />
+        <Separator orientation="vertical"/>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
@@ -206,16 +187,16 @@ function PlayerBattleHeader({ battle }: { battle: PlayerBattleModel }) {
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-        <Separator orientation="vertical" />
-        <BattleResultInfo battle={battle} />
+        <Separator orientation="vertical"/>
+        <BattleResultInfo battle={battle}/>
         <div className="text-xs sm:text-sm text-zinc-600">
           {battle.duration && (
             <span>{battle.duration}초</span>
           )}
         </div>
-        <Separator orientation="vertical" />
+        <Separator orientation="vertical"/>
         <div className="flex items-center gap-1">
-          <BattleModeIcon battle={battle} />
+          <BattleModeIcon battle={battle}/>
           <span className="font-bold text-sm sm:text-base">{modeTitle}</span>
         </div>
         <div className="text-xs sm:text-sm text-zinc-600">
@@ -226,7 +207,7 @@ function PlayerBattleHeader({ battle }: { battle: PlayerBattleModel }) {
   );
 }
 
-function BattleEventLink({ battle, children }: { battle: PlayerBattleModel, children: React.ReactNode }) {
+function BattleEventLink({battle, children}: { battle: PlayerBattleModel, children: React.ReactNode }) {
   if (!battle.event.id) {
     return null;
   }
@@ -253,7 +234,7 @@ function battleHeaderBackgroundColor(battle: PlayerBattleModel) {
   return 'bg-zinc-100';
 }
 
-function BattleResultInfo({ battle }: { battle: PlayerBattleModel }) {
+function BattleResultInfo({battle}: { battle: PlayerBattleModel }) {
   if (battle.result) {
     return (
       <div className='font-bold text-sm sm:text-base'>
@@ -271,7 +252,7 @@ function BattleResultInfo({ battle }: { battle: PlayerBattleModel }) {
   return null;
 }
 
-function BattleTypeIcon({ type }: { type: BattleType }) {
+function BattleTypeIcon({type}: { type: BattleType }) {
   const iconSrc = battleTypeIconSrc(type);
   if (!iconSrc) {
     return null;
@@ -287,20 +268,20 @@ function BattleTypeIcon({ type }: { type: BattleType }) {
   );
 }
 
-function BattleModeIcon({ battle }: { battle: PlayerBattleModel }) {
+function BattleModeIcon({battle}: { battle: PlayerBattleModel }) {
   const iconSrc = playerBattleIconSrc(battle);
   if (!iconSrc) {
     return null;
   }
 
   return (
-    <Image src={iconSrc} alt="battle event icon" width={24} height={24} />
+    <Image src={iconSrc} alt="battle event icon" width={24} height={24}/>
   );
 }
 
 
 function BattleTeams(
-  { battle, myTag, brawlers }: { battle: PlayerBattleModel, myTag: string, brawlers: Brawler[] }
+  {battle, myTag, brawlers}: { battle: PlayerBattleModel, myTag: string, brawlers: Brawler[] }
 ) {
   const shouldUseGrid = battle.teams.length > 5;
 
@@ -319,11 +300,16 @@ function BattleTeams(
   );
 }
 
-function BattleTeam({ team, myTag, starPlayerTag, brawlers }: { team: BattlePlayer[], myTag: string, starPlayerTag: string | null, brawlers: Brawler[] }) {
+function BattleTeam({team, myTag, starPlayerTag, brawlers}: {
+  team: BattlePlayer[],
+  myTag: string,
+  starPlayerTag: string | null,
+  brawlers: Brawler[]
+}) {
   const brawlerCollection = new BrawlerCollection(brawlers);
   const shouldSplit = team.length > 3;
   const halfLength = shouldSplit ? Math.ceil(team.length / 2) : team.length;
-  
+
   return (
     <div className="border border-zinc-200 rounded-lg p-1 sm:p-2">
       <div className={`flex ${shouldSplit ? 'flex-col sm:flex-row' : 'flex-row'} items-center gap-2`}>
@@ -357,7 +343,7 @@ function BattleTeam({ team, myTag, starPlayerTag, brawlers }: { team: BattlePlay
 }
 
 function BattleTeamPlayer(
-  { player, brawler, myTag, starPlayerTag }: {
+  {player, brawler, myTag, starPlayerTag}: {
     player: BattlePlayer,
     brawler: Brawler | null,
     myTag: string,
@@ -372,13 +358,13 @@ function BattleTeamPlayer(
       <BrawlerLink brawler={brawler}>
         <div className="relative">
           <div className="absolute sm:top-0 -top-1 left-0 z-10 bg-zinc-200/50">
-            <PowerLevel value={player.brawler.power} />
+            <PowerLevel value={player.brawler.power}/>
           </div>
           <div className="absolute bottom-0 right-0 z-10 bg-zinc-200/50">
-            <PlayerTier player={player} />
+            <PlayerTier player={player}/>
           </div>
 
-          <BrawlerProfileImage brawler={brawler} />
+          <BrawlerProfileImage brawler={brawler}/>
         </div>
       </BrawlerLink>
       <div className="w-full">
@@ -398,17 +384,17 @@ function BattleTeamPlayer(
   );
 }
 
-export function PlayerTier({ player }: { player: BattlePlayer }) {
+export function PlayerTier({player}: { player: BattlePlayer }) {
   if (player.soloRankTier) {
     return (
       <div className="flex items-center gap-1">
-        <SoloRankTier tier={player.soloRankTier} />
+        <SoloRankTier tier={player.soloRankTier}/>
       </div>
     );
   } else if (player.brawler.trophies) {
     return (
       <div className="flex items-center gap-1">
-        <Trophy value={player.brawler.trophies} />
+        <Trophy value={player.brawler.trophies}/>
       </div>
     );
   }
@@ -459,8 +445,10 @@ class BattleResultCounter {
 }
 
 
-function PlayerBattleRecentMyTeamStatistics({ myTag }: Readonly<{ myTag: string }>) {
-  const { battles } = useContext(BattleContext);
+function PlayerBattleRecentMyTeamStatistics({myTag, battles}: Readonly<{
+  myTag: string,
+  battles: PlayerBattleModel[]
+}>) {
   const myTeamPlayerTagToCounter = new Map<string, BattleResultCounter>();
   const tagToName = new Map<string, string>();
 
@@ -509,7 +497,8 @@ function PlayerBattleRecentMyTeamStatistics({ myTag }: Readonly<{ myTag: string 
             <Link href={playerHref(stat.tag)} className="font-bold text-sm">
               {tagToName.get(stat.tag)!}<span className="text-zinc-500">{stat.tag}</span>
             </Link>
-            <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total} winRate={stat.winRate} />
+            <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total}
+                              winRate={stat.winRate}/>
           </div>
         ))}
       </div>
@@ -517,8 +506,11 @@ function PlayerBattleRecentMyTeamStatistics({ myTag }: Readonly<{ myTag: string 
   );
 }
 
-function PlayerBattleRecentBrawlerStatistics({ myTag, brawlers }: Readonly<{ myTag: string, brawlers: Brawler[] }>) {
-  const { battles } = useContext(BattleContext);
+function PlayerBattleRecentBrawlerStatistics({myTag, brawlers, battles}: Readonly<{
+  myTag: string,
+  brawlers: Brawler[],
+  battles: PlayerBattleModel[]
+}>) {
   const brawlerCollection = new BrawlerCollection(brawlers);
   const brawlerIdToCounter = new Map<number, BattleResultCounter>();
 
@@ -557,8 +549,10 @@ function PlayerBattleRecentBrawlerStatistics({ myTag, brawlers }: Readonly<{ myT
       <div className="flex flex-col gap-1">
         {brawlerStats.map(stat => (
           <div key={stat.id} className="flex p-2 gap-2 items-center border rounded-lg">
-            <Link href={brawlerHref(stat.id)} className="font-bold text-sm">{brawlerCollection.find(stat.id)!.name}</Link>
-            <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total} winRate={stat.winRate} />
+            <Link href={brawlerHref(stat.id)}
+                  className="font-bold text-sm">{brawlerCollection.find(stat.id)!.name}</Link>
+            <ResultStatistics victories={stat.victories} defeats={stat.defeats} draws={stat.draws} total={stat.total}
+                              winRate={stat.winRate}/>
           </div>
         ))}
       </div>
@@ -566,7 +560,13 @@ function PlayerBattleRecentBrawlerStatistics({ myTag, brawlers }: Readonly<{ myT
   );
 }
 
-function ResultStatistics({ victories, defeats, draws, total, winRate }: Readonly<{ victories: number, defeats: number, draws: number, total: number, winRate: number }>) {
+function ResultStatistics({victories, defeats, draws, total, winRate}: Readonly<{
+  victories: number,
+  defeats: number,
+  draws: number,
+  total: number,
+  winRate: number
+}>) {
   return (
     <div className="text-xs flex gap-1">
       <span className="text-blue-600">{victories}승</span>
@@ -578,10 +578,8 @@ function ResultStatistics({ victories, defeats, draws, total, winRate }: Readonl
   );
 }
 
-function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
-  const { battles } = useContext(BattleContext);
-
-  const chartConfig = useMemo(() => ({
+function RecentTrophyChange({player, battles}: Readonly<{ player: Player, battles: PlayerBattleModel[] }>) {
+  const chartConfig = useMemo((): ChartConfig => ({
     trophy: {
       label: '트로피',
     }
@@ -589,7 +587,7 @@ function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
 
   const data = useMemo(() => {
     let currentTrophy = player.trophies;
-    const battleTrophies: {battleTime: Date, trophy: number}[] = [];
+    const battleTrophies: { battleTime: Date, trophy: number }[] = [];
     for (let i = 0; i < battles.length; i++) {
       const battle = battles[i];
       if (battle.trophyChange) {
@@ -633,9 +631,9 @@ function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
             accessibilityLayer
             data={data}
           >
-            <CartesianGrid vertical={false} />
-            <XAxis 
-              dataKey="battleTime" 
+            <CartesianGrid vertical={false}/>
+            <XAxis
+              dataKey="battleTime"
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => dayjs(value).format('MM/DD')}
@@ -646,7 +644,7 @@ function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
               axisLine={false}
             />
             <ChartTooltip
-              content={<ChartTooltipContent hideLabel />}
+              content={<ChartTooltipContent hideLabel/>}
             />
             <Line
               dataKey="trophy"
@@ -661,16 +659,15 @@ function RecentTrophyChange({ player }: Readonly<{ player: Player }>) {
   );
 }
 
-function RecentSoloRankTierChange({ myTag }: Readonly<{ myTag: string }>) {
-  const { battles } = useContext(BattleContext);
-  const chartConfig = useMemo(() => ({
+function RecentSoloRankTierChange({myTag, battles}: Readonly<{ myTag: string, battles: PlayerBattleModel[] }>) {
+  const chartConfig = useMemo((): ChartConfig => ({
     tier: {
       label: '경쟁전',
     }
-  } satisfies ChartConfig), []); 
+  } satisfies ChartConfig), []);
 
   const data = useMemo(() => {
-    const soloRankTiers: {battleTime: Date, tier: number}[] = [];
+    const soloRankTiers: { battleTime: Date, tier: number }[] = [];
     for (let i = 0; i < battles.length; i++) {
       const battle = battles[i];
       playerBattleMe(battle, myTag)
@@ -703,9 +700,9 @@ function RecentSoloRankTierChange({ myTag }: Readonly<{ myTag: string }>) {
             accessibilityLayer
             data={data}
           >
-            <CartesianGrid vertical={false} />
-            <XAxis 
-              dataKey="battleTime" 
+            <CartesianGrid vertical={false}/>
+            <XAxis
+              dataKey="battleTime"
               tickLine={false}
               axisLine={false}
               tickFormatter={(value) => dayjs(value).format('MM/DD')}
