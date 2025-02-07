@@ -38,7 +38,7 @@ create table club
     status              varchar(45)  not null,
     name                varchar(105) not null,
     description         varchar(500),
-    type                varchar(45),
+    type                varchar(45)  not null,
     badge_brawlstars_id bigint       not null,
     required_trophies   int          not null,
     trophies            int          not null,
