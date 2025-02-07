@@ -2,6 +2,7 @@ package com.imstargg.storage.db.core.club;
 
 import com.imstargg.core.enums.ClubStatus;
 import com.imstargg.storage.db.core.BaseEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -40,6 +41,7 @@ public class ClubEntity extends BaseEntity {
     @Column(name = "name", length = 105, updatable = false, nullable = false)
     private String name;
 
+    @Nullable
     @Column(name = "description", length = 500, updatable = false)
     private String description;
 
@@ -74,6 +76,7 @@ public class ClubEntity extends BaseEntity {
         return name;
     }
 
+    @Nullable
     public String getDescription() {
         return description;
     }
