@@ -56,18 +56,22 @@ create index ix_club__name
 
 create table club_member
 (
-    club_member_id bigint       not null auto_increment,
-    club_id        bigint       not null,
-    member_id      bigint       not null,
-    role           varchar(25)  not null,
-    created_at     timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at     timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted        boolean      not null default false,
+    club_member_id     bigint       not null auto_increment,
+    club_id            bigint       not null,
+    brawlstars_tag     varchar(45)  not null,
+    name               varchar(45)  not null,
+    name_color         varchar(45),
+    role               varchar(25)  not null,
+    trophies           int          not null,
+    icon_brawlstars_id bigint       not null,
+    created_at         timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at         timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted            boolean      not null default false,
     primary key (club_member_id)
 ) engine = innodb;
 
 alter table club_member
-    add constraint uk_clubmember__clubid_memberid unique (club_id, member_id);
+    add constraint uk_clubmember__clubid_brawlstarstag unique (club_id, brawlstars_tag);
 
 
 create table player_brawler

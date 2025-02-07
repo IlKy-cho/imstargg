@@ -1,5 +1,6 @@
-package com.imstargg.storage.db.core;
+package com.imstargg.storage.db.core.club;
 
+import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,19 +33,19 @@ public class ClubEntity extends BaseEntity {
     @Column(name = "name", length = 105, updatable = false, nullable = false)
     private String name;
 
-    @Column(name = "description", length = 500, nullable = false)
+    @Column(name = "description", length = 500, nullable = false, updatable = false)
     private String description;
 
-    @Column(name = "type", length = 45, nullable = false)
+    @Column(name = "type", length = 45, nullable = false, updatable = false)
     private String type;
 
     @Column(name = "badge_id", updatable = false, nullable = false)
     private long badgeId;
 
-    @Column(name = "required_trophies", nullable = false)
+    @Column(name = "required_trophies", nullable = false, updatable = false)
     private int requiredTrophies;
 
-    @Column(name = "trophies", nullable = false)
+    @Column(name = "trophies", nullable = false, updatable = false)
     private int trophies;
 
     protected ClubEntity() {

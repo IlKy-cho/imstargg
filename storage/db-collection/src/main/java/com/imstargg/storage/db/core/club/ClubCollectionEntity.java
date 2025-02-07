@@ -1,5 +1,6 @@
-package com.imstargg.storage.db.core;
+package com.imstargg.storage.db.core.club;
 
+import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

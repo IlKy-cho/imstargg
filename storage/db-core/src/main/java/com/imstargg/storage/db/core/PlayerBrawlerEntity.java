@@ -35,28 +35,28 @@ public class PlayerBrawlerEntity {
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    @Column(name = "power", nullable = false)
+    @Column(name = "power", nullable = false, updatable = false)
     private int power;
 
-    @Column(name = "trophy_rank", nullable = false)
+    @Column(name = "trophy_rank", nullable = false, updatable = false)
     private int rank;
 
-    @Column(name = "trophies", nullable = false)
+    @Column(name = "trophies", nullable = false, updatable = false)
     private int trophies;
 
-    @Column(name = "highest_trophies", nullable = false)
+    @Column(name = "highest_trophies", nullable = false, updatable = false)
     private int highestTrophies;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gear_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    @Column(name = "gear_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false, updatable = false)
     private List<Long> gearBrawlStarsIds;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "star_power_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    @Column(name = "star_power_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false, updatable = false)
     private List<Long> starPowerBrawlStarsIds;
 
     @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gadget_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    @Column(name = "gadget_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false, updatable = false)
     private List<Long> gadgetBrawlStarsIds;
 
     protected PlayerBrawlerEntity() {
