@@ -39,8 +39,8 @@ public class ClubEntity extends BaseEntity {
     @Column(name = "type", length = 45, nullable = false, updatable = false)
     private String type;
 
-    @Column(name = "badge_id", updatable = false, nullable = false)
-    private long badgeId;
+    @Column(name = "badge_brawlstars_id", updatable = false, nullable = false)
+    private long badgeBrawlStarsId;
 
     @Column(name = "required_trophies", nullable = false, updatable = false)
     private int requiredTrophies;
@@ -71,8 +71,8 @@ public class ClubEntity extends BaseEntity {
         return type;
     }
 
-    public long getBadgeId() {
-        return badgeId;
+    public long getBadgeBrawlStarsId() {
+        return badgeBrawlStarsId;
     }
 
     public int getRequiredTrophies() {
