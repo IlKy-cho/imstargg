@@ -17,7 +17,7 @@ import Trophy from "@/components/trophy";
 import {BrawlerLink} from "@/components/brawler-link";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
 import {PowerLevel} from "./brawler";
-import {createContext, useCallback, useContext, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {PlayerBattle as PlayerBattleModel, playerBattleMe, playerBattleMyTeam} from "@/model/PlayerBattle";
 import {getBattles} from "@/lib/api/battle";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
