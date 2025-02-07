@@ -475,3 +475,23 @@ create table brawler_ranking
 
 alter table brawler_ranking
     add constraint uk_brawler_ranking__country_brawler_rank unique (country, brawler_brawlstars_id, rank_value);
+
+
+create table club_ranking
+(
+    club_ranking_id     bigint       not null auto_increment,
+    country             varchar(25)  not null,
+    brawlstars_tag      varchar(45)  not null,
+    name                varchar(45)  not null,
+    badge_brawlstars_id bigint       not null,
+    trophies            int          not null,
+    rank_value          int          not null,
+    member_count        int          not null,
+    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted             boolean      not null default false,
+    primary key (club_ranking_id)
+);
+
+alter table club_ranking
+    add constraint uk_club_ranking__country_rank unique (country, rank_value);
