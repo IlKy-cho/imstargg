@@ -1,10 +1,7 @@
 import {Brawler} from "@/model/Brawler";
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
-import { BrawlerRole } from "@/model/enums/BrawlerRole";
-import { BrawlerRarity } from "@/model/enums/BrawlerRarity";
-import { Gadget } from "@/model/Gadget";
-import { Gear } from "@/model/Gear";
-import { StarPower } from "@/model/StarPower";
+import {BrawlerRole} from "@/model/enums/BrawlerRole";
+import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
 import {GearRarity} from "@/model/enums/GearRarity";
 
 interface BrawlerResponse {
