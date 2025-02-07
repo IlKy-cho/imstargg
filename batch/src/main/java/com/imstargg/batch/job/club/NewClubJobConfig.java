@@ -6,6 +6,7 @@ import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.storage.db.core.club.ClubCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
@@ -30,9 +31,10 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
-import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
+import static com.imstargg.storage.db.core.QPlayerEntity.playerEntity;
 import static com.imstargg.storage.db.core.club.QClubCollectionEntity.clubCollectionEntity;
 
 @Configuration
@@ -110,40 +112,62 @@ public class NewClubJobConfig {
     @StepScope
     ListItemReader<String> reader() {
         JPAQueryFactory queryFactory = JPAQueryFactoryUtils.getQueryFactory(emf);
-        Set<String> clubTags = new HashSet<>(
-                queryFactory
-                        .selectDistinct(playerCollectionEntity.brawlStarsClubTag)
-                        .from(playerCollectionEntity)
-                        .where(playerCollectionEntity.brawlStarsClubTag.isNotNull())
-                        .fetch()
-        );
+        List<String> clubTags = fetchClubTags(queryFactory);
+        return new ListItemReader<>(clubTags.stream().toList());
+    }
+
+    private List<String> fetchClubTags(JPAQueryFactory queryFactory) {
+        Set<String> clubTags = new HashSet<>();
 
         boolean hasMore = true;
-        int size = 100_000;
-        String cursorTag = null;
+        int size = 1000;
+        Long cursorPlayerId = null;
         while (hasMore) {
-            List<String> existsClubTags = queryFactory
-                    .select(clubCollectionEntity.brawlStarsTag)
-                    .from(clubCollectionEntity)
+            List<Tuple> tuples  = queryFactory
+                    .select(playerEntity.id, playerEntity.brawlStarsClubTag)
+                    .from(playerEntity)
                     .where(
-                            cursorTag != null ? clubCollectionEntity.brawlStarsTag.gt(cursorTag) : null
+                            cursorPlayerId != null ? playerEntity.id.gt(cursorPlayerId) : null
                     )
-                    .orderBy(clubCollectionEntity.brawlStarsTag.asc())
+                    .orderBy(playerEntity.id.asc())
+                    .limit(size)
                     .fetch();
 
-            if (existsClubTags.isEmpty()) {
+            if (tuples.isEmpty()) {
                 break;
             }
-            if (existsClubTags.size() < size) {
+            if (tuples.size() < size) {
                 hasMore = false;
             }
 
-            cursorTag = existsClubTags.getLast();
+            cursorPlayerId = tuples.getLast().get(playerEntity.id);
+            List<String> playerClubTags = tuples.stream()
+                    .map(tuple -> tuple.get(playerEntity.brawlStarsClubTag))
+                    .filter(Objects::nonNull)
+                    .toList();
 
-            existsClubTags.forEach(clubTags::remove);
+            clubTags.addAll(filterExistsClubTags(queryFactory, playerClubTags));
+
+            log.debug("클럽 태그 수집 중... size={}, cursorPlayerId={}, clubTags.size={}",
+                    tuples.size(),
+                    cursorPlayerId,
+                    clubTags.size()
+            );
         }
 
-        return new ListItemReader<>(clubTags.stream().toList());
+        return clubTags.stream().toList();
+    }
+
+    private List<String> filterExistsClubTags(JPAQueryFactory queryFactory, List<String> clubTags) {
+        Set<String> existsClubTags = new HashSet<>(queryFactory
+                .select(clubCollectionEntity.brawlStarsTag)
+                .from(clubCollectionEntity)
+                .where(clubCollectionEntity.brawlStarsTag.in(clubTags))
+                .fetch());
+
+        return clubTags.stream()
+                .filter(tag -> !existsClubTags.contains(tag))
+                .toList();
     }
 
     @Bean(STEP_NAME + "ItemProcessor")
