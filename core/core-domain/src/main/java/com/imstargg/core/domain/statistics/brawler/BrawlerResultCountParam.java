@@ -1,4 +1,4 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;

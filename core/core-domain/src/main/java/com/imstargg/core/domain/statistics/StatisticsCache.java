@@ -1,6 +1,15 @@
 package com.imstargg.core.domain.statistics;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.imstargg.core.domain.statistics.brawler.BrawlerBattleEventResultStatisticsParam;
+import com.imstargg.core.domain.statistics.brawler.BrawlerBrawlersResultStatisticsParam;
+import com.imstargg.core.domain.statistics.brawler.BrawlerEnemyResultStatisticsParam;
+import com.imstargg.core.domain.statistics.brawler.BrawlerResultStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlerEnemyResultStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlerRankStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlerResultStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlersRankStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlersResultStatisticsParam;
 import com.imstargg.core.support.ObjectMapperHelper;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;

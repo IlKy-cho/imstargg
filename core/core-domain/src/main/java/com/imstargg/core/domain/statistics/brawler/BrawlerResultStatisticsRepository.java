@@ -1,8 +1,16 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
+import com.imstargg.core.domain.statistics.BattleEventResultCount;
+import com.imstargg.core.domain.statistics.BrawlerEnemyResultCount;
+import com.imstargg.core.domain.statistics.BrawlerResultCount;
+import com.imstargg.core.domain.statistics.BrawlersResultCount;
+import com.imstargg.core.domain.statistics.Counter;
+import com.imstargg.core.domain.statistics.ResultCount;
+import com.imstargg.core.domain.statistics.ResultCounter;
+import com.imstargg.core.domain.statistics.StarPlayerCount;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;

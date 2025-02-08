@@ -1,5 +1,9 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.brawler;
 
+import com.imstargg.core.domain.statistics.BattleEventResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

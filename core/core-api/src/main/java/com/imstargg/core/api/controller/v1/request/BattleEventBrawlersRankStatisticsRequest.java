@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1.request;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.statistics.BattleEventBrawlersRankStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlersRankStatisticsParam;
 import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.validation.constraints.NotNull;
 

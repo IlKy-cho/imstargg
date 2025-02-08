@@ -1,6 +1,6 @@
 package com.imstargg.core.api.controller.v1.request;
 
-import com.imstargg.core.domain.statistics.BrawlerResultStatisticsParam;
+import com.imstargg.core.domain.statistics.brawler.BrawlerResultStatisticsParam;
 import com.imstargg.core.enums.SoloRankTierRangeRange;
 import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.annotation.Nullable;

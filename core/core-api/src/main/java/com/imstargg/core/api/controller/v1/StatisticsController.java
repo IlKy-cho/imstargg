@@ -17,8 +17,8 @@ import com.imstargg.core.api.controller.v1.response.BrawlerResultStatisticsRespo
 import com.imstargg.core.api.controller.v1.response.BrawlersRankStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlersResultStatisticsResponse;
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.statistics.BattleEventStatisticsService;
-import com.imstargg.core.domain.statistics.BrawlerStatisticsService;
+import com.imstargg.core.domain.statistics.event.BattleEventStatisticsService;
+import com.imstargg.core.domain.statistics.brawler.BrawlerStatisticsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;

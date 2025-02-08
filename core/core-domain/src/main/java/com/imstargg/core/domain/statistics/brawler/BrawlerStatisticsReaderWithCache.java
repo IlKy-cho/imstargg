@@ -1,5 +1,14 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.brawler;
 
+import com.imstargg.core.domain.statistics.BattleEventResultCounts;
+import com.imstargg.core.domain.statistics.BattleEventResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerEnemyResultCounts;
+import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerResultCounts;
+import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlersResultCounts;
+import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
+import com.imstargg.core.domain.statistics.StatisticsCache;
 import com.imstargg.core.support.FutureUtils;
 import org.springframework.stereotype.Component;
 
