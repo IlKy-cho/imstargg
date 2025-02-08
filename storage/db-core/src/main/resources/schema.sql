@@ -491,7 +491,22 @@ create table club_ranking
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false,
     primary key (club_ranking_id)
-);
+) engine = innodb;
 
 alter table club_ranking
     add constraint uk_club_ranking__country_rank unique (country, rank_value);
+
+-- support
+create table rds_cache
+(
+    rds_cache_id bigint       not null auto_increment,
+    cache_key     varchar(255) not null,
+    cache_value        varchar(255) not null,
+    created_at   timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at   timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted      boolean      not null default false,
+    primary key (rds_cache_id)
+) engine = innodb;
+
+alter table rds_cache
+    add constraint uk_rds_cache__key unique (cache_key);
