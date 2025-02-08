@@ -86,10 +86,11 @@ public class NewPlayerJobConfig {
     }
 
     @Bean(JOB_NAME + "IdRangeIncrementer")
-    @StepScope
     IdRangeIncrementer idRangeIncrementer() {
         return new IdRangeIncrementer(10000,
-                battleCollectionJpaRepository.findFirst1ByOrderByIdDesc().orElseThrow().getId()
+                () -> battleCollectionJpaRepository.findFirst1ByOrderByIdDesc()
+                        .map(BattleCollectionEntity::getId)
+                        .orElse(0L)
         );
     }
 

@@ -6,14 +6,16 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.JobParametersIncrementer;
 
+import java.util.function.LongSupplier;
+
 public class IdRangeIncrementer implements JobParametersIncrementer {
 
     private final int size;
-    private final long maxId;
+    private final LongSupplier maxIdSupplier;
 
-    public IdRangeIncrementer(int size, long maxId) {
+    public IdRangeIncrementer(int size, LongSupplier maxIdSupplier) {
         this.size = size;
-        this.maxId = maxId;
+        this.maxIdSupplier = maxIdSupplier;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class IdRangeIncrementer implements JobParametersIncrementer {
                         IdRangeJobParameter.ID_TO_KEY, exception);
             }
         }
-        long idTo = Math.min(idFrom + size - 1, maxId);
+        long idTo = Math.min(idFrom + size - 1, maxIdSupplier.getAsLong());
         return new JobParametersBuilder(params)
                 .addLong(IdRangeJobParameter.ID_FROM_KEY, idFrom)
                 .addLong(IdRangeJobParameter.ID_TO_KEY, idTo)
