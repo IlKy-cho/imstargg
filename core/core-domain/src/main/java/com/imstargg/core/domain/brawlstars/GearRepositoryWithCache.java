@@ -3,7 +3,6 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
-import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
@@ -81,17 +80,13 @@ public class GearRepositoryWithCache {
         ).forEach(imageEntity -> codeToImageEntityCache.put(imageEntity.getCode(), imageEntity));
     }
 
-    public List<Gear> findAllByBrawlerId(BrawlStarsId brawlerId, Language language) {
+    public List<Gear> findAllByBrawlerId(BrawlStarsId brawlerId) {
         return brawlerIdToGearIdsCache.getOrDefault(brawlerId, List.of()).stream()
                 .map(gearIdToEntityCache::get)
                 .map(gearEntity -> new Gear(
                         new BrawlStarsId(gearEntity.getBrawlStarsId()),
                         gearEntity.getRarity(),
-                        codeToMessageCollectionCache.get(gearEntity.getNameMessageCode())
-                                .find(language)
-                                .orElseThrow(() -> new IllegalStateException(
-                                        "기어 이름을 찾을 수 없습니다. gearId=" + gearEntity.getBrawlStarsId()))
-                                .content(),
+                        codeToMessageCollectionCache.get(gearEntity.getNameMessageCode()),
                         Optional.ofNullable(
                                 codeToImageEntityCache.get(
                                         BrawlStarsImageType.GEAR.code(gearEntity.getBrawlStarsId())

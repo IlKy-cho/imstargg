@@ -3,7 +3,6 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
-import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
@@ -76,15 +75,11 @@ public class StarPowerRepositoryWithCache {
         ).forEach(imageEntity -> codeToImageEntityCache.put(imageEntity.getCode(), imageEntity));
     }
 
-    public List<StarPower> findAllByBrawlerId(BrawlStarsId brawlerId, Language language) {
+    public List<StarPower> findAllByBrawlerId(BrawlStarsId brawlerId) {
         return brawlerIdToStarPowerEntitiesCache.getOrDefault(brawlerId, List.of()).stream()
                 .map(starPowerEntity -> new StarPower(
                         new BrawlStarsId(starPowerEntity.getBrawlStarsId()),
-                        codeToMessageCollectionCache.get(starPowerEntity.getNameMessageCode())
-                                .find(language)
-                                .orElseThrow(() -> new IllegalStateException(
-                                        "스타파워 이름을 찾을 수 없습니다. starPowerId=" + starPowerEntity.getBrawlStarsId()))
-                                .content(),
+                        codeToMessageCollectionCache.get(starPowerEntity.getNameMessageCode()),
                         Optional.ofNullable(
                                 codeToImageEntityCache.get(
                                         BrawlStarsImageType.STAR_POWER.code(starPowerEntity.getBrawlStarsId())

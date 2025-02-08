@@ -1,7 +1,6 @@
 package com.imstargg.core.domain.brawlstars;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.enums.Language;
 import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import org.springframework.stereotype.Component;
@@ -19,12 +18,12 @@ public class BrawlerReader {
         this.brawlerRepository = brawlerRepository;
     }
 
-    public List<Brawler> getAll(Language language) {
-        return brawlerRepository.findAll(language);
+    public List<Brawler> getAll() {
+        return brawlerRepository.findAll();
     }
 
-    public Brawler get(BrawlStarsId id, Language language) {
-        return brawlerRepository.find(id, language)
+    public Brawler get(BrawlStarsId id) {
+        return brawlerRepository.find(id)
                 .orElseThrow(() -> new CoreException(CoreErrorType.BRAWLER_NOT_FOUND, "id=" + id));
     }
 }
