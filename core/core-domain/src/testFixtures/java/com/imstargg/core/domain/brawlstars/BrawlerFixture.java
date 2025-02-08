@@ -1,17 +1,26 @@
 package com.imstargg.core.domain.brawlstars;
 
 import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.Message;
+import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.enums.BrawlerRarity;
 import com.imstargg.core.enums.BrawlerRole;
+import com.imstargg.core.enums.Language;
 import com.imstargg.test.java.IntegerIncrementUtil;
 import com.imstargg.test.java.LongIncrementUtil;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 public class BrawlerFixture {
     private BrawlStarsId id = new BrawlStarsId(LongIncrementUtil.next());
-    private String name = "Brawler-" + LongIncrementUtil.next();
+    private MessageCollection names = new MessageCollection(
+            "name-" + LongIncrementUtil.next(),
+            Arrays.stream(Language.values())
+                    .map(language -> new Message(language, "name-" + LongIncrementUtil.next()))
+                    .toList()
+    );
     private BrawlerRarity rarity = BrawlerRarity.values()[IntegerIncrementUtil.next(BrawlerRarity.values().length)];
     private BrawlerRole role = BrawlerRole.values()[IntegerIncrementUtil.next(BrawlerRole.values().length)];
     private List<Gadget> gadgets = List.of(new GadgetFixture().build());
@@ -25,8 +34,8 @@ public class BrawlerFixture {
         return this;
     }
 
-    public BrawlerFixture name(String name) {
-        this.name = name;
+    public BrawlerFixture names(MessageCollection names) {
+        this.names = names;
         return this;
     }
 
@@ -61,6 +70,6 @@ public class BrawlerFixture {
     }
 
     public Brawler build() {
-        return new Brawler(id, name, rarity, role, gadgets, gears, starPowers, imagePath);
+        return new Brawler(id, names, rarity, role, gadgets, gears, starPowers, imagePath);
     }
 }

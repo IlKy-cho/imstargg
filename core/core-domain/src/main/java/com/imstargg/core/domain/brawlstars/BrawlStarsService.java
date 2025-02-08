@@ -19,11 +19,11 @@ public class BrawlStarsService {
     }
 
     public List<Brawler> getAllBrawlers() {
-        return brawlerReader.getAll(Language.KOREAN);
+        return brawlerReader.getAll();
     }
 
     public Brawler getBrawler(BrawlStarsId brawlStarsId) {
-        return brawlerReader.get(brawlStarsId, Language.KOREAN);
+        return brawlerReader.get(brawlStarsId);
     }
 
     public List<BattleEvent> getEvents(LocalDate date) {

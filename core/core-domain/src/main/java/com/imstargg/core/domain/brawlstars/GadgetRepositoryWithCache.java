@@ -3,7 +3,6 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
-import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
@@ -76,15 +75,11 @@ public class GadgetRepositoryWithCache {
         ).forEach(imageEntity -> codeToImageEntityCache.put(imageEntity.getCode(), imageEntity));
     }
 
-    public List<Gadget> findAllByBrawlerId(BrawlStarsId brawlerId, Language language) {
+    public List<Gadget> findAllByBrawlerId(BrawlStarsId brawlerId) {
         return brawlerIdToGadgetEntitiesCache.getOrDefault(brawlerId, List.of()).stream()
                 .map(gadgetEntity -> new Gadget(
                         new BrawlStarsId(gadgetEntity.getBrawlStarsId()),
-                        codeToMessageCollectionCache.get(gadgetEntity.getNameMessageCode())
-                                .find(language)
-                                .orElseThrow(() -> new IllegalStateException(
-                                        "가젯 이름을 찾을 수 없습니다. gadgetId=" + gadgetEntity.getBrawlStarsId()))
-                                .content(),
+                        codeToMessageCollectionCache.get(gadgetEntity.getNameMessageCode()),
                         Optional.ofNullable(
                                 codeToImageEntityCache.get(
                                         BrawlStarsImageType.GADGET.code(gadgetEntity.getBrawlStarsId())

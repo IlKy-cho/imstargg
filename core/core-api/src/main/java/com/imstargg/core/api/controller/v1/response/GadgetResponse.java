@@ -1,6 +1,7 @@
 package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.brawlstars.Gadget;
+import com.imstargg.core.enums.Language;
 import jakarta.annotation.Nullable;
 
 public record GadgetResponse(
@@ -12,7 +13,11 @@ public record GadgetResponse(
     public static GadgetResponse from(Gadget gadget) {
         return new GadgetResponse(
                 gadget.id().value(),
-                gadget.name(),
+                gadget.names()
+                        .find(Language.KOREAN)
+                        .orElseThrow(() -> new IllegalStateException(
+                                "가젯 이름이 존재하지 않습니다. gadget id: " + gadget.id().value()))
+                        .content(),
                 gadget.imagePath()
         );
     }
