@@ -1,5 +1,7 @@
 package com.imstargg.storage.db.core.cache;
 
+import javax.annotation.Nullable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +18,7 @@ public class CacheKeyBuilder {
         this.version = version;
     }
 
-    public CacheKeyBuilder add(String keyValue) {
+    public CacheKeyBuilder add(@Nullable String keyValue) {
         keyValues.add(keyValue);
         return this;
     }
@@ -28,6 +30,21 @@ public class CacheKeyBuilder {
 
     public CacheKeyBuilder add(long keyValue) {
         keyValues.add(String.valueOf(keyValue));
+        return this;
+    }
+
+    public CacheKeyBuilder add(boolean keyValue) {
+        keyValues.add(String.valueOf(keyValue));
+        return this;
+    }
+
+    public CacheKeyBuilder add(@Nullable LocalDate keyValue) {
+        keyValues.add(keyValue != null ? keyValue.toString() : null);
+        return this;
+    }
+
+    public CacheKeyBuilder add(@Nullable Enum<?> keyValue) {
+        keyValues.add(keyValue != null ? keyValue.name() : null);
         return this;
     }
 
