@@ -1,5 +1,6 @@
 package com.imstargg.storage.cache.core;
 
+import com.imstargg.storage.db.core.cache.BrawlerCountCacheKey;
 import jakarta.annotation.Nullable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;

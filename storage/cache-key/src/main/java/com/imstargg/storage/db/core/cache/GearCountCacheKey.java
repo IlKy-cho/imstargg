@@ -1,4 +1,4 @@
-package com.imstargg.storage.cache.core;
+package com.imstargg.storage.db.core.cache;
 
 public record GearCountCacheKey(
         long brawlerBrawlStarsId,

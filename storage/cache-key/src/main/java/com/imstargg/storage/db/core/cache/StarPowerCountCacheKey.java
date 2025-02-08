@@ -1,13 +1,13 @@
-package com.imstargg.storage.cache.core;
+package com.imstargg.storage.db.core.cache;
 
-public record BrawlerCountCacheKey(
+public record StarPowerCountCacheKey(
         long brawlStarsId
 ) implements CacheKey {
 
     @Override
     public String key() {
         return new CacheKeyBuilder("count", "v1")
-                .add("brawlers").add(brawlStarsId)
+                .add("starpowers").add(brawlStarsId)
                 .build();
     }
 }
