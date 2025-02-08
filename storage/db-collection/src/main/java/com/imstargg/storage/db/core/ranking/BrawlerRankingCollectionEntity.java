@@ -31,7 +31,7 @@ public class BrawlerRankingCollectionEntity extends BaseEntity {
     @Embedded
     private RankingEntityPlayer player;
 
-    @Column(name = "trophies", nullable = false, updatable = false)
+    @Column(name = "trophies", nullable = false)
     private int trophies;
 
     @Column(name = "rank_value", nullable = false, updatable = false)
@@ -52,6 +52,11 @@ public class BrawlerRankingCollectionEntity extends BaseEntity {
         this.player = player;
         this.trophies = trophies;
         this.rank = rank;
+    }
+
+    public void update(RankingEntityPlayer player, int trophies) {
+        this.player = player;
+        this.trophies = trophies;
     }
 
     public Long getId() {

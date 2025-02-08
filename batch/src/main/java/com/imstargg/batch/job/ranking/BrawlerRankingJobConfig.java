@@ -3,6 +3,7 @@ package com.imstargg.batch.job.ranking;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.response.BrawlerResponse;
+import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.core.enums.Country;
 import com.imstargg.storage.db.core.ranking.BrawlerRankingCollectionEntity;
 import com.imstargg.storage.db.core.ranking.BrawlerRankingCollectionJpaRepository;
@@ -23,6 +24,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Configuration
@@ -74,27 +77,48 @@ public class BrawlerRankingJobConfig {
             for (Country country : Country.values()) {
                 for (long brawlerBrawlerStarsId : brawlerBrawlerStarsIds) {
                     log.debug("processing country={}, brawlerId={}", country, brawlerBrawlerStarsId);
-                    var entities = brawlStarsClient.getBrawlerRanking(country.getCode(), brawlerBrawlerStarsId)
-                            .items().stream()
-                            .map(response -> new BrawlerRankingCollectionEntity(
-                                    country,
-                                    brawlerBrawlerStarsId,
-                                    new RankingEntityPlayer(
-                                            response.tag(),
-                                            response.name(),
-                                            response.nameColor(),
-                                            response.icon().id(),
-                                            response.club() != null ? response.club().name() : null
-                                    ),
-                                    response.trophies(),
-                                    response.rank()
-                            )).toList();
-
-                    brawlerRankingJpaRepository.deleteAllInBatch(
+                    List<PlayerRankingResponse> brawlerRankingResponseList = brawlStarsClient
+                            .getBrawlerRanking(country.getCode(), brawlerBrawlerStarsId).items().stream()
+                            .sorted(Comparator.comparingInt(PlayerRankingResponse::rank))
+                            .toList();
+                    List<BrawlerRankingCollectionEntity> brawlerRankingEntities = new ArrayList<>(
                             brawlerRankingJpaRepository
                                     .findAllByCountryAndBrawlerBrawlStarsId(country, brawlerBrawlerStarsId)
+                                    .stream()
+                                    .sorted(Comparator.comparingInt(BrawlerRankingCollectionEntity::getRank))
+                                    .toList()
                     );
-                    brawlerRankingJpaRepository.saveAll(entities);
+                    
+                    for (int i = 0; i < brawlerRankingResponseList.size(); i++) {
+                        var response = brawlerRankingResponseList.get(i);
+                        var entityPlayer = new RankingEntityPlayer(
+                                response.tag(),
+                                response.name(),
+                                response.nameColor(),
+                                response.icon().id(),
+                                response.club() != null ? response.club().name() : null
+                        );
+                        if (i >= brawlerRankingEntities.size()) {
+                            brawlerRankingEntities.add(new BrawlerRankingCollectionEntity(
+                                    country,
+                                    brawlerBrawlerStarsId,
+                                    entityPlayer,
+                                    response.trophies(),
+                                    response.rank()
+                            ));
+                        }
+
+                        var entity = brawlerRankingEntities.get(i);
+                        entity.update(entityPlayer, response.trophies());
+                    }
+
+                    if (brawlerRankingEntities.size() > brawlerRankingResponseList.size()) {
+                        brawlerRankingJpaRepository.deleteAllInBatch(
+                                brawlerRankingEntities.subList(brawlerRankingResponseList.size(), brawlerRankingEntities.size())
+                        );
+                    }
+
+                    brawlerRankingJpaRepository.saveAll(brawlerRankingEntities);
                 }
             }
             return RepeatStatus.FINISHED;

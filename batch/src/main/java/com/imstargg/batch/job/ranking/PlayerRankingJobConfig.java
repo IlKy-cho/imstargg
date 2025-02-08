@@ -2,6 +2,7 @@ package com.imstargg.batch.job.ranking;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.client.brawlstars.response.PlayerRankingResponse;
 import com.imstargg.core.enums.Country;
 import com.imstargg.storage.db.core.ranking.PlayerRankingCollectionEntity;
 import com.imstargg.storage.db.core.ranking.PlayerRankingCollectionJpaRepository;
@@ -21,6 +22,10 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @Configuration
 public class PlayerRankingJobConfig {
@@ -68,23 +73,45 @@ public class PlayerRankingJobConfig {
         return taskletStepBuilder.tasklet((contribution, chunkContext) -> {
             for (Country country : Country.values()) {
                 log.debug("processing country: {}", country);
-                var entities = brawlStarsClient.getPlayerRanking(country.getCode()).items().stream()
-                        .map(response -> new PlayerRankingCollectionEntity(
+                List<PlayerRankingResponse> playerRankingResponseList = brawlStarsClient
+                        .getPlayerRanking(country.getCode()).items().stream()
+                        .sorted(Comparator.comparingInt(PlayerRankingResponse::rank))
+                        .toList();
+                List<PlayerRankingCollectionEntity> playerRankingEntities = new ArrayList<>(
+                        playerRankingJpaRepository
+                                .findAllByCountry(country).stream()
+                                .sorted(Comparator.comparingInt(PlayerRankingCollectionEntity::getRank))
+                                .toList()
+                );
+
+                for (int i = 0; i < playerRankingResponseList.size(); i++) {
+                    var response = playerRankingResponseList.get(i);
+                    var entityPlayer = new RankingEntityPlayer(
+                            response.tag(),
+                            response.name(),
+                            response.nameColor(),
+                            response.icon().id(),
+                            response.club() != null ? response.club().name() : null
+                    );
+                    if (i >= playerRankingEntities.size()) {
+                        playerRankingEntities.add(new PlayerRankingCollectionEntity(
                                 country,
-                                new RankingEntityPlayer(
-                                        response.tag(),
-                                        response.name(),
-                                        response.nameColor(),
-                                        response.icon().id(),
-                                        response.club() != null ? response.club().name() : null
-                                ),
+                                entityPlayer,
                                 response.trophies(),
                                 response.rank()
-                        )).toList();
+                        ));
+                    }
+                    var entity = playerRankingEntities.get(i);
+                    entity.update(entityPlayer, response.trophies());
+                }
 
-                playerRankingJpaRepository.deleteAllInBatch(
-                        playerRankingJpaRepository.findAllByCountry(country));
-                playerRankingJpaRepository.saveAll(entities);
+                if (playerRankingEntities.size() > playerRankingResponseList.size()) {
+                    playerRankingJpaRepository.deleteAllInBatch(
+                            playerRankingEntities.subList(playerRankingResponseList.size(), playerRankingEntities.size())
+                    );
+                }
+
+                playerRankingJpaRepository.saveAll(playerRankingEntities);
             }
             return RepeatStatus.FINISHED;
         }, txManager).build();
