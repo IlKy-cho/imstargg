@@ -9,9 +9,9 @@ import org.springframework.batch.core.JobParametersIncrementer;
 public class IdRangeIncrementer implements JobParametersIncrementer {
 
     private final int size;
-    private final int maxId;
+    private final long maxId;
 
-    public IdRangeIncrementer(int size, int maxId) {
+    public IdRangeIncrementer(int size, long maxId) {
         this.size = size;
         this.maxId = maxId;
     }
