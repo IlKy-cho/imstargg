@@ -112,10 +112,11 @@ public class PlayerBrawlerCountJobConfig {
                     ).orderBy(playerBrawlerCollectionEntity.id.asc())
                     .limit(size)
                     .fetch();
+            playerBrawlerEntities.forEach(em::detach);
+            em.clear();
             if (playerBrawlerEntities.isEmpty()) {
                 break;
             }
-            playerBrawlerEntities.forEach(em::detach);
             hasMore = playerBrawlerEntities.size() == size;
             cursorPlayerBrawlerId = playerBrawlerEntities.getLast().getId();
 
