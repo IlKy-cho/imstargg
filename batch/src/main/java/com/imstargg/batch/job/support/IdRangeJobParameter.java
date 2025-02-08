@@ -10,6 +10,9 @@ public class IdRangeJobParameter {
 
     private static final Logger log = LoggerFactory.getLogger(IdRangeJobParameter.class);
 
+    public static final String ID_FROM_KEY = "id.from";
+    public static final String ID_TO_KEY = "id.to";
+
     @Nullable
     private Long from;
 
@@ -18,16 +21,16 @@ public class IdRangeJobParameter {
 
     @PostConstruct
     void init() {
-        log.debug("JobParameter[id.from]={}", from);
-        log.debug("JobParameter[id.to]={}", to);
+        log.debug("JobParameter[" + ID_FROM_KEY + "]={}", from);
+        log.debug("JobParameter[" + ID_TO_KEY + "]={}", to);
     }
 
-    @Value("#{jobParameters['id.from']}")
+    @Value("#{jobParameters['" + ID_FROM_KEY + "']}")
     public void setFrom(@Nullable Long from) {
         this.from = from;
     }
 
-    @Value("#{jobParameters['id.to']}")
+    @Value("#{jobParameters['" + ID_TO_KEY + " ']}")
     public void setTo(@Nullable Long to) {
         this.to = to;
     }
