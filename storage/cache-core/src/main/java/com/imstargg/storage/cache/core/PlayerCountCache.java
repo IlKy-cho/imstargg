@@ -1,6 +1,6 @@
 package com.imstargg.storage.cache.core;
 
-import com.imstargg.storage.db.core.cache.CacheKeyBuilder;
+import com.imstargg.storage.db.core.cache.PlayerCountCacheKey;
 import jakarta.annotation.Nullable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -9,10 +9,6 @@ import java.util.Optional;
 
 @Component
 public class PlayerCountCache {
-
-    private static final String PLAYER_KEY = new CacheKeyBuilder("count", "v1")
-            .add("player")
-            .build();
 
     private final StringRedisTemplate redisTemplate;
 
@@ -23,12 +19,12 @@ public class PlayerCountCache {
     @Nullable
     public Long get() {
         return Optional.ofNullable(
-                redisTemplate.opsForValue().get(PLAYER_KEY)
+                redisTemplate.opsForValue().get(PlayerCountCacheKey.KEY)
         ).map(Long::parseLong).orElse(null);
     }
 
     public void put(long count) {
-        redisTemplate.opsForValue().set(PLAYER_KEY, String.valueOf(count));
+        redisTemplate.opsForValue().set(PlayerCountCacheKey.KEY, String.valueOf(count));
     }
 
 }
