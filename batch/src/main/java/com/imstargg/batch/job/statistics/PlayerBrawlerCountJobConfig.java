@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
-import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
@@ -77,7 +76,6 @@ public class PlayerBrawlerCountJobConfig {
                 .start(step())
                 .incrementer(new RunIdIncrementer())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
-                .validator(new DefaultJobParametersValidator(new String[]{"date"}, new String[]{}))
                 .build();
     }
 
