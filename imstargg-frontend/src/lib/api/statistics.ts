@@ -9,6 +9,7 @@ import {BattleEventResultStatistics} from "@/model/statistics/BattleEventResultS
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import {BattleMode} from "@/model/enums/BattleMode";
+import {BrawlerOwnershipRate} from "@/model/BrawlerOwnershipRate";
 
 export async function fetchGetBattleEventBrawlerResultStatistics(
   eventId: number,
@@ -455,4 +456,28 @@ export async function getBrawlerEnemyResultStatistics(
   }
 
   throw await ApiError.create(response);
+}
+
+export async function fetchGetBrawlerOwnershipRate(brawlerId: number, options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/ownership`);
+  if (!options) {
+    return await fetch(url);
+  }
+
+  return await fetch(url, {
+    next: {
+      tags: ['statistics', 'brawlers', brawlerId.toString(), 'ownership'],
+      revalidate: options.revalidate
+    }
+  });
+}
+
+export async function getBrawlerOwnershipRate(brawlerId: number): Promise<BrawlerOwnershipRate> {
+  const response = await fetchGetBrawlerOwnershipRate(brawlerId, {revalidate: 60 * 60});
+
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+
+  return await response.json() as BrawlerOwnershipRate;
 }
