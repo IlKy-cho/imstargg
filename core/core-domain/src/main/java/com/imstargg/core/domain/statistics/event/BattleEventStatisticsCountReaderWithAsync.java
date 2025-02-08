@@ -1,5 +1,10 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.event;
 
+import com.imstargg.core.domain.statistics.BrawlerEnemyResultCounts;
+import com.imstargg.core.domain.statistics.BrawlerRankCounts;
+import com.imstargg.core.domain.statistics.BrawlerResultCounts;
+import com.imstargg.core.domain.statistics.BrawlersRankCounts;
+import com.imstargg.core.domain.statistics.BrawlersResultCounts;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 

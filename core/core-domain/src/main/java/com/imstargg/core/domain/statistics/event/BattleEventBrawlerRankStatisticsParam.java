@@ -1,6 +1,7 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.event;
 
 import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.statistics.StatisticsParamBuilder;
 import com.imstargg.core.enums.TrophyRangeRange;
 
 import java.time.LocalDate;

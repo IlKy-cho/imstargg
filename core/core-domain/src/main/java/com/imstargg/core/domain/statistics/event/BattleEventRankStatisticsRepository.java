@@ -1,6 +1,10 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.event;
 
 import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.statistics.BrawlerRankCount;
+import com.imstargg.core.domain.statistics.BrawlersRankCount;
+import com.imstargg.core.domain.statistics.RankCount;
+import com.imstargg.core.domain.statistics.RankCounter;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.IdHash;

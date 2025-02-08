@@ -1,4 +1,4 @@
-package com.imstargg.core.domain.statistics;
+package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.enums.SoloRankTierRange;
@@ -7,11 +7,10 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-public record BattleEventBrawlerEnemyResultCountParam(
-        BrawlStarsId eventId,
-        LocalDate battleDate,
+public record BrawlerBattleEventResultCountParam(
+        BrawlStarsId brawlerId,
+        LocalDate date,
         @Nullable TrophyRange trophyRange,
-        @Nullable SoloRankTierRange soloRankTierRange,
-        boolean duplicateBrawler
+        @Nullable SoloRankTierRange soloRankTierRange
 ) {
 }
