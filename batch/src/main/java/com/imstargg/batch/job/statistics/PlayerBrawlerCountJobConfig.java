@@ -99,7 +99,7 @@ public class PlayerBrawlerCountJobConfig {
         BrawlerCountCollector collector = new BrawlerCountCollector();
 
         Long cursorPlayerBrawlerId = null;
-        int size = 50_000;
+        int size = 10_000;
         boolean hasMore = true;
         int page = 1;
         while (hasMore) {
