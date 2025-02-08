@@ -79,10 +79,7 @@ public class NewPlayerJobConfig {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
                 .start(step())
-                .incrementer(new IdRangeIncrementer(
-                        10000,
-                        battleCollectionJpaRepository.findFirst1ByOrderByIdDesc().orElseThrow().getId())
-                )
+                .incrementer(idRangeIncrementer())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .validator(new DefaultJobParametersValidator(new String[]{}, new String[]{"id.from", "id.to"}))
                 .build();
