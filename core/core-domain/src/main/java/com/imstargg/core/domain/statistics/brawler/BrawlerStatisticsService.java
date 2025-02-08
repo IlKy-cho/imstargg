@@ -1,5 +1,7 @@
 package com.imstargg.core.domain.statistics.brawler;
 
+import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.brawlstars.BrawlerReader;
 import com.imstargg.core.domain.statistics.BattleEventResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
@@ -13,10 +15,18 @@ public class BrawlerStatisticsService {
 
     private static final int MINIMUM_BATTLE_COUNT = 10;
 
+    private final BrawlerReader brawlerReader;
     private final BrawlerStatisticsReaderWithCache brawlerStatisticsReader;
+    private final BrawlerOwnershipReader brawlerOwnershipReader;
 
-    public BrawlerStatisticsService(BrawlerStatisticsReaderWithCache brawlerStatisticsReader) {
+    public BrawlerStatisticsService(
+            BrawlerReader brawlerReader,
+            BrawlerStatisticsReaderWithCache brawlerStatisticsReader,
+            BrawlerOwnershipReader brawlerOwnershipReader
+    ) {
+        this.brawlerReader = brawlerReader;
         this.brawlerStatisticsReader = brawlerStatisticsReader;
+        this.brawlerOwnershipReader = brawlerOwnershipReader;
     }
 
     public List<BrawlerResultStatistics> getBrawlerResultStatistics(
@@ -53,5 +63,9 @@ public class BrawlerStatisticsService {
                 .stream()
                 .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
                 .toList();
+    }
+
+    public BrawlerOwnershipRate getOwnershipRate(BrawlStarsId id) {
+        return brawlerOwnershipReader.get(brawlerReader.get(id));
     }
 }
