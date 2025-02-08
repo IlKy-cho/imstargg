@@ -12,8 +12,8 @@ import java.util.List;
 public record BattleEventBrawlersResultStatisticsParam(
         BrawlStarsId eventId,
         LocalDate date,
-        @Nullable TrophyRangeRange trophyRangeRange,
-        @Nullable SoloRankTierRangeRange soloRankTierRangeRange,
+        @Nullable TrophyRangeRange trophyRange,
+        @Nullable SoloRankTierRangeRange soloRankTierRange,
         int brawlersNum,
         boolean duplicateBrawler
 ) {
@@ -21,8 +21,8 @@ public record BattleEventBrawlersResultStatisticsParam(
     public List<BattleEventBrawlersResultCountParam> toCountParams() {
         return new StatisticsParamBuilder()
                 .date(date)
-                .trophyRange(trophyRangeRange)
-                .soloRankTierRange(soloRankTierRangeRange)
+                .trophyRange(trophyRange)
+                .soloRankTierRange(soloRankTierRange)
                 .duplicateBrawler(duplicateBrawler)
                 .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
                         new BattleEventBrawlersResultCountParam(

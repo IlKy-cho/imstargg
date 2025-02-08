@@ -10,13 +10,13 @@ import java.util.List;
 public record BattleEventBrawlerRankStatisticsParam(
         BrawlStarsId eventId,
         LocalDate date,
-        TrophyRangeRange trophyRangeRange
+        TrophyRangeRange trophyRange
 ) {
 
     public List<BattleEventBrawlerRankCountParam> toCountParams() {
         return new StatisticsParamBuilder()
                 .date(date)
-                .trophyRange(trophyRangeRange)
+                .trophyRange(trophyRange)
                 .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
                         new BattleEventBrawlerRankCountParam(
                                 eventId,

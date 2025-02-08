@@ -1,9 +1,9 @@
 package com.imstargg.core.domain.brawlstars;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.imstargg.core.domain.statistics.CacheKeyBuilder;
 import com.imstargg.core.enums.Language;
 import com.imstargg.core.support.ObjectMapperHelper;
+import com.imstargg.storage.db.core.cache.CacheKeyBuilder;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +28,7 @@ public class BrawlStarsNewsCache {
 
     private static String key(Language language) {
         return new CacheKeyBuilder("news", "v1")
-                .add("lang", language.name())
+                .add("lang").add(language.name())
                 .build();
     }
 
