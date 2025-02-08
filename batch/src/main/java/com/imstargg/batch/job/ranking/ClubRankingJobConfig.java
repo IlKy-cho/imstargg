@@ -2,10 +2,16 @@ package com.imstargg.batch.job.ranking;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.client.brawlstars.response.ClubRankingResponse;
 import com.imstargg.core.enums.Country;
 import com.imstargg.storage.db.core.ranking.ClubRankingCollectionEntity;
 import com.imstargg.storage.db.core.ranking.ClubRankingCollectionJpaRepository;
 import com.imstargg.support.alert.AlertManager;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -67,9 +73,22 @@ public class ClubRankingJobConfig {
         return taskletStepBuilder.tasklet((contribution, chunkContext) -> {
             for (Country country : Country.values()) {
                 log.debug("processing country: {}", country);
-                var entities = brawlStarsClient.getClubRanking(country.getCode()).items()
-                        .stream()
-                        .map(response -> new ClubRankingCollectionEntity(
+                List<ClubRankingResponse> clubRankingResponseList = brawlStarsClient
+                        .getClubRanking(country.getCode()).items().stream()
+                        .sorted(Comparator.comparingInt(ClubRankingResponse::rank))
+                        .toList();
+
+                List<ClubRankingCollectionEntity> clubRankingEntities = new ArrayList<>(
+                        clubRankingJpaRepository
+                                .findAllByCountry(country).stream()
+                                .sorted(Comparator.comparingInt(ClubRankingCollectionEntity::getRank))
+                                .toList()
+                );
+
+                for (int i = 0; i < clubRankingResponseList.size(); i++) {
+                    var response = clubRankingResponseList.get(i);
+                    if (i >= clubRankingEntities.size()) {
+                        clubRankingEntities.add(new ClubRankingCollectionEntity(
                                 country,
                                 response.tag(),
                                 response.name(),
@@ -77,11 +96,26 @@ public class ClubRankingJobConfig {
                                 response.trophies(),
                                 response.rank(),
                                 response.memberCount()
-                        )).toList();
+                        ));
+                    }
+                    var entity = clubRankingEntities.get(i);
+                    entity.update(
+                        response.tag(), 
+                        response.name(), 
+                        response.badgeId(), 
+                        response.trophies(),
+                        response.rank(),
+                        response.memberCount()
+                    );
+                }
 
-                clubRankingJpaRepository.deleteAllInBatch(
-                        clubRankingJpaRepository.findAllByCountry(country));
-                clubRankingJpaRepository.saveAll(entities);
+                if (clubRankingEntities.size() > clubRankingResponseList.size()) {
+                    clubRankingJpaRepository.deleteAllInBatch(
+                            clubRankingEntities.subList(clubRankingResponseList.size(), clubRankingEntities.size())
+                    );
+                }
+
+                clubRankingJpaRepository.saveAll(clubRankingEntities);
             }
             return RepeatStatus.FINISHED;
         }, txManager).build();

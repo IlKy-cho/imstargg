@@ -24,22 +24,22 @@ public class ClubRankingCollectionEntity extends BaseEntity {
     @Column(name = "country", columnDefinition = "varchar(25)", nullable = false, updatable = false)
     private Country country;
 
-    @Column(name = "brawlstars_tag", length = 45, updatable = false, nullable = false)
+    @Column(name = "brawlstars_tag", length = 45, nullable = false)
     private String brawlStarsTag;
 
-    @Column(name = "name", length = 45, nullable = false, updatable = false)
+    @Column(name = "name", length = 45, nullable = false)
     private String name;
 
-    @Column(name = "badge_brawlstars_id", nullable = false, updatable = false)
+    @Column(name = "badge_brawlstars_id", nullable = false)
     private long badgeBrawlStarsId;
 
-    @Column(name = "trophies", nullable = false, updatable = false)
+    @Column(name = "trophies", nullable = false)
     private int trophies;
 
-    @Column(name = "rank_value", nullable = false, updatable = false)
+    @Column(name = "rank_value", nullable = false)
     private int rank;
 
-    @Column(name = "member_count", nullable = false, updatable = false)
+    @Column(name = "member_count", nullable = false)
     private int memberCount;
 
     protected ClubRankingCollectionEntity() {
@@ -55,6 +55,22 @@ public class ClubRankingCollectionEntity extends BaseEntity {
             int memberCount
     ) {
         this.country = country;
+        this.brawlStarsTag = brawlStarsTag;
+        this.name = name;
+        this.badgeBrawlStarsId = badgeBrawlStarsId;
+        this.trophies = trophies;
+        this.rank = rank;
+        this.memberCount = memberCount;
+    }
+    
+    public void update(
+        String brawlStarsTag,
+        String name,
+        long badgeBrawlStarsId,
+        int trophies,
+        int rank,
+        int memberCount
+    ) {
         this.brawlStarsTag = brawlStarsTag;
         this.name = name;
         this.badgeBrawlStarsId = badgeBrawlStarsId;

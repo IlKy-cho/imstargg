@@ -7,20 +7,20 @@ import jakarta.persistence.Embeddable;
 @Embeddable
 public class RankingEntityPlayer {
 
-    @Column(name = "player_brawlstars_tag", length = 45, nullable = false, updatable = false)
+    @Column(name = "player_brawlstars_tag", length = 45, nullable = false)
     private String brawlStarsTag;
 
-    @Column(name = "player_name", length = 105, nullable = false, updatable = false)
+    @Column(name = "player_name", length = 105, nullable = false)
     private String name;
 
     @Nullable
-    @Column(name = "player_name_color", length = 45, updatable = false)
+    @Column(name = "player_name_color", length = 45)
     private String nameColor;
 
-    @Column(name = "player_icon_brawlstars_id", nullable = false, updatable = false)
+    @Column(name = "player_icon_brawlstars_id", nullable = false)
     private long iconBrawlStarsId;
 
-    @Column(name = "player_club_name", length = 105, nullable = false, updatable = false)
+    @Column(name = "player_club_name", length = 105, nullable = false)
     private String clubName;
 
     protected RankingEntityPlayer() {

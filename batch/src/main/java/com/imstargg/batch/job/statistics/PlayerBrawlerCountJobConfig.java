@@ -105,7 +105,7 @@ public class PlayerBrawlerCountJobConfig {
         boolean hasMore = true;
         int page = 1;
         while (hasMore) {
-            log.debug("processing page: {}", page++);
+            log.debug("processing page={}, cursorPlayerBrawlerId={}", page++, cursorPlayerBrawlerId);
             List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = queryFactory
                     .selectFrom(playerBrawlerCollectionEntity)
                     .where(
