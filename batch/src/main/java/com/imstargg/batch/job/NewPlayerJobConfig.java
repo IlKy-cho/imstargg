@@ -2,11 +2,13 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerTagFilter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
+import com.imstargg.batch.job.support.IdRangeIncrementer;
 import com.imstargg.batch.job.support.IdRangeJobParameter;
 import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -52,6 +54,7 @@ public class NewPlayerJobConfig {
 
     private final AlertManager alertManager;
     private final BrawlStarsClient brawlStarsClient;
+    private final BattleCollectionJpaRepository battleCollectionJpaRepository;
 
     NewPlayerJobConfig(
             JobRepository jobRepository,
@@ -59,7 +62,8 @@ public class NewPlayerJobConfig {
             EntityManagerFactory emf,
             TaskExecutor taskExecutor,
             AlertManager alertManager,
-            BrawlStarsClient brawlStarsClient
+            BrawlStarsClient brawlStarsClient,
+            BattleCollectionJpaRepository battleCollectionJpaRepository
     ) {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
@@ -67,6 +71,7 @@ public class NewPlayerJobConfig {
         this.taskExecutor = taskExecutor;
         this.alertManager = alertManager;
         this.brawlStarsClient = brawlStarsClient;
+        this.battleCollectionJpaRepository = battleCollectionJpaRepository;
     }
 
     @Bean(JOB_NAME)
@@ -74,9 +79,21 @@ public class NewPlayerJobConfig {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
                 .start(step())
+                .incrementer(new IdRangeIncrementer(
+                        10000,
+                        battleCollectionJpaRepository.findFirst1ByOrderByIdDesc().orElseThrow().getId())
+                )
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .validator(new DefaultJobParametersValidator(new String[]{}, new String[]{"id.from", "id.to"}))
                 .build();
+    }
+
+    @Bean(JOB_NAME + "IdRangeIncrementer")
+    @StepScope
+    IdRangeIncrementer idRangeIncrementer() {
+        return new IdRangeIncrementer(10000,
+                battleCollectionJpaRepository.findFirst1ByOrderByIdDesc().orElseThrow().getId()
+        );
     }
 
     @Bean(JOB_NAME + "IdRangeJobParameter")
