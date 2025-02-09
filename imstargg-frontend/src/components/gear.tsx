@@ -1,15 +1,18 @@
 import { cnWithDefault } from "@/lib/utils";
 import { Gear } from "@/model/Gear";
 import { Separator } from "./ui/separator";
-import { Card, CardHeader, CardTitle } from "./ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
 import { BrawlStarsIconSrc } from "@/lib/icon";
+import { rateTitle } from "@/lib/statistics";
+import { BrawlerOwnershipRate, findBrawlerGearOwnershipRate } from "@/model/BrawlerOwnershipRate";
 
 interface GearListProps {
   gears: Gear[];
+  brawlerOwnershipRate: BrawlerOwnershipRate;
 }
 
-export async function BrawlerGearList({gears}: GearListProps) {
+export async function BrawlerGearList({gears, brawlerOwnershipRate}: GearListProps) {
   return (
     <div className={cnWithDefault("flex flex-col gap-2")}>
       <h2 className="text-xl sm:text-2xl font-bold">기어</h2>
@@ -28,6 +31,13 @@ export async function BrawlerGearList({gears}: GearListProps) {
                 <div>{gear.name}</div>
               </CardTitle>
             </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-2">
+                <div className="text-sm sm:text-base">
+                  보유: {rateTitle(findBrawlerGearOwnershipRate(brawlerOwnershipRate, gear.id))}
+                </div>
+              </div>
+            </CardContent>
           </Card>
         ))}
       </div>

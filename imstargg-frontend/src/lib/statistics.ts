@@ -1,0 +1,1 @@
+export const rateTitle = (rate: number | null) => rate ? `${(rate * 100).toFixed(2)}%` : "N/A";
