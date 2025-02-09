@@ -70,11 +70,8 @@ export function PlayerBattleContent({player, brawlers}: Readonly<PlayerBattleCon
 
   return (
     <div className="flex flex-col sm:flex-row gap-1">
-      <div className="flex flex-col gap-1 w-full sm:w-72">
-        <PlayerBattleRecentMyTeamStatistics myTag={tag} battles={battles}/>
-        <PlayerBattleRecentBrawlerStatistics myTag={tag} brawlers={brawlers} battles={battles}/>
-        <RecentTrophyChange player={player} battles={battles}/>
-        <RecentSoloRankTierChange myTag={tag} battles={battles}/>
+      <div className="sm:w-72">
+        <RecentGameStatistics player={player} brawlers={brawlers} battles={battles}/>
       </div>
       <div className="flex-1 flex flex-col gap-2">
         <PlayerBattleList battles={battles} tag={tag} brawlerList={brawlers}/>
@@ -444,8 +441,22 @@ class BattleResultCounter {
   }
 }
 
+function RecentGameStatistics({brawlers, player, battles}: Readonly<{ brawlers: Brawler[], player: Player, battles: PlayerBattleModel[] }>) {
+  const myTag = player.tag;
+  return (
+    <div className={cnWithDefault('flex flex-col gap-2')}>
+      <h2 className="text-xs sm:text-sm font-bold">최근 {battles.length}게임</h2>
+      <Separator/>
+      <RecentMyTeamStatistics myTag={myTag} battles={battles}/>
+      <RecentBrawlerStatistics myTag={myTag} brawlers={brawlers} battles={battles}/>
+      <RecentTrophyChange player={player} battles={battles}/>
+      <RecentSoloRankTierChange myTag={myTag} battles={battles}/>
+    </div>
+  );
+}
 
-function PlayerBattleRecentMyTeamStatistics({myTag, battles}: Readonly<{
+
+function RecentMyTeamStatistics({myTag, battles}: Readonly<{
   myTag: string,
   battles: PlayerBattleModel[]
 }>) {
@@ -487,9 +498,9 @@ function PlayerBattleRecentMyTeamStatistics({myTag, battles}: Readonly<{
     .sort((a, b) => b.total - a.total);
 
   return (
-    <div className={cnWithDefault('flex flex-col gap-1')}>
+    <div className='flex flex-col gap-1'>
       <h2 className="text-xs sm:text-sm font-bold">
-        같은 팀으로 게임한 플레이어 (최근 {battles.length}게임)
+        같은 팀으로 게임한 플레이어
       </h2>
       <div className="flex flex-col gap-1">
         {teamStats.map(stat => (
@@ -506,7 +517,7 @@ function PlayerBattleRecentMyTeamStatistics({myTag, battles}: Readonly<{
   );
 }
 
-function PlayerBattleRecentBrawlerStatistics({myTag, brawlers, battles}: Readonly<{
+function RecentBrawlerStatistics({myTag, brawlers, battles}: Readonly<{
   myTag: string,
   brawlers: Brawler[],
   battles: PlayerBattleModel[]
@@ -542,9 +553,9 @@ function PlayerBattleRecentBrawlerStatistics({myTag, brawlers, battles}: Readonl
     .sort((a, b) => b.total - a.total);
 
   return (
-    <div className={cnWithDefault('flex flex-col gap-1')}>
+    <div className='flex flex-col gap-1'>
       <h2 className="text-xs sm:text-sm font-bold">
-        플레이한 브롤러 (최근 {battles.length}게임)
+        플레이한 브롤러
       </h2>
       <div className="flex flex-col gap-1">
         {brawlerStats.map(stat => (
@@ -622,7 +633,7 @@ function RecentTrophyChange({player, battles}: Readonly<{ player: Player, battle
     <Card>
       <CardHeader className="p-2">
         <CardTitle className="text-xs sm:text-sm">
-          트로피 (최근 {battles.length}게임)
+          트로피
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2">
@@ -691,7 +702,7 @@ function RecentSoloRankTierChange({myTag, battles}: Readonly<{ myTag: string, ba
     <Card>
       <CardHeader className="p-2">
         <CardTitle className="text-xs sm:text-sm">
-          경쟁전 (최근 {battles.length}게임)
+          경쟁전
         </CardTitle>
       </CardHeader>
       <CardContent className="p-2">
