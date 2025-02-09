@@ -12,7 +12,7 @@ import com.imstargg.core.api.controller.v1.request.BrawlerEnemyResultStatisticsR
 import com.imstargg.core.api.controller.v1.request.BrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.response.BattleEventResultStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerEnemyResultStatisticsResponse;
-import com.imstargg.core.api.controller.v1.response.BrawlerOwnershipRateResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlerItemOwnershipResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerRankStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerResultStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlersRankStatisticsResponse;
@@ -165,10 +165,10 @@ public class StatisticsController {
     }
 
     @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/ownership")
-    public BrawlerOwnershipRateResponse getBrawlerOwnershipRate(
+    public BrawlerItemOwnershipResponse getBrawlerOwnershipRate(
             @PathVariable long brawlerId
     ) {
-        return BrawlerOwnershipRateResponse.of(
+        return BrawlerItemOwnershipResponse.of(
                 brawlerStatisticsService.getOwnershipRate(new BrawlStarsId(brawlerId))
         );
     }

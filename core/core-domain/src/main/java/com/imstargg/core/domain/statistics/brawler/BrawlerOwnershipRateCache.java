@@ -22,14 +22,14 @@ public class BrawlerOwnershipRateCache {
         this.objectMapper = objectMapper;
     }
 
-    public BrawlerOwnershipRate get(
-            BrawlStarsId brawlerId, Supplier<BrawlerOwnershipRate> loader
+    public BrawlerItemOwnership get(
+            BrawlStarsId brawlerId, Supplier<BrawlerItemOwnership> loader
     ) {
         String cacheValue = redisTemplate.opsForValue().get(key(brawlerId));
         if (cacheValue != null) {
-            return objectMapper.read(cacheValue, BrawlerOwnershipRate.class);
+            return objectMapper.read(cacheValue, BrawlerItemOwnership.class);
         }
-        BrawlerOwnershipRate value = loader.get();
+        BrawlerItemOwnership value = loader.get();
         redisTemplate.opsForValue().set(key(brawlerId), objectMapper.write(value), TTL);
         return value;
     }
