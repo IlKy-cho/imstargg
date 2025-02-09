@@ -32,6 +32,14 @@ import {CartesianGrid, Line, LineChart, XAxis, YAxis, Label, Pie, PieChart} from
 import {Player} from "@/model/Player";
 import {SoloRankTier as SoloRankTierType, soloRankTierValue, valueToSoloRankTier} from '@/model/enums/SoloRankTier';
 import {soloRankTierTitle} from '@/lib/solo-rank-tier';
+import {
+  Pagination, PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious
+} from "@/components/ui/pagination";
+import {ChevronLeft, ChevronRight} from "lucide-react";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -445,7 +453,11 @@ class BattleResultCounter {
   }
 }
 
-function RecentGameStatistics({brawlers, player, battles}: Readonly<{ brawlers: Brawler[], player: Player, battles: PlayerBattleModel[] }>) {
+function RecentGameStatistics({brawlers, player, battles}: Readonly<{
+  brawlers: Brawler[],
+  player: Player,
+  battles: PlayerBattleModel[]
+}>) {
   const myTag = player.tag;
   return (
     <div className={cnWithDefault('flex flex-col gap-2')}>
@@ -485,24 +497,26 @@ function RecentResultStatistics({battles}: Readonly<{ battles: PlayerBattleModel
   }), []);
 
   const chartData = [
-    { name: '승', value: counter.getVictoryCount(), fill: chartConfig.victories.color },
-    { name: '패', value: counter.getDefeatCount(), fill: chartConfig.defeats.color },
-    { name: '무', value: counter.getDrawCount(), fill: chartConfig.draws.color },
+    {name: '승', value: counter.getVictoryCount(), fill: chartConfig.victories.color},
+    {name: '패', value: counter.getDefeatCount(), fill: chartConfig.defeats.color},
+    {name: '무', value: counter.getDrawCount(), fill: chartConfig.draws.color},
   ];
 
   return (
     <Card className="flex flex-col">
       <CardHeader className="items-center pb-0 pt-3">
         <CardTitle>
-          <ResultStatistics victories={counter.getVictoryCount()} defeats={counter.getDefeatCount()} draws={counter.getDrawCount()} total={counter.getTotalCount()} winRate={counter.getWinRate()}/>
+          <ResultStatistics victories={counter.getVictoryCount()} defeats={counter.getDefeatCount()}
+                            draws={counter.getDrawCount()} total={counter.getTotalCount()}
+                            winRate={counter.getWinRate()}/>
         </CardTitle>
       </CardHeader>
       <CardContent className="pb-1">
-        <ChartContainer 
+        <ChartContainer
           config={chartConfig}
         >
           <PieChart>
-          <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
+            <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
             <Pie
               data={chartData}
               dataKey="value"
@@ -516,7 +530,7 @@ function RecentResultStatistics({battles}: Readonly<{ battles: PlayerBattleModel
                 className="text-lg font-bold"
               />
             </Pie>
-            <ChartTooltip />
+            <ChartTooltip/>
           </PieChart>
         </ChartContainer>
       </CardContent>
@@ -566,13 +580,17 @@ function RecentMyTeamStatistics({myTag, battles}: Readonly<{
     .filter(stat => stat.total >= 2)
     .sort((a, b) => b.total - a.total);
 
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+  const totalPage = Math.ceil(teamStats.length / pageSize);
+
   return (
     <div className='flex flex-col gap-1'>
       <h2 className="text-xs sm:text-sm font-bold">
         같은 팀으로 게임한 플레이어
       </h2>
       <div className="flex flex-col gap-1">
-        {teamStats.map(stat => (
+        {teamStats.slice((page - 1) * pageSize, page * pageSize).map(stat => (
           <div key={stat.tag} className="flex flex-col p-2 border rounded-lg">
             <Link href={playerHref(stat.tag)} className="font-bold text-sm">
               {tagToName.get(stat.tag)!}<span className="text-zinc-500">{stat.tag}</span>
@@ -582,6 +600,12 @@ function RecentMyTeamStatistics({myTag, battles}: Readonly<{
           </div>
         ))}
       </div>
+      <StatisticsItemPagination
+        page={page}
+        totalPage={totalPage}
+        onPagePrevious={() => setPage(prev => Math.max(prev - 1, 1))}
+        onPageNext={() => setPage(prev => Math.min(prev + 1, totalPage))}
+      />
     </div>
   );
 }
@@ -621,13 +645,17 @@ function RecentBrawlerStatistics({myTag, brawlers, battles}: Readonly<{
     }))
     .sort((a, b) => b.total - a.total);
 
+  const [page, setPage] = useState(1);
+  const pageSize = 5;
+  const totalPage = Math.ceil(brawlerStats.length / pageSize);
+
   return (
     <div className='flex flex-col gap-1'>
       <h2 className="text-xs sm:text-sm font-bold">
         플레이한 브롤러
       </h2>
       <div className="flex flex-col gap-1">
-        {brawlerStats.map(stat => (
+        {brawlerStats.slice((page - 1) * pageSize, page * pageSize).map(stat => (
           <div key={stat.id} className="flex p-2 gap-2 items-center border rounded-lg">
             <Link href={brawlerHref(stat.id)}
                   className="font-bold text-sm">{brawlerCollection.find(stat.id)!.name}</Link>
@@ -636,8 +664,47 @@ function RecentBrawlerStatistics({myTag, brawlers, battles}: Readonly<{
           </div>
         ))}
       </div>
+      <StatisticsItemPagination
+        page={page}
+        totalPage={totalPage}
+        onPagePrevious={() => setPage(prev => Math.max(prev - 1, 1))}
+        onPageNext={() => setPage(prev => Math.min(prev + 1, totalPage))}
+      />
     </div>
   );
+}
+
+function StatisticsItemPagination({page, totalPage, onPagePrevious, onPageNext}: Readonly<{
+  page: number,
+  totalPage: number,
+  onPagePrevious: () => void,
+  onPageNext: () => void
+}>) {
+  return (
+    <Pagination>
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationLink
+            size="sm"
+            onClick={onPagePrevious}
+          >
+            <ChevronLeft className="h-4 w-4"/>
+          </PaginationLink>
+        </PaginationItem>
+        <PaginationItem className="text-sm">
+          {page} / {totalPage}
+        </PaginationItem>
+        <PaginationItem>
+          <PaginationLink
+            size="sm"
+            onClick={onPageNext}
+          >
+            <ChevronRight className="h-4 w-4"/>
+          </PaginationLink>
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  )
 }
 
 function ResultStatistics({victories, defeats, draws, total, winRate}: Readonly<{
