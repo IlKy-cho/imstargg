@@ -13,7 +13,7 @@ class IdRangeIncrementerTest {
     @Test
     void 파라미터가_null이면_1부터_시작한다() {
         // given
-        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, 100);
+        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, () -> 100);
 
         // when
         JobParameters next = incrementer.getNext(null);
@@ -27,7 +27,7 @@ class IdRangeIncrementerTest {
     @DisplayName("이전 ID_TO 값을 기준으로 다음 범위를 계산한다")
     void 정상적인_범위_증가() {
         // given
-        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, 100);
+        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, () -> 100);
         JobParameters parameters = new JobParametersBuilder()
                 .addLong(IdRangeJobParameter.ID_TO_KEY, 10L)
                 .toJobParameters();
@@ -44,7 +44,7 @@ class IdRangeIncrementerTest {
     @DisplayName("최대 ID에 도달하면 남은 범위만 처리한다")
     void 최대_ID에_도달하면_제한된다() {
         // given
-        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, 25);
+        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, () -> 25);
         JobParameters parameters = new JobParametersBuilder()
                 .addLong(IdRangeJobParameter.ID_TO_KEY, 20L)
                 .toJobParameters();
@@ -60,7 +60,7 @@ class IdRangeIncrementerTest {
     @Test
     void 잘못된_파라미터_입력시_예외발생() {
         // given
-        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, 100);
+        IdRangeIncrementer incrementer = new IdRangeIncrementer(10, () -> 100);
         JobParameters parameters = new JobParametersBuilder()
                 .addString(IdRangeJobParameter.ID_TO_KEY, "invalid")
                 .toJobParameters();
