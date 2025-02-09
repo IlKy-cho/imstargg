@@ -10,9 +10,9 @@ const iconVariants = cva(
   {
     variants: {
       size: {
-        default: 'w-4 h-4',
-        lg: 'w-6 h-6',
-        xl: 'w-8 h-8',
+        default: 'sm:w-4 w-3 sm:h-4 h-3',
+        lg: 'sm:w-6 w-5 sm:h-6 h-5',
+        xl: 'sm:w-8 w-6 sm:h-8 h-6',
       },
     },
     defaultVariants: {
