@@ -11,14 +11,14 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_item_count",
+        name = "brawler_count",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_brawler_item_count", columnNames = {"brawler_brawlstars_id", "item_brawlstars_id"}
+                        name = "uk_brawler_count", columnNames = {"brawler_brawlstars_id"}
                 )
         }
 )
-public class BrawlerItemCountEntity extends BaseEntity {
+public class BrawlerCountEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +27,10 @@ public class BrawlerItemCountEntity extends BaseEntity {
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    @Column(name = "item_brawlstars_id", updatable = false, nullable = false)
-    private long itemBrawlStarsId;
-
-    @Column(name = "count_value", nullable = false)
+    @Column(name = "count_value", nullable = false, updatable = false)
     private int count;
 
-    protected BrawlerItemCountEntity() {
+    protected BrawlerCountEntity() {
     }
 
     public Long getId() {
@@ -42,10 +39,6 @@ public class BrawlerItemCountEntity extends BaseEntity {
 
     public long getBrawlerBrawlStarsId() {
         return brawlerBrawlStarsId;
-    }
-
-    public long getItemBrawlStarsId() {
-        return itemBrawlStarsId;
     }
 
     public int getCount() {

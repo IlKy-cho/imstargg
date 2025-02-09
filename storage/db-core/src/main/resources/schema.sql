@@ -496,12 +496,27 @@ create table club_ranking
 alter table club_ranking
     add constraint uk_club_ranking__country_rank unique (country, rank_value);
 
+create table brawler_count
+(
+    brawler_count_id bigint       not null auto_increment,
+    brawler_brawlstars_id bigint       not null,
+    count_value            int          not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
+    primary key (brawler_count_id)
+) engine = innodb;
+
+alter table brawler_count
+    add constraint uk_brawler_count unique (brawler_brawlstars_id);
+
+
 create table brawler_item_count
 (
     brawler_item_count_id bigint       not null auto_increment,
     brawler_brawlstars_id bigint       not null,
     item_brawlstars_id    bigint       not null,
-    item_count            int          not null,
+    count_value            int          not null,
     created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted               boolean      not null default false,
