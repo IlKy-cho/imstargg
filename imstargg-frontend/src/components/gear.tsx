@@ -5,11 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
 import { BrawlStarsIconSrc } from "@/lib/icon";
 import { rateTitle } from "@/lib/statistics";
-import { BrawlerOwnershipRate, findBrawlerGearOwnershipRate } from "@/model/BrawlerOwnershipRate";
+import {BrawlerItemOwnership, findBrawlerGearOwnershipRate} from "@/model/statistics/BrawlerItemOwnership";
 
 interface GearListProps {
   gears: Gear[];
-  brawlerOwnershipRate: BrawlerOwnershipRate;
+  brawlerOwnershipRate: BrawlerItemOwnership;
 }
 
 export async function BrawlerGearList({gears, brawlerOwnershipRate}: GearListProps) {
