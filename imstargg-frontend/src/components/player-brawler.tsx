@@ -7,7 +7,7 @@ import Image, {StaticImageData} from "next/image";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger,} from "@/components/ui/collapsible"
 import {useState} from "react";
 import {Button} from "./ui/button";
-import {cnWithDefault} from "@/lib/utils";
+import {cn, cnWithDefault} from "@/lib/utils";
 import {PowerLevel} from "./brawler";
 import {BrawlStarsIconSrc} from "@/lib/icon";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "./ui/tooltip";
@@ -33,7 +33,7 @@ export function PlayerBrawlerList({ brawlers, playerBrawlers }: Readonly<PlayerB
             <ChevronsUpDownIcon className="h-4 w-4" />
           </Button>
         </CollapsibleTrigger>
-        <CollapsibleContent className="flex flex-col gap-1 pt-1">
+        <CollapsibleContent className="grid grid-cols-2 sm:grid-cols-4 gap-1 pt-1">
           {playerBrawlers
             .filter((playerBrawler) => brawlerCollection.find(playerBrawler.brawlerId))
             .sort((a, b) => b.trophies - a.trophies)
@@ -53,80 +53,89 @@ interface PlayerBrawlerProps {
 
 function PlayerBrawler({ playerBrawler, brawler }: Readonly<PlayerBrawlerProps>) {
   return (
-    <div className="rounded border border-zinc-200 p-1 flex justify-between hover:bg-zinc-50 transition-colors">
-      <BrawlerLink brawler={brawler}>
-        <BrawlerProfileImage brawler={brawler} size="xs" />
-      </BrawlerLink>
-      <div className="flex gap-1 items-center flex-1 justify-center">
-        <PowerLevel value={playerBrawler.power} />
-        <BrawlerStat
-          icon={BrawlStarsIconSrc.TROPHY}
-          current={playerBrawler.trophies}
-          total={playerBrawler.highestTrophies}
-          tooltipCurrent="트로피"
-          tooltipTotal="최고 트로피"
-        />
-        <BrawlerStat
-          icon={BrawlStarsIconSrc.GADGET_BASE_EMPTY}
-          current={playerBrawler.gadgetIds.length}
-          total={brawler.gadgets.length}
-          tooltipCurrent="보유 가젯 수"
-          tooltipTotal="브롤러 총 가젯 수"
-        />
-        <BrawlerStat
-          icon={BrawlStarsIconSrc.STAR_POWER_BASE_EMPTY}
-          current={playerBrawler.starPowerIds.length}
-          total={brawler.starPowers.length}
-          tooltipCurrent="보유 스타 파워 수"
-          tooltipTotal="브롤러 총 스타 파워 수"
-        />
-        <BrawlerStat
-          icon={BrawlStarsIconSrc.GEAR_BASE_EMPTY}
-          current={playerBrawler.gearIds.length}
-          total={brawler.gears.length}
-          tooltipCurrent="보유 기어 수"
-          tooltipTotal="브롤러 총 기어 수"
-        />
+    <div className="flex flex-col gap-1 rounded border border-zinc-200 p-1 hover:bg-zinc-50 transition-colors">
+      <div className="flex flex-row gap-1">
+        <BrawlerLink brawler={brawler}>
+          <BrawlerProfileImage brawler={brawler} size="xs" />
+        </BrawlerLink>
+        <div className="flex gap-1 items-center">
+          <PowerLevel value={playerBrawler.power} />
+          <Image src={BrawlStarsIconSrc.TROPHY} alt="stat icon" className="w-4 sm:w-5" />
+          <div className="text-xs sm:text-sm">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  {playerBrawler.trophies}
+                </TooltipTrigger>
+                <TooltipContent>
+                  트로피
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            &nbsp;/&nbsp;
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  {playerBrawler.highestTrophies}
+                </TooltipTrigger>
+                <TooltipContent>
+                  최고 트로피
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        </div>
       </div>
+      {brawler.gadgets.length > 0 && (
+        <div className="flex gap-1">
+          {brawler.gadgets.map((gadget) => (
+            <PlayerBrawlerItem key={gadget.id} imageUrl={gadget.imageUrl || BrawlStarsIconSrc.GADGET_BASE_EMPTY} title={gadget.name} owned={playerBrawler.gadgetIds.includes(gadget.id)} />
+          ))}
+        </div>
+      )}
+      {brawler.starPowers.length > 0 && (
+        <div className="flex gap-1">
+          {brawler.starPowers.map((starPower) => (
+            <PlayerBrawlerItem key={starPower.id} imageUrl={starPower.imageUrl || BrawlStarsIconSrc.STAR_POWER_BASE_EMPTY} title={starPower.name} owned={playerBrawler.starPowerIds.includes(starPower.id)} />
+          ))}
+        </div>
+      )}
+      {brawler.gears.length > 0 && (
+        <div className="w-fit">
+          <div className="grid grid-cols-4 gap-1">
+            {brawler.gears.map((gear) => (
+              <PlayerBrawlerItem key={gear.id} imageUrl={gear.imageUrl || BrawlStarsIconSrc.GEAR_BASE_EMPTY} title={gear.name} owned={playerBrawler.gearIds.includes(gear.id)} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-interface BrawlerStatProps {
-  icon: StaticImageData;
-  current: number;
-  total: number;
-  tooltipCurrent: string;
-  tooltipTotal: string;
+interface PlayerBrawlerItemProps {
+  imageUrl: string | StaticImageData;
+  title: string;
+  owned: boolean;
 }
 
-function BrawlerStat({ icon, current, total, tooltipCurrent, tooltipTotal }: Readonly<BrawlerStatProps>) {
+function PlayerBrawlerItem({ imageUrl, title, owned }: Readonly<PlayerBrawlerItemProps>) {
   return (
-    <>
-      <Image src={icon} alt="stat icon" className="w-4 sm:w-5" />
-      <div className="text-xs sm:text-sm">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              {current}
-            </TooltipTrigger>
-            <TooltipContent>
-              {tooltipCurrent}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-        &nbsp;/&nbsp;
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              {total}
-            </TooltipTrigger>
-            <TooltipContent>
-              {tooltipTotal}
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-    </>
-  );
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger>
+          <Image
+            src={imageUrl}
+            alt={title}
+            width={24}
+            height={24}
+            className={cn("sm:w-6 sm:h-6 w-5 h-5", !owned && "filter grayscale opacity-50")}
+          />
+        </TooltipTrigger>
+        <TooltipContent>
+          {title}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
 }
