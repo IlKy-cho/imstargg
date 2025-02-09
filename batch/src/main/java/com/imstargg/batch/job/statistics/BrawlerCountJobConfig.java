@@ -2,6 +2,7 @@ package com.imstargg.batch.job.statistics;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerCountCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerItemCountCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -29,6 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static com.imstargg.storage.db.core.QPlayerBrawlerCollectionEntity.playerBrawlerCollectionEntity;
+import static com.imstargg.storage.db.core.statistics.QBrawlerCountCollectionEntity.brawlerCountCollectionEntity;
 import static com.imstargg.storage.db.core.statistics.QBrawlerItemCountCollectionEntity.brawlerItemCountCollectionEntity;
 
 @Configuration
@@ -83,6 +85,7 @@ public class BrawlerCountJobConfig {
                     int size = 10_000;
                     boolean hasMore = true;
                     Map<BrawlerItemKey, Integer> brawlerItemCounts = new HashMap<>();
+                    Map<Long, Integer> brawlerCounts = new HashMap<>();
                     while (hasMore) {
                         log.debug("processing cursorPlayerBrawlerId={}", cursorPlayerBrawlerId);
                         List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = queryFactory
@@ -102,6 +105,7 @@ public class BrawlerCountJobConfig {
 
                         playerBrawlerEntities.forEach(playerBrawlerEntity -> {
                             long brawlerBrawlStarsId = playerBrawlerEntity.getBrawlerBrawlStarsId();
+                            brawlerCounts.compute(brawlerBrawlStarsId, (k, v) -> v == null ? 1 : v + 1);
                             playerBrawlerEntity.getGadgetBrawlStarsIds().forEach(gadgetBrawlStarsId ->
                                     brawlerItemCounts.compute(
                                             new BrawlerItemKey(brawlerBrawlStarsId, gadgetBrawlStarsId),
@@ -120,6 +124,17 @@ public class BrawlerCountJobConfig {
                         });
                     }
 
+                    brawlerCounts.forEach((brawlerBrawlStarsId, count) ->
+                            Optional.ofNullable(
+                                    queryFactory.selectFrom(brawlerCountCollectionEntity)
+                                            .where(brawlerCountCollectionEntity.brawlerBrawlStarsId.eq(brawlerBrawlStarsId))
+                                            .fetchOne()
+                            ).orElseGet(() -> {
+                                var entity = new BrawlerCountCollectionEntity(brawlerBrawlStarsId, count);
+                                em.persist(entity);
+                                return entity;
+                            }).update(count));
+
                     brawlerItemCounts.forEach((brawlerItemKey, count) ->
                             Optional.ofNullable(
                                     queryFactory.selectFrom(brawlerItemCountCollectionEntity)
@@ -130,7 +145,7 @@ public class BrawlerCountJobConfig {
                                                             .eq(brawlerItemKey.itemBrawlStarsId)
                                             ).fetchOne()
                             ).orElseGet(() -> {
-                                BrawlerItemCountCollectionEntity entity = new BrawlerItemCountCollectionEntity(
+                                var entity = new BrawlerItemCountCollectionEntity(
                                         brawlerItemKey.brawlerBrawlStarsId,
                                         brawlerItemKey.itemBrawlStarsId,
                                         count
