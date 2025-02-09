@@ -14,6 +14,7 @@ public class BrawlerItemCountCollectionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "brawler_item_count_id")
     private Long id;
 
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
@@ -22,7 +23,7 @@ public class BrawlerItemCountCollectionEntity extends BaseEntity {
     @Column(name = "item_brawlstars_id", updatable = false, nullable = false)
     private long itemBrawlStarsId;
 
-    @Column(name = "item_count")
+    @Column(name = "count_value", nullable = false)
     private int count;
 
     protected BrawlerItemCountCollectionEntity() {
