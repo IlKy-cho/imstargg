@@ -5,7 +5,6 @@ dependencies {
     implementation(project(":core:core-enum"))
     implementation(project(":client:brawlstars-client"))
     implementation(project(":storage:db-collection"))
-    implementation(project(":storage:cache-key"))
     implementation(project(":collection-domain"))
     implementation(project(":support:alert-manager"))
     implementation(project(":support:logging"))
