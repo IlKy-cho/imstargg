@@ -23,6 +23,7 @@ public class BrawlerItemCountCollectionEntity extends BaseEntity {
     @Column(name = "item_brawlstars_id", updatable = false, nullable = false)
     private long itemBrawlStarsId;
 
+
     @Column(name = "count_value", nullable = false)
     private int count;
 
