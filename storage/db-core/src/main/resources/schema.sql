@@ -496,17 +496,17 @@ create table club_ranking
 alter table club_ranking
     add constraint uk_club_ranking__country_rank unique (country, rank_value);
 
--- support
-create table rds_cache
+create table brawler_item_count
 (
-    rds_cache_id bigint       not null auto_increment,
-    cache_key     varchar(255) not null,
-    cache_value        varchar(255) not null,
-    created_at   timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at   timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted      boolean      not null default false,
-    primary key (rds_cache_id)
+    brawler_item_count_id bigint       not null auto_increment,
+    brawler_brawlstars_id bigint       not null,
+    item_brawlstars_id    bigint       not null,
+    item_count            int          not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
+    primary key (brawler_item_count_id)
 ) engine = innodb;
 
-alter table rds_cache
-    add constraint uk_rds_cache__key unique (cache_key);
+alter table brawler_item_count
+    add constraint uk_brawler_item_count unique (brawler_brawlstars_id, item_brawlstars_id);
