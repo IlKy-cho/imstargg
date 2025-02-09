@@ -2,6 +2,7 @@ package com.imstargg.batch.job.statistics;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
+import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.cache.BrawlerCountCacheKey;
 import com.imstargg.storage.db.core.cache.CacheKey;
 import com.imstargg.storage.db.core.cache.GadgetCountCacheKey;
@@ -33,7 +34,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -86,44 +86,53 @@ public class PlayerBrawlerCountJobConfig {
         return taskletStepBuilder
                 .tasklet((contribution, chunkContext) -> {
                     EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(emf);
+                    if (em == null) {
+                        throw new IllegalStateException("No transactional EntityManager found");
+                    }
+                    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
+                    long playerCount = 0;
+                    BrawlerCountCollector collector = new BrawlerCountCollector();
 
-                    updateBrawlerCount(em);
-                    updatePlayerCount(em);
+                    Long cursorPlayerId = null;
+                    int size = 500;
+                    boolean hasMore = true;
+                    while (hasMore) {
+                        log.debug("processing cursorPlayerId={}", cursorPlayerId);
+                        List<PlayerCollectionEntity> playerEntities = queryFactory
+                                .selectFrom(playerCollectionEntity)
+                                .where(
+                                        cursorPlayerId == null ? null : playerCollectionEntity.id.gt(cursorPlayerId)
+                                ).orderBy(playerCollectionEntity.id.asc())
+                                .limit(size)
+                                .fetch();
+                        playerEntities.forEach(em::detach);
+                        if (playerEntities.isEmpty()) {
+                            break;
+                        }
+                        hasMore = playerEntities.size() == size;
+                        cursorPlayerId = playerEntities.getLast().getId();
+
+                        List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = queryFactory
+                                .selectFrom(playerBrawlerCollectionEntity)
+                                .where(playerBrawlerCollectionEntity.player.id.in(
+                                        playerEntities.stream().map(PlayerCollectionEntity::getId).toList()
+                                )).fetch();
+                        playerBrawlerEntities.forEach(em::detach);
+                        em.clear();
+
+                        playerCount += playerEntities.size();
+                        collector.collectEntities(playerBrawlerEntities);
+                    }
+
+                    collector.save(rdsCacheCollectionJpaRepository);
+                    var playerCountEntity = rdsCacheCollectionJpaRepository
+                            .findByKey(PlayerCountCacheKey.KEY)
+                            .orElse(new RdsCacheCollectionEntity(PlayerCountCacheKey.KEY, String.valueOf(playerCount)));
+                    playerCountEntity.update(String.valueOf(playerCount));
+                    rdsCacheCollectionJpaRepository.save(playerCountEntity);
                     return RepeatStatus.FINISHED;
                 }, txManager)
                 .build();
-    }
-
-    private void updateBrawlerCount(EntityManager em) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        BrawlerCountCollector collector = new BrawlerCountCollector();
-
-        Long cursorPlayerBrawlerId = null;
-        int size = 10_000;
-        boolean hasMore = true;
-        int page = 1;
-        while (hasMore) {
-            log.debug("processing page={}, cursorPlayerBrawlerId={}", page++, cursorPlayerBrawlerId);
-            List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = queryFactory
-                    .selectFrom(playerBrawlerCollectionEntity)
-                    .where(
-                            cursorPlayerBrawlerId == null
-                                    ? null : playerBrawlerCollectionEntity.id.gt(cursorPlayerBrawlerId)
-                    ).orderBy(playerBrawlerCollectionEntity.id.asc())
-                    .limit(size)
-                    .fetch();
-            playerBrawlerEntities.forEach(em::detach);
-            em.clear();
-            if (playerBrawlerEntities.isEmpty()) {
-                break;
-            }
-            hasMore = playerBrawlerEntities.size() == size;
-            cursorPlayerBrawlerId = playerBrawlerEntities.getLast().getId();
-
-            collector.collectEntities(playerBrawlerEntities);
-        }
-
-        collector.save(rdsCacheCollectionJpaRepository);
     }
 
     private static class BrawlerCountCollector {
@@ -190,18 +199,4 @@ public class PlayerBrawlerCountJobConfig {
         }
     }
 
-    private void updatePlayerCount(EntityManager em) {
-        JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        long count = Objects.requireNonNull(
-                queryFactory
-                        .select(playerCollectionEntity.count())
-                        .from(playerCollectionEntity)
-                        .fetchOne()
-        );
-
-        rdsCacheCollectionJpaRepository.save(
-                rdsCacheCollectionJpaRepository.findByKey(PlayerCountCacheKey.KEY)
-                        .orElseGet(() -> new RdsCacheCollectionEntity(PlayerCountCacheKey.KEY, String.valueOf(count)))
-        );
-    }
 }
