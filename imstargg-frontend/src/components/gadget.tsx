@@ -4,12 +4,12 @@ import {Separator} from "@/components/ui/separator";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
 import {BrawlStarsIconSrc} from "@/lib/icon";
-import { BrawlerOwnershipRate, findBrawlerGadgetOwnershipRate } from "@/model/BrawlerOwnershipRate";
 import { rateTitle } from "@/lib/statistics";
+import {BrawlerItemOwnership, findBrawlerGadgetOwnershipRate} from "@/model/statistics/BrawlerItemOwnership";
 
 interface GadgetListProps {
   gadgets: Gadget[];
-  brawlerOwnershipRate: BrawlerOwnershipRate;
+  brawlerOwnershipRate: BrawlerItemOwnership;
 }
 
 export async function BrawlerGadgetList({gadgets, brawlerOwnershipRate}: GadgetListProps) {

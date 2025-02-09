@@ -4,12 +4,12 @@ import { Separator } from "@radix-ui/react-separator";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
 import { BrawlStarsIconSrc } from "@/lib/icon";
-import { BrawlerOwnershipRate, findBrawlerStarPowerOwnershipRate } from "@/model/BrawlerOwnershipRate";
 import { rateTitle } from "@/lib/statistics";
+import {BrawlerItemOwnership, findBrawlerStarPowerOwnershipRate} from "@/model/statistics/BrawlerItemOwnership";
 
 interface StarPowerListProps {
   starPowers: StarPower[];
-  brawlerOwnershipRate: BrawlerOwnershipRate;
+  brawlerOwnershipRate: BrawlerItemOwnership;
 }
 
 export async function BrawlerStarPowerList({starPowers, brawlerOwnershipRate}: StarPowerListProps) {

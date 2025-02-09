@@ -9,7 +9,7 @@ import {BattleEventResultStatistics} from "@/model/statistics/BattleEventResultS
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import {BattleMode} from "@/model/enums/BattleMode";
-import {BrawlerOwnershipRate} from "@/model/BrawlerOwnershipRate";
+import {BrawlerItemOwnership} from "@/model/statistics/BrawlerItemOwnership";
 
 export async function fetchGetBattleEventBrawlerResultStatistics(
   eventId: number,
@@ -472,12 +472,12 @@ export async function fetchGetBrawlerOwnershipRate(brawlerId: number, options?: 
   });
 }
 
-export async function getBrawlerOwnershipRate(brawlerId: number): Promise<BrawlerOwnershipRate> {
+export async function getBrawlerOwnershipRate(brawlerId: number): Promise<BrawlerItemOwnership> {
   const response = await fetchGetBrawlerOwnershipRate(brawlerId, {revalidate: 60 * 60});
 
   if (!response.ok) {
     throw await ApiError.create(response);
   }
 
-  return await response.json() as BrawlerOwnershipRate;
+  return await response.json() as BrawlerItemOwnership;
 }
