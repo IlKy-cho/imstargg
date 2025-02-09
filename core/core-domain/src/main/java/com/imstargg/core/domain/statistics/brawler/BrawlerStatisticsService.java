@@ -17,12 +17,12 @@ public class BrawlerStatisticsService {
 
     private final BrawlerReader brawlerReader;
     private final BrawlerStatisticsReaderWithCache brawlerStatisticsReader;
-    private final BrawlerOwnershipReader brawlerOwnershipReader;
+    private final BrawlerOwnershipReaderWithCache brawlerOwnershipReader;
 
     public BrawlerStatisticsService(
             BrawlerReader brawlerReader,
             BrawlerStatisticsReaderWithCache brawlerStatisticsReader,
-            BrawlerOwnershipReader brawlerOwnershipReader
+            BrawlerOwnershipReaderWithCache brawlerOwnershipReader
     ) {
         this.brawlerReader = brawlerReader;
         this.brawlerStatisticsReader = brawlerStatisticsReader;
@@ -65,7 +65,7 @@ public class BrawlerStatisticsService {
                 .toList();
     }
 
-    public BrawlerOwnershipRate getOwnershipRate(BrawlStarsId id) {
+    public BrawlerItemOwnership getOwnershipRate(BrawlStarsId id) {
         return brawlerOwnershipReader.get(brawlerReader.get(id));
     }
 }
