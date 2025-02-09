@@ -28,7 +28,7 @@ import {playerBattleIconSrc, playerBattleModeTitle} from "@/lib/player-battle";
 import {battleEventHref, brawlerHref, playerHref} from "@/config/site";
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from './ui/chart';
 import {Card, CardContent, CardHeader, CardTitle} from './ui/card';
-import {CartesianGrid, Line, LineChart, XAxis, YAxis} from 'recharts';
+import {CartesianGrid, Line, LineChart, XAxis, YAxis, Label, Pie, PieChart} from 'recharts';
 import {Player} from "@/model/Player";
 import {SoloRankTier as SoloRankTierType, soloRankTierValue, valueToSoloRankTier} from '@/model/enums/SoloRankTier';
 import {soloRankTierTitle} from '@/lib/solo-rank-tier';
@@ -437,7 +437,11 @@ class BattleResultCounter {
   }
 
   public getWinRate() {
-    return (this.victoryCount / (this.victoryCount + this.defeatCount)) * 100;
+    const total = this.victoryCount + this.defeatCount;
+    if (total === 0) {
+      return 0;
+    }
+    return (this.victoryCount / total) * 100;
   }
 }
 
@@ -447,11 +451,76 @@ function RecentGameStatistics({brawlers, player, battles}: Readonly<{ brawlers: 
     <div className={cnWithDefault('flex flex-col gap-2')}>
       <h2 className="text-xs sm:text-sm font-bold">최근 {battles.length}게임</h2>
       <Separator/>
+      <RecentResultStatistics battles={battles}/>
       <RecentMyTeamStatistics myTag={myTag} battles={battles}/>
       <RecentBrawlerStatistics myTag={myTag} brawlers={brawlers} battles={battles}/>
       <RecentTrophyChange player={player} battles={battles}/>
       <RecentSoloRankTierChange myTag={myTag} battles={battles}/>
     </div>
+  );
+}
+
+function RecentResultStatistics({battles}: Readonly<{ battles: PlayerBattleModel[] }>) {
+  const counter = new BattleResultCounter();
+  battles.forEach(battle => {
+    if (!battle.result) {
+      return;
+    }
+    counter.add(battle.result!);
+  });
+
+  const chartConfig = useMemo((): ChartConfig => ({
+    victories: {
+      label: '승',
+      color: "rgb(59, 130, 246)",
+    },
+    defeats: {
+      label: '패',
+      color: "rgb(239, 68, 68)",
+    },
+    draws: {
+      label: '무',
+      color: "rgb(113, 113, 122)",
+    }
+  }), []);
+
+  const chartData = [
+    { name: '승', value: counter.getVictoryCount(), fill: chartConfig.victories.color },
+    { name: '패', value: counter.getDefeatCount(), fill: chartConfig.defeats.color },
+    { name: '무', value: counter.getDrawCount(), fill: chartConfig.draws.color },
+  ];
+
+  return (
+    <Card className="flex flex-col">
+      <CardHeader className="items-center pb-0 pt-3">
+        <CardTitle>
+          <ResultStatistics victories={counter.getVictoryCount()} defeats={counter.getDefeatCount()} draws={counter.getDrawCount()} total={counter.getTotalCount()} winRate={counter.getWinRate()}/>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pb-1">
+        <ChartContainer 
+          config={chartConfig}
+        >
+          <PieChart>
+          <ChartTooltip content={<ChartTooltipContent hideLabel/>}/>
+            <Pie
+              data={chartData}
+              dataKey="value"
+              nameKey="name"
+              innerRadius={30}
+              outerRadius={50}
+            >
+              <Label
+                value={`${counter.getWinRate().toFixed(0)}%`}
+                position="center"
+                className="text-lg font-bold"
+              />
+            </Pie>
+            <ChartTooltip />
+          </PieChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }
 
