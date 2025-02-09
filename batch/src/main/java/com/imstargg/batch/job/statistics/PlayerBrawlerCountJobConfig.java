@@ -2,7 +2,6 @@ package com.imstargg.batch.job.statistics;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.cache.BrawlerCountCacheKey;
 import com.imstargg.storage.db.core.cache.CacheKey;
 import com.imstargg.storage.db.core.cache.GadgetCountCacheKey;
@@ -98,29 +97,28 @@ public class PlayerBrawlerCountJobConfig {
                     boolean hasMore = true;
                     while (hasMore) {
                         log.debug("processing cursorPlayerId={}", cursorPlayerId);
-                        List<PlayerCollectionEntity> playerEntities = queryFactory
-                                .selectFrom(playerCollectionEntity)
+                        List<Long> playerIds = queryFactory
+                                .select(playerCollectionEntity.id)
+                                .from(playerCollectionEntity)
                                 .where(
                                         cursorPlayerId == null ? null : playerCollectionEntity.id.gt(cursorPlayerId)
                                 ).orderBy(playerCollectionEntity.id.asc())
                                 .limit(size)
                                 .fetch();
-                        playerEntities.forEach(em::detach);
-                        if (playerEntities.isEmpty()) {
+                        if (playerIds.isEmpty()) {
                             break;
                         }
-                        hasMore = playerEntities.size() == size;
-                        cursorPlayerId = playerEntities.getLast().getId();
+                        hasMore = playerIds.size() == size;
+                        cursorPlayerId = playerIds.getLast();
 
                         List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = queryFactory
                                 .selectFrom(playerBrawlerCollectionEntity)
-                                .where(playerBrawlerCollectionEntity.player.id.in(
-                                        playerEntities.stream().map(PlayerCollectionEntity::getId).toList()
-                                )).fetch();
+                                .where(playerBrawlerCollectionEntity.player.id.in(playerIds))
+                                .fetch();
                         playerBrawlerEntities.forEach(em::detach);
                         em.clear();
 
-                        playerCount += playerEntities.size();
+                        playerCount += playerIds.size();
                         collector.collectEntities(playerBrawlerEntities);
                     }
 
