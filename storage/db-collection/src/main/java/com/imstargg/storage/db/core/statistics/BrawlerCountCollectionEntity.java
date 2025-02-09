@@ -7,18 +7,10 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 
 @Entity
-@Table(
-        name = "brawler_item_count",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "uk_brawler_item_count", columnNames = {"brawler_brawlstars_id", "item_brawlstars_id"}
-                )
-        }
-)
-public class BrawlerItemCountEntity extends BaseEntity {
+@Table(name = "brawler_count")
+public class BrawlerCountCollectionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,13 +19,15 @@ public class BrawlerItemCountEntity extends BaseEntity {
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
-    @Column(name = "item_brawlstars_id", updatable = false, nullable = false)
-    private long itemBrawlStarsId;
-
     @Column(name = "count_value", nullable = false)
     private int count;
 
-    protected BrawlerItemCountEntity() {
+    protected BrawlerCountCollectionEntity() {
+    }
+
+    public BrawlerCountCollectionEntity(long brawlerBrawlStarsId, int count) {
+        this.brawlerBrawlStarsId = brawlerBrawlStarsId;
+        this.count = count;
     }
 
     public Long getId() {
@@ -42,10 +36,6 @@ public class BrawlerItemCountEntity extends BaseEntity {
 
     public long getBrawlerBrawlStarsId() {
         return brawlerBrawlStarsId;
-    }
-
-    public long getItemBrawlStarsId() {
-        return itemBrawlStarsId;
     }
 
     public int getCount() {
