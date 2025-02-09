@@ -4,7 +4,7 @@ import {BrawlerProfile} from "@/components/brawler-profile";
 import {
   getBrawlerBattleEventResultStatistics,
   getBrawlerBrawlersResultStatistics,
-  getBrawlerEnemyResultStatistics
+  getBrawlerEnemyResultStatistics, getBrawlerOwnershipRate
 } from "@/lib/api/statistics";
 import {BrawlerStatisticsOption} from "@/components/statistics-option";
 import {
@@ -68,6 +68,8 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
   const country = countryOrDefault((await searchParams).country);
   const brawlerRankings = await getBrawlerRanking(country, brawler.id);
 
+  const brawlerOwnershipRate = await getBrawlerOwnershipRate(brawler.id);
+
   const date = new Date();
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 
@@ -84,9 +86,9 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
           <BrawlerProfile brawler={brawler}/>
         </div>
       </div>
-      <BrawlerGadgetList gadgets={brawler.gadgets}/>
-      <BrawlerStarPowerList starPowers={brawler.starPowers}/>
-      <BrawlerGearList gears={brawler.gears}/>
+      <BrawlerGadgetList gadgets={brawler.gadgets} brawlerOwnershipRate={brawlerOwnershipRate}/>
+      <BrawlerStarPowerList starPowers={brawler.starPowers} brawlerOwnershipRate={brawlerOwnershipRate}/>
+      <BrawlerGearList gears={brawler.gears} brawlerOwnershipRate={brawlerOwnershipRate}/>
       <Ranking rankings={brawlerRankings} country={country}/>
       <div className="flex flex-col gap-2 p-1">
         <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
