@@ -3,6 +3,7 @@ package com.imstargg.core.domain.statistics.brawler;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.Brawler;
 import com.imstargg.core.domain.statistics.ItemRate;
+import com.imstargg.core.enums.TrophyRange;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,21 +20,33 @@ public class BrawlerOwnershipReaderWithCache {
         this.cache = cache;
     }
 
-    public BrawlerItemOwnership get(Brawler brawler) {
-        return cache.get(brawler.id(), () -> load(brawler));
+    public BrawlerItemOwnership get(Brawler brawler, TrophyRange trophyRange) {
+        return cache.get(brawler.id(), () -> load(brawler, trophyRange));
     }
 
-    public BrawlerItemOwnership load(Brawler brawler) {
-        int brawlerCount = brawlerCountRepository.getBrawlerCount(brawler);
+    public BrawlerItemOwnership load(Brawler brawler, TrophyRange trophyRange) {
+        int brawlerCount = brawlerCountRepository.getBrawlerCount(brawler, trophyRange);
         return new BrawlerItemOwnership(
                 brawler.gadgets().stream().map(gadget ->
-                        rate(gadget.id(), brawlerCount, brawlerCountRepository.getGadgetCount(brawler, gadget))
+                        rate(
+                                gadget.id(),
+                                brawlerCount,
+                                brawlerCountRepository.getGadgetCount(brawler, gadget, trophyRange)
+                        )
                 ).toList(),
                 brawler.starPowers().stream().map(starPower ->
-                        rate(starPower.id(), brawlerCount, brawlerCountRepository.getStarPowerCount(brawler, starPower))
+                        rate(
+                                starPower.id(),
+                                brawlerCount,
+                                brawlerCountRepository.getStarPowerCount(brawler, starPower, trophyRange)
+                        )
                 ).toList(),
                 brawler.gears().stream().map(gear ->
-                        rate(gear.id(), brawlerCount, brawlerCountRepository.getGearCount(brawler, gear))
+                        rate(
+                                gear.id(),
+                                brawlerCount,
+                                brawlerCountRepository.getGearCount(brawler, gear, trophyRange)
+                        )
                 ).toList()
         );
     }

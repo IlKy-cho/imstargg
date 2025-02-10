@@ -20,10 +20,12 @@ import com.imstargg.core.api.controller.v1.response.BrawlersResultStatisticsResp
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.statistics.event.BattleEventStatisticsService;
 import com.imstargg.core.domain.statistics.brawler.BrawlerStatisticsService;
+import com.imstargg.core.enums.TrophyRange;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -166,10 +168,10 @@ public class StatisticsController {
 
     @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/ownership")
     public BrawlerItemOwnershipResponse getBrawlerOwnershipRate(
-            @PathVariable long brawlerId
+            @PathVariable long brawlerId, @RequestParam TrophyRange trophyRange
     ) {
         return BrawlerItemOwnershipResponse.of(
-                brawlerStatisticsService.getOwnershipRate(new BrawlStarsId(brawlerId))
+                brawlerStatisticsService.getOwnershipRate(new BrawlStarsId(brawlerId), trophyRange)
         );
     }
 }

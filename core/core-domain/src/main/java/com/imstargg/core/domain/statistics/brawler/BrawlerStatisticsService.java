@@ -6,6 +6,7 @@ import com.imstargg.core.domain.statistics.BattleEventResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
+import com.imstargg.core.enums.TrophyRange;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -65,7 +66,7 @@ public class BrawlerStatisticsService {
                 .toList();
     }
 
-    public BrawlerItemOwnership getOwnershipRate(BrawlStarsId id) {
-        return brawlerOwnershipReader.get(brawlerReader.get(id));
+    public BrawlerItemOwnership getOwnershipRate(BrawlStarsId id, TrophyRange trophyRange) {
+        return brawlerOwnershipReader.get(brawlerReader.get(id), trophyRange);
     }
 }
