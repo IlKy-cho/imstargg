@@ -3,6 +3,8 @@ package com.imstargg.storage.db.core.brawlstars;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -19,8 +21,8 @@ import jakarta.persistence.UniqueConstraint;
 )
 public class StarPowerEntity extends BaseEntity {
 
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "star_power_id")
     private Long id;
 
