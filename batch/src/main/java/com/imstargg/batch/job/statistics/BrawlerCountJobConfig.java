@@ -133,7 +133,7 @@ public class BrawlerCountJobConfig {
                 .build();
     }
 
-    private static List<PlayerBrawlerCollectionEntity> fetch(EntityManager em, Long cursorPlayerBrawlerId, int size) {
+    private List<PlayerBrawlerCollectionEntity> fetch(EntityManager em, Long cursorPlayerBrawlerId, int size) {
         var queryFactory = new JPAQueryFactory(em);
         return queryFactory
                 .selectFrom(playerBrawlerCollectionEntity)
