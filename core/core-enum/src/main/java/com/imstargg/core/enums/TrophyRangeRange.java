@@ -8,27 +8,14 @@ public enum TrophyRangeRange {
     TROPHY_0_PLUS(
             TrophyRange.TROPHY_0_500,
             TrophyRange.TROPHY_501_1000,
-            TrophyRange.TROPHY_1001_1500,
-            TrophyRange.TROPHY_1501_2000,
-            TrophyRange.TROPHY_2000_OVER
+            TrophyRange.TROPHY_1000_OVER
     ),
     TROPHY_500_PLUS(
             TrophyRange.TROPHY_501_1000,
-            TrophyRange.TROPHY_1001_1500,
-            TrophyRange.TROPHY_1501_2000,
-            TrophyRange.TROPHY_2000_OVER
+            TrophyRange.TROPHY_1000_OVER
     ),
     TROPHY_1000_PLUS(
-            TrophyRange.TROPHY_1001_1500,
-            TrophyRange.TROPHY_1501_2000,
-            TrophyRange.TROPHY_2000_OVER
-    ),
-    TROPHY_1500_PLUS(
-            TrophyRange.TROPHY_1501_2000,
-            TrophyRange.TROPHY_2000_OVER
-    ),
-    TROPHY_2000_PLUS(
-            TrophyRange.TROPHY_2000_OVER
+            TrophyRange.TROPHY_1000_OVER
     ),
     ;
 
