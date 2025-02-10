@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
-import java.time.Duration;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -19,8 +18,6 @@ import java.time.OffsetDateTime;
         }
 )
 public class BrawlPassSeasonEntity {
-
-    public static final Duration DURATION = Duration.ofDays(30);
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
