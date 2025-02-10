@@ -7,7 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalAdjusters;
 
 @Entity
 @Table(name = "brawl_pass_season")
@@ -37,7 +40,14 @@ public class BrawlPassSeasonCollectionEntity {
     }
 
     public BrawlPassSeasonCollectionEntity next() {
-        return new BrawlPassSeasonCollectionEntity(number + 1, endTime, endTime.plus(BrawlPassSeasonEntity.DURATION));
+        OffsetDateTime nextEndTime = endTime.plusMonths(1)
+                .with(TemporalAdjusters.firstInMonth(DayOfWeek.THURSDAY))
+                .withHour(18)
+                .withMinute(0)
+                .withSecond(0)
+                .withNano(0)
+                .withOffsetSameInstant(ZoneOffset.ofHours(9));
+        return new BrawlPassSeasonCollectionEntity(number + 1, endTime, nextEndTime);
     }
 
     public Long getId() {
