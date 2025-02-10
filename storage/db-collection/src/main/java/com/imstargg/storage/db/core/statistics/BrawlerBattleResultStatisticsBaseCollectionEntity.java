@@ -9,8 +9,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 
-import java.time.LocalDate;
-
 @MappedSuperclass
 abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleStatisticsBaseCollectionEntity {
 
@@ -23,9 +21,6 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
     @Enumerated(EnumType.STRING)
     @Column(name = "trophy_range", length = 25, updatable = false)
     private TrophyRange trophyRange;
-
-    @Column(name = "duplicate_brawler", nullable = false, updatable = false)
-    private boolean duplicateBrawler;
 
     @Column(name = "victory_count", nullable = false)
     private long victoryCount;
@@ -41,18 +36,16 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
 
     protected BrawlerBattleResultStatisticsBaseCollectionEntity(
             long battleEventId,
-            LocalDate battleDate,
+            int seasonNumber,
             @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange,
-            boolean duplicateBrawler
+            @Nullable SoloRankTierRange soloRankTierRange
     ) {
-        super(battleEventId, battleDate);
+        super(battleEventId, seasonNumber);
         if (soloRankTierRange == null && trophyRange == null) {
             throw new IllegalArgumentException("Either soloRankTierRange or trophyRange must be set.");
         }
         this.soloRankTierRange = soloRankTierRange;
         this.trophyRange = trophyRange;
-        this.duplicateBrawler = duplicateBrawler;
         this.victoryCount = 0;
         this.defeatCount = 0;
         this.drawCount = 0;
@@ -86,10 +79,6 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
     @Nullable
     public TrophyRange getTrophyRange() {
         return trophyRange;
-    }
-
-    public boolean isDuplicateBrawler() {
-        return duplicateBrawler;
     }
 
     public long getVictoryCount() {

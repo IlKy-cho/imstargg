@@ -111,14 +111,14 @@ public class BrawlerResultStatisticsRepository {
                 );
         Map<BrawlStarsId, BattleEvent> idToEvent = battleEventRepository.findAllEvents(
                 eventResultStatsEntities.stream()
-                        .map(statsEntity -> new BrawlStarsId(statsEntity.getEventBrawlStarsId()))
+                        .map(statsEntity -> new BrawlStarsId(statsEntity.getPassNumber()))
                         .toList(), Language.KOREAN
         ).stream().collect(Collectors.toMap(BattleEvent::id, Function.identity()));
 
         return eventResultStatsEntities.stream()
-                .filter(statsEntity -> idToEvent.containsKey(new BrawlStarsId(statsEntity.getEventBrawlStarsId())))
+                .filter(statsEntity -> idToEvent.containsKey(new BrawlStarsId(statsEntity.getPassNumber())))
                 .map(statsEntity -> new BattleEventResultCount(
-                        idToEvent.get(new BrawlStarsId(statsEntity.getEventBrawlStarsId())),
+                        idToEvent.get(new BrawlStarsId(statsEntity.getPassNumber())),
                         new ResultCount(
                                 statsEntity.getVictoryCount(),
                                 statsEntity.getDefeatCount(),

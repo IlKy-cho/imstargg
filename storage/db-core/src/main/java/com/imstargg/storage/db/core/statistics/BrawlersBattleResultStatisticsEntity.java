@@ -12,17 +12,17 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawlers_battle_result_stats",
+        name = "brawlers_battle_result_stats_v2",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_event_battledate_range_duplicate_brawler",
-                        columnNames = {"event_brawlstars_id", "battle_date", "trophy_range", "solo_rank_tier_range", "duplicate_brawler", "brawler_brawlstars_id", "brawler_brawlstars_id_hash"}
+                        name = "uk_brawlers_battle_result_stats__key",
+                        columnNames = {"season_number", "event_brawlstars_id", "trophy_range", "solo_rank_tier_range", "brawler_brawlstars_id", "brawler_brawlstars_id_hash"}
                 ),
         },
         indexes = {
                 @Index(
-                        name = "ix_battledate_range_brawler_num",
-                        columnList = "battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id, brawler_num"
+                        name = "ix_brawlers_battle_result_stats__1",
+                        columnList = "season_number, trophy_range, solo_rank_tier_range, brawler_brawlstars_id, brawler_num"
                 )
         }
 )
