@@ -21,9 +21,6 @@ abstract class BrawlerBattleResultStatisticsBaseEntity extends BattleStatisticsB
     @Column(name = "trophy_range", length = 25, updatable = false)
     private TrophyRange trophyRange;
 
-    @Column(name = "duplicate_brawler", nullable = false, updatable = false)
-    private boolean duplicateBrawler;
-
     @Column(name = "victory_count", nullable = false)
     private long victoryCount;
 
@@ -44,10 +41,6 @@ abstract class BrawlerBattleResultStatisticsBaseEntity extends BattleStatisticsB
     @Nullable
     public TrophyRange getTrophyRange() {
         return trophyRange;
-    }
-
-    public boolean isDuplicateBrawler() {
-        return duplicateBrawler;
     }
 
     public long getVictoryCount() {

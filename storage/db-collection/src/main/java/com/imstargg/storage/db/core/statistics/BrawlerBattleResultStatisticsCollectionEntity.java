@@ -10,10 +10,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.time.LocalDate;
-
 @Entity
-@Table(name = "brawler_battle_result_stats")
+@Table(name = "brawler_battle_result_stats_v2")
 public class BrawlerBattleResultStatisticsCollectionEntity extends BrawlerBattleResultStatisticsBaseCollectionEntity {
 
     @Id
@@ -32,13 +30,12 @@ public class BrawlerBattleResultStatisticsCollectionEntity extends BrawlerBattle
 
     public BrawlerBattleResultStatisticsCollectionEntity(
             long battleEventId,
-            LocalDate battleDate,
+            int seasonNumber,
             @Nullable TrophyRange trophyRange,
             @Nullable SoloRankTierRange soloRankTierRange,
-            boolean duplicateBrawler,
             long brawlerBrawlStarsId
     ) {
-        super(battleEventId, battleDate, trophyRange, soloRankTierRange, duplicateBrawler);
+        super(battleEventId, seasonNumber, trophyRange, soloRankTierRange);
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.starPlayerCount = 0;
     }
