@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "brawler_count")
+@Table(name = "brawler_count_v2")
 public class BrawlerCountCollectionEntity extends BaseEntity {
 
     @Id
@@ -20,14 +21,18 @@ public class BrawlerCountCollectionEntity extends BaseEntity {
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
+    @Column(name = "trophy_range", columnDefinition = "varchar(25)", nullable = false, updatable = false)
+    private TrophyRange trophyRange;
+
     @Column(name = "count_value", nullable = false)
     private int count;
 
     protected BrawlerCountCollectionEntity() {
     }
 
-    public BrawlerCountCollectionEntity(long brawlerBrawlStarsId, int count) {
+    public BrawlerCountCollectionEntity(long brawlerBrawlStarsId, TrophyRange trophyRange, int count) {
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
+        this.trophyRange = trophyRange;
         this.count = count;
     }
 
@@ -41,6 +46,10 @@ public class BrawlerCountCollectionEntity extends BaseEntity {
 
     public long getBrawlerBrawlStarsId() {
         return brawlerBrawlStarsId;
+    }
+
+    public TrophyRange getTrophyRange() {
+        return trophyRange;
     }
 
     public int getCount() {

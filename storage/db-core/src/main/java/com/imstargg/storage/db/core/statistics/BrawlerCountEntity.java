@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,10 +12,10 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_count",
+        name = "brawler_count_v2",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_brawler_count", columnNames = {"brawler_brawlstars_id"}
+                        name = "uk_brawler_count", columnNames = {"brawler_brawlstars_id", "trophy_range"}
                 )
         }
 )
@@ -28,6 +29,9 @@ public class BrawlerCountEntity extends BaseEntity {
     @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
     private long brawlerBrawlStarsId;
 
+    @Column(name = "trophy_range", columnDefinition = "varchar(25)", nullable = false, updatable = false)
+    private TrophyRange trophyRange;
+
     @Column(name = "count_value", nullable = false, updatable = false)
     private int count;
 
@@ -40,6 +44,10 @@ public class BrawlerCountEntity extends BaseEntity {
 
     public long getBrawlerBrawlStarsId() {
         return brawlerBrawlStarsId;
+    }
+
+    public TrophyRange getTrophyRange() {
+        return trophyRange;
     }
 
     public int getCount() {
