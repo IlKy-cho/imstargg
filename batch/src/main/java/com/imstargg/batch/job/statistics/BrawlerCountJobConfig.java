@@ -1,6 +1,7 @@
 package com.imstargg.batch.job.statistics;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
+import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerCountCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerItemCountCollectionEntity;
@@ -28,6 +29,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static com.imstargg.storage.db.core.QPlayerBrawlerCollectionEntity.playerBrawlerCollectionEntity;
 import static com.imstargg.storage.db.core.statistics.QBrawlerCountCollectionEntity.brawlerCountCollectionEntity;
@@ -79,22 +82,15 @@ public class BrawlerCountJobConfig {
                     if (em == null) {
                         throw new IllegalStateException("No transactional EntityManager found");
                     }
-                    JPAQueryFactory queryFactory = new JPAQueryFactory(em);
 
                     Long cursorPlayerBrawlerId = null;
                     int size = 10_000;
                     boolean hasMore = true;
-                    Map<BrawlerItemKey, Integer> brawlerItemCounts = new HashMap<>();
-                    Map<Long, Integer> brawlerCounts = new HashMap<>();
+                    Map<BrawlerItemCountKey, Integer> brawlerItemCounts = new HashMap<>();
+                    Map<BrawlerCountKey, Integer> brawlerCounts = new HashMap<>();
                     while (hasMore) {
                         log.debug("processing cursorPlayerBrawlerId={}", cursorPlayerBrawlerId);
-                        List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = queryFactory
-                                .selectFrom(playerBrawlerCollectionEntity)
-                                .where(
-                                        cursorPlayerBrawlerId == null ? null : playerBrawlerCollectionEntity.id.gt(cursorPlayerBrawlerId)
-                                ).orderBy(playerBrawlerCollectionEntity.id.asc())
-                                .limit(size)
-                                .fetch();
+                        List<PlayerBrawlerCollectionEntity> playerBrawlerEntities = fetch(em, cursorPlayerBrawlerId, size);
                         playerBrawlerEntities.forEach(em::detach);
                         em.clear();
                         if (playerBrawlerEntities.isEmpty()) {
@@ -105,61 +101,108 @@ public class BrawlerCountJobConfig {
 
                         playerBrawlerEntities.forEach(playerBrawlerEntity -> {
                             long brawlerBrawlStarsId = playerBrawlerEntity.getBrawlerBrawlStarsId();
-                            brawlerCounts.compute(brawlerBrawlStarsId, (k, v) -> v == null ? 1 : v + 1);
+                            TrophyRange trophyRange = TrophyRange.of(playerBrawlerEntity.getHighestTrophies());
+                            brawlerCounts.compute(
+                                    new BrawlerCountKey(brawlerBrawlStarsId, trophyRange),
+                                    (k, v) -> v == null ? 1 : v + 1
+                            );
                             playerBrawlerEntity.getGadgetBrawlStarsIds().forEach(gadgetBrawlStarsId ->
                                     brawlerItemCounts.compute(
-                                            new BrawlerItemKey(brawlerBrawlStarsId, gadgetBrawlStarsId),
+                                            new BrawlerItemCountKey(brawlerBrawlStarsId, gadgetBrawlStarsId, trophyRange),
                                             (k, v) -> v == null ? 1 : v + 1
                                     ));
                             playerBrawlerEntity.getStarPowerBrawlStarsIds().forEach(starPowerBrawlStarsId ->
                                     brawlerItemCounts.compute(
-                                            new BrawlerItemKey(brawlerBrawlStarsId, starPowerBrawlStarsId),
+                                            new BrawlerItemCountKey(brawlerBrawlStarsId, starPowerBrawlStarsId, trophyRange),
                                             (k, v) -> v == null ? 1 : v + 1
                                     ));
                             playerBrawlerEntity.getGearBrawlStarsIds().forEach(gearBrawlStarsId ->
                                     brawlerItemCounts.compute(
-                                            new BrawlerItemKey(brawlerBrawlStarsId, gearBrawlStarsId),
+                                            new BrawlerItemCountKey(brawlerBrawlStarsId, gearBrawlStarsId, trophyRange),
                                             (k, v) -> v == null ? 1 : v + 1
                                     ));
                         });
                     }
 
-                    brawlerCounts.forEach((brawlerBrawlStarsId, count) ->
-                            Optional.ofNullable(
-                                    queryFactory.selectFrom(brawlerCountCollectionEntity)
-                                            .where(brawlerCountCollectionEntity.brawlerBrawlStarsId.eq(brawlerBrawlStarsId))
-                                            .fetchOne()
-                            ).orElseGet(() -> {
-                                var entity = new BrawlerCountCollectionEntity(brawlerBrawlStarsId, count);
-                                em.persist(entity);
-                                return entity;
-                            }).update(count));
+                    saveBrawlerCounts(brawlerCounts, em);
 
-                    brawlerItemCounts.forEach((brawlerItemKey, count) ->
-                            Optional.ofNullable(
-                                    queryFactory.selectFrom(brawlerItemCountCollectionEntity)
-                                            .where(
-                                                    brawlerItemCountCollectionEntity.brawlerBrawlStarsId
-                                                            .eq(brawlerItemKey.brawlerBrawlStarsId),
-                                                    brawlerItemCountCollectionEntity.itemBrawlStarsId
-                                                            .eq(brawlerItemKey.itemBrawlStarsId)
-                                            ).fetchOne()
-                            ).orElseGet(() -> {
-                                var entity = new BrawlerItemCountCollectionEntity(
-                                        brawlerItemKey.brawlerBrawlStarsId,
-                                        brawlerItemKey.itemBrawlStarsId,
-                                        count
-                                );
-                                em.persist(entity);
-                                return entity;
-                            }).update(count));
+                    saveBrawlerItemCounts(brawlerItemCounts, em);
 
                     return RepeatStatus.FINISHED;
                 }, txManager)
                 .build();
     }
 
-    private record BrawlerItemKey(long brawlerBrawlStarsId, long itemBrawlStarsId) {
+    private static List<PlayerBrawlerCollectionEntity> fetch(EntityManager em, Long cursorPlayerBrawlerId, int size) {
+        var queryFactory = new JPAQueryFactory(em);
+        return queryFactory
+                .selectFrom(playerBrawlerCollectionEntity)
+                .where(
+                        cursorPlayerBrawlerId == null ?
+                                null : playerBrawlerCollectionEntity.id.gt(cursorPlayerBrawlerId)
+                ).orderBy(playerBrawlerCollectionEntity.id.asc())
+                .limit(size)
+                .fetch();
+    }
+
+    private void saveBrawlerCounts(Map<BrawlerCountKey, Integer> brawlerCounts, EntityManager em) {
+        var queryFactory = new JPAQueryFactory(em);
+        var brawlerCountEntities = new HashMap<>(queryFactory
+                .selectFrom(brawlerCountCollectionEntity)
+                .fetch()
+                .stream()
+                .collect(Collectors.toMap(
+                        brawlerCountCollectionEntity -> new BrawlerCountKey(
+                                brawlerCountCollectionEntity.getBrawlerBrawlStarsId(),
+                                brawlerCountCollectionEntity.getTrophyRange()
+                        ),
+                        Function.identity()
+                )));
+        brawlerCounts.forEach((key, count) ->
+                Optional.ofNullable(brawlerCountEntities.get(key)).ifPresentOrElse(
+                        entity -> entity.update(count),
+                        () -> {
+                            var entity = new BrawlerCountCollectionEntity(
+                                    key.brawlerBrawlStarsId(), key.trophyRange(), count
+                            );
+                            em.persist(entity);
+                            brawlerCountEntities.put(key, entity);
+                        }
+                ));
+    }
+
+    private void saveBrawlerItemCounts(Map<BrawlerItemCountKey, Integer> brawlerItemCounts, EntityManager em) {
+        var queryFactory = new JPAQueryFactory(em);
+        var brawlerItemCountEntities = new HashMap<>(queryFactory
+                .selectFrom(brawlerItemCountCollectionEntity)
+                .fetch()
+                .stream()
+                .collect(Collectors.toMap(
+                        brawlerItemCountCollectionEntity -> new BrawlerItemCountKey(
+                                brawlerItemCountCollectionEntity.getBrawlerBrawlStarsId(),
+                                brawlerItemCountCollectionEntity.getItemBrawlStarsId(),
+                                brawlerItemCountCollectionEntity.getTrophyRange()
+                        ),
+                        Function.identity()
+                )));
+
+        brawlerItemCounts.forEach((key, count) ->
+                Optional.ofNullable(brawlerItemCountEntities.get(key)).ifPresentOrElse(
+                        entity -> entity.update(count),
+                        () -> {
+                            var entity = new BrawlerItemCountCollectionEntity(
+                                    key.brawlerBrawlStarsId(), key.itemBrawlStarsId(), key.trophyRange(), count
+                            );
+                            em.persist(entity);
+                            brawlerItemCountEntities.put(key, entity);
+                        }
+                ));
+    }
+
+    private record BrawlerCountKey(long brawlerBrawlStarsId, TrophyRange trophyRange) {
+    }
+
+    private record BrawlerItemCountKey(long brawlerBrawlStarsId, long itemBrawlStarsId, TrophyRange trophyRange) {
     }
 
 }
