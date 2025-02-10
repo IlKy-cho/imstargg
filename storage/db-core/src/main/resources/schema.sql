@@ -433,6 +433,22 @@ create table star_power
 alter table star_power
     add constraint uk_brawlstarsid unique (brawlstars_id);
 
+
+create table brawl_pass_season
+(
+    brawl_pass_season_id bigint       not null auto_increment,
+    number               int          not null,
+    start_time           timestamp    not null,
+    end_time             timestamp    not null,
+    created_at           timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at           timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted              boolean      not null default false,
+    primary key (brawl_pass_season_id)
+) engine = innodb;
+
+alter table brawl_pass_season
+    add constraint uk_brawl_pass_season__number unique (number);
+
 -- ranking
 create table player_ranking
 (
