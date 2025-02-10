@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,10 +12,10 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_item_count",
+        name = "brawler_item_count_v2",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_brawler_item_count", columnNames = {"brawler_brawlstars_id", "item_brawlstars_id"}
+                        name = "uk_brawler_item_count", columnNames = {"brawler_brawlstars_id", "item_brawlstars_id", "trophy_range"}
                 )
         }
 )
@@ -25,11 +26,14 @@ public class BrawlerItemCountEntity extends BaseEntity {
     @Column(name = "brawler_item_count_id")
     private Long id;
 
-    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    @Column(name = "brawler_brawlstars_id", nullable = false, updatable = false)
     private long brawlerBrawlStarsId;
 
-    @Column(name = "item_brawlstars_id", updatable = false, nullable = false)
+    @Column(name = "item_brawlstars_id", nullable = false, updatable = false)
     private long itemBrawlStarsId;
+
+    @Column(name = "trophy_range", columnDefinition = "varchar(25)", nullable = false, updatable = false)
+    private TrophyRange trophyRange;
 
     @Column(name = "count_value", nullable = false)
     private int count;
@@ -47,6 +51,10 @@ public class BrawlerItemCountEntity extends BaseEntity {
 
     public long getItemBrawlStarsId() {
         return itemBrawlStarsId;
+    }
+
+    public TrophyRange getTrophyRange() {
+        return trophyRange;
     }
 
     public int getCount() {
