@@ -6,7 +6,7 @@ import {
   getBrawlerBrawlersResultStatistics,
   getBrawlerEnemyResultStatistics, getBrawlerOwnershipRate
 } from "@/lib/api/statistics";
-import {BrawlerStatisticsOption} from "@/components/statistics-option";
+import {BrawlerItemOwnershipOption, BrawlerStatisticsOption} from "@/components/statistics-option";
 import {
   BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel
 } from "@/model/statistics/BrawlerEnemyResultStatistics";
@@ -68,10 +68,10 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
   const country = countryOrDefault((await searchParams).country);
   const brawlerRankings = await getBrawlerRanking(country, brawler.id);
 
-  const brawlerOwnershipRate = await getBrawlerOwnershipRate(brawler.id);
-
   const date = new Date();
   const statsParams = searchParamsToStatisticsParams(await searchParams);
+
+  const brawlerOwnershipRate = await getBrawlerOwnershipRate(brawler.id, statsParams.trophy);
 
   const [eventResultStats, enemyResultStats, brawlersResultStats] = await Promise.all([
     getBrawlerBattleEventResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
@@ -86,6 +86,7 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
           <BrawlerProfile brawler={brawler}/>
         </div>
       </div>
+      <BrawlerItemOwnershipOption trophy={statsParams.trophy}/>
       <BrawlerGadgetList gadgets={brawler.gadgets} brawlerOwnershipRate={brawlerOwnershipRate}/>
       <BrawlerStarPowerList starPowers={brawler.starPowers} brawlerOwnershipRate={brawlerOwnershipRate}/>
       <BrawlerGearList gears={brawler.gears} brawlerOwnershipRate={brawlerOwnershipRate}/>

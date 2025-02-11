@@ -205,3 +205,11 @@ export function BrawlerStatisticsOption({
     </div>
   )
 }
+
+export function BrawlerItemOwnershipOption({trophy}: Readonly<{ trophy: TrophyRange }>) {
+  return (
+    <div className="border rounded-lg p-1 bg-zinc-100">
+      <TrophySelect trophy={trophy} />
+    </div>
+  );
+}
