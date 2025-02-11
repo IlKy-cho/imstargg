@@ -35,8 +35,7 @@ public class BattleEventStatisticsCountReaderWithAsync {
                                 param.eventId(),
                                 param.battleDate(),
                                 param.trophyRange(),
-                                param.soloRankTierRange(),
-                                param.duplicateBrawler()
+                                param.soloRankTierRange()
                         )
                 )
         );
@@ -52,8 +51,7 @@ public class BattleEventStatisticsCountReaderWithAsync {
                                 param.battleDate(),
                                 param.trophyRange(),
                                 param.soloRankTierRange(),
-                                param.brawlersNum(),
-                                param.duplicateBrawler()
+                                param.brawlersNum()
                         )
                 )
         );
@@ -96,8 +94,7 @@ public class BattleEventStatisticsCountReaderWithAsync {
                                 param.eventId(),
                                 param.battleDate(),
                                 param.trophyRange(),
-                                param.soloRankTierRange(),
-                                param.duplicateBrawler()
+                                param.soloRankTierRange()
                         )
                 )
         );

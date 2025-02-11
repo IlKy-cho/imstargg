@@ -117,7 +117,6 @@ public class StatisticsCache {
                 .add("date").add(param.date())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
-                .add("duplicateBrawler").add(param.duplicateBrawler())
                 .build();
     }
 
@@ -139,7 +138,6 @@ public class StatisticsCache {
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
                 .add("brawlersNum").add(param.brawlersNum())
-                .add("duplicateBrawler").add(param.duplicateBrawler())
                 .build();
     }
 

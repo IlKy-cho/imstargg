@@ -45,13 +45,11 @@ public class BattleEventResultStatisticsRepository {
 
     public List<BrawlerResultCount> findBrawlerResultCounts(
             BrawlStarsId eventId, LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
-            boolean duplicateBrawler
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange
     ) {
         return brawlerBattleResultStatisticsJpaRepository
                 .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRange(
-                        eventId.value(), battleDate, trophyRange, soloRankTierRange,
-                        duplicateBrawler
+                        eventId.value(), battleDate, trophyRange, soloRankTierRange
                 ).stream()
                 .map(statsEntity -> new BrawlerResultCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),
@@ -67,7 +65,7 @@ public class BattleEventResultStatisticsRepository {
     public List<BrawlersResultCount> findBrawlersResultCounts(
             BrawlStarsId eventId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
-            int brawlNum, boolean duplicateBrawler
+            int brawlNum
     ) {
         Map<IdHash, ResultCounter> brawlersCounters = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
@@ -76,9 +74,7 @@ public class BattleEventResultStatisticsRepository {
         while (hasNext) {
             Slice<BrawlersBattleResultStatisticsEntity> brawlersBattleResultStatsSlice = brawlersBattleResultStatisticsJpaRepository
                     .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlersNum(
-                            eventId.value(), battleDate, trophyRange, soloRankTierRange,
-                            brawlNum, duplicateBrawler,
-                            pageRequest
+                            eventId.value(), battleDate, trophyRange, soloRankTierRange, brawlNum, pageRequest
                     );
 
             hasNext = brawlersBattleResultStatsSlice.hasNext();
@@ -110,13 +106,11 @@ public class BattleEventResultStatisticsRepository {
 
     public List<BrawlerEnemyResultCount> findBrawlerEnemyResultCounts(
             BrawlStarsId eventId, LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
-            boolean duplicateBrawler
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange
     ) {
         return brawlerEnemyBattleResultStatisticsJpaRepository
                 .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRange(
-                        eventId.value(), battleDate, trophyRange, soloRankTierRange,
-                        duplicateBrawler
+                        eventId.value(), battleDate, trophyRange, soloRankTierRange
                 ).stream()
                 .map(statsEntity -> new BrawlerEnemyResultCount(
                         new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId()),

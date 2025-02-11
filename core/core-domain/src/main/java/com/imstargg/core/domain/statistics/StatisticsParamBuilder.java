@@ -7,6 +7,9 @@ import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,8 +20,6 @@ public class StatisticsParamBuilder {
     private TrophyRangeRange trophyRange;
     @Nullable
     private SoloRankTierRangeRange soloRankTierRange;
-    @Nullable
-    private Boolean duplicateBrawler;
 
     public StatisticsParamBuilder date(LocalDate date) {
         this.date = date;
@@ -35,27 +36,36 @@ public class StatisticsParamBuilder {
         return this;
     }
 
-    public StatisticsParamBuilder duplicateBrawler(Boolean duplicateBrawler) {
-        this.duplicateBrawler = duplicateBrawler;
-        return this;
-    }
-
     public <T> List<T> build(BuildFunction<T> function) {
         if (trophyRange != null) {
-            return lastAWeekStream().flatMap(battleDate -> duplicateBrawlerStream().flatMap(db ->
+            return lastAWeekStream().flatMap(battleDate ->
                     trophyRange.getRanges().stream().map(tr ->
-                            function.build(battleDate, tr, null, db)
+                            function.build(battleDate, tr, null)
                     )
-            )).toList();
+            ).toList();
         } else if (soloRankTierRange != null) {
-            return lastAWeekStream().flatMap(battleDate -> duplicateBrawlerStream().flatMap(db ->
+            return lastAWeekStream().flatMap(battleDate ->
                     soloRankTierRange.getRanges().stream().map(srtr ->
-                            function.build(battleDate, null, srtr, db)
+                            function.build(battleDate, null, srtr)
                     )
-            )).toList();
+            ).toList();
         }
 
-        return List.of();
+        List<T> result = new ArrayList<>();
+        lastAWeekStream()
+                .map(battleDate -> function.build(battleDate, null, null))
+                .forEach(result::add);
+        lastAWeekStream().flatMap(battleDate ->
+                Arrays.stream(TrophyRange.values()).map(tr ->
+                        function.build(battleDate, tr, null)
+                )
+        ).forEach(result::add);
+        lastAWeekStream().flatMap(battleDate ->
+                Arrays.stream(SoloRankTierRange.values()).map(srtr ->
+                        function.build(battleDate, null, srtr)
+                )
+        ).forEach(result::add);
+        return Collections.unmodifiableList(result);
     }
 
     private Stream<LocalDate> lastAWeekStream() {
@@ -63,13 +73,6 @@ public class StatisticsParamBuilder {
                 .limit(7);
     }
 
-    private Stream<Boolean> duplicateBrawlerStream() {
-        if (duplicateBrawler == null || !duplicateBrawler) {
-            return Stream.of(false);
-        } else {
-            return Stream.of(false, true);
-        }
-    }
 
     @FunctionalInterface
     public interface BuildFunction<T> {
@@ -77,8 +80,7 @@ public class StatisticsParamBuilder {
         T build(
                 LocalDate battleDate,
                 @Nullable TrophyRange trophyRange,
-                @Nullable SoloRankTierRange soloRankTierRange,
-                @Nullable Boolean duplicateBrawler
+                @Nullable SoloRankTierRange soloRankTierRange
         );
     }
 }

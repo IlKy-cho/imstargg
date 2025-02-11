@@ -21,7 +21,7 @@ public record BrawlerBattleEventResultStatisticsParam(
                 .date(date)
                 .trophyRange(trophyRange)
                 .soloRankTierRange(soloRankTierRange)
-                .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
+                .build((battleDate, trophyRange, soloRankTierRange) ->
                         new BrawlerBattleEventResultCountParam(
                                 brawlerId,
                                 battleDate,

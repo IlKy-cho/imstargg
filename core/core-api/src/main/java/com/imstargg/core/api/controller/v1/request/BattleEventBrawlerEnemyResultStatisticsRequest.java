@@ -12,8 +12,7 @@ import java.time.LocalDate;
 public record BattleEventBrawlerEnemyResultStatisticsRequest(
         @NotNull LocalDate date,
         @Nullable TrophyRangeRange trophyRange,
-        @Nullable SoloRankTierRangeRange SoloRankTierRange,
-        boolean duplicateBrawler
+        @Nullable SoloRankTierRangeRange SoloRankTierRange
 ) {
 
     public BattleEventBrawlerEnemyResultStatisticsParam toParam(BrawlStarsId eventId) {
@@ -21,8 +20,7 @@ public record BattleEventBrawlerEnemyResultStatisticsRequest(
                 eventId,
                 date(),
                 trophyRange(),
-                SoloRankTierRange(),
-                duplicateBrawler()
+                SoloRankTierRange()
         );
     }
 }

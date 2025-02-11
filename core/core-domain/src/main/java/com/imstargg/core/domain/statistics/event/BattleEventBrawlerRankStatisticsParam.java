@@ -17,7 +17,7 @@ public record BattleEventBrawlerRankStatisticsParam(
         return new StatisticsParamBuilder()
                 .date(date)
                 .trophyRange(trophyRange)
-                .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
+                .build((battleDate, trophyRange, soloRankTierRange) ->
                         new BattleEventBrawlerRankCountParam(
                                 eventId,
                                 battleDate,
