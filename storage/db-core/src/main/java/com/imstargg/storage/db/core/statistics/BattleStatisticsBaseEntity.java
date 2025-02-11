@@ -3,14 +3,16 @@ package com.imstargg.storage.db.core.statistics;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 
+import java.time.LocalDate;
+
 @MappedSuperclass
 abstract class BattleStatisticsBaseEntity {
 
-    @Column(name = "season_number", updatable = false, nullable = false)
-    private int seasonNumber;
-
     @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
     private long eventBrawlStarsId;
+
+    @Column(name = "battle_date", updatable = false, nullable = false)
+    private LocalDate battleDate;
 
     protected BattleStatisticsBaseEntity() {
     }
@@ -19,7 +21,7 @@ abstract class BattleStatisticsBaseEntity {
         return eventBrawlStarsId;
     }
 
-    public int getSeasonNumber() {
-        return seasonNumber;
+    public LocalDate getBattleDate() {
+        return battleDate;
     }
 }

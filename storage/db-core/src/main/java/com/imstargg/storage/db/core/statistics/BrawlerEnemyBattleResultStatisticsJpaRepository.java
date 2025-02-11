@@ -7,18 +7,19 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface BrawlerEnemyBattleResultStatisticsJpaRepository
         extends JpaRepository<BrawlerEnemyBattleResultStatisticsEntity, Long> {
 
-    List<BrawlerEnemyBattleResultStatisticsEntity> findAllBySeasonNumberAndEventBrawlStarsIdAndTrophyRangeAndSoloRankTierRange(
-            int seasonNumber, long eventBrawlStarsId,
+    List<BrawlerEnemyBattleResultStatisticsEntity> findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRange(
+            long eventBrawlStarsId, LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange
     );
 
-    Slice<BrawlerEnemyBattleResultStatisticsEntity> findSliceBySeasonNumberAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
-            int seasonNumber,
+    Slice<BrawlerEnemyBattleResultStatisticsEntity> findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
+            LocalDate battleDate,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             long brawlerBrawlStarsId,
             Pageable pageable

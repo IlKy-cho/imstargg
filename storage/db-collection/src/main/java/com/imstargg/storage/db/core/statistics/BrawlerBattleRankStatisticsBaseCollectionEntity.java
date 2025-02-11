@@ -5,6 +5,7 @@ import jakarta.persistence.MappedSuperclass;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,9 +20,9 @@ abstract class BrawlerBattleRankStatisticsBaseCollectionEntity extends BattleSta
     }
 
     protected BrawlerBattleRankStatisticsBaseCollectionEntity(
-            int seasonNumber, long eventBrawlStarsId
+            long eventBrawlStarsId, LocalDate battleDate
     ) {
-        super(seasonNumber, eventBrawlStarsId);
+        super(eventBrawlStarsId, battleDate);
         rankToCounts = new HashMap<>();
     }
 
