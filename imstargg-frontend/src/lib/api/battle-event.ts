@@ -31,7 +31,7 @@ export async function getBattleEvents(): Promise<BattleEvent[]> {
   aWeekAgo.setDate(aWeekAgo.getDate() - 7);
 
   const response = await fetchGetBattleEvents(
-    aWeekAgo, { revalidate: 60 * 60 }
+    aWeekAgo, { revalidate: 5 * 60 }
   );
 
   if (response.ok) {
@@ -64,7 +64,7 @@ export async function fetchGetBattleEvent(id: number, options?: CacheOptions): P
 }
 
 export async function getBattleEvent(id: number): Promise<BattleEvent | null> {
-  const response = await fetchGetBattleEvent(id, { revalidate: 60 * 60 });
+  const response = await fetchGetBattleEvent(id, { revalidate: 5 * 60 });
 
   if (response.ok) {
     const data = await response.json() as BattleEventResponse;

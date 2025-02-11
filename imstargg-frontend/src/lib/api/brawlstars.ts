@@ -17,7 +17,7 @@ export async function fetchGetBrawlStarsNews(options?: CacheOptions): Promise<Re
 }
 
 export async function getBrawlStarsNews(): Promise<BrawlStarsNews[]> {
-  const response = await fetchGetBrawlStarsNews({revalidate: 60 * 60});
+  const response = await fetchGetBrawlStarsNews({revalidate: 5 * 60});
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BrawlStarsNews>;

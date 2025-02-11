@@ -49,7 +49,7 @@ export async function fetchGetBrawlers(options?: CacheOptions): Promise<Response
 }
 
 export async function getBrawlers() : Promise<Brawler[]> {
-  const response = await fetchGetBrawlers({revalidate: 60 * 60});
+  const response = await fetchGetBrawlers({revalidate: 5 * 60});
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BrawlerResponse>;
@@ -90,7 +90,7 @@ export async function fetchGetBrawler(id: number, options?: CacheOptions): Promi
 }
 
 export async function getBrawler(id: number) : Promise<Brawler | null> {
-  const response = await fetchGetBrawler(id, {revalidate: 60 * 60});
+  const response = await fetchGetBrawler(id, {revalidate: 5 * 60});
 
   if (response.ok) {
     const data = await response.json() as BrawlerResponse;
