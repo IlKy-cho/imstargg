@@ -49,7 +49,7 @@ public class BattleEventResultStatisticsRepository {
             boolean duplicateBrawler
     ) {
         return brawlerBattleResultStatisticsJpaRepository
-                .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
+                .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRange(
                         eventId.value(), battleDate, trophyRange, soloRankTierRange,
                         duplicateBrawler
                 ).stream()
@@ -75,7 +75,7 @@ public class BattleEventResultStatisticsRepository {
 
         while (hasNext) {
             Slice<BrawlersBattleResultStatisticsEntity> brawlersBattleResultStatsSlice = brawlersBattleResultStatisticsJpaRepository
-                    .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlersNumAndDuplicateBrawler(
+                    .findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlersNum(
                             eventId.value(), battleDate, trophyRange, soloRankTierRange,
                             brawlNum, duplicateBrawler,
                             pageRequest
@@ -114,7 +114,7 @@ public class BattleEventResultStatisticsRepository {
             boolean duplicateBrawler
     ) {
         return brawlerEnemyBattleResultStatisticsJpaRepository
-                .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
+                .findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRange(
                         eventId.value(), battleDate, trophyRange, soloRankTierRange,
                         duplicateBrawler
                 ).stream()

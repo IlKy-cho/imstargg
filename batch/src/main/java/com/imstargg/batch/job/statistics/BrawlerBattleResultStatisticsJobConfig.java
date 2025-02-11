@@ -1,6 +1,5 @@
 package com.imstargg.batch.job.statistics;
 
-import com.imstargg.batch.domain.SeasonEntityHolder;
 import com.imstargg.batch.domain.statistics.BrawlerBattleResultStatisticsCollectorFactory;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
@@ -42,7 +41,6 @@ public class BrawlerBattleResultStatisticsJobConfig {
     private final AlertManager alertManager;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleCollectionJpaRepository battleCollectionJpaRepository;
-    private final SeasonEntityHolder seasonEntityHolder;
 
     public BrawlerBattleResultStatisticsJobConfig(
             Clock clock,
@@ -51,8 +49,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
             EntityManagerFactory emf,
             AlertManager alertManager,
             BattleJpaRepository battleJpaRepository,
-            BattleCollectionJpaRepository battleCollectionJpaRepository,
-            SeasonEntityHolder seasonEntityHolder
+            BattleCollectionJpaRepository battleCollectionJpaRepository
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
@@ -61,7 +58,6 @@ public class BrawlerBattleResultStatisticsJobConfig {
         this.alertManager = alertManager;
         this.battleJpaRepository = battleJpaRepository;
         this.battleCollectionJpaRepository = battleCollectionJpaRepository;
-        this.seasonEntityHolder = seasonEntityHolder;
     }
 
     @Bean(JOB_NAME)
@@ -106,7 +102,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     StatisticsJobItemProcessor<BrawlerBattleResultStatisticsCollectionEntity> processor() {
-        var factory = new BrawlerBattleResultStatisticsCollectorFactory(seasonEntityHolder, emf);
+        var factory = new BrawlerBattleResultStatisticsCollectorFactory(clock, emf);
         return new StatisticsJobItemProcessor<>(
                 factory, battleCollectionJpaRepository, clock, dateJobParameter().getDate()
         );

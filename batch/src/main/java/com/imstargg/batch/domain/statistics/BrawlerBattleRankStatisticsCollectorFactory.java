@@ -1,11 +1,11 @@
 package com.imstargg.batch.domain.statistics;
 
-import com.imstargg.batch.domain.SeasonEntityHolder;
 import com.imstargg.batch.util.JPAQueryFactoryUtils;
-import com.imstargg.storage.db.core.brawlstars.BrawlPassSeasonCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,29 +14,30 @@ import static com.imstargg.storage.db.core.statistics.QBrawlerBattleRankStatisti
 public class BrawlerBattleRankStatisticsCollectorFactory
         implements StatisticsCollectorFactory<BrawlerBattleRankStatisticsCollectionEntity> {
 
-    private final SeasonEntityHolder seasonEntityHolder;
+    private final Clock clock;
     private final EntityManagerFactory emf;
 
     public BrawlerBattleRankStatisticsCollectorFactory(
-            SeasonEntityHolder seasonEntityHolder,  EntityManagerFactory emf
+            Clock clock,
+            EntityManagerFactory emf
     ) {
-        this.seasonEntityHolder = seasonEntityHolder;
+        this.clock = clock;
         this.emf = emf;
     }
 
     @Override
-    public StatisticsCollector<BrawlerBattleRankStatisticsCollectionEntity> create(long eventBrawlStarsId) {
-        BrawlPassSeasonCollectionEntity currentSeason = seasonEntityHolder.getCurrentSeasonEntity();
+    public StatisticsCollector<BrawlerBattleRankStatisticsCollectionEntity> create(
+            long eventBrawlStarsId, LocalDate battleDate) {
         var cache = new ConcurrentHashMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity>();
         List<BrawlerBattleRankStatisticsCollectionEntity> entities = JPAQueryFactoryUtils.getQueryFactory(emf)
                 .selectFrom(brawlerBattleRankStatisticsCollectionEntity)
                 .where(
-                        brawlerBattleRankStatisticsCollectionEntity.seasonNumber.eq(currentSeason.getNumber()),
-                        brawlerBattleRankStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId)
+                        brawlerBattleRankStatisticsCollectionEntity.eventBrawlStarsId.eq(eventBrawlStarsId),
+                        brawlerBattleRankStatisticsCollectionEntity.battleDate.eq(battleDate)
                 ).fetch();
         entities.forEach(BrawlerBattleRankStatisticsCollectionEntity::init);
         entities.forEach(entity -> cache.put(BrawlerBattleRankStatisticsKey.of(entity), entity));
 
-        return new BrawlerBattleRankStatisticsCollector(seasonEntityHolder, cache);
+        return new BrawlerBattleRankStatisticsCollector(clock, cache);
     }
 }
