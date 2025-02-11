@@ -207,7 +207,7 @@ alter table brawlstars_image
 
 -- Statistics
 
-create table brawler_battle_rank_stats
+create table brawler_battle_rank_stats_v2
 (
     brawler_battle_rank_stats_id bigint       not null auto_increment,
     event_brawlstars_id          bigint       not null,
@@ -221,12 +221,12 @@ create table brawler_battle_rank_stats
     primary key (brawler_battle_rank_stats_id)
 ) engine = innodb;
 
-alter table brawler_battle_rank_stats
+alter table brawler_battle_rank_stats_v2
     add constraint uk_brawler_battle_rank_stats__key
         unique (event_brawlstars_id, battle_date desc, trophy_range, brawler_brawlstars_id);
 
 
-create table brawlers_battle_rank_stats
+create table brawlers_battle_rank_stats_v2
 (
     brawlers_battle_rank_stats_id bigint        not null auto_increment,
     event_brawlstars_id           bigint        not null,
@@ -243,12 +243,12 @@ create table brawlers_battle_rank_stats
 ) engine = innodb;
 
 
-alter table brawlers_battle_rank_stats
+alter table brawlers_battle_rank_stats_v2
     add constraint uk_brawlers_battle_rank_stats__key
         unique (event_brawlstars_id, battle_date desc, trophy_range, brawler_brawlstars_id, brawler_brawlstars_id_hash);
 
 
-create table brawler_battle_result_stats
+create table brawler_battle_result_stats_v2
 (
     brawler_battle_result_stats_id bigint       not null auto_increment,
     event_brawlstars_id            bigint       not null,
@@ -266,15 +266,15 @@ create table brawler_battle_result_stats
     primary key (brawler_battle_result_stats_id)
 ) engine = innodb;
 
-alter table brawler_battle_result_stats
+alter table brawler_battle_result_stats_v2
     add constraint uk_brawler_battle_result_stats__key
         unique (event_brawlstars_id, battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id);
 
 create index ix_brawler_battle_result_stats__1
-    on brawler_battle_result_stats (battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id);
+    on brawler_battle_result_stats_v2 (battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id);
 
 
-create table brawlers_battle_result_stats
+create table brawlers_battle_result_stats_v2
 (
     brawlers_battle_result_stats_id bigint        not null auto_increment,
     event_brawlstars_id             bigint        not null,
@@ -293,17 +293,17 @@ create table brawlers_battle_result_stats
     primary key (brawlers_battle_result_stats_id)
 ) engine = innodb;
 
-alter table brawlers_battle_result_stats
+alter table brawlers_battle_result_stats_v2
     add constraint uk_brawlers_battle_result_stats__key
         unique (event_brawlstars_id, battle_date desc, trophy_range, solo_rank_tier_range,
                 brawler_brawlstars_id, brawler_brawlstars_id_hash);
 
 create index ix_brawlers_battle_result_stats__1
-    on brawlers_battle_result_stats (battle_date desc, trophy_range, solo_rank_tier_range,
+    on brawlers_battle_result_stats_v2 (battle_date desc, trophy_range, solo_rank_tier_range,
                                         brawler_brawlstars_id, brawler_num);
 
 
-create table brawler_enemy_battle_result_stats
+create table brawler_enemy_battle_result_stats_v2
 (
     brawler_enemy_battle_result_stats_id bigint       not null auto_increment,
     event_brawlstars_id                  bigint       not null,
@@ -321,13 +321,13 @@ create table brawler_enemy_battle_result_stats
     primary key (brawler_enemy_battle_result_stats_id)
 ) engine = innodb;
 
-alter table brawler_enemy_battle_result_stats
+alter table brawler_enemy_battle_result_stats_v2
     add constraint uk_brawler_enemy_battle_result_stats__key
         unique (event_brawlstars_id, battle_date desc, trophy_range, solo_rank_tier_range,
                 brawler_brawlstars_id, enemy_brawler_brawlstars_id);
 
 create index ix_brawler_enemy_battle_result_stats__1
-    on brawler_enemy_battle_result_stats (battle_date desc, trophy_range, solo_rank_tier_range,
+    on brawler_enemy_battle_result_stats_v2 (battle_date desc, trophy_range, solo_rank_tier_range,
                                              brawler_brawlstars_id);
 
 

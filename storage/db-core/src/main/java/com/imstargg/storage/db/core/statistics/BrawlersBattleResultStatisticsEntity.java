@@ -12,7 +12,7 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawlers_battle_result_stats",
+        name = "brawlers_battle_result_stats_v2",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_brawlers_battle_result_stats__key",
