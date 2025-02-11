@@ -206,7 +206,8 @@ alter table brawlstars_image
     add constraint uk_brawlstars_image__code unique (code);
 
 -- Statistics
-create table brawler_battle_rank_stats_v2
+
+create table brawler_battle_rank_stats
 (
     brawler_battle_rank_stats_id bigint       not null auto_increment,
     event_brawlstars_id          bigint       not null,
@@ -220,12 +221,12 @@ create table brawler_battle_rank_stats_v2
     primary key (brawler_battle_rank_stats_id)
 ) engine = innodb;
 
-alter table brawler_battle_rank_stats_v2
-    add constraint uk_brawler_battle_rank_stats__key
+alter table brawler_battle_rank_stats
+    add constraint uk_event_battledate_range_brawler
         unique (event_brawlstars_id, battle_date desc, trophy_range, brawler_brawlstars_id);
 
 
-create table brawlers_battle_rank_stats_v2
+create table brawlers_battle_rank_stats
 (
     brawlers_battle_rank_stats_id bigint        not null auto_increment,
     event_brawlstars_id           bigint        not null,
@@ -241,8 +242,9 @@ create table brawlers_battle_rank_stats_v2
     primary key (brawlers_battle_rank_stats_id)
 ) engine = innodb;
 
-alter table brawlers_battle_rank_stats_v2
-    add constraint uk_brawlers_battle_rank_stats__key
+
+alter table brawlers_battle_rank_stats
+    add constraint uk_event_battledate_range_brawler
         unique (event_brawlstars_id, battle_date desc, trophy_range, brawler_brawlstars_id, brawler_brawlstars_id_hash);
 
 
