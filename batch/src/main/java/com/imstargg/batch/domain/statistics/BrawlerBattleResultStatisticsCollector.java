@@ -9,14 +9,12 @@ import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsColl
 
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class BrawlerBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> {
 
     private final SeasonEntityHolder seasonEntityHolder;
     private final ConcurrentMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
-    private final ConcurrentSkipListSet<String> battleKeySet = new ConcurrentSkipListSet<>();
 
     public BrawlerBattleResultStatisticsCollector(
             SeasonEntityHolder seasonEntityHolder,
@@ -29,14 +27,12 @@ public class BrawlerBattleResultStatisticsCollector
     @Override
     public boolean collect(BattleCollectionEntity battle) {
         BrawlPassSeasonCollectionEntity currentSeason = seasonEntityHolder.getCurrentSeasonEntity();
-        if (!battle.canResultStatisticsCollected()
-                || !battleKeySet.add(battle.getBattleKey()) || !currentSeason.contains(battle.getBattleTime())) {
+        if (!battle.canResultStatisticsCollected() || !currentSeason.contains(battle.getBattleTime())) {
             return false;
         }
         BattleResult battleResult = BattleResult.map(battle.getResult());
-        battle.playerCombinations().forEach(playerCombination -> {
+        battle.myPlayerCombinations().forEach(playerCombination -> {
             doCollect(battle, playerCombination.myTeamPlayer(), battleResult);
-            doCollect(battle, playerCombination.enemyTeamPlayer(), battleResult);
         });
 
         return true;
@@ -45,7 +41,6 @@ public class BrawlerBattleResultStatisticsCollector
     private void doCollect(
             BattleCollectionEntity battle, BattleCollectionEntityTeamPlayer player, BattleResult battleResult
     ) {
-        BrawlPassSeasonCollectionEntity currentSeason = seasonEntityHolder.getCurrentSeasonEntity();
         var key = BrawlerBattleResultStatisticsKey.of(battle, player);
         BrawlerBattleResultStatisticsCollectionEntity stats = getBrawlerBattleResultStats(key);
         stats.countUp(battleResult);

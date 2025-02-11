@@ -8,14 +8,12 @@ import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatistic
 
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 public class BrawlerEnemyBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerEnemyBattleResultStatisticsCollectionEntity> {
 
     private final SeasonEntityHolder seasonEntityHolder;
     private final ConcurrentMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache;
-    private final ConcurrentSkipListSet<String> battleKeySet = new ConcurrentSkipListSet<>();
 
     public BrawlerEnemyBattleResultStatisticsCollector(
             SeasonEntityHolder seasonEntityHolder,
@@ -28,12 +26,11 @@ public class BrawlerEnemyBattleResultStatisticsCollector
     @Override
     public boolean collect(BattleCollectionEntity battle) {
         BrawlPassSeasonCollectionEntity currentSeason = seasonEntityHolder.getCurrentSeasonEntity();
-        if (!battle.canResultStatisticsCollected()
-                || !battleKeySet.add(battle.getBattleKey()) || !currentSeason.contains(battle.getBattleTime())) {
+        if (!battle.canResultStatisticsCollected() || !currentSeason.contains(battle.getBattleTime())) {
             return false;
         }
         BattleResult battleResult = BattleResult.map(battle.getResult());
-        battle.playerCombinations().forEach(playerCombination -> {
+        battle.myPlayerCombinations().forEach(playerCombination -> {
             getBrawlerEnemyBattleResultStats(BrawlerEnemyBattleResultStatisticsKey
                     .of(battle, playerCombination.myTeamPlayer(), playerCombination.enemyTeamPlayer())
             ).countUp(battleResult);
