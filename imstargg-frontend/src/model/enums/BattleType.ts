@@ -13,11 +13,12 @@ export type BattleType = typeof BattleTypeValue[keyof typeof BattleTypeValue];
 
 export const BattleTypeValues = Object.keys(BattleTypeValue) as BattleType[];
 
-export const RegularBattleTypeValue = {
+export const StatisticsBattleTypeValue = {
+  ALL: 'ALL',
   RANKED: BattleTypeValue.RANKED,
   SOLO_RANKED: BattleTypeValue.SOLO_RANKED,
 } as const;
 
-export type RegularBattleType = typeof RegularBattleTypeValue[keyof typeof RegularBattleTypeValue];
+export type StatisticsBattleType = typeof StatisticsBattleTypeValue[keyof typeof StatisticsBattleTypeValue];
 
-export const RegularBattleTypeValues = Object.keys(RegularBattleTypeValue) as RegularBattleType[];
+export const StatisticsBattleTypeValues = Object.keys(StatisticsBattleTypeValue) as (keyof typeof StatisticsBattleTypeValue)[];

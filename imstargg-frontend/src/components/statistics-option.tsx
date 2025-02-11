@@ -6,21 +6,17 @@ import {TrophyRange, trophyRangeTitle, TrophyRangeValues} from "@/model/enums/Tr
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {useRouter, useSearchParams} from "next/navigation";
 import {SoloRankTierRange, soloRankTierRangeTitle, SoloRankTierRangeValues} from "@/model/enums/SoloRankTierRange";
-import {Label} from "@/components/ui/label";
-import {Checkbox} from "@/components/ui/checkbox";
 import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
-import {RegularBattleType, RegularBattleTypeValue, RegularBattleTypeValues} from "@/model/enums/BattleType";
-import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip"
-import {InfoIcon} from "lucide-react";
-import {battleTypeTitle} from "@/lib/battle-type";
+import {statisticsBattleTypeTitle} from "@/lib/battle-type";
 import {BrawlStarsIconSrc} from "@/lib/icon";
+import {StatisticsBattleType, StatisticsBattleTypeValue, StatisticsBattleTypeValues} from "@/model/enums/BattleType";
 
 
-function BattleTypeSelect({ battleType }: { battleType?: RegularBattleType }) {
+function BattleTypeSelect({ battleType }: { battleType?: StatisticsBattleType }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleBattleTypeChange = (value: RegularBattleType) => {
+  const handleBattleTypeChange = (value: StatisticsBattleType) => {
     const params = new URLSearchParams(searchParams);
     params.set('type', value);
     router.replace(`?${params.toString()}`);
@@ -33,9 +29,9 @@ function BattleTypeSelect({ battleType }: { battleType?: RegularBattleType }) {
       </SelectTrigger>
       <SelectContent>
         {
-          RegularBattleTypeValues.map((type) => (
+          StatisticsBattleTypeValues.map((type) => (
             <SelectItem key={type} value={type}>
-              {battleTypeTitle(type)}
+              {statisticsBattleTypeTitle(type)}
             </SelectItem>
           ))
         }
@@ -51,7 +47,7 @@ function TrophySelect({ trophy }: { trophy?: TrophyRange }) {
   const handleTrophyChange = (value: TrophyRange) => {
     const params = new URLSearchParams(searchParams);
     params.set('trophy', value);
-    params.set('type', RegularBattleTypeValue.RANKED);
+    params.set('type', StatisticsBattleTypeValue.RANKED);
     router.replace(`?${params.toString()}`);
   };
 
@@ -93,7 +89,7 @@ function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
   const handleSoloRankTierChange = (value: string) => {
     const params = new URLSearchParams(searchParams);
     params.set('soloRankTier', value);
-    params.set('type', RegularBattleTypeValue.SOLO_RANKED);
+    params.set('type', StatisticsBattleTypeValue.SOLO_RANKED);
     router.replace(`?${params.toString()}`);
   };
 
@@ -117,58 +113,18 @@ function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
 
 function BattleTypeTierSelect(
   { battleType, trophy, soloRankTier }
-  : { battleType: RegularBattleType, trophy?: TrophyRange, soloRankTier?: SoloRankTierRange }
+  : { battleType: StatisticsBattleType, trophy?: TrophyRange, soloRankTier?: SoloRankTierRange }
 ) {
   return (
     <div className="flex gap-2">
       <BattleTypeSelect battleType={battleType} />
-      {battleType === RegularBattleTypeValue.SOLO_RANKED ? (
+      {battleType === StatisticsBattleTypeValue.SOLO_RANKED ? (
         <SoloRankTierSelect tier={soloRankTier} />
-      ) : (
+      ) : battleType === StatisticsBattleTypeValue.RANKED ? (
         <TrophySelect trophy={trophy} />
-      )}
+      ) : null}
     </div>
   );
-}
-
-function DuplicateBrawlerCheckbox({ duplicateBrawler }: { duplicateBrawler: boolean }) {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const handleCheckedChange = (checked: boolean) => {
-    const params = new URLSearchParams(searchParams);
-    if (checked) {
-      params.set('duplicateBrawler', 'true');
-    } else {
-      params.delete('duplicateBrawler');
-    }
-    router.replace(`?${params.toString()}`);
-  };
-
-  return (
-    <div className="flex items-center space-x-2">
-      <Checkbox
-        id="duplicate-brawler"
-        checked={duplicateBrawler}
-        onCheckedChange={handleCheckedChange}
-        className="border-zinc-400"
-      />
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger className="flex items-center gap-1">
-            <Label htmlFor="duplicate-brawler" className="text-sm text-zinc-500">
-              브롤러 중복
-            </Label>
-            <InfoIcon className="w-4 h-4" />
-          </TooltipTrigger>
-          <TooltipContent>
-            <p>한 전투에 같은 브롤러가 존재하는 경우가 있습니다.</p>
-            <p>중복 브롤러를 포함한 통계를 보고 싶다면 체크해주세요.</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </div>
-  )
 }
 
 type RankStatsOptionProps = {
@@ -186,28 +142,25 @@ export function BattleEventRankStatisticsOption(
 }
 
 type ResultStatsOptionProps = {
-  duplicateBrawler: boolean;
-  battleType: RegularBattleType;
+  battleType: StatisticsBattleType;
   trophy?: TrophyRange;
   soloRankTier?: SoloRankTierRange;
 }
 
 export function BattleEventResultStatisticsOption(
-  { duplicateBrawler, battleType, trophy, soloRankTier }: Readonly<ResultStatsOptionProps>
+  { battleType, trophy, soloRankTier }: Readonly<ResultStatsOptionProps>
 ) {
 
   return (
     <div className="flex gap-2">
       <BattleTypeTierSelect battleType={battleType} trophy={trophy} soloRankTier={soloRankTier} />
-      <DuplicateBrawlerCheckbox duplicateBrawler={duplicateBrawler} />
     </div>
   )
 }
 
 type BattleEventStatsOptionProps = {
   battleEvent: BattleEvent;
-  battleType: RegularBattleType;
-  duplicateBrawler: boolean;
+  battleType: StatisticsBattleType;
   trophy?: TrophyRange;
   soloRankTier?: SoloRankTierRange;
 }
@@ -215,7 +168,6 @@ type BattleEventStatsOptionProps = {
 export function BattleEventStatisticsOption({
   battleEvent,
   battleType,
-  duplicateBrawler,
   trophy,
   soloRankTier
 }: Readonly<BattleEventStatsOptionProps>) {
@@ -225,7 +177,6 @@ export function BattleEventStatisticsOption({
         isResultBattleEventMode(battleEvent.mode) ? (
           <BattleEventResultStatisticsOption
             battleType={battleType}
-            duplicateBrawler={duplicateBrawler}
             trophy={trophy}
             soloRankTier={soloRankTier}
           />
@@ -238,7 +189,7 @@ export function BattleEventStatisticsOption({
 }
 
 type BrawlerStatsOptionProps = {
-  battleType: RegularBattleType;
+  battleType: StatisticsBattleType;
   trophy?: TrophyRange;
   soloRankTier?: SoloRankTierRange;
 }
@@ -250,7 +201,7 @@ export function BrawlerStatisticsOption({
 }: Readonly<BrawlerStatsOptionProps>) {
   return (
     <div className="border rounded-lg p-1 bg-zinc-100">
-      <BattleTypeTierSelect battleType={battleType} soloRankTier={soloRankTier} trophy={trophy}/>
+      <BattleTypeTierSelect battleType={battleType} trophy={trophy} soloRankTier={soloRankTier} />
     </div>
   )
 }

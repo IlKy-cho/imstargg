@@ -2,53 +2,33 @@ import {getBrawlers} from "@/lib/api/brawler";
 import {Metadata} from "next";
 import {getBrawlerResultStatistics} from "@/lib/api/statistics";
 import {BrawlerStatisticsOption} from "@/components/statistics-option";
-import {TrophyRange, TrophyRangeValue} from "@/model/enums/TrophyRange";
-import {SoloRankTierRange, SoloRankTierRangeValue} from "@/model/enums/SoloRankTierRange";
-import {RegularBattleType, RegularBattleTypeValue} from "@/model/enums/BattleType";
 import React from "react";
 import {BrawlerListStatistics} from "@/components/statistics";
+import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 
 export const metadata: Metadata = {
   title: `브롤러`,
   description: "브롤스타즈의 모든 브롤러 목록과 통계 정보 입니다.",
 };
 
-type SearchParams = {
-  type?: RegularBattleType;
-  trophy?: TrophyRange;
-  soloRankTier?: SoloRankTierRange;
-};
 
-type StatsParams = {
-  type: RegularBattleType;
-  trophy: TrophyRange;
-  soloRankTier: SoloRankTierRange;
-};
-
-const searchParamsToStatsParams = (searchParams: SearchParams): StatsParams => {
-  const type = searchParams.type ?? RegularBattleTypeValue.RANKED;
-  const trophy = searchParams.trophy ?? TrophyRangeValue.TROPHY_500_PLUS;
-  const soloRankTier = searchParams.soloRankTier ?? SoloRankTierRangeValue.DIAMOND_PLUS;
-  return {
-    type,
-    trophy,
-    soloRankTier,
-  };
-}
 
 type PageProps = {
-  searchParams: Promise<SearchParams>;
+  searchParams: Promise<StatisticsSearchParams>;
 };
 
 export default async function BrawlersPage({ searchParams }: Readonly<PageProps>) {
-  const date = new Date();
-  const statsParams = searchParamsToStatsParams(await searchParams);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+  
+  const statsParams = searchParamsToStatisticsParams(await searchParams);
 
   const brawlers = await getBrawlers();
   const brawlerResultStats = await getBrawlerResultStatistics(
-    date, 
-    statsParams.type === RegularBattleTypeValue.RANKED ? statsParams.trophy : null,
-    statsParams.type === RegularBattleTypeValue.SOLO_RANKED ? statsParams.soloRankTier : null
+    yesterday,
+    statsParams.getTrophyOfType(),
+    statsParams.getSoloRankTierOfType()
   );
 
   return (
