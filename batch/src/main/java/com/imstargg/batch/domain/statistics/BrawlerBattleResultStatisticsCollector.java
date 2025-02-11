@@ -1,33 +1,31 @@
 package com.imstargg.batch.domain.statistics;
 
-import com.imstargg.batch.domain.SeasonEntityHolder;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import com.imstargg.storage.db.core.brawlstars.BrawlPassSeasonCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
 public class BrawlerBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> {
 
-    private final SeasonEntityHolder seasonEntityHolder;
+    private final Clock clock;
     private final ConcurrentMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache;
 
     public BrawlerBattleResultStatisticsCollector(
-            SeasonEntityHolder seasonEntityHolder,
+            Clock clock,
             ConcurrentMap<BrawlerBattleResultStatisticsKey, BrawlerBattleResultStatisticsCollectionEntity> cache
     ) {
-        this.seasonEntityHolder = seasonEntityHolder;
+        this.clock = clock;
         this.cache = cache;
     }
 
     @Override
     public boolean collect(BattleCollectionEntity battle) {
-        BrawlPassSeasonCollectionEntity currentSeason = seasonEntityHolder.getCurrentSeasonEntity();
-        if (!battle.canResultStatisticsCollected() || !currentSeason.contains(battle.getBattleTime())) {
+        if (!battle.canResultStatisticsCollected()) {
             return false;
         }
         BattleResult battleResult = BattleResult.map(battle.getResult());
@@ -41,7 +39,7 @@ public class BrawlerBattleResultStatisticsCollector
     private void doCollect(
             BattleCollectionEntity battle, BattleCollectionEntityTeamPlayer player, BattleResult battleResult
     ) {
-        var key = BrawlerBattleResultStatisticsKey.of(battle, player);
+        var key = BrawlerBattleResultStatisticsKey.of(clock, battle, player);
         BrawlerBattleResultStatisticsCollectionEntity stats = getBrawlerBattleResultStats(key);
         stats.countUp(battleResult);
         if (battle.isStarPlayer(player)) {
@@ -56,8 +54,8 @@ public class BrawlerBattleResultStatisticsCollector
 
     private BrawlerBattleResultStatisticsCollectionEntity getBrawlerBattleResultStats(BrawlerBattleResultStatisticsKey key) {
         return cache.computeIfAbsent(key, k -> new BrawlerBattleResultStatisticsCollectionEntity(
-                seasonEntityHolder.getCurrentSeasonEntity().getNumber(),
                 k.eventBrawlStarsId(),
+                k.battleDate(),
                 k.trophyRange(),
                 k.soloRankTierRange(),
                 k.brawlerBrawlStarsId()

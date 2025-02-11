@@ -65,7 +65,7 @@ public class BrawlerResultStatisticsRepository {
         boolean hasNext = true;
         while (hasNext) {
             Slice<BrawlerBattleResultStatisticsEntity> slice = brawlerBattleResultStatisticsJpaRepository
-                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawlerFalse(
+                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRange(
                             battleDate, trophyRange, soloRankTierRange, pageRequest
                     );
             hasNext = slice.hasNext();
@@ -106,7 +106,7 @@ public class BrawlerResultStatisticsRepository {
             @Nullable SoloRankTierRange soloRankTierRange
     ) {
         List<BrawlerBattleResultStatisticsEntity> eventResultStatsEntities = brawlerBattleResultStatisticsJpaRepository
-                .findAllByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
+                .findAllByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
                         date, trophyRange, soloRankTierRange, brawlerId.value()
                 );
         Map<BrawlStarsId, BattleEvent> idToEvent = battleEventRepository.findAllEvents(
@@ -140,7 +140,7 @@ public class BrawlerResultStatisticsRepository {
         boolean hasNext = true;
         while (hasNext) {
             Slice<BrawlersBattleResultStatisticsEntity> slice = brawlersBattleResultStatisticsJpaRepository
-                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndBrawlersNumAndDuplicateBrawlerFalse(
+                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndBrawlersNum(
                             date,
                             trophyRange, soloRankTierRange,
                             brawlerId.value(),
@@ -181,7 +181,7 @@ public class BrawlerResultStatisticsRepository {
         boolean hasNext = true;
         while (hasNext) {
             Slice<BrawlerEnemyBattleResultStatisticsEntity> slice = brawlerEnemyBattleResultStatisticsJpaRepository
-                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
+                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
                             date, trophyRange, soloRankTierRange, brawlerId.value(), pageRequest
                     );
             hasNext = slice.hasNext();
