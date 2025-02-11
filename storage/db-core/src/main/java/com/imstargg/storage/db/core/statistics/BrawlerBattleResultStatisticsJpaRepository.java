@@ -7,25 +7,23 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 public interface BrawlerBattleResultStatisticsJpaRepository extends JpaRepository<BrawlerBattleResultStatisticsEntity, Long> {
 
-    List<BrawlerBattleResultStatisticsEntity> findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawler(
-            long eventBrawlStarsId, LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
-            boolean duplicateBrawler
+    List<BrawlerBattleResultStatisticsEntity> findAllBySeasonNumberAndEventBrawlStarsIdAndTrophyRangeAndSoloRankTierRange(
+            int seasonNumber, long eventBrawlStarsId,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange
     );
 
-    Slice<BrawlerBattleResultStatisticsEntity> findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndDuplicateBrawlerFalse(
-            LocalDate battleDate,
+    Slice<BrawlerBattleResultStatisticsEntity> findSliceBySeasonNumberAndTrophyRangeAndSoloRankTierRange(
+            int seasonNumber,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             Pageable pageable
     );
 
-    List<BrawlerBattleResultStatisticsEntity> findAllByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndDuplicateBrawlerFalse(
-            LocalDate battleDate,
+    List<BrawlerBattleResultStatisticsEntity> findAllBySeasonNumberAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
+            int seasonNumber,
             @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
             long brawlerBrawlStarsId
     );

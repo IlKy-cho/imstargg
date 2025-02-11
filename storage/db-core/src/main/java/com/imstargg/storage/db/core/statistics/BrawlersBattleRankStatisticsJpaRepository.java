@@ -5,13 +5,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.time.LocalDate;
-
 public interface BrawlersBattleRankStatisticsJpaRepository extends JpaRepository<BrawlersBattleRankStatisticsEntity, Long> {
 
-    Slice<BrawlersBattleRankStatisticsEntity> findSliceByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndBrawlersNum(
+    Slice<BrawlersBattleRankStatisticsEntity> findSliceBySeasonNumberAndEventBrawlStarsIdAndTrophyRangeAndBrawlersNum(
+            int seasonNumber,
             long eventBrawlStarsId,
-            LocalDate battleDate,
             TrophyRange trophyRange,
             int brawlersNum,
             Pageable pageable
