@@ -9,23 +9,18 @@ import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCol
 import com.imstargg.storage.db.core.statistics.IdHash;
 import jakarta.annotation.Nullable;
 
-import java.time.Clock;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 
 public record BrawlersBattleResultStatisticsKey(
         long eventBrawlStarsId,
-        LocalDate battleDate,
         @Nullable TrophyRange trophyRange,
         @Nullable SoloRankTierRange soloRankTierRange,
-        boolean duplicateBrawler,
         long brawlerBrawlStarsId,
         IdHash brawlerBrawlStarsIdHash
 ) {
 
     public static List<BrawlersBattleResultStatisticsKey> of(
-            Clock clock,
             BattleCollectionEntity battle,
             List<BattleCollectionEntityTeamPlayer> players
     ) {
@@ -34,13 +29,10 @@ public record BrawlersBattleResultStatisticsKey(
                 .map(player -> player.getBrawler().getBrawlStarsId())
                 .toList();
         IdHash brawlerIdHash = IdHash.of(brawlerBrawlStarsIds);
-        boolean battleContainsDuplicateBrawler = battle.containsDuplicateBrawler();
         return players.stream().map(player -> new BrawlersBattleResultStatisticsKey(
                 Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
-                battle.getBattleTime().atZoneSameInstant(clock.getZone()).toLocalDate(),
                 TrophyRange.of(battleType, player.getBrawler().getTrophies()),
                 SoloRankTierRange.of(battleType, player.getBrawler().getTrophies()),
-                battleContainsDuplicateBrawler,
                 player.getBrawler().getBrawlStarsId(),
                 brawlerIdHash
         )).toList();
@@ -51,10 +43,8 @@ public record BrawlersBattleResultStatisticsKey(
     ) {
         return new BrawlersBattleResultStatisticsKey(
                 entity.getEventBrawlStarsId(),
-                entity.getBattleDate(),
                 entity.getTrophyRange(),
                 entity.getSoloRankTierRange(),
-                entity.isDuplicateBrawler(),
                 entity.getBrawlerBrawlStarsId(),
                 new IdHash(entity.getBrawlers().getIdHash())
         );

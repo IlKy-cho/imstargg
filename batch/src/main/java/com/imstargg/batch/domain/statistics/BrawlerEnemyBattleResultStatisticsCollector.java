@@ -1,10 +1,11 @@
 package com.imstargg.batch.domain.statistics;
 
+import com.imstargg.batch.domain.SeasonEntityHolder;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.brawlstars.BrawlPassSeasonCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsCollectionEntity;
 
-import java.time.Clock;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListSet;
@@ -12,30 +13,32 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public class BrawlerEnemyBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerEnemyBattleResultStatisticsCollectionEntity> {
 
-    private final Clock clock;
+    private final SeasonEntityHolder seasonEntityHolder;
     private final ConcurrentMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache;
     private final ConcurrentSkipListSet<String> battleKeySet = new ConcurrentSkipListSet<>();
 
     public BrawlerEnemyBattleResultStatisticsCollector(
-            Clock clock,
+            SeasonEntityHolder seasonEntityHolder,
             ConcurrentMap<BrawlerEnemyBattleResultStatisticsKey, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache
     ) {
-        this.clock = clock;
+        this.seasonEntityHolder = seasonEntityHolder;
         this.cache = cache;
     }
 
     @Override
     public boolean collect(BattleCollectionEntity battle) {
-        if (!battle.canResultStatisticsCollected() || !battleKeySet.add(battle.getBattleKey())) {
+        BrawlPassSeasonCollectionEntity currentSeason = seasonEntityHolder.getCurrentSeasonEntity();
+        if (!battle.canResultStatisticsCollected()
+                || !battleKeySet.add(battle.getBattleKey()) || !currentSeason.contains(battle.getBattleTime())) {
             return false;
         }
         BattleResult battleResult = BattleResult.map(battle.getResult());
         battle.playerCombinations().forEach(playerCombination -> {
             getBrawlerEnemyBattleResultStats(BrawlerEnemyBattleResultStatisticsKey
-                    .of(clock, battle, playerCombination.myTeamPlayer(), playerCombination.enemyTeamPlayer())
+                    .of(battle, playerCombination.myTeamPlayer(), playerCombination.enemyTeamPlayer())
             ).countUp(battleResult);
             getBrawlerEnemyBattleResultStats(BrawlerEnemyBattleResultStatisticsKey
-                    .of(clock, battle, playerCombination.enemyTeamPlayer(), playerCombination.myTeamPlayer())
+                    .of(battle, playerCombination.enemyTeamPlayer(), playerCombination.myTeamPlayer())
             ).countUp(battleResult.opposite());
         });
 
@@ -50,11 +53,10 @@ public class BrawlerEnemyBattleResultStatisticsCollector
     private BrawlerEnemyBattleResultStatisticsCollectionEntity getBrawlerEnemyBattleResultStats(
             BrawlerEnemyBattleResultStatisticsKey key) {
         return cache.computeIfAbsent(key, k -> new BrawlerEnemyBattleResultStatisticsCollectionEntity(
+                seasonEntityHolder.getCurrentSeasonEntity().getNumber(),
                 k.eventBrawlStarsId(),
-                k.battleDate(),
                 k.trophyRange(),
                 k.soloRankTierRange(),
-                k.duplicateBrawler(),
                 k.brawlerBrawlStarsId(),
                 k.enemyBrawlerBrawlStarsId()
         ));

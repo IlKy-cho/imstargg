@@ -7,18 +7,18 @@ import jakarta.persistence.MappedSuperclass;
 @MappedSuperclass
 abstract class BattleStatisticsBaseCollectionEntity extends BaseEntity {
 
-    @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
-    private long eventBrawlStarsId;
-
     @Column(name = "season_number", updatable = false, nullable = false)
     private int seasonNumber;
+
+    @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
+    private long eventBrawlStarsId;
 
     protected BattleStatisticsBaseCollectionEntity() {
     }
 
     protected BattleStatisticsBaseCollectionEntity(
-            long eventBrawlStarsId,
-            int seasonNumber
+            int seasonNumber,
+            long eventBrawlStarsId
     ) {
         this.eventBrawlStarsId = eventBrawlStarsId;
         this.seasonNumber = seasonNumber;

@@ -19,9 +19,9 @@ abstract class BrawlerBattleRankStatisticsBaseCollectionEntity extends BattleSta
     }
 
     protected BrawlerBattleRankStatisticsBaseCollectionEntity(
-            long eventBrawlStarsId, int seasonNumber
+            int seasonNumber, long eventBrawlStarsId
     ) {
-        super(eventBrawlStarsId, seasonNumber);
+        super(seasonNumber, eventBrawlStarsId);
         rankToCounts = new HashMap<>();
     }
 
