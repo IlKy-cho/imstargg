@@ -35,12 +35,12 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
     }
 
     protected BrawlerBattleResultStatisticsBaseCollectionEntity(
-            long battleEventId,
             int seasonNumber,
+            long battleEventId,
             @Nullable TrophyRange trophyRange,
             @Nullable SoloRankTierRange soloRankTierRange
     ) {
-        super(battleEventId, seasonNumber);
+        super(seasonNumber, battleEventId);
         if (soloRankTierRange == null && trophyRange == null) {
             throw new IllegalArgumentException("Either soloRankTierRange or trophyRange must be set.");
         }

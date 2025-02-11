@@ -50,6 +50,10 @@ public class BrawlPassSeasonCollectionEntity {
         return new BrawlPassSeasonCollectionEntity(number + 1, endTime, nextEndTime);
     }
 
+    public boolean contains(OffsetDateTime time) {
+        return startTime.isBefore(time) && endTime.isAfter(time);
+    }
+
     public Long getId() {
         return id;
     }

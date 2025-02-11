@@ -30,15 +30,15 @@ public class BrawlersBattleResultStatisticsCollectionEntity extends BrawlerBattl
     }
 
     public BrawlersBattleResultStatisticsCollectionEntity(
-            long battleEventId,
             int seasonNumber,
+            long battleEventId,
             @Nullable TrophyRange trophyRange,
             @Nullable SoloRankTierRange soloRankTierRange,
             long brawlerBrawlStarsId,
             BattleStatisticsEntityBrawlers brawlers
     ) {
 
-        super(battleEventId, seasonNumber, trophyRange, soloRankTierRange);
+        super(seasonNumber, battleEventId, trophyRange, soloRankTierRange);
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
         this.brawlers = brawlers;
     }

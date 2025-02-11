@@ -185,7 +185,8 @@ public class BattleCollectionEntity extends BaseEntity {
         return result != null
                 && existsEventId()
                 && BattleType.find(type).isRegular()
-                && teams.size() == 2;
+                && teams.size() == 2
+                && !containsDuplicateBrawler();
     }
 
     public boolean canRankStatisticsCollected() {
