@@ -76,7 +76,6 @@ export default async function EventPage({params, searchParams}: Readonly<Props>)
         <BattleEventStatisticsOption
           battleEvent={battleEvent}
           battleType={statsParams.type}
-          duplicateBrawler={statsParams.duplicateBrawler}
           trophy={statsParams.trophy}
           soloRankTier={statsParams.soloRankTier}
         />
@@ -99,9 +98,9 @@ async function fetchStatistics(battleEvent: BattleEvent, date: Date, statsParams
   if (isResultBattleEventMode(battleEvent.mode)) {
     const [brawlerResultStats, brawlersResultStats] = await Promise.all([
       getBattleEventBrawlerResultStatistics(
-        battleEvent.id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
+        battleEvent.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
       getBattleEventBrawlersResultStatistics(
-        battleEvent.id, date, statsParams.duplicateBrawler, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())
+        battleEvent.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())
     ]);
     return {
       brawlerResultStats,

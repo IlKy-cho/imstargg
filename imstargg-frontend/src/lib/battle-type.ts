@@ -1,4 +1,4 @@
-import {BattleType, BattleTypeValue} from "@/model/enums/BattleType";
+import {BattleType, BattleTypeValue, StatisticsBattleType, StatisticsBattleTypeValue} from "@/model/enums/BattleType";
 import {BrawlStarsIconSrc} from "@/lib/icon";
 import {StaticImageData} from "next/image";
 
@@ -37,5 +37,16 @@ export function battleTypeTitle (type: BattleType): string | null {
       return '토너먼트';
     case BattleTypeValue.CHAMPIONSHIP_CHALLENGE:
       return '챔피언십 챌린지';
+  }
+}
+
+export function statisticsBattleTypeTitle(type: StatisticsBattleType): string {
+  switch (type) {
+    case StatisticsBattleTypeValue.ALL:
+      return '전체';
+    case StatisticsBattleTypeValue.RANKED:
+      return battleTypeTitle(type)!;
+    case StatisticsBattleTypeValue.SOLO_RANKED:
+      return battleTypeTitle(type)!;
   }
 }
