@@ -4,6 +4,8 @@ import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -24,6 +26,7 @@ public class BrawlerItemCountCollectionEntity extends BaseEntity {
     @Column(name = "item_brawlstars_id", updatable = false, nullable = false)
     private long itemBrawlStarsId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "trophy_range", columnDefinition = "varchar(25)", nullable = false, updatable = false)
     private TrophyRange trophyRange;
 
