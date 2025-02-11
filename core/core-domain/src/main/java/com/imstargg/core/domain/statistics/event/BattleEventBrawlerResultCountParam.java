@@ -11,7 +11,6 @@ public record BattleEventBrawlerResultCountParam(
         BrawlStarsId eventId,
         LocalDate battleDate,
         @Nullable TrophyRange trophyRange,
-        @Nullable SoloRankTierRange soloRankTierRange,
-        boolean duplicateBrawler
+        @Nullable SoloRankTierRange soloRankTierRange
 ) {
 }

@@ -13,8 +13,7 @@ public record BattleEventBrawlerEnemyResultStatisticsParam(
         BrawlStarsId eventId,
         LocalDate date,
         @Nullable TrophyRangeRange trophyRange,
-        @Nullable SoloRankTierRangeRange soloRankTierRange,
-        boolean duplicateBrawler
+        @Nullable SoloRankTierRangeRange soloRankTierRange
 ) {
 
     public List<BattleEventBrawlerEnemyResultCountParam> toCountParams() {
@@ -22,14 +21,12 @@ public record BattleEventBrawlerEnemyResultStatisticsParam(
                 .date(date)
                 .trophyRange(trophyRange)
                 .soloRankTierRange(soloRankTierRange)
-                .duplicateBrawler(duplicateBrawler)
-                .build((battleDate, trophyRange, soloRankTierRange, duplicateBrawler) ->
+                .build((battleDate, trophyRange, soloRankTierRange) ->
                         new BattleEventBrawlerEnemyResultCountParam(
                                 eventId,
                                 battleDate,
                                 trophyRange,
-                                soloRankTierRange,
-                                Boolean.TRUE.equals(duplicateBrawler)
+                                soloRankTierRange
                         )
                 );
     }
