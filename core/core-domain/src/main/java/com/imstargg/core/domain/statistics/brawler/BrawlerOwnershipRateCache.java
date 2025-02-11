@@ -1,6 +1,7 @@
 package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.enums.TrophyRangeRange;
 import com.imstargg.core.support.ObjectMapperHelper;
 import com.imstargg.storage.db.core.cache.CacheKeyBuilder;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,20 +24,21 @@ public class BrawlerOwnershipRateCache {
     }
 
     public BrawlerItemOwnership get(
-            BrawlStarsId brawlerId, Supplier<BrawlerItemOwnership> loader
+            BrawlStarsId brawlerId, TrophyRangeRange trophyRangeRange, Supplier<BrawlerItemOwnership> loader
     ) {
-        String cacheValue = redisTemplate.opsForValue().get(key(brawlerId));
+        String cacheValue = redisTemplate.opsForValue().get(key(brawlerId, trophyRangeRange));
         if (cacheValue != null) {
             return objectMapper.read(cacheValue, BrawlerItemOwnership.class);
         }
         BrawlerItemOwnership value = loader.get();
-        redisTemplate.opsForValue().set(key(brawlerId), objectMapper.write(value), TTL);
+        redisTemplate.opsForValue().set(key(brawlerId, trophyRangeRange), objectMapper.write(value), TTL);
         return value;
     }
 
-    private String key(BrawlStarsId brawlerId) {
+    private String key(BrawlStarsId brawlerId, TrophyRangeRange trophyRangeRange) {
         return new CacheKeyBuilder("ownership", "v1")
                 .add("brawlers").add(brawlerId.value())
+                .add("trophy").add(trophyRangeRange)
                 .build();
     }
 }
