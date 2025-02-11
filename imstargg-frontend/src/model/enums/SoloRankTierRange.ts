@@ -10,7 +10,7 @@ export type SoloRankTierRange = typeof SoloRankTierRangeValue[keyof typeof SoloR
 
 export const SoloRankTierRangeValues = Object.keys(SoloRankTierRangeValue) as SoloRankTierRange[];
 
-export const soloRankTierRangeTitle = (tier: SoloRankTierRange) => {
+export const soloRankTierRangeTitle = (tier: SoloRankTierRange): string => {
   switch (tier) {
     case SoloRankTierRangeValue.BRONZE_SILVER_GOLD_PLUS:
       return '브실골+';
