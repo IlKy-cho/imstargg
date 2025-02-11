@@ -21,7 +21,7 @@ public class BrawlerOwnershipReaderWithCache {
     }
 
     public BrawlerItemOwnership get(Brawler brawler, TrophyRangeRange trophyRangeRange) {
-        return cache.get(brawler.id(), () -> load(brawler, trophyRangeRange));
+        return cache.get(brawler.id(), trophyRangeRange, () -> load(brawler, trophyRangeRange));
     }
 
     private BrawlerItemOwnership load(Brawler brawler, TrophyRangeRange trophyRangeRange) {
