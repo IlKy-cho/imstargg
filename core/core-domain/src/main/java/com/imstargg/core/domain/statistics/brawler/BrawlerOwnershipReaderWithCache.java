@@ -24,7 +24,7 @@ public class BrawlerOwnershipReaderWithCache {
         return cache.get(brawler.id(), () -> load(brawler, trophyRangeRange));
     }
 
-    public BrawlerItemOwnership load(Brawler brawler, TrophyRangeRange trophyRangeRange) {
+    private BrawlerItemOwnership load(Brawler brawler, TrophyRangeRange trophyRangeRange) {
         int brawlerCount = trophyRangeRange.getRanges().stream()
                 .mapToInt(range -> brawlerCountRepository.getBrawlerCount(brawler, range))
                 .sum();
