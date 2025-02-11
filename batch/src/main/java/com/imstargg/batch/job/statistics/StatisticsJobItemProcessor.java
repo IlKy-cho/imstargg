@@ -42,7 +42,7 @@ public class StatisticsJobItemProcessor<T> implements ItemProcessor<Long, List<T
         long eventId = item;
         OffsetDateTime fromBattleTime = date.atStartOfDay(clock.getZone()).toOffsetDateTime();
         OffsetDateTime toBattleTime = date.plusDays(1).atStartOfDay(clock.getZone()).toOffsetDateTime();
-        StatisticsCollector<T> collector = statisticsCollectorFactory.create(eventId, date);
+        StatisticsCollector<T> collector = statisticsCollectorFactory.create(eventId);
         boolean hasNext = true;
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         while (hasNext) {

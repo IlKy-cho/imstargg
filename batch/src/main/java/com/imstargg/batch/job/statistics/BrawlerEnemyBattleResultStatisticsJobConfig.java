@@ -1,5 +1,6 @@
 package com.imstargg.batch.job.statistics;
 
+import com.imstargg.batch.domain.SeasonEntityHolder;
 import com.imstargg.batch.domain.statistics.BrawlerEnemyBattleResultStatisticsCollectorFactory;
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
@@ -15,7 +16,6 @@ import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
@@ -42,6 +42,7 @@ public class BrawlerEnemyBattleResultStatisticsJobConfig {
     private final AlertManager alertManager;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleCollectionJpaRepository battleCollectionJpaRepository;
+    private final SeasonEntityHolder seasonEntityHolder;
 
     public BrawlerEnemyBattleResultStatisticsJobConfig(
             Clock clock,
@@ -50,7 +51,8 @@ public class BrawlerEnemyBattleResultStatisticsJobConfig {
             EntityManagerFactory emf,
             AlertManager alertManager,
             BattleJpaRepository battleJpaRepository,
-            BattleCollectionJpaRepository battleCollectionJpaRepository
+            BattleCollectionJpaRepository battleCollectionJpaRepository,
+            SeasonEntityHolder seasonEntityHolder
     ) {
         this.clock = clock;
         this.jobRepository = jobRepository;
@@ -59,6 +61,7 @@ public class BrawlerEnemyBattleResultStatisticsJobConfig {
         this.alertManager = alertManager;
         this.battleJpaRepository = battleJpaRepository;
         this.battleCollectionJpaRepository = battleCollectionJpaRepository;
+        this.seasonEntityHolder = seasonEntityHolder;
     }
 
     @Bean(JOB_NAME)
@@ -66,7 +69,6 @@ public class BrawlerEnemyBattleResultStatisticsJobConfig {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
                 .start(step())
-                .incrementer(new RunIdIncrementer())
                 .listener(new ExceptionAlertJobExecutionListener(alertManager))
                 .validator(new DefaultJobParametersValidator(new String[]{"date"}, new String[]{}))
                 .build();
@@ -104,7 +106,7 @@ public class BrawlerEnemyBattleResultStatisticsJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     StatisticsJobItemProcessor<BrawlerEnemyBattleResultStatisticsCollectionEntity> processor() {
-        var factory = new BrawlerEnemyBattleResultStatisticsCollectorFactory(clock, emf);
+        var factory = new BrawlerEnemyBattleResultStatisticsCollectorFactory(seasonEntityHolder, emf);
         return new StatisticsJobItemProcessor<>(
                 factory, battleCollectionJpaRepository, clock, dateJobParameter().getDate()
         );
