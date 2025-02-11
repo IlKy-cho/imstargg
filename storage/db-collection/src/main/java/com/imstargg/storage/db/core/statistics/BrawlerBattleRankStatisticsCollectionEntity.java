@@ -13,7 +13,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "brawler_battle_rank_stats")
+@Table(name = "brawler_battle_rank_stats_v2")
 public class BrawlerBattleRankStatisticsCollectionEntity extends BrawlerBattleRankStatisticsBaseCollectionEntity {
 
     @Id

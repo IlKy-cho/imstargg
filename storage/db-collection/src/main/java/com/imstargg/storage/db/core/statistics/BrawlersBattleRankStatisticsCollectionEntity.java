@@ -14,7 +14,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "brawlers_battle_rank_stats")
+@Table(name = "brawlers_battle_rank_stats_v2")
 public class BrawlersBattleRankStatisticsCollectionEntity extends BrawlerBattleRankStatisticsBaseCollectionEntity {
 
     @Id
