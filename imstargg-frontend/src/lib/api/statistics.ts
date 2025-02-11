@@ -449,8 +449,9 @@ export async function getBrawlerEnemyResultStatistics(
   throw await ApiError.create(response);
 }
 
-export async function fetchGetBrawlerOwnershipRate(brawlerId: number, options?: CacheOptions): Promise<Response> {
+export async function fetchGetBrawlerOwnershipRate(brawlerId: number, trophyRange: TrophyRange, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/ownership`);
+  url.searchParams.append('trophyRange', trophyRange);
   if (!options) {
     return await fetch(url);
   }
@@ -463,8 +464,8 @@ export async function fetchGetBrawlerOwnershipRate(brawlerId: number, options?: 
   });
 }
 
-export async function getBrawlerOwnershipRate(brawlerId: number): Promise<BrawlerItemOwnership> {
-  const response = await fetchGetBrawlerOwnershipRate(brawlerId, {revalidate: 5 * 60});
+export async function getBrawlerOwnershipRate(brawlerId: number, trophyRange: TrophyRange): Promise<BrawlerItemOwnership> {
+  const response = await fetchGetBrawlerOwnershipRate(brawlerId, trophyRange, {revalidate: 5 * 60});
 
   if (!response.ok) {
     throw await ApiError.create(response);
