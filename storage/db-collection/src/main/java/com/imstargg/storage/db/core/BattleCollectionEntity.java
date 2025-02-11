@@ -159,6 +159,13 @@ public class BattleCollectionEntity extends BaseEntity {
                 .toList();
     }
 
+    public List<BattleTeamCombination> myPlayerTeamCombinations() {
+        return myTeamCombinations().stream()
+                .filter(combination -> combination.players().stream()
+                        .anyMatch(p -> p.getBrawlStarsTag().equals(player.getPlayer().getBrawlStarsTag()))
+                ).toList();
+    }
+
     public List<BattleTeamCombination> enemyTeamCombinations() {
         return new BattlePlayerCombinationBuilder(findEnemyTeam()).build().stream()
                 .map(BattleTeamCombination::new)
