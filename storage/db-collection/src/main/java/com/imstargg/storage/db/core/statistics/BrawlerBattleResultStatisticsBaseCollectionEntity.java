@@ -9,6 +9,8 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 
+import java.time.LocalDate;
+
 @MappedSuperclass
 abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleStatisticsBaseCollectionEntity {
 
@@ -35,12 +37,12 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
     }
 
     protected BrawlerBattleResultStatisticsBaseCollectionEntity(
-            int seasonNumber,
             long battleEventId,
+            LocalDate battleDate,
             @Nullable TrophyRange trophyRange,
             @Nullable SoloRankTierRange soloRankTierRange
     ) {
-        super(seasonNumber, battleEventId);
+        super(battleEventId, battleDate);
         if (soloRankTierRange == null && trophyRange == null) {
             throw new IllegalArgumentException("Either soloRankTierRange or trophyRange must be set.");
         }

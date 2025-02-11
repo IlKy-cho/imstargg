@@ -16,13 +16,13 @@ import jakarta.persistence.UniqueConstraint;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_brawlers_battle_result_stats__key",
-                        columnNames = {"season_number", "event_brawlstars_id", "trophy_range", "solo_rank_tier_range", "brawler_brawlstars_id", "brawler_brawlstars_id_hash"}
+                        columnNames = {"event_brawlstars_id", "battle_date", "trophy_range", "solo_rank_tier_range", "brawler_brawlstars_id", "brawler_brawlstars_id_hash"}
                 ),
         },
         indexes = {
                 @Index(
                         name = "ix_brawlers_battle_result_stats__1",
-                        columnList = "season_number, trophy_range, solo_rank_tier_range, brawler_brawlstars_id, brawler_num"
+                        columnList = "battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id, brawler_num"
                 )
         }
 )
