@@ -26,6 +26,8 @@ public enum BattleType {
 
     private static final Set<BattleType> REGULAR_TYPES = Set.of(RANKED, SOLO_RANKED);
 
+    private static final Set<BattleType> OFFICIAL_TYPES = Set.of(RANKED, SOLO_RANKED, CHALLENGE, TOURNAMENT, CHAMPIONSHIP_CHALLENGE);
+
     public static BattleType find(String code) {
         return ENUM_BY_CODE.getOrDefault(code, NOT_FOUND);
     }
@@ -40,6 +42,10 @@ public enum BattleType {
 
     public boolean isRegular() {
         return REGULAR_TYPES.contains(this);
+    }
+
+    public boolean isOfficial() {
+        return OFFICIAL_TYPES.contains(this);
     }
 
     public String getCode() {
