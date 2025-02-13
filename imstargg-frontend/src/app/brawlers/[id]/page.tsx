@@ -22,7 +22,7 @@ import {
   BrawlersResultStatistics
 } from "@/components/statistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
-import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
+import {searchParamsToStatisticsParams, StatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 import {Metadata} from "next";
 import {getBrawlerRanking} from "@/lib/api/ranking";
 import {Country} from "@/model/enums/Country";
@@ -31,6 +31,10 @@ import {countryOrDefault} from "@/lib/country";
 import {BrawlerGadgetList} from "@/components/gadget";
 import { BrawlerStarPowerList } from "@/components/starpower";
 import { BrawlerGearList } from "@/components/gear";
+import { BattleEvent } from "@/model/BattleEvent";
+import Loading from "@/app/loading";
+import { Suspense } from "react";
+import { yesterdayDate } from "@/lib/date";
 
 interface SearchParams extends StatisticsSearchParams{
   country?: Country;
@@ -68,16 +72,9 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
   const country = countryOrDefault((await searchParams).country);
   const brawlerRankings = await getBrawlerRanking(country, brawler.id);
 
-  const date = new Date();
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 
   const brawlerOwnershipRate = await getBrawlerOwnershipRate(brawler.id, statsParams.trophy);
-
-  const [eventResultStats, enemyResultStats, brawlersResultStats] = await Promise.all([
-    getBrawlerBattleEventResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
-    getBrawlerEnemyResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType()),
-    getBrawlerBrawlersResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())
-  ]);
 
   return (
     <div className="space-y-2">
@@ -95,16 +92,15 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
         <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
                                  soloRankTier={statsParams.soloRankTier}/>
         <StatisticsContent brawlers={brawlers}
-                           eventResultStats={eventResultStats}
-                           enemyResultStats={enemyResultStats}
-                           brawlersResultStats={brawlersResultStats}
+                           brawler={brawler}
+                           statsParams={statsParams}
         />
       </div>
     </div>
   );
 }
 
-function Title({value}: Readonly<{ value: string }>) {
+async function Title({value}: Readonly<{ value: string }>) {
   return (
     <h2 className="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
       {value}
@@ -112,81 +108,74 @@ function Title({value}: Readonly<{ value: string }>) {
   );
 }
 
-function StatisticsContent(
-  {brawlers, eventResultStats, enemyResultStats, brawlersResultStats}
+async function StatisticsContent(
+  {brawler, statsParams, brawlers}
   : Readonly<{
-    brawlers: Brawler[],
-    eventResultStats: BattleEventResultStatisticsModel[],
-    enemyResultStats: BrawlerEnemyResultStatisticsModel[],
-    brawlersResultStats: BrawlersResultStatisticsModel[]
+    brawler: Brawler,
+    statsParams: StatisticsParams,
+    brawlers: Brawler[]
   }>) {
 
-  if (!hasStatistics(enemyResultStats, brawlersResultStats)) {
-    return <StatisticsAbsence/>;
-  }
+  const date = yesterdayDate();
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <Title value="이벤트"/>
-        {
-          hasStatistics(eventResultStats) && (
-            <BattleEventResultStatistics statsList={eventResultStats}/>
-          )
-        }
+        <Suspense fallback={<Loading/>}>
+          <PageEventStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
+        </Suspense>
       </div>
 
       <div className="flex flex-col gap-2">
         <Title value="브롤러 조합"/>
-        {
-          hasStatistics(brawlersResultStats) && (
-            <BrawlersResultStatistics statsList={brawlersResultStats} brawlers={brawlers}/>
-          )
-        }
+        <Suspense fallback={<Loading/>}>
+          <PageBrawlersStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
+        </Suspense>
       </div>
 
       <div className="flex flex-col gap-2">
         <Title value="상대 브롤러"/>
-        {
-          hasStatistics(enemyResultStats) && (
-            <BrawlerEnemyResultStatistics statsList={enemyResultStats} brawlers={brawlers}/>
-          )
-        }
+        <Suspense fallback={<Loading/>}>
+          <PageEnemyStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
+        </Suspense>
       </div>
-
     </div>
   );
 }
 
-const hasStatistics = (...statisticsArrays: (BrawlerEnemyResultStatisticsModel[] | BrawlersResultStatisticsModel[] | BattleEventResultStatisticsModel[])[]): boolean => {
-  return statisticsArrays.some(statistics => statistics.length > 0);
+async function PageEventStatistics({brawler, statsParams, date, brawlers}: Readonly<{
+  brawler: Brawler,
+  statsParams: StatisticsParams,
+  date: Date,
+  brawlers: Brawler[]
+}>) {
+
+  return (
+    <BattleEventResultStatistics statsList={await getBrawlerBattleEventResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}/>
+  );
 }
 
-function StatisticsAbsence() {
+async function PageBrawlersStatistics({brawler, statsParams, date, brawlers}: Readonly<{
+  brawler: Brawler,
+  statsParams: StatisticsParams,
+  date: Date,
+  brawlers: Brawler[]
+}>) {
+
   return (
-    <div className="flex flex-col items-center justify-center text-center p-4">
-      <h1 className="text-2xl font-bold mb-4">데이터가 존재하지 않습니다.</h1>
+    <BrawlersResultStatistics statsList={await getBrawlerBrawlersResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
+  );
+}
 
-      <div className="mb-2 text-lg border-b-2 border-zinc-500">
-        <p>옵션을 적절히 설정해보세요.</p>
-      </div>
+async function PageEnemyStatistics({brawler, statsParams, date, brawlers}: Readonly<{
+  brawler: Brawler,
+  statsParams: StatisticsParams,
+  date: Date,
+  brawlers: Brawler[]
+}>) {
 
-      <div className="mb-2">
-        <p>그래도 데이터가 존재하지 않는다면</p>
-        <p>해당 브롤러의 통계 데이터는</p>
-        <p>아직 준비되지 않았습니다.</p>
-      </div>
-
-      <div className="mb-2">
-        <p>관련 문의사항이 있다면 남겨주세요.</p>
-      </div>
-
-      <div className="mb-8">
-        <Image
-          src={kitSadPinSrc}
-          alt="brawler statistics absence"
-        />
-      </div>
-    </div>
+  return (
+    <BrawlerEnemyResultStatistics statsList={await getBrawlerEnemyResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
   );
 }
