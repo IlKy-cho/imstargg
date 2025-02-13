@@ -1,9 +1,7 @@
 package com.imstargg.storage.db.core;
 
-import com.imstargg.storage.db.support.LongListToStringConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.ConstraintMode;
-import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
@@ -13,6 +11,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.util.List;
 
@@ -44,16 +44,16 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
     @Column(name = "highest_trophies", nullable = false)
     private int highestTrophies;
 
-    @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gear_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "gear_brawlstars_ids", columnDefinition = "json", nullable = false)
     private List<Long> gearBrawlStarsIds;
 
-    @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "star_power_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "star_power_brawlstars_ids", columnDefinition = "json", nullable = false)
     private List<Long> starPowerBrawlStarsIds;
 
-    @Convert(converter = LongListToStringConverter.class)
-    @Column(name = "gadget_brawlstars_ids", columnDefinition = "varchar(255)", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "gadget_brawlstars_ids", columnDefinition = "json", nullable = false)
     private List<Long> gadgetBrawlStarsIds;
 
     protected PlayerBrawlerCollectionEntity() {
