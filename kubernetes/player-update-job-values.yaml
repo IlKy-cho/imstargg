@@ -1,0 +1,6 @@
+app:
+  job:
+    name: playerUpdateJob
+
+job:
+  schedule: "*/20 * * * *"

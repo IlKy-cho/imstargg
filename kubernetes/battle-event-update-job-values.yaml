@@ -1,0 +1,6 @@
+app:
+  job:
+    name: battleEventUpdateJob
+
+job:
+  schedule: "0 20 * * *"

@@ -1,0 +1,6 @@
+app:
+  job:
+    name: brawlerRankingJob
+
+job:
+  schedule: "15 * * * *"
