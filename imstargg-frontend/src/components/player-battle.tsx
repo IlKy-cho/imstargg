@@ -28,15 +28,11 @@ import {playerBattleIconSrc, playerBattleModeTitle} from "@/lib/player-battle";
 import {battleEventHref, brawlerHref, playerHref} from "@/config/site";
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from './ui/chart';
 import {Card, CardContent, CardHeader, CardTitle} from './ui/card';
-import {CartesianGrid, Line, LineChart, XAxis, YAxis, Label, Pie, PieChart} from 'recharts';
+import {CartesianGrid, Label, Line, LineChart, Pie, PieChart, XAxis, YAxis} from 'recharts';
 import {Player} from "@/model/Player";
 import {SoloRankTier as SoloRankTierType, soloRankTierValue, valueToSoloRankTier} from '@/model/enums/SoloRankTier';
 import {soloRankTierTitle} from '@/lib/solo-rank-tier';
-import {
-  Pagination, PaginationContent,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination";
+import {Pagination, PaginationContent, PaginationItem, PaginationLink,} from "@/components/ui/pagination";
 import {ChevronLeft, ChevronRight} from "lucide-react";
 
 dayjs.locale('ko');
@@ -51,23 +47,12 @@ export function PlayerBattleContent({player, brawlers}: Readonly<PlayerBattleCon
   const tag = player.tag;
   const [battles, setBattles] = useState<PlayerBattleModel[]>([]);
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
   const fetchBattles = useCallback(async () => {
-    if (loading || !hasMore) return;
-
-    setLoading(true);
-    try {
-      const newBattleSlice = await getBattles(tag, page);
-      setHasMore(newBattleSlice.hasNext);
-      setBattles(prev => [...prev, ...newBattleSlice.content]);
-      setPage(prev => prev + 1);
-    } catch (error) {
-      console.error('Failed to fetch battles:', error);
-    } finally {
-      setLoading(false);
-    }
+    const battleSlice = await getBattles(tag, page);
+    setBattles(prev => [...prev, ...battleSlice.content]);
+    setPage(prev => prev + 1);
+    return battleSlice.hasNext;
   }, [tag, page]);
 
   useEffect(() => {
@@ -81,11 +66,27 @@ export function PlayerBattleContent({player, brawlers}: Readonly<PlayerBattleCon
       </div>
       <div className="flex-1 flex flex-col gap-2">
         <PlayerBattleList battles={battles} tag={tag} brawlerList={brawlers}/>
-        <LoadingButton loading={loading} disabled={!hasMore} onClick={fetchBattles} variant='outline'>
-          {hasMore ? '더보기' : '더 이상 배틀 기록이 없습니다.'}
-        </LoadingButton>
+        <BattleLoadingButton tag={tag} loadBattles={fetchBattles}/>
       </div>
     </div>
+  );
+}
+
+function BattleLoadingButton({loadBattles: fetchBattles}: { tag: string, loadBattles: () => Promise<boolean> }) {
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const onClick = async () => {
+    setLoading(true);
+    const hasMore = await fetchBattles();
+    setLoading(false);
+    setHasMore(hasMore);
+  };
+
+  return (
+    <LoadingButton loading={loading} disabled={!hasMore} onClick={onClick} variant='outline'>
+      {hasMore ? '더보기' : '더 이상 배틀 기록이 없습니다.'}
+    </LoadingButton>
   );
 }
 
