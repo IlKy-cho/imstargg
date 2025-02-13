@@ -1,6 +1,9 @@
 import {getBattleEvents} from "@/lib/api/battle-event";
 import {Metadata} from "next";
 import {BattleEventList} from "@/components/battle-event";
+import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
+import {Help} from "@/components/help";
+import {cn} from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: `브롤스타즈 이벤트`,
@@ -12,13 +15,14 @@ export default async function EventsPage() {
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
-        <div className="flex-1">
-          <h1 className="text-3xl font-bold mb-6 text-zinc-800 border-b-2 border-zinc-200 p-2">
+      <PageHeader>
+        <div className={cn("flex flex-col gap-2", pageHeaderContainerDefault)}>
+          <h1 className="sm:text-2xl text-xl font-bold text-zinc-800">
             이벤트
           </h1>
+          <Help description={"최근 1주일의 이벤트입니다."}/>
         </div>
-      </div>
+      </PageHeader>
       <div className="w-full p-1 sm:p-4">
         <BattleEventList battleEvents={battleEvents}/>
       </div>

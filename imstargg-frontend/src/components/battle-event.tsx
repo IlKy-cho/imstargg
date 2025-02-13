@@ -11,6 +11,8 @@ import {
   battleModeIconSrc, battleModeTitle
 } from "@/lib/battle-mode";
 import {cn} from "@/lib/utils";
+import {Help} from "@/components/help";
+import {pageHeaderContainerDefault} from "@/components/page-header";
 
 type BattleEventListProps = {
   battleEvents: BattleEventModel[];
@@ -95,30 +97,3 @@ async function BattleEvent({battleEvent}: Readonly<{ battleEvent: BattleEventMod
   );
 }
 
-type BattleEventProfileProps = {
-  battleEvent: BattleEventModel;
-}
-
-export async function BattleEventProfile({battleEvent}: Readonly<BattleEventProfileProps>) {
-  const modeIconSrc = battleEventModeIconSrc(battleEvent.mode) || (battleEvent.battleMode && battleModeIconSrc(battleEvent.battleMode));
-  const modeTitle = battleEventModeTitle(battleEvent.mode) || (battleEvent.battleMode && battleModeTitle(battleEvent.battleMode));
-  return (
-    <div className="flex gap-2 p-4 md:p-6 rounded-lg shadow-lg bg-zinc-100 bg-opacity-90 max-w-lg">
-      <BattleEventMapImage battleEventMap={battleEvent.map} size="lg"/>
-      <div className="flex-1">
-        <div className="flex items-center gap-2">
-          {modeIconSrc &&
-            <Image
-              src={modeIconSrc} alt={`${battleEvent.mode} icon`} width={32} height={32}
-              className="w-6 sm:w-8 h-6 sm:h-8"
-            />
-          }
-          <span className="text-xl sm:text-2xl font-bold">{modeTitle}</span>
-        </div>
-        <div className="text-lg sm:text-xl text-zinc-700">
-          {battleEvent.map.name || '❓'}
-        </div>
-      </div>
-    </div>
-  );
-}

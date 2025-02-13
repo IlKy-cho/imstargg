@@ -6,6 +6,9 @@ import React from "react";
 import {BrawlerListStatistics} from "@/components/statistics";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 import {yesterdayDate} from "@/lib/date";
+import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
+import {Help} from "@/components/help";
+import {cn} from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: `브롤러`,
@@ -31,10 +34,15 @@ export default async function BrawlersPage({ searchParams }: Readonly<PageProps>
   );
 
   return (
-    <div className="flex flex-col gap-4 items-center max-w-7xl mx-auto p-1 md:p-4">
-      <h1 className="text-3xl font-bold mb-6 text-zinc-800 border-b-2 border-zinc-200">
-        브롤러
-      </h1>
+    <div className="space-y-2">
+      <PageHeader>
+        <div className={cn("flex flex-col gap-2", pageHeaderContainerDefault)}>
+          <h1 className="sm:text-2xl text-xl font-bold text-zinc-800">
+            브롤러
+          </h1>
+          <Help description={"최근 1주일의 이벤트입니다."}/>
+        </div>
+      </PageHeader>
       <div className="w-full">
         <BrawlerStatisticsOption
           battleType={statsParams.type}
