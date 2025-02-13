@@ -7,7 +7,7 @@ import {
   getBattleEventBrawlersRankStatistics,
   getBattleEventBrawlersResultStatistics
 } from "@/lib/api/statistics";
-import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
+import {BattleEventModeValue, isResultBattleEventMode} from "@/model/enums/BattleEventMode";
 import {
   BrawlerRankStatistics,
   BrawlerResultStatistics,
@@ -95,12 +95,15 @@ async function StatisticsContent({battleEvent, statsParams, brawlers}: {
           <PageBrawlerStatistics battleEvent={battleEvent} statsParams={statsParams} date={date} brawlers={brawlers}/>
         </Suspense>
       </div>
-      <div className="flex flex-col gap-2">
-        <Title value="브롤러 조합"/>
-        <Suspense fallback={<Loading/>}>
-          <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date} brawlers={brawlers}/>
-        </Suspense>
-      </div>
+      {battleEvent.mode !== BattleEventModeValue.SOLO_SHOWDOWN && (
+        <div className="flex flex-col gap-2">
+          <Title value="브롤러 조합"/>
+          <Suspense fallback={<Loading/>}>
+            <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
+                                    brawlers={brawlers}/>
+          </Suspense>
+        </div>
+      )}
     </div>
   );
 }
