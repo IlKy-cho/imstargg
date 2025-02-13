@@ -4,7 +4,7 @@ import {AspectRatio} from "@/components/ui/aspect-ratio";
 import {cn} from "@/lib/utils";
 import {cva, VariantProps} from "class-variance-authority";
 import React from "react";
-import {brawlerBackgroundColor} from "@/components/brawler";
+import {brawlerBackgroundColor} from "@/lib/brawler";
 
 
 const imageVariants = cva(

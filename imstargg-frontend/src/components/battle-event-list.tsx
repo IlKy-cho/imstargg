@@ -4,9 +4,10 @@ import Image from 'next/image';
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import Link from "next/link";
 import {battleEventHref} from "@/config/site";
-import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
+import {battleEventModeBackGroundColor, battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
+import {cn} from "@/lib/utils";
 
-function BattleEvent({battleEvent}: Readonly<{battleEvent: IBattleEvent}>) {
+async function BattleEvent({battleEvent}: Readonly<{ battleEvent: IBattleEvent }>) {
   return (
     <Link href={battleEventHref(battleEvent.id)}>
       <div className="inline-block bg-zinc-100 hover:bg-zinc-200 rounded p-2 transition-colors">
@@ -19,13 +20,16 @@ function BattleEvent({battleEvent}: Readonly<{battleEvent: IBattleEvent}>) {
   );
 }
 
-function BattleEventModeHeader({ mode }: Readonly<{ mode: BattleEventMode }>) {
+async function BattleEventModeHeader({mode}: Readonly<{ mode: BattleEventMode }>) {
+  const backgroundColor = battleEventModeBackGroundColor(mode);
   const iconSrc = battleEventModeIconSrc(mode);
   const title = battleEventModeTitle(mode) || "❓";
   return (
-    <div className="flex items-center gap-2 bg-zinc-300 rounded p-2 text-2xl font-bold">
-      {iconSrc && <Image src={iconSrc} alt={`${title} icon`} width={24} height={24} />}
-      {title}
+    <div className={cn("flex items-center gap-2 rounded p-2", backgroundColor)}>
+      {iconSrc && <Image src={iconSrc} alt={`${title} icon`} width={24} height={24}/>}
+      <span className="drop-shadow-md text-2xl font-bold text-white">
+        {title}
+      </span>
     </div>
   );
 }
@@ -34,7 +38,7 @@ type Props = {
   battleEvents: IBattleEvent[];
 }
 
-export default async function BattleEventList({ battleEvents }: Readonly<Props>) {
+export async function BattleEventList({battleEvents}: Readonly<Props>) {
   const groupedEvents = battleEvents.reduce((groups, event) => {
     const mode = event.mode;
     if (!groups[mode]) {
@@ -59,11 +63,11 @@ export default async function BattleEventList({ battleEvents }: Readonly<Props>)
         .filter(mode => groupedEvents[mode]?.length > 0)
         .map((mode) => (
           <div key={mode} className="mb-4">
-            <BattleEventModeHeader mode={mode} />
+            <BattleEventModeHeader mode={mode}/>
             <ul className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {groupedEvents[mode].map(event => (
                 <li key={event.id}>
-                  <BattleEvent battleEvent={event} />
+                  <BattleEvent battleEvent={event}/>
                 </li>
               ))}
             </ul>

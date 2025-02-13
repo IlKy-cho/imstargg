@@ -249,8 +249,6 @@ export function battleEventModeTitle(mode: BattleEventMode): string | null {
       return '좀비 훔치기';
     case BattleEventModeValue.SIEGE:
       return '시즈';
-    case BattleEventModeValue.PAINT_BRAWL:
-      return '페인트 브롤';
   }
 }
 
@@ -305,3 +303,31 @@ export function battleModeTitle(mode: BattleMode): string | null {
   }
 }
 
+export const battleEventModeBackGroundColor = (mode: BattleEventMode): string => {
+  switch (mode) {
+    case BattleEventModeValue.SOLO_SHOWDOWN:
+    case BattleEventModeValue.DUO_SHOWDOWN:
+    case BattleEventModeValue.TRIO_SHOWDOWN:
+      return 'bg-[#95D449]';
+    case BattleEventModeValue.GEM_GRAB:
+    case BattleEventModeValue.GEM_GRAB_5V5:
+      return 'bg-[#9044E9]';
+    case BattleEventModeValue.BRAWL_BALL:
+    case BattleEventModeValue.BRAWL_BALL_5V5:
+      return 'bg-[#909FDA]';
+    case BattleEventModeValue.HEIST:
+      return 'bg-[#D55CD3]';
+    case BattleEventModeValue.BOUNTY:
+      return 'bg-[#00CFFF]';
+    case BattleEventModeValue.WIPEOUT:
+    case BattleEventModeValue.WIPEOUT_5V5:
+      return 'bg-[#00CFFF]';
+    case BattleEventModeValue.HOT_ZONE:
+      return 'bg-[#E33B50]';
+    case BattleEventModeValue.KNOCKOUT:
+    case BattleEventModeValue.KNOCKOUT_5V5:
+      return 'bg-[#F7831C]';
+    default:
+      return 'bg-zinc-300';
+  }
+}

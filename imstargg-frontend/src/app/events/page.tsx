@@ -1,6 +1,6 @@
 import {getBattleEvents} from "@/lib/api/battle-event";
 import {Metadata} from "next";
-import BattleEventList from "@/components/battle-event-list";
+import {BattleEventList} from "@/components/battle-event-list";
 
 export const metadata: Metadata = {
   title: `브롤스타즈 이벤트`,
