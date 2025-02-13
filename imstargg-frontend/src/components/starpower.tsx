@@ -1,11 +1,12 @@
 import { cnWithDefault } from "@/lib/utils";
 import { StarPower } from "@/model/StarPower";
-import { Separator } from "@radix-ui/react-separator";
+
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import Image from "next/image";
 import { BrawlStarsIconSrc } from "@/lib/icon";
 import { rateTitle } from "@/lib/statistics";
 import {BrawlerItemOwnership, findBrawlerStarPowerOwnershipRate} from "@/model/statistics/BrawlerItemOwnership";
+import { Separator } from "./ui/separator";
 
 interface StarPowerListProps {
   starPowers: StarPower[];
