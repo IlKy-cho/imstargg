@@ -171,13 +171,12 @@ function PlayerBattleHeader({battle}: { battle: PlayerBattleModel }) {
   const mapName = battle.event ? battle.event.map.name : '❓';
 
   return (
-    <div className={`flex items-center p-1 w-full ${battleHeaderBackgroundColor(battle)}`}>
+    <div className={`flex p-1 w-full ${battleHeaderBackgroundColor(battle)}`}>
       <div className="flex items-center gap-1">
         <BattleTypeIcon type={battle.type}/>
         {battleTypeTitle(battle.type) && (
           <span className="font-bold text-sm sm:text-base">{battleTypeTitle(battle.type)}</span>
         )}
-        <Separator orientation="vertical"/>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
