@@ -11,10 +11,14 @@ export default async function EventsPage() {
   const battleEvents = await getBattleEvents();
 
   return (
-    <div className="flex flex-col items-center max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-zinc-800 border-b-2 border-zinc-200 p-2">
-        이벤트
-      </h1>
+    <div className="space-y-2">
+      <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
+        <div className="flex-1">
+          <h1 className="text-3xl font-bold mb-6 text-zinc-800 border-b-2 border-zinc-200 p-2">
+            이벤트
+          </h1>
+        </div>
+      </div>
       <div className="w-full p-1 sm:p-4">
         <BattleEventList battleEvents={battleEvents}/>
       </div>

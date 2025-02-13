@@ -4,37 +4,33 @@ import {BrawlerProfile} from "@/components/brawler-profile";
 import {
   getBrawlerBattleEventResultStatistics,
   getBrawlerBrawlersResultStatistics,
-  getBrawlerEnemyResultStatistics, getBrawlerOwnershipRate
+  getBrawlerEnemyResultStatistics,
+  getBrawlerOwnershipRate
 } from "@/lib/api/statistics";
 import {BrawlerItemOwnershipOption, BrawlerStatisticsOption} from "@/components/statistics-option";
-import {
-  BrawlerEnemyResultStatistics as BrawlerEnemyResultStatisticsModel
-} from "@/model/statistics/BrawlerEnemyResultStatistics";
-import {BrawlersResultStatistics as BrawlersResultStatisticsModel} from "@/model/statistics/BrawlersResultStatistics";
-import {
-  BattleEventResultStatistics as BattleEventResultStatisticsModel
-} from "@/model/statistics/BattleEventResultStatistics";
-import Image from "next/image";
-import kitSadPinSrc from "@/../public/icon/brawler/kit/kit_sad_pin.png";
 import {
   BattleEventResultStatistics,
   BrawlerEnemyResultStatistics,
   BrawlersResultStatistics
 } from "@/components/statistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
-import {searchParamsToStatisticsParams, StatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
+import {
+  searchParamsToStatisticsParams,
+  StatisticsParams,
+  StatisticsSearchParams
+} from "@/model/statistics/StatisticsParams";
 import {Metadata} from "next";
 import {getBrawlerRanking} from "@/lib/api/ranking";
 import {Country} from "@/model/enums/Country";
 import {Ranking} from "@/components/ranking";
 import {countryOrDefault} from "@/lib/country";
 import {BrawlerGadgetList} from "@/components/gadget";
-import { BrawlerStarPowerList } from "@/components/starpower";
-import { BrawlerGearList } from "@/components/gear";
-import { BattleEvent } from "@/model/BattleEvent";
+import {BrawlerStarPowerList} from "@/components/starpower";
+import {BrawlerGearList} from "@/components/gear";
 import Loading from "@/app/loading";
-import { Suspense } from "react";
-import { yesterdayDate } from "@/lib/date";
+import {Suspense} from "react";
+import {yesterdayDate} from "@/lib/date";
+import {PageHeader} from "@/components/page-header";
 
 interface SearchParams extends StatisticsSearchParams{
   country?: Country;
@@ -78,11 +74,9 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
-        <div className="flex-1">
-          <BrawlerProfile brawler={brawler}/>
-        </div>
-      </div>
+      <PageHeader>
+        <BrawlerProfile brawler={brawler}/>
+      </PageHeader>
       <BrawlerItemOwnershipOption trophy={statsParams.trophy}/>
       <BrawlerGadgetList gadgets={brawler.gadgets} brawlerOwnershipRate={brawlerOwnershipRate}/>
       <BrawlerStarPowerList starPowers={brawler.starPowers} brawlerOwnershipRate={brawlerOwnershipRate}/>

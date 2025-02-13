@@ -8,6 +8,7 @@ import PlayerSearchForm from "@/components/player-search-form";
 import {searchPlayer} from "@/lib/api/player";
 import {metadataTitle, playerHref} from "@/config/site";
 import {useRecentSearches} from "@/hooks/useRecentSearchs";
+import {PageHeader} from "@/components/page-header";
 
 export default function PlayerSearchResultPage() {
   const [players, setPlayers] = useState<Player[] | null>(null);
