@@ -41,7 +41,7 @@ export default function BattleEventMapImage({battleEventMap, className, size}: R
           className="h-full w-auto object-contain"
         />
         :
-        <div className="flex items-center justify-center h-full bg-gray-200 text-gray-500 text-md relative" style={{ aspectRatio: '3/5' }}>
+        <div className="flex items-center justify-center h-full bg-zinc-200 text-zinc-500 text-md relative" style={{ aspectRatio: '3/5' }}>
           X
         </div>
       }
