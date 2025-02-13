@@ -5,6 +5,7 @@ import {BrawlerStatisticsOption} from "@/components/statistics-option";
 import React from "react";
 import {BrawlerListStatistics} from "@/components/statistics";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
+import {yesterdayDate} from "@/lib/date";
 
 export const metadata: Metadata = {
   title: `브롤러`,
@@ -18,9 +19,7 @@ type PageProps = {
 };
 
 export default async function BrawlersPage({ searchParams }: Readonly<PageProps>) {
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(yesterday.getDate() - 1);
+  const yesterday = yesterdayDate();
   
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 
