@@ -22,12 +22,15 @@ import {
   StatisticsSearchParams
 } from "@/model/statistics/StatisticsParams";
 import {BattleEvent} from "@/model/BattleEvent";
-import {battleEventModeTitle} from "@/lib/battle-mode";
+import {battleEventModeIconSrc, battleEventModeTitle, battleModeIconSrc, battleModeTitle} from "@/lib/battle-mode";
 import {Suspense} from "react";
 import Loading from "@/app/loading";
 import {yesterdayDate} from "@/lib/date";
-import {BattleEventProfile} from "@/components/battle-event";
-import {PageHeader} from "@/components/page-header";
+import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
+import BattleEventMapImage from "@/components/battle-event-map-image";
+import {Help} from "@/components/help";
+import {cn} from "@/lib/utils";
+import Image from "next/image";
 
 type Props = {
   params: Promise<{
@@ -65,7 +68,7 @@ export default async function EventPage({params, searchParams}: Readonly<Props>)
   return (
     <div className="space-y-2">
       <PageHeader>
-        <BattleEventProfile battleEvent={battleEvent}/>
+        <PageHeaderContent battleEvent={battleEvent}/>
       </PageHeader>
       <div className="flex flex-col gap-2 p-1">
         <BattleEventStatisticsOption
@@ -104,6 +107,33 @@ async function StatisticsContent({battleEvent, statsParams, brawlers}: {
           </Suspense>
         </div>
       )}
+    </div>
+  );
+}
+
+async function PageHeaderContent({battleEvent}: Readonly<{battleEvent: BattleEvent}>) {
+  const modeIconSrc = battleEventModeIconSrc(battleEvent.mode) || (battleEvent.battleMode && battleModeIconSrc(battleEvent.battleMode));
+  const modeTitle = battleEventModeTitle(battleEvent.mode) || (battleEvent.battleMode && battleModeTitle(battleEvent.battleMode));
+  return (
+    <div className={cn("flex flex-col gap-1", pageHeaderContainerDefault)}>
+      <div className="flex gap-2">
+        <BattleEventMapImage battleEventMap={battleEvent.map} size="lg"/>
+        <div className="flex-1">
+          <div className="flex items-center gap-2">
+            {modeIconSrc &&
+              <Image
+                src={modeIconSrc} alt={`${battleEvent.mode} icon`} width={32} height={32}
+                className="w-6 sm:w-8 h-6 sm:h-8"
+              />
+            }
+            <span className="text-xl sm:text-2xl font-bold">{modeTitle}</span>
+          </div>
+          <div className="text-lg sm:text-xl text-zinc-700">
+            {battleEvent.map.name || '❓'}
+          </div>
+        </div>
+      </div>
+      <Help description={"최근 1주일의 통계입니다. 통계가 존재하지 않을 경우 현재 준비중일 수 있습니다."}/>
     </div>
   );
 }

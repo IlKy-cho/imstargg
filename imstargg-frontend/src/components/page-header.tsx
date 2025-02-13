@@ -15,3 +15,5 @@ export async function PageHeader(
     </div>
   );
 }
+
+export const pageHeaderContainerDefault = "p-4 md:p-6 rounded-lg shadow-lg bg-zinc-100 bg-opacity-90 max-w-lg";

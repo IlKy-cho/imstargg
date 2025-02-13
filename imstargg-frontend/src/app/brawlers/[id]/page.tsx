@@ -1,6 +1,5 @@
 import {notFound} from "next/navigation";
 import {getBrawler, getBrawlers} from "@/lib/api/brawler";
-import {BrawlerProfile} from "@/components/brawler-profile";
 import {
   getBrawlerBattleEventResultStatistics,
   getBrawlerBrawlersResultStatistics,
@@ -31,6 +30,14 @@ import Loading from "@/app/loading";
 import {Suspense} from "react";
 import {yesterdayDate} from "@/lib/date";
 import {PageHeader} from "@/components/page-header";
+import BrawlerProfileImage from "@/components/brawler-profile-image";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {BrawlerClassIcon} from "@/components/brawler-class";
+import {brawlerClassTitle} from "@/lib/brawler-class";
+import {brawlerRarityTitle} from "@/lib/brawler-rarity";
+import {cn} from "@/lib/utils";
+import {Help} from "@/components/help";
+import {brawlerBackgroundColor} from "@/lib/brawler";
 
 interface SearchParams extends StatisticsSearchParams{
   country?: Country;
@@ -94,6 +101,39 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
   );
 }
 
+async function BrawlerProfile({brawler}: Readonly<{ brawler: Brawler }>) {
+  return (
+    <div className="flex flex-col gap-1 p-6 rounded-lg shadow-lg border bg-zinc-100/90 m-2 max-w-lg">
+      <div className="flex gap-2">
+        <BrawlerProfileImage brawler={brawler} size="xl"/>
+        <div className="flex flex-col gap-1">
+          <div className="flex gap-1 items-center">
+            <div className="font-bold sm:text-2xl text-xl">{brawler.name}</div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <BrawlerClassIcon brawlerRole={brawler.role} size="xl"/>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {brawlerClassTitle(brawler.role)}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+          <div>
+          <span className={cn("text-zinc-50", "sm:text-base text-sm", "font-bold", "rounded-md", "border", "border-zinc-800", "border-[0.5px]", "px-2", "py-1", "items-center", brawlerBackgroundColor(brawler))}>
+            <span className="drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
+              {brawlerRarityTitle(brawler.rarity)}
+            </span>
+          </span>
+          </div>
+        </div>
+      </div>
+      <Help description={"최근 1주일의 통계입니다."}/>
+    </div>
+  );
+}
+
 async function Title({value}: Readonly<{ value: string }>) {
   return (
     <h2 className="text-xl sm:text-2xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
@@ -117,7 +157,7 @@ async function StatisticsContent(
       <div className="flex flex-col gap-2">
         <Title value="이벤트"/>
         <Suspense fallback={<Loading/>}>
-          <PageEventStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
+          <PageEventStatistics brawler={brawler} statsParams={statsParams} date={date}/>
         </Suspense>
       </div>
 
@@ -138,11 +178,10 @@ async function StatisticsContent(
   );
 }
 
-async function PageEventStatistics({brawler, statsParams, date, brawlers}: Readonly<{
+async function PageEventStatistics({brawler, statsParams, date}: Readonly<{
   brawler: Brawler,
   statsParams: StatisticsParams,
-  date: Date,
-  brawlers: Brawler[]
+  date: Date
 }>) {
 
   return (
