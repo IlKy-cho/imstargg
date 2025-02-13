@@ -107,6 +107,20 @@ public class PlayerBrawlerCollectionEntity extends BaseEntity {
         return updated;
     }
 
+    public void handleError() {
+        if (power < 1 || power > 11) {
+            // swap power and trophies
+            int temp = power;
+            power = trophies;
+            trophies = temp;
+
+            // swap rank and highestTrophies
+            temp = rank;
+            rank = highestTrophies;
+            highestTrophies = temp;
+        }
+    }
+
     public Long getId() {
         return id;
     }
