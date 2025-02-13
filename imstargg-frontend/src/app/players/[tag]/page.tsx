@@ -1,5 +1,4 @@
 import React from "react";
-import PlayerProfile from "@/components/player-profile";
 import {getBrawlers} from "@/lib/api/brawler";
 import {getPlayer, getPlayerBrawlers} from "@/lib/api/player";
 import {notFound} from "next/navigation";
@@ -7,8 +6,18 @@ import {Metadata} from "next";
 import {PlayerBattleContent} from "@/components/player-battle";
 import {Brawler} from "@/model/Brawler";
 import {PlayerBrawlerList} from "@/components/player-brawler";
-import {PageHeader} from "@/components/page-header";
+import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
+import {Player} from "@/model/Player";
+import Trophy from "@/components/trophy";
+import SoloRankTier from "@/components/solo-rank-tier";
+import dayjs from "dayjs";
+import 'dayjs/locale/ko';
+import relativeTime from "dayjs/plugin/relativeTime";
+import PlayerRenewButton from "@/components/player-renew-button";
+import {cn} from "@/lib/utils";
 
+dayjs.locale('ko');
+dayjs.extend(relativeTime);
 
 type Props = {
   params: Promise<{ tag: string; }>
@@ -54,5 +63,55 @@ async function PagePlayerBrawlerList({tag, brawlers}: Readonly<{tag: string, bra
 
   return (
     <PlayerBrawlerList brawlers={brawlers} playerBrawlers={playerBrawlers} />
+  );
+}
+
+const PlayerInfoContainer = ({label, children}: { label: string, children: React.ReactNode }) => (
+  <div className="flex justify-between items-center text-sm sm:text-base">
+    <span className="text-zinc-500">{label}</span>
+    {children}
+  </div>
+);
+
+function PlayerProfile({player}: Readonly<{ player: Player }>) {
+  return (
+    <div className={cn("space-y-1", pageHeaderContainerDefault)}>
+      <div>
+        <PlayerInfoContainer label="이름">
+          <span>{player.name}</span>
+        </PlayerInfoContainer>
+
+        <PlayerInfoContainer label="태그">
+          <span>{player.tag}</span>
+        </PlayerInfoContainer>
+
+        <PlayerInfoContainer label="클럽 태그">
+          {player.clubTag ?
+            <span>{player.clubTag}</span>
+            : <span>❌</span>
+          }
+        </PlayerInfoContainer>
+
+        <PlayerInfoContainer label="트로피">
+          <Trophy value={player.trophies}/>
+        </PlayerInfoContainer>
+
+        <PlayerInfoContainer label="최고 트로피">
+          <Trophy value={player.highestTrophies}/>
+        </PlayerInfoContainer>
+
+        <PlayerInfoContainer label="경쟁전">
+          {player.soloRankTier ?
+            <SoloRankTier tier={player.soloRankTier}/>
+            : <span className="text-gray-400">❓</span>
+          }
+        </PlayerInfoContainer>
+
+        <div className="text-xs sm:text-sm text-gray-400">
+          마지막 업데이트: {dayjs(player.updatedAt).fromNow()}
+        </div>
+      </div>
+      <PlayerRenewButton player={player}/>
+    </div>
   );
 }
