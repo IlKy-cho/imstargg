@@ -4,15 +4,8 @@ import Image from 'next/image';
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import Link from "next/link";
 import {battleEventHref} from "@/config/site";
-import {
-  battleEventModeBackGroundColor,
-  battleEventModeIconSrc,
-  battleEventModeTitle,
-  battleModeIconSrc, battleModeTitle
-} from "@/lib/battle-mode";
+import {battleEventModeBackGroundColor, battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
 import {cn} from "@/lib/utils";
-import {Help} from "@/components/help";
-import {pageHeaderContainerDefault} from "@/components/page-header";
 
 type BattleEventListProps = {
   battleEvents: BattleEventModel[];
