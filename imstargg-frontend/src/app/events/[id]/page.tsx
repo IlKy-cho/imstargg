@@ -27,6 +27,7 @@ import {Suspense} from "react";
 import Loading from "@/app/loading";
 import {yesterdayDate} from "@/lib/date";
 import {BattleEventProfile} from "@/components/battle-event";
+import {PageHeader} from "@/components/page-header";
 
 type Props = {
   params: Promise<{
@@ -63,11 +64,9 @@ export default async function EventPage({params, searchParams}: Readonly<Props>)
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-col lg:flex-row gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
-        <div className="flex-1">
-          <BattleEventProfile battleEvent={battleEvent}/>
-        </div>
-      </div>
+      <PageHeader>
+        <BattleEventProfile battleEvent={battleEvent}/>
+      </PageHeader>
       <div className="flex flex-col gap-2 p-1">
         <BattleEventStatisticsOption
           battleEvent={battleEvent}

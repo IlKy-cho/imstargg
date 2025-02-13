@@ -4,6 +4,7 @@ import {Ranking} from "@/components/ranking";
 import {getPlayerRanking} from "@/lib/api/ranking";
 import {Country} from "@/model/enums/Country";
 import {countryOrDefault} from "@/lib/country";
+import {PageHeader} from "@/components/page-header";
 
 export const metadata: Metadata = {
   title: '플레이어',
@@ -25,11 +26,11 @@ export default async function PlayersPage({searchParams}: Readonly<PageProps>) {
   const rankings = await getPlayerRanking(country);
     return (
     <div className="space-y-2">
-      <div className="gap-4 bg-cover bg-center bg-no-repeat bg-brawl-stars-lobby p-4">
+      <PageHeader>
         <div className="w-80 sm:w-96">
           <PlayerSearchForm/>
         </div>
-      </div>
+      </PageHeader>
       <Ranking rankings={rankings} country={country} size="screen"/>
     </div>
     );
