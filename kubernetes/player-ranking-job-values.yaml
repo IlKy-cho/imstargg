@@ -1,0 +1,6 @@
+app:
+  job:
+    name: playerRankingJob
+
+job:
+  schedule: "5 * * * *"

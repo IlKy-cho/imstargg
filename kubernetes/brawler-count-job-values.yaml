@@ -1,0 +1,6 @@
+app:
+  job:
+    name: brawlerCountJob
+
+job:
+  schedule: "0 3 * * 3"

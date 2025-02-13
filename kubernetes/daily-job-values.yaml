@@ -1,0 +1,6 @@
+app:
+  job:
+    name: dailyJob
+
+job:
+  schedule: "0 22 * * *"
