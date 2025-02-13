@@ -1,6 +1,5 @@
 import {getBattleEvent} from "@/lib/api/battle-event";
 import {notFound} from "next/navigation";
-import BattleEventProfile from "@/components/battle-event-profile";
 import {BattleEventStatisticsOption} from "@/components/statistics-option";
 import {
   getBattleEventBrawlerRankStatistics,
@@ -27,6 +26,7 @@ import {battleEventModeTitle} from "@/lib/battle-mode";
 import {Suspense} from "react";
 import Loading from "@/app/loading";
 import {yesterdayDate} from "@/lib/date";
+import {BattleEventProfile} from "@/components/battle-event";
 
 type Props = {
   params: Promise<{
