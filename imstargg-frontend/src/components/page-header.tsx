@@ -4,7 +4,7 @@ type PageHeaderProps = {
   children: React.ReactNode;
 }
 
-export async function PageHeader(
+export function PageHeader(
   {children}: Readonly<PageHeaderProps>
 ) {
   return (

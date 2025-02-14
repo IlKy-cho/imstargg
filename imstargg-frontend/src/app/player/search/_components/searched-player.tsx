@@ -18,7 +18,7 @@ interface SearchedPlayerProps {
   player: Player;
 }
 
-export default function SearchedPlayer({player}: SearchedPlayerProps) {
+export function SearchedPlayer({player}: SearchedPlayerProps) {
   const router = useRouter();
   const {addSearchTerm} = useRecentSearches();
 
