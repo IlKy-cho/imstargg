@@ -41,7 +41,7 @@ public class PlayerRenewalExecutor {
                     "갱신이 불가능 합니다. PlayerRenewal=" + playerRenewal + "unknownPlayerTag=" + tag);
         }
 
-        if (playerRenewalRepository.pending(playerRenewal)) {
+        if (!playerRenewalRepository.pending(playerRenewal)) {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
                     "갱신 요청 충돌. unknownPlayerTag=" + tag);
         }

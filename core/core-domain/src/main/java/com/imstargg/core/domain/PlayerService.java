@@ -39,6 +39,8 @@ public class PlayerService {
 
     public void renewNew(BrawlStarsTag tag) {
         if (playerFinder.find(tag).isPresent()) {
+            // 새 플레이어 갱신 기능은 없는 플레이어를 추가하는 것이 목적이므로,
+            // 플레이어 존재 시 굳이 예외를 발생시키지 않는다. -> 예외로 인한 클라이언트 분기처리 불필요
             return;
         }
         playerRenewalExecutor.renewNew(tag);
