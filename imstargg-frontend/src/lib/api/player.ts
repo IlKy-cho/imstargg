@@ -55,6 +55,21 @@ export async function getPlayerRenewalStatus(tag: string): Promise<PlayerRenewal
   return await response.json() as PlayerRenewalStatusResponse;
 }
 
+export async function fetchGetRenewalStatusNew(tag: string): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renewal-status-new`);
+  return await fetch(url);
+}
+
+export async function getPlayerRenewalStatusNew(tag: string): Promise<PlayerRenewalStatusResponse> {
+  const response = await fetchGetRenewalStatusNew(encodeURIComponent(tag));
+
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+
+  return await response.json() as PlayerRenewalStatusResponse;
+}
+
 export async function fetchRenewPlayer(tag: string): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/renew`);
 

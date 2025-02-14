@@ -1,4 +1,4 @@
-import PlayerSearchForm from "@/components/player-search-form";
+import {PlayerSearchForm} from "@/components/player-search-form";
 import beaPhewPinSrc from '@/../public/icon/brawler/bea/bea_phew_pin.png';
 import Image from 'next/image';
 

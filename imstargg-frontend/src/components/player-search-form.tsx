@@ -13,7 +13,10 @@ import { useRouter } from "next/navigation";
 import { useRecentSearches } from "@/hooks/useRecentSearchs";
 import Link from "next/link";
 import { playerHref } from "@/config/site";
-import { SearchIcon, SparkleIcon, XIcon } from "lucide-react";
+import {LoaderCircleIcon, SearchIcon, SparkleIcon, XIcon} from "lucide-react";
+import {getPlayer, getPlayerRenewalStatus, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
+import {toast} from "sonner";
+import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
 
 const formSchema = z.object({
   nameOrTag: z.string().min(0).max(100, {
@@ -21,9 +24,10 @@ const formSchema = z.object({
   }),
 });
 
-export default function PlayerSearchForm() {
+export function PlayerSearchForm() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,11 +35,47 @@ export default function PlayerSearchForm() {
     },
   });
 
-  function onSubmit(value: z.infer<typeof formSchema>) {
-    if (value.nameOrTag.trim()) {
-      const searchQuery = value.nameOrTag.startsWith('#') ?
-        encodeURIComponent(value.nameOrTag) : `${value.nameOrTag}`;
-      router.push(`/player/search?q=${searchQuery}`);
+  async function onSubmit(value: z.infer<typeof formSchema>) {
+    setLoading(true);
+    const query = value.nameOrTag.trim();
+    if (query.startsWith('#')) {
+      const tag = query;
+      const player = await getPlayer(tag);
+      if (!player) {
+        const handleRenewNew = async () => {
+          try {
+            await renewNewPlayer(tag);
+
+            const checkRenewalStatus = async () => {
+              const status = await getPlayerRenewalStatusNew(tag);
+              console.log("Renewal status:", status);
+              if (!status.renewing) {
+                console.log("Renewal finished");
+              } else {
+                setTimeout(checkRenewalStatus, 1000);
+              }
+            };
+            await checkRenewalStatus();
+
+          } catch (error) {
+            if (error instanceof ApiError) {
+              if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {
+                toast("현재 플레이어 갱신이 불가능합니다. 잠시 후 다시 시도해주세요.");
+              } else if (error.error?.type === ApiErrorTypeValue.BRAWLSTARS_IN_MAINTENANCE) {
+                toast("브롤스타즈 서버 점검 중입니다. 잠시 후 다시 시도해주세요.");
+              }
+            } else {
+              console.error('Unexpected error:', error);
+              toast("예기치 않은 오류가 발생했습니다.");
+            }
+          }
+        }
+
+        await handleRenewNew();
+      }
+      router.push(playerHref(tag));
+    } else if (query) {
+      router.push(`/player/search?q=${query}`);
     }
   }
 
@@ -62,7 +102,12 @@ export default function PlayerSearchForm() {
               )}
             />
           </CollapsibleTrigger>
-          <Button type="submit">검색</Button>
+          <Button type="submit">
+            {loading ?
+              <LoaderCircleIcon className="animate-spin h-5 w-5" />
+              : <SearchIcon className="h-5 w-5" />
+            }
+          </Button>
         </form>
       </Form>
       <CollapsibleContent>
@@ -114,7 +159,7 @@ function RecentSearchPlayer({
     <div className="flex items-center hover:bg-zinc-100">
       <Link href={playerHref(tag)} className="flex flex-1 items-center gap-1">
         <SparkleIcon className="h-4 w-4" />
-        {name}<span className="text-zinc-500">#{tag}</span>
+        {name}<span className="text-zinc-500">{tag}</span>
       </Link>
       <div 
         className="p-1 cursor-pointer"

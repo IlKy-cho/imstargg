@@ -1,6 +1,6 @@
 import Image from "next/image";
 import React from "react";
-import PlayerSearchForm from "@/components/player-search-form";
+import {PlayerSearchForm} from "@/components/player-search-form";
 import {NewsChannelItem, newsChannelItems} from "@/config/docs";
 import Link from "next/link";
 

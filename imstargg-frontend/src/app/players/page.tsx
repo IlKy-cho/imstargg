@@ -1,5 +1,5 @@
 import {Metadata} from "next";
-import PlayerSearchForm from "@/components/player-search-form";
+import {PlayerSearchForm} from "@/components/player-search-form";
 import {Ranking} from "@/components/ranking";
 import {getPlayerRanking} from "@/lib/api/ranking";
 import {Country} from "@/model/enums/Country";
