@@ -70,7 +70,16 @@ public class PlayerRenewalExecutor {
     }
 
     public boolean isRenewing(Player player) {
-        Optional<PlayerRenewal> playerRenewalOpt = playerRenewalRepository.find(player.tag());
+        return doIsRenewing(player.tag());
+    }
+
+    public boolean isRenewingNew(BrawlStarsTag tag) {
+        UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
+        return doIsRenewing(unknownPlayer.tag());
+    }
+
+    private boolean doIsRenewing(BrawlStarsTag tag) {
+        Optional<PlayerRenewal> playerRenewalOpt = playerRenewalRepository.find(tag);
         if (playerRenewalOpt.isEmpty()) {
             return false;
         }
@@ -80,10 +89,9 @@ public class PlayerRenewalExecutor {
         }
 
         if (PlayerRenewalStatus.IN_MAINTENANCE.equals(playerRenewal.status())) {
-            throw new CoreException(CoreErrorType.BRAWLSTARS_IN_MAINTENANCE, "playerTag=" + player.tag());
+            throw new CoreException(CoreErrorType.BRAWLSTARS_IN_MAINTENANCE, "playerTag=" + tag);
         }
 
         return false;
     }
-
 }
