@@ -139,7 +139,6 @@ create table unknown_player
 (
     unknown_player_id bigint       not null auto_increment,
     brawlstars_tag    varchar(45)  not null,
-    status            varchar(45)  not null,
     not_found_count   int          not null,
     created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
