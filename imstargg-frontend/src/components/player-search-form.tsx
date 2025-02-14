@@ -7,12 +7,12 @@ import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import React, {useState} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
-import {useRouter} from "next/navigation";
+import {useRouter, usePathname, useSearchParams} from "next/navigation";
 import {useRecentSearches} from "@/hooks/useRecentSearchs";
 import Link from "next/link";
-import {playerHref} from "@/config/site";
+import {playerHref, playerSearchResultHref} from "@/config/site";
 import {LoaderCircleIcon, SearchIcon, SparkleIcon, XIcon} from "lucide-react";
 import {getPlayer, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
 import {toast} from "sonner";
@@ -26,8 +26,11 @@ const formSchema = z.object({
 
 export function PlayerSearchForm() {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
+  const searchResultsRef = useRef<HTMLDivElement>(null);
   const {addSearchTerm} = useRecentSearches();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -35,6 +38,10 @@ export function PlayerSearchForm() {
       nameOrTag: "",
     },
   });
+
+  useEffect(() => {
+    setOpened(false);
+  }, [pathname, searchParams]);
 
   async function onSubmit(value: z.infer<typeof formSchema>) {
     setLoading(true);
@@ -81,13 +88,13 @@ export function PlayerSearchForm() {
       router.push(playerHref(tag));
     } else if (query) {
       addSearchTerm({type: 'query', value: query});
-      router.push(`/player/search?q=${query}`);
+      router.push(playerSearchResultHref(query));
     }
     setLoading(false);
   }
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
+    <Collapsible open={opened} onOpenChange={setOpened} className="relative">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-1">
           <CollapsibleTrigger asChild>
@@ -101,8 +108,12 @@ export function PlayerSearchForm() {
                       className="bg-white"
                       placeholder="플레이어 태그 / 이름"
                       {...field}
-                      onFocus={() => setIsOpen(true)}
-                      onBlur={() => setIsOpen(false)}
+                      onFocus={() => setOpened(true)}
+                      onBlur={(e) => {
+                        if (!searchResultsRef.current?.contains(e.relatedTarget as Node)) {
+                          setOpened(false);
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -121,7 +132,10 @@ export function PlayerSearchForm() {
           </Button>
         </form>
       </Form>
-      <CollapsibleContent className="absolute left-0 right-0 top-full z-10">
+      <CollapsibleContent 
+        ref={searchResultsRef}
+        className="absolute left-0 right-0 top-full z-10"
+      >
         <RecentSearches />
       </CollapsibleContent>
     </Collapsible>
@@ -191,7 +205,7 @@ function RecentSearchQuery({
 }>) {
   return (
     <div className="flex items-center justify-between hover:bg-zinc-100">
-      <Link href={`/player/search?q=${query}`} className="flex flex-1 items-center gap-1">
+      <Link href={playerSearchResultHref(query)} className="flex flex-1 items-center gap-1">
         <SearchIcon className="h-4 w-4" />
         {query}
       </Link>
