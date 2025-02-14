@@ -8,7 +8,7 @@ import java.time.OffsetDateTime;
 public record PlayerRenewal(
         BrawlStarsTag tag,
         PlayerRenewalStatus status,
-        OffsetDateTime updatedAt
+        OffsetDateTime requestedAt
 ) {
 
     public boolean available(Player player, Clock clock) {
@@ -16,11 +16,7 @@ public record PlayerRenewal(
             return false;
         }
 
-        if (status.finished()) {
-            return true;
-        }
-
-        return OffsetDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
+        return renewalAvailable(clock);
     }
 
     public boolean available(UnknownPlayer unknownPlayer, Clock clock) {
@@ -28,10 +24,13 @@ public record PlayerRenewal(
             return false;
         }
 
-        if (status.finished()) {
+        return renewalAvailable(clock);
+    }
+
+    private boolean renewalAvailable(Clock clock) {
+        if (status.finished() || status == PlayerRenewalStatus.NEW) {
             return true;
         }
-
-        return OffsetDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
+        return OffsetDateTime.now(clock).isAfter(requestedAt.plusMinutes(2));
     }
 }
