@@ -40,7 +40,7 @@ export default async function BrawlersPage({ searchParams }: Readonly<PageProps>
           <h1 className="sm:text-2xl text-xl font-bold text-zinc-800">
             브롤러
           </h1>
-          <Help description={"최근 1주일의 이벤트입니다."}/>
+          <Help description={"최근 1주일의 통계입니다."}/>
         </div>
       </PageHeader>
       <div className="w-full">
