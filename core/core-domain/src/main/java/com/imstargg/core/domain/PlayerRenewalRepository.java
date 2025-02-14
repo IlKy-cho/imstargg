@@ -43,7 +43,7 @@ public class PlayerRenewalRepository {
         return new PlayerRenewal(
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getStatus(),
-                entity.getUpdatedAt().toLocalDateTime()
+                entity.getUpdatedAt()
         );
     }
 
@@ -52,7 +52,7 @@ public class PlayerRenewalRepository {
                 .map(entity -> new PlayerRenewal(
                         new BrawlStarsTag(entity.getBrawlStarsTag()),
                         entity.getStatus(),
-                        entity.getUpdatedAt().toLocalDateTime()
+                        entity.getUpdatedAt()
                 ));
     }
 

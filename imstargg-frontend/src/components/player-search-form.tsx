@@ -66,6 +66,7 @@ export function PlayerSearchForm() {
             await checkRenewalStatus();
 
           } catch (error) {
+            console.error('error:', error);
             if (error instanceof ApiError) {
               if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {
                 toast("현재 플레이어 갱신이 불가능합니다. 잠시 후 다시 시도해주세요.");
@@ -73,7 +74,6 @@ export function PlayerSearchForm() {
                 toast("브롤스타즈 서버 점검 중입니다. 잠시 후 다시 시도해주세요.");
               }
             } else {
-              console.error('Unexpected error:', error);
               toast("예기치 않은 오류가 발생했습니다.");
             }
           }

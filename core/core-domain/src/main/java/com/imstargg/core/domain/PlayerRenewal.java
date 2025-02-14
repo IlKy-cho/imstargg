@@ -3,12 +3,12 @@ package com.imstargg.core.domain;
 import com.imstargg.core.enums.PlayerRenewalStatus;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record PlayerRenewal(
         BrawlStarsTag tag,
         PlayerRenewalStatus status,
-        LocalDateTime updatedAt
+        OffsetDateTime updatedAt
 ) {
 
     public boolean available(Player player, Clock clock) {
@@ -20,7 +20,7 @@ public record PlayerRenewal(
             return true;
         }
 
-        return LocalDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
+        return OffsetDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
     }
 
     public boolean available(UnknownPlayer unknownPlayer, Clock clock) {
@@ -32,6 +32,6 @@ public record PlayerRenewal(
             return true;
         }
 
-        return LocalDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
+        return OffsetDateTime.now(clock).isAfter(updatedAt.plusMinutes(2));
     }
 }
