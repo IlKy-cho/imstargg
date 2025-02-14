@@ -87,7 +87,7 @@ export function PlayerSearchForm() {
   }
 
   return (
-    <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="relative">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-1">
           <CollapsibleTrigger asChild>
@@ -102,6 +102,7 @@ export function PlayerSearchForm() {
                       placeholder="플레이어 태그 / 이름"
                       {...field}
                       onFocus={() => setIsOpen(true)}
+                      onBlur={() => setIsOpen(false)}
                     />
                   </FormControl>
                   <FormMessage />
@@ -120,7 +121,7 @@ export function PlayerSearchForm() {
           </Button>
         </form>
       </Form>
-      <CollapsibleContent>
+      <CollapsibleContent className="absolute left-0 right-0 top-full z-10">
         <RecentSearches />
       </CollapsibleContent>
     </Collapsible>
@@ -135,7 +136,7 @@ function RecentSearches() {
   }
 
   return (
-    <div className="flex flex-col gap-1 border rounded-md p-1 bg-white text-sm">
+    <div className="flex flex-col gap-1 border rounded-md p-1 bg-white text-sm shadow-md">
       {recentSearches.map((search, index) => (
         <div key={index}>
           {search.type === 'player' ? (
