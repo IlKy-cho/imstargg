@@ -16,10 +16,6 @@ public class PlayerSearchService {
     }
 
     public List<Player> search(PlayerSearchParam param) {
-        if (!param.isTag()) {
-            return playerSearcher.searchName(param.query());
-        }
-
-        return playerSearcher.searchTag(param.toTag());
+        return playerSearcher.searchName(param.query());
     }
 }
