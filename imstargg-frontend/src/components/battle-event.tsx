@@ -55,7 +55,7 @@ async function BattleEventModeHeader({mode}: Readonly<{ mode: BattleEventMode }>
   const iconSrc = battleEventModeIconSrc(mode);
   const title = battleEventModeTitle(mode) || "❓";
   return (
-    <div className={cn("flex items-center gap-2 rounded sm:p-2 p-1", backgroundColor)}>
+    <div className={cn("flex items-center gap-2 rounded sm:p-2 p-1 drop-shadow-md", backgroundColor)}>
       {iconSrc &&
         <Image
           src={iconSrc}
@@ -76,7 +76,7 @@ async function BattleEvent({battleEvent}: Readonly<{ battleEvent: BattleEventMod
   const headerBackgroundColor = battleEventModeBackGroundColor(battleEvent.mode);
   return (
     <Link href={battleEventHref(battleEvent.id)}>
-      <div className="flex flex-col overflow-hidden bg-zinc-100 hover:bg-zinc-200 rounded transition-colors sm:h-60 h-44 sm:w-46 w-38">
+      <div className="flex flex-col overflow-hidden bg-zinc-100 hover:bg-zinc-200 drop-shadow-md rounded transition-colors sm:h-60 h-44 sm:w-46 w-38">
         <div className={cn("flex justify-center sm:p-2 p-1", headerBackgroundColor)}>
           <div className="sm:text-sm text-xs font-bold text-white bg-zinc-700 px-1 inline-block rounded">
             {battleEvent.map.name}
