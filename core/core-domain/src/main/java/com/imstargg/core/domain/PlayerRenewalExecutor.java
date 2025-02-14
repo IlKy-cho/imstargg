@@ -37,11 +37,13 @@ public class PlayerRenewalExecutor {
         UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
         PlayerRenewal playerRenewal = playerRenewalRepository.get(unknownPlayer.tag());
         if (!playerRenewal.available(unknownPlayer, clock)) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "unknownPlayerTag=" + tag);
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
+                    "갱신이 불가능 합니다. PlayerRenewal=" + playerRenewal + "unknownPlayerTag=" + tag);
         }
 
         if (playerRenewalRepository.pending(playerRenewal)) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "unknownPlayerTag=" + tag);
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
+                    "갱신 요청 충돌. unknownPlayerTag=" + tag);
         }
 
         eventPublisher.publish(tag);
@@ -51,11 +53,13 @@ public class PlayerRenewalExecutor {
         validateRequestCount();
         PlayerRenewal playerRenewal = playerRenewalRepository.get(player.tag());
         if (!playerRenewal.available(player, clock)) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "playerTag=" + player.tag());
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
+                    "갱신이 불가능 합니다. PlayerRenewal=" + playerRenewal + " playerTag=" + player.tag());
         }
 
         if (!playerRenewalRepository.pending(playerRenewal)) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE, "playerTag=" + player.tag());
+            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
+                    "갱신 요청 충돌. playerTag=" + player.tag());
         }
 
         eventPublisher.publish(player.tag());

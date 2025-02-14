@@ -5,6 +5,7 @@ import java.util.List;
 
 public enum PlayerRenewalStatus {
 
+    NEW,
     PENDING,
     EXECUTING,
     COMPLETE,
