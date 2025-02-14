@@ -50,7 +50,7 @@ public class PlayerRenewalEntity extends BaseEntity {
 
     public PlayerRenewalEntity(String brawlStarsTag, OffsetDateTime requestedAt) {
         this.brawlStarsTag = brawlStarsTag;
-        this.status = PlayerRenewalStatus.PENDING;
+        this.status = PlayerRenewalStatus.NEW;
         this.requestedAt = requestedAt;
     }
 
