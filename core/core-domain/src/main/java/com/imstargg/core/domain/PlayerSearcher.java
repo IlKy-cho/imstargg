@@ -13,12 +13,6 @@ public class PlayerSearcher {
         this.playerRepository = playerRepository;
     }
 
-    public List<Player> searchTag(BrawlStarsTag tag) {
-        return playerRepository.findByTag(tag)
-                .map(List::of)
-                .orElseGet(List::of);
-    }
-
     public List<Player> searchName(String name) {
         return playerRepository.findByName(name);
     }
