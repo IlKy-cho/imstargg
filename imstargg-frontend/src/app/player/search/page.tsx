@@ -2,26 +2,26 @@
 
 import React, {useEffect, useState} from "react";
 import {Player} from "@/model/Player";
-import {useRouter, useSearchParams} from "next/navigation";
-import SearchedPlayer from "@/components/searched-player";
+import {useSearchParams} from "next/navigation";
 import {PlayerSearchForm} from "@/components/player-search-form";
 import {searchPlayer} from "@/lib/api/player";
-import {metadataTitle, playerHref} from "@/config/site";
 import {useRecentSearches} from "@/hooks/useRecentSearchs";
+import {PageHeader} from "@/components/page-header";
+import {SearchedPlayer} from "@/app/player/search/_components/searched-player";
 
 export default function PlayerSearchResultPage() {
-  const [players, setPlayers] = useState<Player[] | null>(null);
   const searchParams = useSearchParams();
-  const {addSearchTerm} = useRecentSearches();
   const query = searchParams.get('q');
-  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [players, setPlayers] = useState<Player[] | null>(null);
+  const {addSearchTerm} = useRecentSearches();
 
   useEffect(() => {
-    document.title = metadataTitle(`${query || '플레이어'} 검색결과`);
-
+    setLoading(true);
     const fetchPlayers = async () => {
       if (query === null) {
         setPlayers([]);
+        setLoading(false);
         return;
       }
 
@@ -32,6 +32,8 @@ export default function PlayerSearchResultPage() {
       } catch (error) {
         console.error('검색 결과를 불러오는 중 오류가 발생했습니다:', error);
         setPlayers([]);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -40,42 +42,39 @@ export default function PlayerSearchResultPage() {
 
   useEffect(() => {
     if (!players || players.length === 0) return;
-
-    if (players.length === 1) {
-      const player = players[0];
-      addSearchTerm({type: 'player', value: {name: player.name, tag: player.tag}});
-      router.replace(playerHref(player.tag));
-    } else {
-      if (query) {
-        addSearchTerm({type: 'query', value: query});
-      }
+    if (query) {
+      addSearchTerm({type: 'query', value: query});
     }
   }, [players, query]);
 
   return (
-    <div className="w-full max-w-xl mx-auto p-1">
-      <div className="w-full max-w-xl m-1">
-        <PlayerSearchForm/>
-      </div>
-
-      {players === null ? (
-        <div className="w-full text-center py-8">검색 중...</div>
-      ) : players.length === 0 ? (
-        <div className="w-full text-center py-8">
-          <>&#39;<span className="font-bold">{query || '(이름 없음)'}</span>&#39;의 검색 결과가 없습니다.</>
+    <div className="space-y-2">
+      <PageHeader>
+        <div className="w-full max-w-xl m-1">
+          <PlayerSearchForm/>
         </div>
-      ) : (
-        <>
-          <h2 className="text-xl font-bold mb-4">
-            &#39;<span className="font-bold">{query || '(이름 없음)'}</span>&#39; 검색 결과
-          </h2>
-          <div className="space-y-2">
-            {players.map((player) => (
-              <SearchedPlayer key={player.tag} player={player}/>
-            ))}
+      </PageHeader>
+
+      <div>
+        {loading ? (
+          <div className="w-full text-center py-8">검색 중...</div>
+        ) : players === null || players.length === 0 ? (
+          <div className="w-full text-center py-8">
+            <>&#39;<span className="font-bold">{query || '(이름 없음)'}</span>&#39;의 검색 결과가 없습니다.</>
           </div>
-        </>
-      )}
+        ) : (
+          <>
+            <h2 className="text-xl font-bold mb-4">
+              &#39;<span className="font-bold">{query || '(이름 없음)'}</span>&#39; 검색 결과
+            </h2>
+            <div className="flex flex-col gap-1">
+              {players.map((player) => (
+                <SearchedPlayer key={player.tag} player={player}/>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,20 +1,20 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible";
 
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { useRouter } from "next/navigation";
-import { useRecentSearches } from "@/hooks/useRecentSearchs";
+import {z} from "zod";
+import {useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import React, {useState} from "react";
+import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
+import {useRouter} from "next/navigation";
+import {useRecentSearches} from "@/hooks/useRecentSearchs";
 import Link from "next/link";
-import { playerHref } from "@/config/site";
+import {playerHref} from "@/config/site";
 import {LoaderCircleIcon, SearchIcon, SparkleIcon, XIcon} from "lucide-react";
-import {getPlayer, getPlayerRenewalStatus, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
+import {getPlayer, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
 import {toast} from "sonner";
 import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
 
@@ -28,6 +28,7 @@ export function PlayerSearchForm() {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const {addSearchTerm} = useRecentSearches();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,10 +74,16 @@ export function PlayerSearchForm() {
 
         await handleRenewNew();
       }
+
+      if (player) {
+        addSearchTerm({type: 'player', value: {tag: player.tag, name: player.name}});
+      }
       router.push(playerHref(tag));
     } else if (query) {
+      addSearchTerm({type: 'query', value: query});
       router.push(`/player/search?q=${query}`);
     }
+    setLoading(false);
   }
 
   return (
@@ -102,7 +109,10 @@ export function PlayerSearchForm() {
               )}
             />
           </CollapsibleTrigger>
-          <Button type="submit">
+          <Button
+            type="submit"
+            disabled={loading}
+          >
             {loading ?
               <LoaderCircleIcon className="animate-spin h-5 w-5" />
               : <SearchIcon className="h-5 w-5" />
