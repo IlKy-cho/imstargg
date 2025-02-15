@@ -49,7 +49,7 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
 
         // then
         assertThat(playerRenewal.tag().value()).isEqualTo(tag);
-        assertThat(playerRenewal.status()).isEqualTo(PlayerRenewalStatus.PENDING);
+        assertThat(playerRenewal.status()).isEqualTo(PlayerRenewalStatus.NEW);
     }
 
     @Test
@@ -62,7 +62,7 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
 
         // then
         assertThat(playerRenewal.tag().value()).isEqualTo(tag);
-        assertThat(playerRenewal.status()).isEqualTo(PlayerRenewalStatus.PENDING);
+        assertThat(playerRenewal.status()).isEqualTo(PlayerRenewalStatus.NEW);
     }
 
     @Test
@@ -78,7 +78,7 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
         // then
         assertThat(playerRenewal).isPresent();
         assertThat(playerRenewal.get().tag().value()).isEqualTo(tag);
-        assertThat(playerRenewal.get().status()).isEqualTo(PlayerRenewalStatus.PENDING);
+        assertThat(playerRenewal.get().status()).isEqualTo(PlayerRenewalStatus.NEW);
     }
 
     @Test
@@ -102,7 +102,7 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
         PlayerRenewal playerRenewal = new PlayerRenewal(
                 new BrawlStarsTag(tag),
                 PlayerRenewalStatus.COMPLETE,
-                OffsetDateTime.now(clock).toLocalDateTime()
+                OffsetDateTime.now(clock)
         );
 
         // when
@@ -117,15 +117,17 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
     @Test
     void countRenewing_갱신중인_플레이어_수_조회() {
         // given
-        playerRenewalJpaRepository.saveAll(List.of(
-                new PlayerRenewalEntity("#1", OffsetDateTime.now(clock)), // PENDING
+        List<PlayerRenewalEntity> entities = List.of(
+                new PlayerRenewalEntity("#1", OffsetDateTime.now(clock)), // NEW
                 new PlayerRenewalEntity("#2", OffsetDateTime.now(clock))  // PENDING
-        ));
+        );
+        entities.get(1).pending(OffsetDateTime.now(clock));
+        playerRenewalJpaRepository.saveAll(entities);
 
         // when
         int count = playerRenewalRepository.countRenewing();
 
         // then
-        assertThat(count).isEqualTo(2);
+        assertThat(count).isEqualTo(1);
     }
 }
