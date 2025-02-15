@@ -143,6 +143,7 @@ function RecentSearchPlayer({
       </Link>
       <div 
         className="p-1 cursor-pointer"
+        onMouseDown={(e) => e.preventDefault()}
         onClick={onRemove}
       >
         <XIcon className="h-4 w-4" />
@@ -166,6 +167,7 @@ function RecentSearchQuery({
       </Link>
       <div 
         className="p-1 cursor-pointer"
+        onMouseDown={(e) => e.preventDefault()}
         onClick={onRemove}
       >
         <XIcon className="h-4 w-4" />
