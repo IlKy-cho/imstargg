@@ -50,9 +50,7 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
       await checkRenewalStatus();
     } catch (error) {
       if (error instanceof ApiError) {
-        if (error.error?.type === ApiErrorTypeValue.PLAYER_ALREADY_RENEWED) {
-          toast("아직 새로고침이 불가능합니다. 잠시 후 다시 시도해주세요.");
-        } else if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {
+        if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {
           toast("현재 새로고침 요청이 많아서 처리할 수 없습니다. 잠시 후 다시 시도해주세요.");
         } else if (error.error?.type === ApiErrorTypeValue.BRAWLSTARS_IN_MAINTENANCE) {
           toast("브롤스타즈 서버 점검 중입니다. 잠시 후 다시 시도해주세요.");
