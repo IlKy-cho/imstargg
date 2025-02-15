@@ -7,16 +7,13 @@ import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/
 import {z} from "zod";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import React, {useState, useRef, useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
-import {useRouter, usePathname, useSearchParams} from "next/navigation";
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {useRecentSearches} from "@/hooks/useRecentSearchs";
 import Link from "next/link";
 import {playerHref, playerSearchResultHref} from "@/config/site";
 import {LoaderCircleIcon, SearchIcon, SparkleIcon, XIcon} from "lucide-react";
-import {getPlayer, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
-import {toast} from "sonner";
-import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
 
 const formSchema = z.object({
   nameOrTag: z.string().min(0).max(100, {
@@ -45,51 +42,9 @@ export function PlayerSearchForm() {
 
   async function onSubmit(value: z.infer<typeof formSchema>) {
     setLoading(true);
-    const query = value.nameOrTag.trim();
-    if (query.startsWith('#')) {
-      const tag = query;
-      const player = await getPlayer(tag);
-      if (!player) {
-        const handleRenewNew = async () => {
-          try {
-            await renewNewPlayer(tag);
-
-            const checkRenewalStatus = async () => {
-              const status = await getPlayerRenewalStatusNew(tag);
-              console.log("Renewal status:", status);
-              if (!status.renewing) {
-                console.log("Renewal finished");
-              } else {
-                setTimeout(checkRenewalStatus, 1000);
-              }
-            };
-            await checkRenewalStatus();
-
-          } catch (error) {
-            console.error('error:', error);
-            if (error instanceof ApiError) {
-              if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {
-                toast("현재 플레이어 갱신이 불가능합니다. 잠시 후 다시 시도해주세요.");
-              } else if (error.error?.type === ApiErrorTypeValue.BRAWLSTARS_IN_MAINTENANCE) {
-                toast("브롤스타즈 서버 점검 중입니다. 잠시 후 다시 시도해주세요.");
-              }
-            } else {
-              toast("예기치 않은 오류가 발생했습니다.");
-            }
-          }
-        }
-
-        await handleRenewNew();
-      }
-
-      if (player) {
-        addSearchTerm({type: 'player', value: {tag: player.tag, name: player.name}});
-      }
-      router.push(playerHref(tag));
-    } else if (query) {
-      addSearchTerm({type: 'query', value: query});
-      router.push(playerSearchResultHref(query));
-    }
+    const query = value.nameOrTag;
+    addSearchTerm({type: 'query', value: query});
+    router.push(playerSearchResultHref(query));
     setLoading(false);
   }
 
@@ -132,7 +87,7 @@ export function PlayerSearchForm() {
           </Button>
         </form>
       </Form>
-      <CollapsibleContent 
+      <CollapsibleContent
         ref={searchResultsRef}
         className="absolute left-0 right-0 top-full z-10"
       >
