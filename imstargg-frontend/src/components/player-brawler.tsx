@@ -21,7 +21,7 @@ interface PlayerBrawlerListProps {
 
 export function PlayerBrawlerList({ brawlers, playerBrawlers }: Readonly<PlayerBrawlerListProps>) {
 
-  const [opened, setOpened] = useState(true);
+  const [opened, setOpened] = useState(false);
   const brawlerCollection = new BrawlerCollection(brawlers);
 
   return (
