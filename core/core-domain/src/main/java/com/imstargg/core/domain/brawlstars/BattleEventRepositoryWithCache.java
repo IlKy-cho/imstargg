@@ -56,7 +56,7 @@ public class BattleEventRepositoryWithCache {
     public List<BrawlStarsId> findAllEventIds(@Nullable LocalDate date) {
         return battleJpaRepository
                 .findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
-                        BattleType.regularTypes(),
+                        BattleType.officialTypes(),
                         date != null ? date.atStartOfDay().atZone(clock.getZone()).toOffsetDateTime() : null
                 )
                 .stream()
