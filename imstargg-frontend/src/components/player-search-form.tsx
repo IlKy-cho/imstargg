@@ -64,10 +64,12 @@ export function PlayerSearchForm() {
                       placeholder="플레이어 태그 / 이름"
                       {...field}
                       onFocus={() => setOpened(true)}
-                      onBlur={(e) => {
-                        if (!searchResultsRef.current?.contains(e.relatedTarget as Node)) {
-                          setOpened(false);
-                        }
+                      onBlur={() => {
+                        setTimeout(() => {
+                          if (!searchResultsRef.current?.contains(document.activeElement)) {
+                            setOpened(false);
+                          }
+                        }, 0);
                       }}
                     />
                   </FormControl>
