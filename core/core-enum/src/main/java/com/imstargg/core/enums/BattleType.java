@@ -36,6 +36,10 @@ public enum BattleType {
         return REGULAR_TYPES;
     }
 
+    public static Set<BattleType> officialTypes() {
+        return OFFICIAL_TYPES;
+    }
+
     BattleType(String code) {
         this.code = code;
     }
