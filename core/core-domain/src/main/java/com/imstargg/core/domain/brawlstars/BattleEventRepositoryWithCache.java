@@ -192,7 +192,9 @@ public class BattleEventRepositoryWithCache {
 
         return rotationItemEntities.stream()
                 .map(rotationItemEntity -> new RotationBattleEvent(
-                        idToEvent.get(new BrawlStarsId(rotationItemEntity.getEventBrawlStarsId())),
+                        Objects.requireNonNull(
+                                idToEvent.get(new BrawlStarsId(rotationItemEntity.getEventBrawlStarsId()))
+                        ),
                         rotationItemEntity.getStartTime(),
                         rotationItemEntity.getEndTime()
                 )).toList();

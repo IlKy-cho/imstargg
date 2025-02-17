@@ -39,7 +39,7 @@ public class BattleEventRotationItemCollectionEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
-            name = "event_brawlstars_id", updatable = false, nullable = false,
+            name = "event_brawlstars_id", referencedColumnName = "brawlstars_id", updatable = false, nullable = false,
             foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
     )
     private BattleEventCollectionEntity event;
