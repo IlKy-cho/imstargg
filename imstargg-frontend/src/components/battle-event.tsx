@@ -11,7 +11,7 @@ type BattleEventListProps = {
   battleEvents: BattleEventModel[];
 }
 
-export async function BattleEventList({battleEvents}: Readonly<BattleEventListProps>) {
+export function GroupedBattleEventList({battleEvents}: Readonly<BattleEventListProps>) {
   const groupedEvents = battleEvents.reduce((groups, event) => {
     const mode = event.mode;
     if (!groups[mode]) {
@@ -36,7 +36,7 @@ export async function BattleEventList({battleEvents}: Readonly<BattleEventListPr
         .filter(mode => groupedEvents[mode]?.length > 0)
         .map((mode) => (
           <div key={mode} className="mb-4">
-            <BattleEventModeHeader mode={mode}/>
+            <GroupedBattleEventModeHeader mode={mode}/>
             <ul className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
               {groupedEvents[mode].map(event => (
                 <li key={event.id}>
@@ -50,7 +50,7 @@ export async function BattleEventList({battleEvents}: Readonly<BattleEventListPr
   );
 }
 
-async function BattleEventModeHeader({mode}: Readonly<{ mode: BattleEventMode }>) {
+function GroupedBattleEventModeHeader({mode}: Readonly<{ mode: BattleEventMode }>) {
   const backgroundColor = battleEventModeBackGroundColor(mode);
   const iconSrc = battleEventModeIconSrc(mode);
   const title = battleEventModeTitle(mode) || "❓";
@@ -72,7 +72,7 @@ async function BattleEventModeHeader({mode}: Readonly<{ mode: BattleEventMode }>
   );
 }
 
-async function BattleEvent({battleEvent}: Readonly<{ battleEvent: BattleEventModel }>) {
+function BattleEvent({battleEvent}: Readonly<{ battleEvent: BattleEventModel }>) {
   const headerBackgroundColor = battleEventModeBackGroundColor(battleEvent.mode);
   return (
     <Link href={battleEventHref(battleEvent.id)}>
