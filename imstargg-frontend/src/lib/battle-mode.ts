@@ -328,6 +328,6 @@ export const battleEventModeBackGroundColor = (mode: BattleEventMode): string =>
     case BattleEventModeValue.KNOCKOUT_5V5:
       return 'bg-[#F7831C]';
     default:
-      return 'bg-zinc-300';
+      return 'bg-zinc-400';
   }
 }

@@ -80,11 +80,21 @@ export function BattleEventList({battleEvents}: Readonly<{ battleEvents: BattleE
 
 function BattleEvent({battleEvent}: Readonly<{ battleEvent: BattleEventModel }>) {
   const headerBackgroundColor = battleEventModeBackGroundColor(battleEvent.mode);
+  const iconSrc = battleEventModeIconSrc(battleEvent.mode);
   return (
     <Link href={battleEventHref(battleEvent.id)}>
       <div className="flex flex-col overflow-hidden bg-zinc-100 hover:bg-zinc-200 drop-shadow-md rounded transition-colors sm:h-60 h-44 sm:w-46 w-38">
-        <div className={cn("flex justify-center sm:p-2 p-1", headerBackgroundColor)}>
-          <div className="sm:text-sm text-xs font-bold text-white bg-zinc-700 px-1 inline-block rounded">
+        <div className={cn("flex items-center justify-center gap-1 sm:p-2 p-1", headerBackgroundColor)}>
+          {iconSrc &&
+            <Image
+              src={iconSrc}
+              alt={`${battleEventModeTitle(battleEvent.mode)} icon`}
+              width={20}
+              height={20}
+              className="h-5 w-fit"
+            />
+          }
+          <div className="sm:text-sm text-xs font-bold text-white px-1 drop-shadow-md">
             {battleEvent.map.name}
           </div>
         </div>

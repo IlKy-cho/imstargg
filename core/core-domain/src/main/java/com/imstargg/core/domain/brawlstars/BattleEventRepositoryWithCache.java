@@ -213,6 +213,8 @@ public class BattleEventRepositoryWithCache {
                         .map(BrawlStarsId::new)
                         .toList(),
                 language
-        );
+        ).stream()
+                .sorted(Comparator.comparing(BattleEvent::mode))
+                .toList();
     }
 }
