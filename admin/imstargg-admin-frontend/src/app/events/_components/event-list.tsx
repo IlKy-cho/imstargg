@@ -14,6 +14,7 @@ import {EventMapImageUpload} from "./event-map-image-upload";
 import {imageUrl} from "@/lib/image";
 import {messagesContent} from "@/lib/message";
 import { EventUpdate } from "./event-update";
+import { EventSoloRank } from "./event-solo-rank";
 
 type Props = {
   battleEvents: BattleEvent[];
@@ -30,6 +31,7 @@ export default function EventList({battleEvents}: Readonly<Props>) {
           <TableHead>이벤트 모드</TableHead>
           <TableHead>배틀 모드</TableHead>
           <TableHead>맵 이름</TableHead>
+          <TableHead>경쟁전</TableHead>
           <TableHead>최근 전투 일시</TableHead>
           <TableHead className="text-right">메뉴</TableHead>
         </TableRow>
@@ -68,6 +70,9 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                   <span className="font-bold">{battleEvent.entity.map}</span>: {messagesContent(battleEvent.map.names)}
                 </TableCell>
                 <TableCell>
+                  {battleEvent.soloRanked && "O"}
+                </TableCell>
+                <TableCell>
                   {battleEvent.latestBattleTime !== null
                     ? battleEvent.latestBattleTime.toLocaleString()
                     : "X"
@@ -80,6 +85,10 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                     }
                     {battleEvent.entity.brawlStarsId !== null && battleEvent.entity.brawlStarsId !== 0 ?
                       <EventUpdate battleEvent={battleEvent}/>
+                      : null
+                    }
+                    {battleEvent.entity.brawlStarsId !== null && battleEvent.entity.brawlStarsId !== 0 ?
+                      <EventSoloRank battleEvent={battleEvent}/>
                       : null
                     }
                 </TableCell>

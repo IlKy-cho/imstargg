@@ -6,4 +6,5 @@ export interface BattleEvent {
   map: BattleEventMap;
   battleMode: string;
   latestBattleTime: Date | null;
+  soloRanked: boolean;
 }
