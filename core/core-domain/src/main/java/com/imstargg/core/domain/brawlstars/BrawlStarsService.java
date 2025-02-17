@@ -33,4 +33,8 @@ public class BrawlStarsService {
     public BattleEvent getEvent(BrawlStarsId brawlStarsId) {
         return battleEventReader.getEvent(Language.KOREAN, brawlStarsId);
     }
+
+    public List<RotationBattleEvent> getRotationEvents() {
+        return battleEventReader.getRotationEvents(Language.KOREAN);
+    }
 }
