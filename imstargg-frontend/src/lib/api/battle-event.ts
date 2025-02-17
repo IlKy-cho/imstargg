@@ -84,7 +84,7 @@ export async function getBattleEvent(id: number): Promise<BattleEvent | null> {
 }
 
 export async function fetchGetRotationBattleEvents(options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/brawlstars/event/rotation`);
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/event/rotation-events`);
   if (!options) {
     return await fetch(url);
   }
@@ -120,5 +120,35 @@ export async function getRotationBattleEvents(): Promise<RotationBattleEvent[]> 
     },
     startTime: event.startTime,
     endTime: event.endTime
+  }));
+}
+
+export async function fetchGetSoloRankBattleEvents(options?: CacheOptions): Promise<Response> {
+  const url = new URL(`${BASE_URL}/api/v1/brawlstars/event/solo-rank-events`);
+  if (!options) {
+    return await fetch(url);
+  }
+  return await fetch(url, {
+    next: {
+      tags: ['brawlstars', 'event', 'solo-rank'],
+      revalidate: options.revalidate
+    }
+  });
+}
+
+export async function getSoloRankBattleEvents(): Promise<BattleEvent[]> {
+  const response = await fetchGetSoloRankBattleEvents({ revalidate: 5 * 60 });
+
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+
+  const data = await response.json() as ListResponse<BattleEventResponse>;
+  return data.content.map(event => ({
+    ...event,
+    map: {
+      name: event.mapName,
+      imageUrl: event.mapImagePath ? new URL(event.mapImagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
+    }
   }));
 }

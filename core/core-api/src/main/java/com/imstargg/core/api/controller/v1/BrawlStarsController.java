@@ -70,7 +70,7 @@ public class BrawlStarsController {
         return BattleEventResponse.from(brawlStarsService.getEvent(new BrawlStarsId(eventId)));
     }
 
-    @GetMapping("/api/v1/brawlstars/event/rotation")
+    @GetMapping("/api/v1/brawlstars/event/rotation-events")
     public ListResponse<RotationBattleEventResponse> getRotationEvents() {
         return new ListResponse<>(
                 brawlStarsService.getRotationEvents().stream()
@@ -79,7 +79,7 @@ public class BrawlStarsController {
         );
     }
 
-    @GetMapping("/api/v1/brawlstars/event/solo-rank")
+    @GetMapping("/api/v1/brawlstars/event/solo-rank-events")
     public ListResponse<BattleEventResponse> getSoloRankEvents() {
         return new ListResponse<>(
                 brawlStarsService.getSoloRankEvents().stream()
