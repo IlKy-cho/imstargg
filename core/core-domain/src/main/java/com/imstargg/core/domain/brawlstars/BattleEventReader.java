@@ -29,4 +29,8 @@ public class BattleEventReader {
                 .orElseThrow(() -> new CoreException(CoreErrorType.BATTLE_EVENT_NOT_FOUND,
                         "brawlStarsId: " + brawlStarsId));
     }
+
+    public List<RotationBattleEvent> getRotationEvents(Language language) {
+        return battleEventRepository.findAllRotation(language);
+    }
 }

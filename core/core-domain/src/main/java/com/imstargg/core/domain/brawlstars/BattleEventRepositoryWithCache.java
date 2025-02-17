@@ -7,14 +7,17 @@ import com.imstargg.core.domain.MessageRepository;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import com.imstargg.core.enums.Language;
-import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.BattleJpaRepository;
+import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.brawlstars.BattleEventEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.BattleEventRotationItemEntity;
+import com.imstargg.storage.db.core.brawlstars.BattleEventRotationItemJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.BattleEventRotationJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +37,8 @@ public class BattleEventRepositoryWithCache {
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventJpaRepository battleEventJpaRepository;
     private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
+    private final BattleEventRotationJpaRepository battleEventRotationJpaRepository;
+    private final BattleEventRotationItemJpaRepository battleEventRotationItemJpaRepository;
     private final MessageRepository messageRepository;
     private final BattleEventCache battleEventCache;
 
@@ -42,6 +47,8 @@ public class BattleEventRepositoryWithCache {
             BattleJpaRepository battleJpaRepository,
             BattleEventJpaRepository battleEventJpaRepository,
             BrawlStarsImageJpaRepository brawlStarsImageJpaRepository,
+            BattleEventRotationJpaRepository battleEventRotationJpaRepository,
+            BattleEventRotationItemJpaRepository battleEventRotationItemJpaRepository,
             MessageRepository messageRepository,
             BattleEventCache battleEventCache
     ) {
@@ -49,6 +56,8 @@ public class BattleEventRepositoryWithCache {
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventJpaRepository = battleEventJpaRepository;
         this.brawlStarsImageJpaRepository = brawlStarsImageJpaRepository;
+        this.battleEventRotationJpaRepository = battleEventRotationJpaRepository;
+        this.battleEventRotationItemJpaRepository = battleEventRotationItemJpaRepository;
         this.messageRepository = messageRepository;
         this.battleEventCache = battleEventCache;
     }
@@ -156,5 +165,31 @@ public class BattleEventRepositoryWithCache {
                     return event;
                 })
         );
+    }
+
+    public List<RotationBattleEvent> findAllRotation(Language language) {
+        return battleEventRotationJpaRepository.findFirst1ByOrderByIdDesc()
+                .map(rotationEntity -> battleEventRotationItemJpaRepository
+                        .findAllByBattleEventRotationId(rotationEntity.getId()))
+                .map(rotationItemEntities -> mapRotationBattleEvents(rotationItemEntities, language))
+                .orElseGet(List::of);
+    }
+
+    private List<RotationBattleEvent> mapRotationBattleEvents(
+            List<BattleEventRotationItemEntity> rotationItemEntities, Language language
+    ) {
+        Map<BrawlStarsId, BattleEvent> idToEvent = findAllEvents(
+                rotationItemEntities.stream()
+                        .map(BattleEventRotationItemEntity::getEventBrawlStarsId)
+                        .map(BrawlStarsId::new)
+                        .toList(), language
+        ).stream().collect(Collectors.toMap(BattleEvent::id, Function.identity()));
+
+        return rotationItemEntities.stream()
+                .map(rotationItemEntity -> new RotationBattleEvent(
+                        idToEvent.get(new BrawlStarsId(rotationItemEntity.getEventBrawlStarsId())),
+                        rotationItemEntity.getStartTime(),
+                        rotationItemEntity.getEndTime()
+                )).toList();
     }
 }

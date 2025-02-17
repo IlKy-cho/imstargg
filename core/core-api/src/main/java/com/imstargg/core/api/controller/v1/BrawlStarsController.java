@@ -4,6 +4,7 @@ import com.imstargg.core.api.controller.response.ListResponse;
 import com.imstargg.core.api.controller.v1.response.BattleEventResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlStarsNewsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerResponse;
+import com.imstargg.core.api.controller.v1.response.RotationBattleEventResponse;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.BrawlStarsNewsService;
 import com.imstargg.core.domain.brawlstars.BrawlStarsService;
@@ -67,5 +68,14 @@ public class BrawlStarsController {
     @GetMapping("/api/v1/brawlstars/events/{eventId}")
     public BattleEventResponse getEvent(@PathVariable long eventId) {
         return BattleEventResponse.from(brawlStarsService.getEvent(new BrawlStarsId(eventId)));
+    }
+
+    @GetMapping("/api/v1/brawlstars/event/rotation")
+    public ListResponse<RotationBattleEventResponse> getRotationEvents() {
+        return new ListResponse<>(
+                brawlStarsService.getRotationEvents().stream()
+                        .map(RotationBattleEventResponse::of)
+                        .toList()
+        );
     }
 }
