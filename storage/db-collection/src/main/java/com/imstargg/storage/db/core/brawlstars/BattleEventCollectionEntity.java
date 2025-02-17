@@ -32,7 +32,7 @@ public class BattleEventCollectionEntity extends BaseEntity {
     private String mapBrawlStarsName;
 
     @Nullable
-    @Column(name = "battle_mode", length = 45, nullable = false)
+    @Column(name = "battle_mode", length = 45)
     private String battleMode;
 
     @Nullable
@@ -45,15 +45,11 @@ public class BattleEventCollectionEntity extends BaseEntity {
     public BattleEventCollectionEntity(
             long brawlStarsId,
             String mode,
-            String mapBrawlStarsName,
-            @Nullable String battleMode,
-            @Nullable OffsetDateTime latestBattleTime
+            String mapBrawlStarsName
     ) {
         this.brawlStarsId = brawlStarsId;
         this.mode = mode;
         this.mapBrawlStarsName = mapBrawlStarsName;
-        this.battleMode = battleMode;
-        this.latestBattleTime = latestBattleTime;
     }
 
     public void update(
