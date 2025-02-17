@@ -31,22 +31,16 @@ export function GroupedBattleEventList({battleEvents}: Readonly<BattleEventListP
   });
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {BattleEventModeValues
         .filter(mode => groupedEvents[mode]?.length > 0)
         .map((mode) => (
-          <div key={mode} className="mb-4">
+          <div key={mode} className="flex flex-col gap-2">
             <GroupedBattleEventModeHeader mode={mode}/>
-            <ul className="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {groupedEvents[mode].map(event => (
-                <li key={event.id}>
-                  <BattleEvent battleEvent={event}/>
-                </li>
-              ))}
-            </ul>
+            <BattleEventList battleEvents={groupedEvents[mode]}/>
           </div>
         ))}
-    </>
+    </div>
   );
 }
 
@@ -69,6 +63,18 @@ function GroupedBattleEventModeHeader({mode}: Readonly<{ mode: BattleEventMode }
         {title}
       </span>
     </div>
+  );
+}
+
+export function BattleEventList({battleEvents}: Readonly<{ battleEvents: BattleEventModel[] }>) {
+  return (
+    <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      {battleEvents.map(event => (
+        <li key={event.id}>
+          <BattleEvent battleEvent={event}/>
+        </li>
+      ))}
+    </ul>
   );
 }
 

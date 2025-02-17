@@ -1,6 +1,6 @@
-import {getBattleEvents} from "@/lib/api/battle-event";
+import {getBattleEvents, getRotationBattleEvents} from "@/lib/api/battle-event";
 import {Metadata} from "next";
-import {GroupedBattleEventList} from "@/components/battle-event";
+import {BattleEventList, GroupedBattleEventList} from "@/components/battle-event";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import {Help} from "@/components/help";
 import {cn, cnWithDefault} from "@/lib/utils";
@@ -23,7 +23,8 @@ export default async function EventsPage() {
           <Help description={"최근 1주일의 이벤트입니다."}/>
         </div>
       </PageHeader>
-      <div className="p-1">
+      <div className="p-1 flex flex-col gap-2">
+        <PageRotationBattleEventList/>
         <PageGroupedBattleEventList/>
       </div>
     </div>
@@ -37,6 +38,17 @@ async function PageGroupedBattleEventList() {
       <h2 className="text-lg sm:text-xl font-bold">최근 1주일 이벤트</h2>
       <Separator/>
       <GroupedBattleEventList battleEvents={battleEvents}/>
+    </div>
+  )
+}
+
+async function PageRotationBattleEventList() {
+  const rotationBattleEvents = await getRotationBattleEvents();
+  return (
+    <div className={cnWithDefault("p-1 flex flex-col gap-2")}>
+      <h2 className="text-lg sm:text-xl font-bold">진행중인 이벤트</h2>
+      <Separator/>
+      <BattleEventList battleEvents={rotationBattleEvents.map(event => event.event)}/>
     </div>
   )
 }
