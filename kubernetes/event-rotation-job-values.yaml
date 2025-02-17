@@ -1,0 +1,6 @@
+app:
+  job:
+    name: eventRotationJob
+
+job:
+  schedule: "0 * * * *"
