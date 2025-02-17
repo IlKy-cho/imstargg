@@ -37,4 +37,8 @@ public class BrawlStarsService {
     public List<RotationBattleEvent> getRotationEvents() {
         return battleEventReader.getRotationEvents(Language.KOREAN);
     }
+
+    public List<BattleEvent> getSoloRankEvents() {
+        return battleEventReader.getSoloRankEvents(Language.KOREAN);
+    }
 }
