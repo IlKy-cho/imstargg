@@ -98,9 +98,7 @@ class BattleEventUpdateJobConfig {
                                                     new BattleEventCollectionEntity(
                                                             battleEntity.getEvent().getBrawlStarsId(),
                                                             battleEntity.getEvent().getMode(),
-                                                            battleEntity.getEvent().getMap(),
-                                                            battleEntity.getMode(),
-                                                            battleEntity.getBattleTime()
+                                                            battleEntity.getEvent().getMap()
                                                     )
                                     ).update(
                                             battleEntity.getEvent().getMode(),

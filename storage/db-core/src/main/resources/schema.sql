@@ -554,7 +554,7 @@ create table battle_event_rotation_item
     battle_event_rotation_id      bigint       not null,
     event_brawlstars_id           bigint       not null,
     modifiers                     json         not null,
-    slotId                        int          not null,
+    slot_id                       bigint       not null,
     start_time                    timestamp    not null,
     end_time                      timestamp    not null,
     created_at                    timestamp(6) not null default CURRENT_TIMESTAMP(6),

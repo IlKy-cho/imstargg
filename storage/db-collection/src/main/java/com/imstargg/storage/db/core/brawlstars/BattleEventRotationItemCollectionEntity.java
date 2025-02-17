@@ -30,8 +30,12 @@ public class BattleEventRotationItemCollectionEntity {
     @Column(name = "battle_event_rotation_item_id")
     private Long id;
 
-    @Column(name = "battle_event_rotation_id", updatable = false, nullable = false)
-    private long battleEventRotationId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "battle_event_rotation_id", updatable = false, nullable = false,
+            foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT)
+    )
+    private BattleEventRotationCollectionEntity rotation;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
@@ -57,14 +61,14 @@ public class BattleEventRotationItemCollectionEntity {
     }
 
     public BattleEventRotationItemCollectionEntity(
-            long battleEventRotationId,
+            BattleEventRotationCollectionEntity rotation,
             BattleEventCollectionEntity event,
             List<String> modifiers,
             long slotId,
             OffsetDateTime startTime,
             OffsetDateTime endTime
     ) {
-        this.battleEventRotationId = battleEventRotationId;
+        this.rotation = rotation;
         this.event = event;
         this.modifiers = modifiers;
         this.slotId = slotId;
@@ -76,8 +80,8 @@ public class BattleEventRotationItemCollectionEntity {
         return id;
     }
 
-    public long getBattleEventRotationId() {
-        return battleEventRotationId;
+    public BattleEventRotationCollectionEntity getRotation() {
+        return rotation;
     }
 
     public BattleEventCollectionEntity getEvent() {
