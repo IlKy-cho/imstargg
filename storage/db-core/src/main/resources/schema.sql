@@ -564,3 +564,17 @@ create table battle_event_rotation_item
 ) engine = innodb;
 
 create index ix_battle_event_rotation_item__1 on battle_event_rotation_item (battle_event_rotation_id);
+
+
+create table solo_rank_battle_event
+(
+    solo_rank_battle_event_id bigint       not null auto_increment,
+    event_brawlstars_id       bigint       not null,
+    created_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                   boolean      not null default false,
+    primary key (solo_rank_battle_event_id)
+) engine = innodb;
+
+alter table solo_rank_battle_event
+    add constraint uk_solo_rank_battle_event__key unique (event_brawlstars_id);
