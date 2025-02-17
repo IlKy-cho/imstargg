@@ -6,6 +6,7 @@ import com.imstargg.admin.support.error.AdminErrorKind;
 import com.imstargg.admin.support.error.AdminException;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Language;
+import com.imstargg.storage.db.core.BaseEntity;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityEvent;
 import com.imstargg.storage.db.core.BattleJpaRepository;
@@ -17,6 +18,8 @@ import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionJpaRepositor
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageCollectionJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
+import com.imstargg.storage.db.core.brawlstars.SoloRankBattleEventCollectionEntity;
+import com.imstargg.storage.db.core.brawlstars.SoloRankBattleEventCollectionJpaRepository;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -42,19 +46,22 @@ public class BattleService {
     private final BattleEventCollectionJpaRepository battleEventCollectionJpaRepository;
     private final BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository;
     private final MessageCollectionJpaRepository messageRepository;
+    private final SoloRankBattleEventCollectionJpaRepository soloRankBattleEventJpaRepository;
 
     public BattleService(
             BrawlStarsImageUploader brawlStarsImageUploader,
             BattleJpaRepository battleMapRepository,
             BattleEventCollectionJpaRepository battleEventCollectionJpaRepository,
             BrawlStarsImageCollectionJpaRepository brawlStarsImageRepository,
-            MessageCollectionJpaRepository messageRepository
+            MessageCollectionJpaRepository messageRepository,
+            SoloRankBattleEventCollectionJpaRepository soloRankBattleEventJpaRepository
     ) {
         this.brawlStarsImageUploader = brawlStarsImageUploader;
         this.battleJpaRepository = battleMapRepository;
         this.battleEventCollectionJpaRepository = battleEventCollectionJpaRepository;
         this.brawlStarsImageRepository = brawlStarsImageRepository;
         this.messageRepository = messageRepository;
+        this.soloRankBattleEventJpaRepository = soloRankBattleEventJpaRepository;
     }
 
 
@@ -88,6 +95,12 @@ public class BattleService {
                 .stream()
                 .collect(toMap(BrawlStarsImageCollectionEntity::getCode, Function.identity()));
 
+        Set<Long> soloRankEventBrawlStarsIds = soloRankBattleEventJpaRepository.findAll().stream()
+                .filter(BaseEntity::isActive)
+                .map(SoloRankBattleEventCollectionEntity::getEvent)
+                .map(BattleEventCollectionEntity::getBrawlStarsId)
+                .collect(Collectors.toSet());
+
         return battles.stream()
                 .map(battle -> new BattleEvent(
                         battle.getEvent(),
@@ -100,7 +113,8 @@ public class BattleService {
                                         mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(battle.getEvent().getBrawlStarsId()))
                         ),
                         battle.getMode(),
-                        battle.getBattleTime().toLocalDateTime()
+                        battle.getBattleTime().toLocalDateTime(),
+                        soloRankEventBrawlStarsIds.contains(battle.getEvent().getBrawlStarsId())
                 ))
                 .toList();
     }
@@ -137,5 +151,26 @@ public class BattleService {
 
     public void uploadMapImage(long eventBrawlStarsId, Resource resource) {
         brawlStarsImageUploader.uploadMap(eventBrawlStarsId, resource);
+    }
+
+    @Transactional
+    public void registerSoloRankBattleEvent(long eventBrawlStarsId) {
+        BattleEventCollectionEntity event = battleEventCollectionJpaRepository
+                .findByBrawlStarsId(eventBrawlStarsId)
+                .orElseThrow(() -> new AdminException(AdminErrorKind.NOT_FOUND,
+                        "해당 이벤트를 찾을 수 없습니다. 이벤트 ID: " + eventBrawlStarsId));
+        soloRankBattleEventJpaRepository.findByEvent(event).ifPresentOrElse(
+                BaseEntity::restore,
+                () -> soloRankBattleEventJpaRepository.save(new SoloRankBattleEventCollectionEntity(event))
+        );
+    }
+
+    @Transactional
+    public void deleteSoloRankBattleEvent(long eventBrawlStarsId) {
+        BattleEventCollectionEntity event = battleEventCollectionJpaRepository
+                .findByBrawlStarsId(eventBrawlStarsId)
+                .orElseThrow(() -> new AdminException(AdminErrorKind.NOT_FOUND,
+                        "해당 이벤트를 찾을 수 없습니다. 이벤트 ID: " + eventBrawlStarsId));
+        soloRankBattleEventJpaRepository.findByEvent(event).ifPresent(soloRankBattleEventJpaRepository::delete);
     }
 }

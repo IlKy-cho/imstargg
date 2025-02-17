@@ -8,6 +8,7 @@ public record BattleEvent(
         BattleEntityEvent entity,
         BattleEventMap map,
         String battleMode,
-        LocalDateTime latestBattleTime
+        LocalDateTime latestBattleTime,
+        boolean soloRanked
 ) {
 }
