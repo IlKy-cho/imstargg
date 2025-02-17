@@ -78,4 +78,13 @@ public class BrawlStarsController {
                         .toList()
         );
     }
+
+    @GetMapping("/api/v1/brawlstars/event/solo-rank")
+    public ListResponse<BattleEventResponse> getSoloRankEvents() {
+        return new ListResponse<>(
+                brawlStarsService.getSoloRankEvents().stream()
+                        .map(BattleEventResponse::from)
+                        .toList()
+        );
+    }
 }

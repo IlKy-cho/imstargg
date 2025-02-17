@@ -18,6 +18,8 @@ import com.imstargg.storage.db.core.brawlstars.BattleEventRotationJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
+import com.imstargg.storage.db.core.brawlstars.SoloRankBattleEventEntity;
+import com.imstargg.storage.db.core.brawlstars.SoloRankBattleEventJpaRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -40,6 +42,7 @@ public class BattleEventRepositoryWithCache {
     private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
     private final BattleEventRotationJpaRepository battleEventRotationJpaRepository;
     private final BattleEventRotationItemJpaRepository battleEventRotationItemJpaRepository;
+    private final SoloRankBattleEventJpaRepository soloRankBattleEventJpaRepository;
     private final MessageRepository messageRepository;
     private final BattleEventCache battleEventCache;
 
@@ -50,6 +53,7 @@ public class BattleEventRepositoryWithCache {
             BrawlStarsImageJpaRepository brawlStarsImageJpaRepository,
             BattleEventRotationJpaRepository battleEventRotationJpaRepository,
             BattleEventRotationItemJpaRepository battleEventRotationItemJpaRepository,
+            SoloRankBattleEventJpaRepository soloRankBattleEventJpaRepository,
             MessageRepository messageRepository,
             BattleEventCache battleEventCache
     ) {
@@ -59,6 +63,7 @@ public class BattleEventRepositoryWithCache {
         this.brawlStarsImageJpaRepository = brawlStarsImageJpaRepository;
         this.battleEventRotationJpaRepository = battleEventRotationJpaRepository;
         this.battleEventRotationItemJpaRepository = battleEventRotationItemJpaRepository;
+        this.soloRankBattleEventJpaRepository = soloRankBattleEventJpaRepository;
         this.messageRepository = messageRepository;
         this.battleEventCache = battleEventCache;
     }
@@ -198,5 +203,16 @@ public class BattleEventRepositoryWithCache {
                         rotationItemEntity.getStartTime(),
                         rotationItemEntity.getEndTime()
                 )).toList();
+    }
+
+    public List<BattleEvent> findAllSoloRank(Language language) {
+        return findAllEvents(
+                soloRankBattleEventJpaRepository.findAll()
+                        .stream()
+                        .map(SoloRankBattleEventEntity::getEventBrawlStarsId)
+                        .map(BrawlStarsId::new)
+                        .toList(),
+                language
+        );
     }
 }

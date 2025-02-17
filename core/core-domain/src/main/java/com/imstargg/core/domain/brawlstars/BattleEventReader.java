@@ -33,4 +33,8 @@ public class BattleEventReader {
     public List<RotationBattleEvent> getRotationEvents(Language language) {
         return battleEventRepository.findAllRotation(language);
     }
+
+    public List<BattleEvent> getSoloRankEvents(Language language) {
+        return battleEventRepository.findAllSoloRank(language);
+    }
 }
