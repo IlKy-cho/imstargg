@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -170,7 +171,11 @@ public class BattleEventRepositoryWithCache {
     public List<RotationBattleEvent> findAllRotation(Language language) {
         return battleEventRotationJpaRepository.findFirst1ByOrderByIdDesc()
                 .map(rotationEntity -> battleEventRotationItemJpaRepository
-                        .findAllByBattleEventRotationId(rotationEntity.getId()))
+                        .findAllByBattleEventRotationId(rotationEntity.getId())
+                        .stream()
+                        .sorted(Comparator.comparingLong(BattleEventRotationItemEntity::getSlotId))
+                        .toList()
+                )
                 .map(rotationItemEntities -> mapRotationBattleEvents(rotationItemEntities, language))
                 .orElseGet(List::of);
     }
