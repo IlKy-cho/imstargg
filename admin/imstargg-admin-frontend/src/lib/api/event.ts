@@ -57,3 +57,31 @@ export async function updateEvent(eventId: number, request: EventUpdateRequest) 
     throw await ApiError.create(response);
   }
 }
+
+export async function fetchRegisterSoloRankEvent(eventId: number): Promise<Response> {
+  const url = new URL(`${API_BASE_URL}/admin/api/events/${eventId}/solo-rank`);
+  return await fetch(url, {
+    method: 'PUT',
+  });
+}
+
+export async function registerSoloRankEvent(eventId: number) {
+  const response = await fetchRegisterSoloRankEvent(eventId);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
+
+export async function fetchDeleteSoloRankEvent(eventId: number): Promise<Response> {
+  const url = new URL(`${API_BASE_URL}/admin/api/events/${eventId}/solo-rank`);
+  return await fetch(url, {
+    method: 'DELETE',
+  });
+}
+
+export async function deleteSoloRankEvent(eventId: number) {
+  const response = await fetchDeleteSoloRankEvent(eventId);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
