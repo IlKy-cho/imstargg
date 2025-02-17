@@ -11,6 +11,7 @@ import com.imstargg.admin.domain.Brawler;
 import com.imstargg.admin.domain.BrawlerService;
 import com.imstargg.admin.domain.Gear;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -98,5 +99,19 @@ public class BrawlStarsController {
     public void uploadStarPowerImage(
             @PathVariable long brawlStarsId, MultipartFile image) {
         brawlerService.uploadStarPowerImage(brawlStarsId, image.getResource());
+    }
+
+    @PutMapping("/admin/api/events/{brawlStarsId}/solo-rank")
+    public void registerSoloRankBattleEvent(
+            @PathVariable long brawlStarsId
+    ) {
+        battleService.registerSoloRankBattleEvent(brawlStarsId);
+    }
+
+    @DeleteMapping("/admin/api/events/{brawlStarsId}/solo-rank")
+    public void deleteSoloRankBattleEvent(
+            @PathVariable long brawlStarsId
+    ) {
+        battleService.deleteSoloRankBattleEvent(brawlStarsId);
     }
 }
