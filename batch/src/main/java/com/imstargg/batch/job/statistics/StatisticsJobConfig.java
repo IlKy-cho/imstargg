@@ -1,5 +1,6 @@
 package com.imstargg.batch.job.statistics;
 
+import com.imstargg.batch.job.support.DateIncrementer;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.JobScope;
@@ -9,14 +10,19 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Clock;
+import java.time.LocalDate;
+
 @Configuration
 public class StatisticsJobConfig {
 
     private static final String JOB_NAME = "statisticsJob";
 
+    private final Clock clock;
     private final JobRepository jobRepository;
 
-    public StatisticsJobConfig(JobRepository jobRepository) {
+    public StatisticsJobConfig(Clock clock, JobRepository jobRepository) {
+        this.clock = clock;
         this.jobRepository = jobRepository;
     }
 
@@ -24,6 +30,7 @@ public class StatisticsJobConfig {
     public Job job() {
         JobBuilder jobBuilder = new JobBuilder(JOB_NAME, jobRepository);
         return jobBuilder
+                .incrementer(new DateIncrementer(LocalDate.now(clock).minusDays(1)))
                 .start(brawlerBattleRankStatisticsJobStep(null))
                 .next(brawlersBattleRankStatisticsJobStep(null))
                 .next(brawlerBattleResultStatisticsJobStep(null))
