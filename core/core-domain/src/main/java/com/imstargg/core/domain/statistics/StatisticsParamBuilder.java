@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.statistics;
 
+import com.imstargg.core.enums.DateRange;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.SoloRankTierRangeRange;
 import com.imstargg.core.enums.TrophyRange;
@@ -11,11 +12,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class StatisticsParamBuilder {
 
     private LocalDate date;
+    private DateRange dateRange;
     @Nullable
     private TrophyRangeRange trophyRange;
     @Nullable
@@ -23,6 +24,11 @@ public class StatisticsParamBuilder {
 
     public StatisticsParamBuilder date(LocalDate date) {
         this.date = date;
+        return this;
+    }
+
+    public StatisticsParamBuilder dateRange(DateRange dateRange) {
+        this.dateRange = dateRange;
         return this;
     }
 
@@ -38,13 +44,13 @@ public class StatisticsParamBuilder {
 
     public <T> List<T> build(BuildFunction<T> function) {
         if (trophyRange != null) {
-            return lastAWeekStream().flatMap(battleDate ->
+            return dateRange.lastDates(date).stream().flatMap(battleDate ->
                     trophyRange.getRanges().stream().map(tr ->
                             function.build(battleDate, tr, null)
                     )
             ).toList();
         } else if (soloRankTierRange != null) {
-            return lastAWeekStream().flatMap(battleDate ->
+            return dateRange.lastDates(date).stream().flatMap(battleDate ->
                     soloRankTierRange.getRanges().stream().map(srtr ->
                             function.build(battleDate, null, srtr)
                     )
@@ -52,27 +58,21 @@ public class StatisticsParamBuilder {
         }
 
         List<T> result = new ArrayList<>();
-        lastAWeekStream()
+        dateRange.lastDates(date).stream()
                 .map(battleDate -> function.build(battleDate, null, null))
                 .forEach(result::add);
-        lastAWeekStream().flatMap(battleDate ->
+        dateRange.lastDates(date).stream().flatMap(battleDate ->
                 Arrays.stream(TrophyRange.values()).map(tr ->
                         function.build(battleDate, tr, null)
                 )
         ).forEach(result::add);
-        lastAWeekStream().flatMap(battleDate ->
+        dateRange.lastDates(date).stream().flatMap(battleDate ->
                 Arrays.stream(SoloRankTierRange.values()).map(srtr ->
                         function.build(battleDate, null, srtr)
                 )
         ).forEach(result::add);
         return Collections.unmodifiableList(result);
     }
-
-    private Stream<LocalDate> lastAWeekStream() {
-        return Stream.iterate(date, d -> d.minusDays(1))
-                .limit(7);
-    }
-
 
     @FunctionalInterface
     public interface BuildFunction<T> {

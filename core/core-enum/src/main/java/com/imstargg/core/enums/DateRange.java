@@ -18,7 +18,7 @@ public enum DateRange {
         this.value = value;
     }
 
-    List<LocalDate> lastDates(LocalDate date) {
+    public List<LocalDate> lastDates(LocalDate date) {
         return Stream.iterate(date, d -> d.minusDays(1))
                 .limit(value)
                 .toList();
