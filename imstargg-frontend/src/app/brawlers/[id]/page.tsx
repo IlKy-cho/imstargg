@@ -35,7 +35,7 @@ import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/compon
 import {BrawlerClassIcon} from "@/components/brawler-class";
 import {brawlerClassTitle} from "@/lib/brawler-class";
 import {brawlerRarityTitle} from "@/lib/brawler-rarity";
-import {cn} from "@/lib/utils";
+import {cn, cnWithDefault} from "@/lib/utils";
 import {brawlerBackgroundColor} from "@/lib/brawler";
 
 interface SearchParams extends StatisticsSearchParams{
@@ -79,15 +79,17 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
   const brawlerOwnershipRate = await getBrawlerOwnershipRate(brawler.id, statsParams.trophy);
 
   return (
-    <div className="space-y-2">
+    <>
       <PageHeader>
         <BrawlerProfile brawler={brawler}/>
       </PageHeader>
-      <BrawlerItemOwnershipOption trophy={statsParams.trophy}/>
-      <BrawlerGadgetList gadgets={brawler.gadgets} brawlerOwnershipRate={brawlerOwnershipRate}/>
-      <BrawlerStarPowerList starPowers={brawler.starPowers} brawlerOwnershipRate={brawlerOwnershipRate}/>
-      <BrawlerGearList gears={brawler.gears} brawlerOwnershipRate={brawlerOwnershipRate}/>
-      <Ranking rankings={brawlerRankings} country={country}/>
+      <div className="flex flex-col gap-2 p-1">
+        <BrawlerItemOwnershipOption trophy={statsParams.trophy}/>
+        <BrawlerGadgetList gadgets={brawler.gadgets} brawlerOwnershipRate={brawlerOwnershipRate}/>
+        <BrawlerStarPowerList starPowers={brawler.starPowers} brawlerOwnershipRate={brawlerOwnershipRate}/>
+        <BrawlerGearList gears={brawler.gears} brawlerOwnershipRate={brawlerOwnershipRate}/>
+        <Ranking rankings={brawlerRankings} country={country}/>
+      </div>
       <div className="flex flex-col gap-2 p-1">
         <BrawlerStatisticsOption 
           battleType={statsParams.type} 
@@ -100,7 +102,7 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
                            statsParams={statsParams}
         />
       </div>
-    </div>
+    </>
   );
 }
 
@@ -156,21 +158,21 @@ async function StatisticsContent(
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
+      <div className={cnWithDefault("flex flex-col gap-2")}>
         <Title value="이벤트"/>
         <Suspense fallback={<Loading/>}>
           <PageEventStatistics brawler={brawler} statsParams={statsParams} date={date}/>
         </Suspense>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className={cnWithDefault("flex flex-col gap-2")}>
         <Title value="브롤러 조합"/>
         <Suspense fallback={<Loading/>}>
           <PageBrawlersStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
         </Suspense>
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className={cnWithDefault("flex flex-col gap-2")}>
         <Title value="상대 브롤러"/>
         <Suspense fallback={<Loading/>}>
           <PageEnemyStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
