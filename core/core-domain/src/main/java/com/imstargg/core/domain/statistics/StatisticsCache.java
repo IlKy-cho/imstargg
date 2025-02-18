@@ -32,9 +32,10 @@ public class StatisticsCache {
         this.objectMapper = objectMapper;
     }
 
-    private static String key(BrawlerResultStatisticsParam param) {
+    private String key(BrawlerResultStatisticsParam param) {
         return new CacheKeyBuilder("brawler-result-stats", "v1")
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
                 .build();
@@ -51,9 +52,10 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BrawlerBattleEventResultStatisticsParam param) {
+    private String key(BrawlerBattleEventResultStatisticsParam param) {
         return new CacheKeyBuilder("brawler-battle-event-result-stats", "v1")
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
                 .build();
@@ -70,9 +72,10 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BrawlerBrawlersResultStatisticsParam param) {
+    private String key(BrawlerBrawlersResultStatisticsParam param) {
         return new CacheKeyBuilder("brawler-brawlers-result-stats", "v1")
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("brawlerId").add(param.brawlerId().value())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
@@ -91,9 +94,10 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BrawlerEnemyResultStatisticsParam param) {
+    private String key(BrawlerEnemyResultStatisticsParam param) {
         return new CacheKeyBuilder("brawler-enemy-result-stats", "v1")
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("brawlerId").add(param.brawlerId().value())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
@@ -111,10 +115,11 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BattleEventBrawlerResultStatisticsParam param) {
+    private String key(BattleEventBrawlerResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawler-result-stats", "v1")
                 .add("event").add(param.eventId().value())
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
                 .build();
@@ -131,10 +136,11 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BattleEventBrawlersResultStatisticsParam param) {
+    private String key(BattleEventBrawlersResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-result-stats", "v1")
                 .add("event").add(param.eventId().value())
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
                 .add("brawlersNum").add(param.brawlersNum())
@@ -152,10 +158,11 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BattleEventBrawlerRankStatisticsParam param) {
+    private String key(BattleEventBrawlerRankStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawler-rank-stats", "v1")
                 .add("event").add(param.eventId().value())
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange().toString())
                 .build();
     }
@@ -171,10 +178,11 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BattleEventBrawlersRankStatisticsParam param) {
+    private String key(BattleEventBrawlersRankStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-rank-stats", "v1")
                 .add("event").add(param.eventId().value())
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRangeRange().toString())
                 .add("brawlersNum").add(param.brawlersNum())
                 .build();
@@ -191,10 +199,11 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private static String key(BattleEventBrawlerEnemyResultStatisticsParam param) {
+    private String key(BattleEventBrawlerEnemyResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawler-enemy-result-stats", "v1")
                 .add("event").add(param.eventId().value())
                 .add("date").add(param.date())
+                .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange())
                 .add("soloRankTierRange").add(param.soloRankTierRange())
                 .build();
