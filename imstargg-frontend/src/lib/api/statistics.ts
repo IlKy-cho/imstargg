@@ -77,6 +77,7 @@ export async function getBattleEventBrawlerResultStatistics(
 
 export async function fetchGetBattleEventBrawlersResultStatistics(
   eventId: number,
+  brawlerId: number,
   date: Date,
   dateRange: DateRange,
   trophyRange?: TrophyRange | null,
@@ -84,6 +85,7 @@ export async function fetchGetBattleEventBrawlersResultStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawlers`);
+  url.searchParams.append('brawlerId', brawlerId.toString());
   url.searchParams.append('date', date.toISOString().split('T')[0]);
   url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
@@ -106,33 +108,44 @@ export async function fetchGetBattleEventBrawlersResultStatistics(
 
 export async function getBattleEventBrawlersResultStatistics(
   eventId: number,
+  brawlerId: number,
   date: Date,
   dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BrawlersResultStatistics[]> {
   const response = await fetchGetBattleEventBrawlersResultStatistics(
-    eventId, date, dateRange, trophyRange, soloRankTierRange,
+    eventId, brawlerId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
-  if (response.ok) {
-    const data = await response.json() as ListResponse<BrawlersResultStatistics>;
-    return data.content.sort((a, b) => b.winRate - a.winRate);
+  if (!response.ok) {
+    throw await ApiError.create(response);
   }
 
-  throw await ApiError.create(response);
+  const data = await response.json() as ListResponse<BrawlersResultStatistics>;
+  return data.content
+    .map(stat => {
+      const sortedBrawlerIds = [brawlerId, ...stat.brawlerIds.filter(id => id != brawlerId)];
+      return {
+        ...stat,
+        brawlerIds: sortedBrawlerIds
+      };
+    })
+    .sort((a, b) => b.winRate - a.winRate);
 }
 
 export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
   eventId: number,
+  brawlerId: number,
   date: Date,
   dateRange: DateRange,
-  trophyRange?: TrophyRange,
-  soloRankTierRange?: SoloRankTierRange,
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ) {
-  const url = new URL(`${BASE_URL}/api/v1/statistics/events/{eventId}/result/brawler-enemy`);
+  const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawler-enemy`);
+  url.searchParams.append('brawlerId', brawlerId.toString());
   url.searchParams.append('date', date.toISOString().split('T')[0]);
   url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
@@ -155,22 +168,23 @@ export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
 
 export async function getBattleEventResultBrawlerEnemyStatistics(
   eventId: number,
+  brawlerId: number,
   date: Date,
   dateRange: DateRange,
-  trophyRange?: TrophyRange,
-  soloRankTierRange?: SoloRankTierRange
+  trophyRange?: TrophyRange | null,
+  soloRankTierRange?: SoloRankTierRange | null
 ) {
   const response = await fetchGetBattleEventResultBrawlerEnemyStatistics(
-    eventId, date, dateRange, trophyRange, soloRankTierRange,
+    eventId, brawlerId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
-  if (response.ok) {
-    const data = await response.json() as ListResponse<BrawlerEnemyResultStatistics>;
-    return data.content.sort((a, b) => b.winRate - a.winRate);
+  if (!response.ok) {
+    throw await ApiError.create(response);
   }
 
-  throw await ApiError.create(response);
+  const data = await response.json() as ListResponse<BrawlerEnemyResultStatistics>;
+  return data.content.sort((a, b) => a.winRate - b.winRate);
 }
 
 
@@ -219,12 +233,14 @@ export async function getBattleEventBrawlerRankStatistics(
 
 export async function fetchGetBattleEventBrawlersRankStatistics(
   eventId: number,
+  brawlerId: number,
   date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank/brawlers`);
+  url.searchParams.append('brawlerId', brawlerId.toString());
   url.searchParams.append('date', date.toISOString().split('T')[0]);
   url.searchParams.append('dateRange', dateRange);
   url.searchParams.append('trophyRange', trophyRange);
@@ -242,21 +258,30 @@ export async function fetchGetBattleEventBrawlersRankStatistics(
 
 export async function getBattleEventBrawlersRankStatistics(
   eventId: number,
+  brawlerId: number,
   date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange
 ): Promise<BrawlersRankStatistics[]> {
   const response = await fetchGetBattleEventBrawlersRankStatistics(
-    eventId, date, dateRange, trophyRange,
+    eventId, brawlerId, date, dateRange, trophyRange,
     {revalidate: 5 * 60}
   );
 
-  if (response.ok) {
-    const data = await response.json() as ListResponse<BrawlersRankStatistics>;
-    return data.content.sort((a, b) => a.averageRank - b.averageRank);
+  if (!response.ok) {
+    throw await ApiError.create(response);
   }
 
-  throw await ApiError.create(response);
+  const data = await response.json() as ListResponse<BrawlersRankStatistics>;
+  return data.content
+    .map(stat => {
+      const sortedBrawlerIds = [brawlerId, ...stat.brawlerIds.filter(id => id != brawlerId)];
+      return {
+        ...stat,
+        brawlerIds: sortedBrawlerIds
+      };
+    })
+    .sort((a, b) => a.averageRank - b.averageRank);
 }
 
 
@@ -416,7 +441,7 @@ export async function getBrawlerBrawlersResultStatistics(
   if (response.ok) {
     const data = await response.json() as ListResponse<BrawlersResultStatistics>;
     return data.content.map(stat => {
-      const sortedBrawlerIds = [brawlerId, ...stat.brawlerIds.filter(id => id !== brawlerId)];
+      const sortedBrawlerIds = [brawlerId, ...stat.brawlerIds.filter(id => id != brawlerId)];
       return {
         ...stat,
         brawlerIds: sortedBrawlerIds
@@ -471,7 +496,7 @@ export async function getBrawlerEnemyResultStatistics(
 
   if (response.ok) {
     const data = await response.json() as ListResponse<BrawlerEnemyResultStatistics>;
-    return data.content.sort((a, b) => b.winRate - a.winRate);
+    return data.content.sort((a, b) => a.winRate - b.winRate);
   }
 
   throw await ApiError.create(response);

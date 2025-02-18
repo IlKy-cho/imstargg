@@ -9,6 +9,7 @@ export interface StatisticsSearchParams {
   dateRange?: DateRange;
   trophy?: TrophyRange;
   soloRankTier?: SoloRankTierRange;
+  brawlerId?: number;
 }
 
 export class StatisticsParams {
@@ -17,17 +18,20 @@ export class StatisticsParams {
   public readonly dateRange: DateRange;
   public readonly trophy: TrophyRange;
   public readonly soloRankTier: SoloRankTierRange;
-
+  public readonly brawlerId?: number;
+  
   constructor(
     type?: StatisticsBattleType,
     dateRange?: DateRange,
     trophy?: TrophyRange,
-    soloRankTier?: SoloRankTierRange
+    soloRankTier?: SoloRankTierRange,
+    brawlerId?: number
   ) {
     this.type = type ?? StatisticsBattleTypeValue.ALL;
     this.dateRange = dateRange ?? DateRangeValue.ONE_WEEK;
     this.trophy = trophy ?? TrophyRangeValue.TROPHY_500_PLUS;
     this.soloRankTier = soloRankTier ?? SoloRankTierRangeValue.DIAMOND_PLUS;
+    this.brawlerId = brawlerId;
   }
 
   public getSoloRankTierOfType(): SoloRankTierRange | null {
@@ -44,6 +48,7 @@ export const searchParamsToStatisticsParams = (searchParams: StatisticsSearchPar
     searchParams.type,
     searchParams.dateRange,
     searchParams.trophy,
-    searchParams.soloRankTier
+    searchParams.soloRankTier,
+    searchParams.brawlerId
   );
 }
