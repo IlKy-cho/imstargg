@@ -28,7 +28,7 @@ import Loading from "@/app/loading";
 import {yesterdayDate} from "@/lib/date";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import BattleEventMapImage from "@/components/battle-event-map-image";
-import {cn} from "@/lib/utils";
+import {cn, cnWithDefault} from "@/lib/utils";
 import Image from "next/image";
 
 type Props = {
@@ -92,14 +92,14 @@ async function StatisticsContent({battleEvent, statsParams, brawlers}: {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
+      <div className={cnWithDefault("flex flex-col gap-2")}>
         <Title value="브롤러 티어"/>
         <Suspense fallback={<Loading/>}>
           <PageBrawlerStatistics battleEvent={battleEvent} statsParams={statsParams} date={date} brawlers={brawlers}/>
         </Suspense>
       </div>
       {battleEvent.mode !== BattleEventModeValue.SOLO_SHOWDOWN && (
-        <div className="flex flex-col gap-2">
+        <div className={cnWithDefault("flex flex-col gap-2")}>
           <Title value="브롤러 조합"/>
           <Suspense fallback={<Loading/>}>
             <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
