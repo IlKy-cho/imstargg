@@ -10,10 +10,14 @@ import java.util.function.LongSupplier;
 
 public class IdRangeIncrementer implements JobParametersIncrementer {
 
-    private final int size;
+    private final long size;
     private final LongSupplier maxIdSupplier;
 
-    public IdRangeIncrementer(int size, LongSupplier maxIdSupplier) {
+    public IdRangeIncrementer(LongSupplier maxIdSupplier) {
+        this(Long.MAX_VALUE, maxIdSupplier);
+    }
+
+    public IdRangeIncrementer(long size, LongSupplier maxIdSupplier) {
         this.size = size;
         this.maxIdSupplier = maxIdSupplier;
     }
