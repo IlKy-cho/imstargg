@@ -10,6 +10,7 @@ import java.util.List;
 
 public record BattleEventBrawlersRankStatisticsParam(
         BrawlStarsId eventId,
+        BrawlStarsId brawlerId,
         LocalDate date,
         DateRange dateRange,
         TrophyRangeRange trophyRangeRange,
@@ -24,6 +25,7 @@ public record BattleEventBrawlersRankStatisticsParam(
                 .build((battleDate, trophyRange, soloRankTierRange) ->
                         new BattleEventBrawlersRankCountParam(
                                 eventId,
+                                brawlerId,
                                 battleDate,
                                 trophyRange,
                                 brawlersNum

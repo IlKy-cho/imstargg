@@ -48,6 +48,7 @@ public class BattleEventStatisticsCountReaderWithAsync {
                 new BrawlersResultCounts(
                         battleEventResultStatisticsRepository.findBrawlersResultCounts(
                                 param.eventId(),
+                                param.brawlerId(),
                                 param.battleDate(),
                                 param.trophyRange(),
                                 param.soloRankTierRange(),
@@ -80,6 +81,7 @@ public class BattleEventStatisticsCountReaderWithAsync {
                                 param.eventId(),
                                 param.battleDate(),
                                 param.trophyRange(),
+                                param.brawlerId(),
                                 param.brawlersNum()
                         )
                 )
@@ -92,6 +94,7 @@ public class BattleEventStatisticsCountReaderWithAsync {
                 new BrawlerEnemyResultCounts(
                         battleEventResultStatisticsRepository.findBrawlerEnemyResultCounts(
                                 param.eventId(),
+                                param.brawlerId(),
                                 param.battleDate(),
                                 param.trophyRange(),
                                 param.soloRankTierRange()

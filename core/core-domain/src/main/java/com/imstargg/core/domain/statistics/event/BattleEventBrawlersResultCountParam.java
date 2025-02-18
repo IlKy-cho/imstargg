@@ -9,6 +9,7 @@ import java.time.LocalDate;
 
 public record BattleEventBrawlersResultCountParam(
         BrawlStarsId eventId,
+        BrawlStarsId brawlerId,
         LocalDate battleDate,
         @Nullable TrophyRange trophyRange,
         @Nullable SoloRankTierRange soloRankTierRange,
