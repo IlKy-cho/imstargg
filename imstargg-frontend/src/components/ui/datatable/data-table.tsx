@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>(
             ) : (
               <TableRow>
                 <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
+                  통계가 존재하지 않거나 준비중입니다.
                 </TableCell>
               </TableRow>
             )}
