@@ -28,7 +28,6 @@ import Loading from "@/app/loading";
 import {yesterdayDate} from "@/lib/date";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import BattleEventMapImage from "@/components/battle-event-map-image";
-import {Help} from "@/components/help";
 import {cn} from "@/lib/utils";
 import Image from "next/image";
 
@@ -74,6 +73,7 @@ export default async function EventPage({params, searchParams}: Readonly<Props>)
         <BattleEventStatisticsOption
           battleEvent={battleEvent}
           battleType={statsParams.type}
+          dateRange={statsParams.dateRange}
           trophy={statsParams.trophy}
           soloRankTier={statsParams.soloRankTier}
         />
@@ -133,7 +133,6 @@ async function PageHeaderContent({battleEvent}: Readonly<{battleEvent: BattleEve
           </div>
         </div>
       </div>
-      <Help description={"최근 1주일의 통계입니다. 통계가 존재하지 않을 경우 현재 준비중일 수 있습니다."}/>
     </div>
   );
 }
@@ -156,11 +155,11 @@ async function PageBrawlerStatistics({battleEvent, statsParams, date, brawlers}:
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
       <BrawlerResultStatistics
-        statsList={await getBattleEventBrawlerResultStatistics(battleEvent.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
+        statsList={await getBattleEventBrawlerResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy, statsParams.soloRankTier)}
         brawlers={brawlers}/>
     ) : (
       <BrawlerRankStatistics
-        statsList={await getBattleEventBrawlerRankStatistics(battleEvent.id, date, statsParams.trophy)}
+        statsList={await getBattleEventBrawlerRankStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy)}
         brawlers={brawlers}/>
     )
   );
@@ -176,11 +175,11 @@ async function PageBrawlersStatistics({battleEvent, statsParams, date, brawlers}
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
       <BrawlersResultStatistics
-        statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
+        statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy, statsParams.soloRankTier)}
           brawlers={brawlers}/>
       ) : (
         <BrawlersRankStatistics
-          statsList={await getBattleEventBrawlersRankStatistics(battleEvent.id, date, statsParams.trophy)}
+          statsList={await getBattleEventBrawlersRankStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy)}
           brawlers={brawlers}/>
       )
   );

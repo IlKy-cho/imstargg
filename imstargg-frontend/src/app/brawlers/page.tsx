@@ -7,14 +7,12 @@ import {BrawlerListStatistics} from "@/components/statistics";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 import {yesterdayDate} from "@/lib/date";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
-import {Help} from "@/components/help";
 import {cn} from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: `브롤러`,
   description: "브롤스타즈의 모든 브롤러 목록과 통계 정보 입니다.",
 };
-
 
 
 type PageProps = {
@@ -29,8 +27,9 @@ export default async function BrawlersPage({ searchParams }: Readonly<PageProps>
   const brawlers = await getBrawlers();
   const brawlerResultStats = await getBrawlerResultStatistics(
     yesterday,
-    statsParams.getTrophyOfType(),
-    statsParams.getSoloRankTierOfType()
+    statsParams.dateRange,
+    statsParams.trophy,
+    statsParams.soloRankTier
   );
 
   return (
@@ -40,12 +39,12 @@ export default async function BrawlersPage({ searchParams }: Readonly<PageProps>
           <h1 className="sm:text-2xl text-xl font-bold text-zinc-800">
             브롤러
           </h1>
-          <Help description={"최근 1주일의 통계입니다."}/>
         </div>
       </PageHeader>
       <div className="w-full">
         <BrawlerStatisticsOption
           battleType={statsParams.type}
+          dateRange={statsParams.dateRange}
           trophy={statsParams.trophy}
           soloRankTier={statsParams.soloRankTier}
         />

@@ -2,7 +2,6 @@ import {getBattleEvents, getRotationBattleEvents, getSoloRankBattleEvents} from 
 import {Metadata} from "next";
 import {BattleEventList, GroupedBattleEventList} from "@/components/battle-event";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
-import {Help} from "@/components/help";
 import {cn, cnWithDefault} from "@/lib/utils";
 import {Separator} from "@/components/ui/separator";
 import {BrawlStarsIconSrc} from "@/lib/icon";
@@ -23,7 +22,6 @@ export default async function EventsPage() {
           <h1 className="sm:text-2xl text-xl font-bold text-zinc-800">
             이벤트
           </h1>
-          <Help description={"최근 1주일의 이벤트입니다."}/>
         </div>
       </PageHeader>
       <div className="p-1 flex flex-col gap-2">

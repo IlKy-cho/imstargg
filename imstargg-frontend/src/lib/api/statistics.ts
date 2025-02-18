@@ -10,16 +10,19 @@ import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import {BattleMode} from "@/model/enums/BattleMode";
 import {BrawlerItemOwnership} from "@/model/statistics/BrawlerItemOwnership";
+import { DateRange } from "@/model/enums/DateRange";
 
 export async function fetchGetBattleEventBrawlerResultStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawler`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -54,11 +57,12 @@ interface BattleEventResultStatisticsResponse {
 export async function getBattleEventBrawlerResultStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BrawlerResultStatistics[]> {
   const response = await fetchGetBattleEventBrawlerResultStatistics(
-    eventId, date, trophyRange, soloRankTierRange,
+    eventId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
@@ -74,12 +78,14 @@ export async function getBattleEventBrawlerResultStatistics(
 export async function fetchGetBattleEventBrawlersResultStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/brawlers`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -101,11 +107,12 @@ export async function fetchGetBattleEventBrawlersResultStatistics(
 export async function getBattleEventBrawlersResultStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BrawlersResultStatistics[]> {
   const response = await fetchGetBattleEventBrawlersResultStatistics(
-    eventId, date, trophyRange, soloRankTierRange,
+    eventId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
@@ -120,12 +127,14 @@ export async function getBattleEventBrawlersResultStatistics(
 export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange,
   soloRankTierRange?: SoloRankTierRange,
   options?: CacheOptions
 ) {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/{eventId}/result/brawler-enemy`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -147,11 +156,12 @@ export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
 export async function getBattleEventResultBrawlerEnemyStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange,
   soloRankTierRange?: SoloRankTierRange
 ) {
   const response = await fetchGetBattleEventResultBrawlerEnemyStatistics(
-    eventId, date, trophyRange, soloRankTierRange,
+    eventId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
@@ -167,11 +177,13 @@ export async function getBattleEventResultBrawlerEnemyStatistics(
 export async function fetchGetBattleEventBrawlerRankStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange: TrophyRange,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank/brawler`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   url.searchParams.append('trophyRange', trophyRange);
   if (!options) {
     return await fetch(url);
@@ -188,10 +200,11 @@ export async function fetchGetBattleEventBrawlerRankStatistics(
 export async function getBattleEventBrawlerRankStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange: TrophyRange
 ): Promise<BrawlerRankStatistics[]> {
   const response = await fetchGetBattleEventBrawlerRankStatistics(
-    eventId, date, trophyRange,
+    eventId, date, dateRange, trophyRange,
     {revalidate: 5 * 60}
   );
 
@@ -207,11 +220,13 @@ export async function getBattleEventBrawlerRankStatistics(
 export async function fetchGetBattleEventBrawlersRankStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange: TrophyRange,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank/brawlers`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   url.searchParams.append('trophyRange', trophyRange);
   if (!options) {
     return await fetch(url);
@@ -228,10 +243,11 @@ export async function fetchGetBattleEventBrawlersRankStatistics(
 export async function getBattleEventBrawlersRankStatistics(
   eventId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange: TrophyRange
 ): Promise<BrawlersRankStatistics[]> {
   const response = await fetchGetBattleEventBrawlersRankStatistics(
-    eventId, date, trophyRange,
+    eventId, date, dateRange, trophyRange,
     {revalidate: 5 * 60}
   );
 
@@ -246,12 +262,14 @@ export async function getBattleEventBrawlersRankStatistics(
 
 export async function fetchGetBrawlerResultStatistics(
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawler-result`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -272,11 +290,12 @@ export async function fetchGetBrawlerResultStatistics(
 
 export async function getBrawlerResultStatistics(
   date: Date,
+  dateRange: DateRange,
   trophyRange: TrophyRange | null,
   soloRankTierRange: SoloRankTierRange | null
 ): Promise<BrawlerResultStatistics[]> {
   const response = await fetchGetBrawlerResultStatistics(
-    date, trophyRange, soloRankTierRange,
+    date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
@@ -291,12 +310,14 @@ export async function getBrawlerResultStatistics(
 export async function fetchGetBrawlerBattleEventResultStatistics(
   brawlerId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -318,11 +339,12 @@ export async function fetchGetBrawlerBattleEventResultStatistics(
 export async function getBrawlerBattleEventResultStatistics(
   brawlerId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BattleEventResultStatistics[]> {
   const response = await fetchGetBrawlerBattleEventResultStatistics(
-    brawlerId, date, trophyRange, soloRankTierRange,
+    brawlerId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
@@ -353,12 +375,14 @@ export async function getBrawlerBattleEventResultStatistics(
 export async function fetchGetBrawlerBrawlersResultStatistics(
   brawlerId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/brawlers-result`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -380,11 +404,12 @@ export async function fetchGetBrawlerBrawlersResultStatistics(
 export async function getBrawlerBrawlersResultStatistics(
   brawlerId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BrawlersResultStatistics[]> {
   const response = await fetchGetBrawlerBrawlersResultStatistics(
-    brawlerId, date, trophyRange, soloRankTierRange,
+    brawlerId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 
@@ -406,12 +431,14 @@ export async function getBrawlerBrawlersResultStatistics(
 export async function fetchGetBrawlerEnemyResultStatistics(
   brawlerId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/enemy-result`);
   url.searchParams.append('date', date.toISOString().split('T')[0]);
+  url.searchParams.append('dateRange', dateRange);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -433,11 +460,12 @@ export async function fetchGetBrawlerEnemyResultStatistics(
 export async function getBrawlerEnemyResultStatistics(
   brawlerId: number,
   date: Date,
+  dateRange: DateRange,
   trophyRange?: TrophyRange | null,
   soloRankTierRange?: SoloRankTierRange | null
 ): Promise<BrawlerEnemyResultStatistics[]> {
   const response = await fetchGetBrawlerEnemyResultStatistics(
-    brawlerId, date, trophyRange, soloRankTierRange,
+    brawlerId, date, dateRange, trophyRange, soloRankTierRange,
     {revalidate: 5 * 60}
   );
 

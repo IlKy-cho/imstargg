@@ -10,6 +10,7 @@ import {isResultBattleEventMode} from "@/model/enums/BattleEventMode";
 import {statisticsBattleTypeTitle} from "@/lib/battle-type";
 import {BrawlStarsIconSrc} from "@/lib/icon";
 import {StatisticsBattleType, StatisticsBattleTypeValue, StatisticsBattleTypeValues} from "@/model/enums/BattleType";
+import { DateRange, dateRangeTitle, DateRangeValues } from "@/model/enums/DateRange";
 
 
 function BattleTypeSelect({ battleType }: { battleType?: StatisticsBattleType }) {
@@ -81,7 +82,6 @@ function TrophySelect({ trophy }: { trophy?: TrophyRange }) {
   )
 }
 
-
 function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -103,6 +103,34 @@ function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
           SoloRankTierRangeValues.map((tier) => (
             <SelectItem key={tier} value={tier}>
               {soloRankTierRangeTitle(tier)}
+            </SelectItem>
+          ))
+        }
+      </SelectContent>
+    </Select>
+  )
+}
+
+function DateRangeSelect({ dateRange }: { dateRange?: DateRange }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const handleDateRangeChange = (value: DateRange) => {
+    const params = new URLSearchParams(searchParams);
+    params.set('dateRange', value);
+    router.replace(`?${params.toString()}`);
+  };
+
+  return (
+    <Select defaultValue={dateRange} onValueChange={handleDateRangeChange}>
+      <SelectTrigger className="w-28">
+        <SelectValue placeholder="기간" />
+      </SelectTrigger>
+      <SelectContent>
+        {
+          DateRangeValues.map((dateRange) => (
+            <SelectItem key={dateRange} value={dateRange}>
+              {dateRangeTitle(dateRange)}
             </SelectItem>
           ))
         }
@@ -161,6 +189,7 @@ export function BattleEventResultStatisticsOption(
 type BattleEventStatsOptionProps = {
   battleEvent: BattleEvent;
   battleType: StatisticsBattleType;
+  dateRange: DateRange;
   trophy?: TrophyRange;
   soloRankTier?: SoloRankTierRange;
 }
@@ -169,10 +198,11 @@ export function BattleEventStatisticsOption({
   battleEvent,
   battleType,
   trophy,
-  soloRankTier
+  soloRankTier,
+  dateRange
 }: Readonly<BattleEventStatsOptionProps>) {
   return (
-    <div className="border rounded-lg p-1 bg-zinc-100">
+    <div className="border rounded-lg p-1 bg-zinc-100 flex gap-2">
       {
         isResultBattleEventMode(battleEvent.mode) ? (
           <BattleEventResultStatisticsOption
@@ -184,24 +214,28 @@ export function BattleEventStatisticsOption({
           <BattleEventRankStatisticsOption trophy={trophy} />
         )
       }
+      <DateRangeSelect dateRange={dateRange} />
     </div>
   );
 }
 
 type BrawlerStatsOptionProps = {
   battleType: StatisticsBattleType;
+  dateRange: DateRange;
   trophy?: TrophyRange;
   soloRankTier?: SoloRankTierRange;
 }
 
 export function BrawlerStatisticsOption({
   battleType,
+  dateRange,
   trophy,
   soloRankTier
 }: Readonly<BrawlerStatsOptionProps>) {
   return (
-    <div className="border rounded-lg p-1 bg-zinc-100">
+    <div className="border rounded-lg p-1 bg-zinc-100 flex gap-2">
       <BattleTypeTierSelect battleType={battleType} trophy={trophy} soloRankTier={soloRankTier} />
+      <DateRangeSelect dateRange={dateRange} />
     </div>
   )
 }

@@ -36,7 +36,6 @@ import {BrawlerClassIcon} from "@/components/brawler-class";
 import {brawlerClassTitle} from "@/lib/brawler-class";
 import {brawlerRarityTitle} from "@/lib/brawler-rarity";
 import {cn} from "@/lib/utils";
-import {Help} from "@/components/help";
 import {brawlerBackgroundColor} from "@/lib/brawler";
 
 interface SearchParams extends StatisticsSearchParams{
@@ -90,8 +89,12 @@ export default async function BrawlerPage({params, searchParams}: Readonly<Props
       <BrawlerGearList gears={brawler.gears} brawlerOwnershipRate={brawlerOwnershipRate}/>
       <Ranking rankings={brawlerRankings} country={country}/>
       <div className="flex flex-col gap-2 p-1">
-        <BrawlerStatisticsOption battleType={statsParams.type} trophy={statsParams.trophy}
-                                 soloRankTier={statsParams.soloRankTier}/>
+        <BrawlerStatisticsOption 
+          battleType={statsParams.type} 
+          dateRange={statsParams.dateRange} 
+          trophy={statsParams.trophy}
+          soloRankTier={statsParams.soloRankTier}
+        />
         <StatisticsContent brawlers={brawlers}
                            brawler={brawler}
                            statsParams={statsParams}
@@ -129,7 +132,6 @@ async function BrawlerProfile({brawler}: Readonly<{ brawler: Brawler }>) {
           </div>
         </div>
       </div>
-      <Help description={"최근 1주일의 통계입니다."}/>
     </div>
   );
 }
@@ -185,7 +187,7 @@ async function PageEventStatistics({brawler, statsParams, date}: Readonly<{
 }>) {
 
   return (
-    <BattleEventResultStatistics statsList={await getBrawlerBattleEventResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}/>
+    <BattleEventResultStatistics statsList={await getBrawlerBattleEventResultStatistics(brawler.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}/>
   );
 }
 
@@ -197,7 +199,7 @@ async function PageBrawlersStatistics({brawler, statsParams, date, brawlers}: Re
 }>) {
 
   return (
-    <BrawlersResultStatistics statsList={await getBrawlerBrawlersResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
+    <BrawlersResultStatistics statsList={await getBrawlerBrawlersResultStatistics(brawler.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
   );
 }
 
@@ -209,6 +211,6 @@ async function PageEnemyStatistics({brawler, statsParams, date, brawlers}: Reado
 }>) {
 
   return (
-    <BrawlerEnemyResultStatistics statsList={await getBrawlerEnemyResultStatistics(brawler.id, date, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
+    <BrawlerEnemyResultStatistics statsList={await getBrawlerEnemyResultStatistics(brawler.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
   );
 }
