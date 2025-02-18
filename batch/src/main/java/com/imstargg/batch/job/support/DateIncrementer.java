@@ -37,7 +37,6 @@ public class DateIncrementer implements JobParametersIncrementer {
             }
         }
 
-        log.info("JobParameter['{}'] = {}", KEY, date);
         return new JobParametersBuilder(params)
                 .addLocalDate(KEY, date)
                 .toJobParameters();

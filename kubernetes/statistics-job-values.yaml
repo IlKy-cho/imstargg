@@ -1,6 +1,6 @@
 app:
   job:
-    name: dailyJob
+    name: statisticsJob
 
 job:
   schedule: "0 22 * * *"
