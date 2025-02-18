@@ -155,7 +155,7 @@ async function PageBrawlerStatistics({battleEvent, statsParams, date, brawlers}:
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
       <BrawlerResultStatistics
-        statsList={await getBattleEventBrawlerResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy, statsParams.soloRankTier)}
+        statsList={await getBattleEventBrawlerResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
         brawlers={brawlers}/>
     ) : (
       <BrawlerRankStatistics
@@ -175,7 +175,7 @@ async function PageBrawlersStatistics({battleEvent, statsParams, date, brawlers}
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
       <BrawlersResultStatistics
-        statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy, statsParams.soloRankTier)}
+        statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
           brawlers={brawlers}/>
       ) : (
         <BrawlersRankStatistics
