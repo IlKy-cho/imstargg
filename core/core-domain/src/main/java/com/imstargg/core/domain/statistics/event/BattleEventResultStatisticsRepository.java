@@ -96,9 +96,9 @@ public class BattleEventResultStatisticsRepository {
                 .map(entry -> new BrawlersResultCount(
                         entry.getKey().ids().stream().map(BrawlStarsId::new).toList(),
                         new ResultCount(
-                                entry.getValue().getVictoryCount() / brawlNum,
-                                entry.getValue().getDefeatCount() / brawlNum,
-                                entry.getValue().getDrawCount() / brawlNum
+                                entry.getValue().getVictoryCount(),
+                                entry.getValue().getDefeatCount(),
+                                entry.getValue().getDrawCount()
                         )
                 ))
                 .toList();
