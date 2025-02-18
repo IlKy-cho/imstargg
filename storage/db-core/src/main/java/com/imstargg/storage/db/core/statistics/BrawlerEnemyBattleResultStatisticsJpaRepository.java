@@ -13,9 +13,11 @@ import java.util.List;
 public interface BrawlerEnemyBattleResultStatisticsJpaRepository
         extends JpaRepository<BrawlerEnemyBattleResultStatisticsEntity, Long> {
 
-    List<BrawlerEnemyBattleResultStatisticsEntity> findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRange(
-            long eventBrawlStarsId, LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange
+    List<BrawlerEnemyBattleResultStatisticsEntity> findAllByEventBrawlStarsIdAndBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
+            long eventBrawlStarsId,
+            LocalDate battleDate,
+            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange,
+            long brawlerBrawlStarsId
     );
 
     Slice<BrawlerEnemyBattleResultStatisticsEntity> findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(

@@ -10,6 +10,7 @@ import java.time.LocalDate;
 
 public record BattleEventBrawlersRankStatisticsRequest(
         @NotNull LocalDate date,
+        @NotNull Long brawlerId,
         @NotNull DateRange dateRange,
         @NotNull TrophyRangeRange trophyRange
 ) {
@@ -17,6 +18,7 @@ public record BattleEventBrawlersRankStatisticsRequest(
     public BattleEventBrawlersRankStatisticsParam toParam(BrawlStarsId eventId) {
         return new BattleEventBrawlersRankStatisticsParam(
                 eventId,
+                new BrawlStarsId(brawlerId),
                 date(),
                 dateRange(),
                 trophyRange(),

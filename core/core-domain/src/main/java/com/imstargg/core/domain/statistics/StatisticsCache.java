@@ -139,6 +139,7 @@ public class StatisticsCache {
     private String key(BattleEventBrawlersResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-result-stats", "v1")
                 .add("event").add(param.eventId().value())
+                .add("brawlerId").add(param.brawlerId().value())
                 .add("date").add(param.date())
                 .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange())
@@ -181,6 +182,7 @@ public class StatisticsCache {
     private String key(BattleEventBrawlersRankStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-rank-stats", "v1")
                 .add("event").add(param.eventId().value())
+                .add("brawlerId").add(param.brawlerId().value())
                 .add("date").add(param.date())
                 .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRangeRange().toString())
@@ -202,6 +204,7 @@ public class StatisticsCache {
     private String key(BattleEventBrawlerEnemyResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawler-enemy-result-stats", "v1")
                 .add("event").add(param.eventId().value())
+                .add("brawlerId").add(param.brawlerId().value())
                 .add("date").add(param.date())
                 .add("dateRange").add(param.dateRange())
                 .add("trophyRange").add(param.trophyRange())
