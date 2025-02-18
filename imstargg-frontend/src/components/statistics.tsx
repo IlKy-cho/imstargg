@@ -198,7 +198,7 @@ type BrawlerResultStatisticsProps = {
   statsList: BrawlerResultStatisticsModel[]
 };
 
-export function BrawlerResultStatistics(
+export function EventBrawlerResultStatistics(
   {brawlers, statsList}: Readonly<BrawlerResultStatisticsProps>
 ) {
   const brawlerCollection = new BrawlerCollection(brawlers);

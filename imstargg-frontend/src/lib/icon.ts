@@ -5,6 +5,7 @@ import TrophyIconSrc from '@/../public/icon/icon_trophy.png';
 import GadgetBaseEmptyIconSrc from '@/../public/icon/gadget_base_empty.png';
 import StarPowerBaseEmptyIconSrc from '@/../public/icon/starpower_base01_empty.png';
 import GearBaseEmptyIconSrc from '@/../public/icon/gear_base_empty.png';
+import BrawlStarsStarWingsIconSrc from '@/../public/icon/Brawl Stars Star Wings.webp';
 
 export const BrawlStarsIconSrc = {
   CLUB_LEAGUE_MASTERS: ClubLeagueMastersIconSrc,
@@ -14,4 +15,5 @@ export const BrawlStarsIconSrc = {
   GADGET_BASE_EMPTY: GadgetBaseEmptyIconSrc,
   STAR_POWER_BASE_EMPTY: StarPowerBaseEmptyIconSrc,
   GEAR_BASE_EMPTY: GearBaseEmptyIconSrc,
+  STAR_WINGS: BrawlStarsStarWingsIconSrc,
 } as const;

@@ -5,12 +5,14 @@ import {
   getBattleEventBrawlerRankStatistics,
   getBattleEventBrawlerResultStatistics,
   getBattleEventBrawlersRankStatistics,
-  getBattleEventBrawlersResultStatistics
+  getBattleEventBrawlersResultStatistics,
+  getBattleEventResultBrawlerEnemyStatistics
 } from "@/lib/api/statistics";
 import {BattleEventModeValue, isResultBattleEventMode} from "@/model/enums/BattleEventMode";
 import {
+  BrawlerEnemyResultStatistics,
   BrawlerRankStatistics,
-  BrawlerResultStatistics,
+  EventBrawlerResultStatistics,
   BrawlersRankStatistics,
   BrawlersResultStatistics
 } from "@/components/statistics";
@@ -30,6 +32,7 @@ import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import {cn, cnWithDefault} from "@/lib/utils";
 import Image from "next/image";
+import { BrawlStarsIconSrc } from "@/lib/icon";
 
 type Props = {
   params: Promise<{
@@ -100,11 +103,28 @@ async function StatisticsContent({battleEvent, statsParams, brawlers}: {
       </div>
       {battleEvent.mode !== BattleEventModeValue.SOLO_SHOWDOWN && (
         <div className={cnWithDefault("flex flex-col gap-2")}>
-          <Title value="브롤러 조합"/>
-          <Suspense fallback={<Loading/>}>
-            <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
+          <Title value="브롤러 시너지"/>
+          {statsParams.brawlerId ? (
+            <Suspense fallback={<Loading/>}>
+              <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
                                     brawlers={brawlers}/>
-          </Suspense>
+            </Suspense>
+          ) : (
+            <PageBrawlerNotSelected/>
+          )}
+        </div>
+      )}
+      {isResultBattleEventMode(battleEvent.mode) && (
+        <div className={cnWithDefault("flex flex-col gap-2")}>
+          <Title value="브롤러 카운터"/>
+          {statsParams.brawlerId ? (
+            <Suspense fallback={<Loading/>}>
+            <PageBrawlerEnemyStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
+                                    brawlers={brawlers}/>
+            </Suspense>
+          ) : (
+            <PageBrawlerNotSelected/>
+          )}
         </div>
       )}
     </div>
@@ -154,7 +174,7 @@ async function PageBrawlerStatistics({battleEvent, statsParams, date, brawlers}:
 
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
-      <BrawlerResultStatistics
+      <EventBrawlerResultStatistics
         statsList={await getBattleEventBrawlerResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
         brawlers={brawlers}/>
     ) : (
@@ -175,14 +195,43 @@ async function PageBrawlersStatistics({battleEvent, statsParams, date, brawlers}
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
       <BrawlersResultStatistics
-        statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
+        statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
           brawlers={brawlers}/>
       ) : (
         <BrawlersRankStatistics
-          statsList={await getBattleEventBrawlersRankStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy)}
+          statsList={await getBattleEventBrawlersRankStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.trophy)}
           brawlers={brawlers}/>
       )
   );
 }
 
+async function PageBrawlerEnemyStatistics({battleEvent, statsParams, date, brawlers}: Readonly<{
+  battleEvent: BattleEvent,
+  statsParams: StatisticsParams,
+  date: Date,
+  brawlers: Brawler[]
+}>) {
 
+  return (
+    <BrawlerEnemyResultStatistics
+        statsList={await getBattleEventResultBrawlerEnemyStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
+        brawlers={brawlers}/>
+  );
+}
+
+function PageBrawlerNotSelected() {
+  return (
+    <div className="flex flex-col items-center justify-center">
+      <Image
+        src={BrawlStarsIconSrc.STAR_WINGS}
+        alt="brawler not selected"
+        width={100}
+        height={100}
+        className="sm:w-24 sm:h-24 w-16 h-16"
+      />
+      <div className="text-zinc-700">
+        브롤러를 선택해주세요.
+      </div>
+    </div>
+  );
+}
