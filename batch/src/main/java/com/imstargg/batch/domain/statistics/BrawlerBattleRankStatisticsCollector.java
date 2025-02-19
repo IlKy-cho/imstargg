@@ -28,11 +28,9 @@ public class BrawlerBattleRankStatisticsCollector
         if (!battle.canRankStatisticsCollected()) {
             return false;
         }
-        battle.myPlayerCombinations().forEach(playerCombination -> {
-            var key = BrawlerBattleRankStatisticsKey.of(clock, battle);
-            var brawlerBattleResultStats = getBrawlerBattleResultStats(key);
-            brawlerBattleResultStats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
-        });
+        var key = BrawlerBattleRankStatisticsKey.of(clock, battle);
+        var stats = getBrawlerBattleResultStats(key);
+        stats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
         return true;
     }
 

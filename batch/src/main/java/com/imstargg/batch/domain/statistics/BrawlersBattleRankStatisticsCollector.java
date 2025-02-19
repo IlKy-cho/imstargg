@@ -28,7 +28,7 @@ public class BrawlersBattleRankStatisticsCollector
         if (!battle.canRankStatisticsCollected()) {
             return false;
         }
-        battle.myTeamCombinations()
+        battle.myPlayerTeamCombinations()
                 .stream()
                 .filter(myTeamCombination -> myTeamCombination.players().size() == 2)
                 .forEach(myTeamCombination ->

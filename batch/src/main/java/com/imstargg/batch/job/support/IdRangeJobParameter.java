@@ -30,7 +30,7 @@ public class IdRangeJobParameter {
         this.from = from;
     }
 
-    @Value("#{jobParameters['" + ID_TO_KEY + " ']}")
+    @Value("#{jobParameters['" + ID_TO_KEY + "']}")
     public void setTo(@Nullable Long to) {
         this.to = to;
     }

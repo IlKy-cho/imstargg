@@ -28,23 +28,21 @@ public class BrawlerBattleResultStatisticsCollector
         if (!battle.canResultStatisticsCollected()) {
             return false;
         }
+        List<BattleCollectionEntityTeamPlayer> me = battle.findMe();
+        if (me.size() != 1) {
+            throw new IllegalStateException("myTeamPlayer is not found or duplicated. battleId: " + battle.getId());
+        }
+
+        BattleCollectionEntityTeamPlayer player = me.getFirst();
         BattleResult battleResult = BattleResult.map(battle.getResult());
-        battle.myPlayerCombinations().forEach(playerCombination -> {
-            doCollect(battle, playerCombination.myTeamPlayer(), battleResult);
-        });
-
-        return true;
-    }
-
-    private void doCollect(
-            BattleCollectionEntity battle, BattleCollectionEntityTeamPlayer player, BattleResult battleResult
-    ) {
         var key = BrawlerBattleResultStatisticsKey.of(clock, battle, player);
-        BrawlerBattleResultStatisticsCollectionEntity stats = getBrawlerBattleResultStats(key);
+        var stats = getBrawlerBattleResultStats(key);
         stats.countUp(battleResult);
         if (battle.isStarPlayer(player)) {
             stats.starPlayer();
         }
+
+        return true;
     }
 
     @Override
