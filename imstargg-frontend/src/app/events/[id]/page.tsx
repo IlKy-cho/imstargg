@@ -1,6 +1,6 @@
-import {getBattleEvent} from "@/lib/api/battle-event";
-import {notFound} from "next/navigation";
-import {BattleEventStatisticsOption} from "@/components/statistics-option";
+import { getBattleEvent } from "@/lib/api/battle-event";
+import { notFound } from "next/navigation";
+import { BattleEventStatisticsOption } from "@/components/statistics-option";
 import {
   getBattleEventBrawlerRankStatistics,
   getBattleEventBrawlerResultStatistics,
@@ -8,29 +8,29 @@ import {
   getBattleEventBrawlersResultStatistics,
   getBattleEventResultBrawlerEnemyStatistics
 } from "@/lib/api/statistics";
-import {BattleEventModeValue, isResultBattleEventMode} from "@/model/enums/BattleEventMode";
+import { BattleEventModeValue, isResultBattleEventMode } from "@/model/enums/BattleEventMode";
 import {
   BrawlerEnemyResultStatistics,
-  BrawlerRankStatistics,
+  EventBrawlerRankStatistics,
   EventBrawlerResultStatistics,
   BrawlersRankStatistics,
   BrawlersResultStatistics
 } from "@/components/statistics";
-import {getBrawlers} from "@/lib/api/brawler";
-import {Brawler} from "@/model/Brawler";
+import { getBrawlers } from "@/lib/api/brawler";
+import { Brawler } from "@/model/Brawler";
 import {
   searchParamsToStatisticsParams,
   StatisticsParams,
   StatisticsSearchParams
 } from "@/model/statistics/StatisticsParams";
-import {BattleEvent} from "@/model/BattleEvent";
-import {battleEventModeIconSrc, battleEventModeTitle, battleModeIconSrc, battleModeTitle} from "@/lib/battle-mode";
-import {Suspense} from "react";
+import { BattleEvent } from "@/model/BattleEvent";
+import { battleEventModeIconSrc, battleEventModeTitle, battleModeIconSrc, battleModeTitle } from "@/lib/battle-mode";
+import { Suspense } from "react";
 import Loading from "@/app/loading";
-import {yesterdayDate} from "@/lib/date";
-import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
+import { yesterdayDate } from "@/lib/date";
+import { PageHeader, pageHeaderContainerDefault } from "@/components/page-header";
 import BattleEventMapImage from "@/components/battle-event-map-image";
-import {cn, cnWithDefault} from "@/lib/utils";
+import { cn, cnWithDefault } from "@/lib/utils";
 import Image from "next/image";
 import { BrawlStarsIconSrc } from "@/lib/icon";
 
@@ -41,8 +41,8 @@ type Props = {
   searchParams: Promise<StatisticsSearchParams>;
 };
 
-export async function generateMetadata({params}: Readonly<Props>) {
-  const {id} = await params;
+export async function generateMetadata({ params }: Readonly<Props>) {
+  const { id } = await params;
   const battleEvent = await getBattleEvent(id);
   if (!battleEvent) {
     notFound();
@@ -56,8 +56,8 @@ export async function generateMetadata({params}: Readonly<Props>) {
   }
 }
 
-export default async function EventPage({params, searchParams}: Readonly<Props>) {
-  const {id} = await params;
+export default async function EventPage({ params, searchParams }: Readonly<Props>) {
+  const { id } = await params;
   const battleEvent = await getBattleEvent(id);
   if (!battleEvent) {
     notFound();
@@ -70,7 +70,7 @@ export default async function EventPage({params, searchParams}: Readonly<Props>)
   return (
     <div className="space-y-2">
       <PageHeader>
-        <PageHeaderContent battleEvent={battleEvent}/>
+        <PageHeaderContent battleEvent={battleEvent} />
       </PageHeader>
       <div className="flex flex-col gap-2 p-1">
         <BattleEventStatisticsOption
@@ -80,13 +80,13 @@ export default async function EventPage({params, searchParams}: Readonly<Props>)
           trophy={statsParams.trophy}
           soloRankTier={statsParams.soloRankTier}
         />
-        <StatisticsContent battleEvent={battleEvent} statsParams={statsParams} brawlers={brawlerList}/>
+        <StatisticsContent battleEvent={battleEvent} statsParams={statsParams} brawlers={brawlerList} />
       </div>
     </div>
   );
 };
 
-async function StatisticsContent({battleEvent, statsParams, brawlers}: {
+async function StatisticsContent({ battleEvent, statsParams, brawlers }: {
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
   brawlers: Brawler[]
@@ -94,50 +94,53 @@ async function StatisticsContent({battleEvent, statsParams, brawlers}: {
   const date = yesterdayDate();
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className={cnWithDefault("flex flex-col gap-2")}>
-        <Title value="브롤러 티어"/>
-        <Suspense fallback={<Loading/>}>
-          <PageBrawlerStatistics battleEvent={battleEvent} statsParams={statsParams} date={date} brawlers={brawlers}/>
+    <div className="flex flex-col sm:flex-row gap-2">
+      <div className={cnWithDefault("flex-1 flex flex-col gap-2")}>
+        <Title value="브롤러 티어" />
+        <Suspense fallback={<Loading />}>
+          <PageBrawlerStatistics battleEvent={battleEvent} statsParams={statsParams} date={date} brawlers={brawlers} />
         </Suspense>
       </div>
-      {battleEvent.mode !== BattleEventModeValue.SOLO_SHOWDOWN && (
-        <div className={cnWithDefault("flex flex-col gap-2")}>
-          <Title value="브롤러 시너지"/>
-          {statsParams.brawlerId ? (
-            <Suspense fallback={<Loading/>}>
-              <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
-                                    brawlers={brawlers}/>
-            </Suspense>
-          ) : (
-            <PageBrawlerNotSelected/>
-          )}
-        </div>
-      )}
-      {isResultBattleEventMode(battleEvent.mode) && (
-        <div className={cnWithDefault("flex flex-col gap-2")}>
-          <Title value="브롤러 카운터"/>
-          {statsParams.brawlerId ? (
-            <Suspense fallback={<Loading/>}>
-            <PageBrawlerEnemyStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
-                                    brawlers={brawlers}/>
-            </Suspense>
-          ) : (
-            <PageBrawlerNotSelected/>
-          )}
-        </div>
-      )}
+      <div className="flex flex-col gap-2 sm:w-96">
+        {battleEvent.mode !== BattleEventModeValue.SOLO_SHOWDOWN && (
+          <div className={cnWithDefault("flex flex-col gap-2")}>
+            <Title value="브롤러 시너지" />
+            {statsParams.brawlerId ? (
+              <Suspense fallback={<Loading />}>
+                <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
+                  brawlers={brawlers} />
+              </Suspense>
+            ) : (
+              <PageBrawlerNotSelected />
+            )}
+          </div>
+        )}
+        {isResultBattleEventMode(battleEvent.mode) && (
+          <div className={cnWithDefault("flex flex-col gap-2")}>
+            <Title value="브롤러 카운터" />
+            {statsParams.brawlerId ? (
+              <Suspense fallback={<Loading />}>
+                <PageBrawlerEnemyStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
+                  brawlers={brawlers} />
+              </Suspense>
+            ) : (
+              <PageBrawlerNotSelected />
+            )}
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }
 
-async function PageHeaderContent({battleEvent}: Readonly<{battleEvent: BattleEvent}>) {
+async function PageHeaderContent({ battleEvent }: Readonly<{ battleEvent: BattleEvent }>) {
   const modeIconSrc = battleEventModeIconSrc(battleEvent.mode) || (battleEvent.battleMode && battleModeIconSrc(battleEvent.battleMode));
   const modeTitle = battleEventModeTitle(battleEvent.mode) || (battleEvent.battleMode && battleModeTitle(battleEvent.battleMode));
   return (
     <div className={cn("flex flex-col gap-1", pageHeaderContainerDefault)}>
       <div className="flex gap-2">
-        <BattleEventMapImage battleEventMap={battleEvent.map} size="lg"/>
+        <BattleEventMapImage battleEventMap={battleEvent.map} size="lg" />
         <div className="flex-1">
           <div className="flex items-center gap-2">
             {modeIconSrc &&
@@ -157,7 +160,7 @@ async function PageHeaderContent({battleEvent}: Readonly<{battleEvent: BattleEve
   );
 }
 
-async function Title({value}: {value: string}) {
+async function Title({ value }: { value: string }) {
   return (
     <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
       {value}
@@ -165,7 +168,7 @@ async function Title({value}: {value: string}) {
   );
 }
 
-async function PageBrawlerStatistics({battleEvent, statsParams, date, brawlers}: Readonly<{
+async function PageBrawlerStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
   date: Date,
@@ -176,16 +179,17 @@ async function PageBrawlerStatistics({battleEvent, statsParams, date, brawlers}:
     isResultBattleEventMode(battleEvent.mode) ? (
       <EventBrawlerResultStatistics
         statsList={await getBattleEventBrawlerResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
-        brawlers={brawlers}/>
+        brawlers={brawlers}
+        selectedBrawlerId={statsParams.brawlerId} />
     ) : (
-      <BrawlerRankStatistics
+      <EventBrawlerRankStatistics
         statsList={await getBattleEventBrawlerRankStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.trophy)}
-        brawlers={brawlers}/>
+        brawlers={brawlers} />
     )
   );
 }
 
-async function PageBrawlersStatistics({battleEvent, statsParams, date, brawlers}: Readonly<{
+async function PageBrawlersStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
   date: Date,
@@ -196,16 +200,16 @@ async function PageBrawlersStatistics({battleEvent, statsParams, date, brawlers}
     isResultBattleEventMode(battleEvent.mode) ? (
       <BrawlersResultStatistics
         statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
-          brawlers={brawlers}/>
-      ) : (
-        <BrawlersRankStatistics
-          statsList={await getBattleEventBrawlersRankStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.trophy)}
-          brawlers={brawlers}/>
-      )
+        brawlers={brawlers} />
+    ) : (
+      <BrawlersRankStatistics
+        statsList={await getBattleEventBrawlersRankStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.trophy)}
+        brawlers={brawlers} />
+    )
   );
 }
 
-async function PageBrawlerEnemyStatistics({battleEvent, statsParams, date, brawlers}: Readonly<{
+async function PageBrawlerEnemyStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
   date: Date,
@@ -214,8 +218,8 @@ async function PageBrawlerEnemyStatistics({battleEvent, statsParams, date, brawl
 
   return (
     <BrawlerEnemyResultStatistics
-        statsList={await getBattleEventResultBrawlerEnemyStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
-        brawlers={brawlers}/>
+      statsList={await getBattleEventResultBrawlerEnemyStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
+      brawlers={brawlers} />
   );
 }
 

@@ -27,6 +27,8 @@ import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
 import Image from "next/image";
 import Link from "next/link";
 import {battleEventHref} from "@/config/site";
+import { Checkbox } from "./ui/checkbox";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
@@ -93,12 +95,15 @@ function TextCell({value}: { value: string }) {
 
 type BrawlerRankStatisticsProps = {
   brawlers: Brawler[],
+  selectedBrawlerId?: number,
   statsList: BrawlerRankStatisticsModel[]
 };
 
-export function BrawlerRankStatistics(
-  {brawlers, statsList}: Readonly<BrawlerRankStatisticsProps>
+export function EventBrawlerRankStatistics(
+  {brawlers, selectedBrawlerId, statsList}: Readonly<BrawlerRankStatisticsProps>
 ) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const brawlerCollection = new BrawlerCollection(brawlers);
   const columns: ColumnDef<BrawlerRankStatisticsModel>[] = [
     {
@@ -112,6 +117,24 @@ export function BrawlerRankStatistics(
           <BrawlerCell brawler={brawler}/>
         );
       },
+    },
+    {
+      id: "brawlerSelect",
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.original.brawlerId == selectedBrawlerId}
+          onCheckedChange={(value) => {
+            if (value) {
+              const params = new URLSearchParams(searchParams);
+              params.set('brawlerId', row.original.brawlerId.toString());
+              router.replace(`?${params.toString()}`);
+            }
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "averageRank",
@@ -195,12 +218,15 @@ export function BrawlersRankStatistics(
 
 type BrawlerResultStatisticsProps = {
   brawlers: Brawler[],
+  selectedBrawlerId?: number,
   statsList: BrawlerResultStatisticsModel[]
 };
 
 export function EventBrawlerResultStatistics(
-  {brawlers, statsList}: Readonly<BrawlerResultStatisticsProps>
+  {brawlers, selectedBrawlerId, statsList}: Readonly<BrawlerResultStatisticsProps>
 ) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const brawlerCollection = new BrawlerCollection(brawlers);
   const columns: ColumnDef<BrawlerResultStatisticsModel>[] = [
     {
@@ -214,6 +240,24 @@ export function EventBrawlerResultStatistics(
           <BrawlerCell brawler={brawler}/>
         );
       },
+    },
+    {
+      id: "brawlerSelect",
+      cell: ({ row }) => (
+        <Checkbox
+          checked={row.original.brawlerId == selectedBrawlerId}
+          onCheckedChange={(value) => {
+            if (value) {
+              const params = new URLSearchParams(searchParams);
+              params.set('brawlerId', row.original.brawlerId.toString());
+              router.replace(`?${params.toString()}`);
+            }
+          }}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
     },
     {
       accessorKey: "winRate",
@@ -247,7 +291,7 @@ export function EventBrawlerResultStatistics(
   ];
 
   return (
-    <DataTable columns={columns} data={statsList} pagination={{enabled: true}}/>
+    <DataTable columns={columns} data={statsList}/>
   )
 }
 
