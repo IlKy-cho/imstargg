@@ -9,6 +9,9 @@ import java.time.Clock;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 
+/**
+ * - duel 의 경우 플레이어 수가 1개 보다 많기 때문에 플레이어가 1명인 것에 대한 예외처리는 하지 않음
+ */
 public class BrawlerBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> {
 
@@ -28,18 +31,14 @@ public class BrawlerBattleResultStatisticsCollector
         if (!battle.canResultStatisticsCollected()) {
             return false;
         }
-        List<BattleCollectionEntityTeamPlayer> me = battle.findMe();
-        if (me.size() != 1) {
-            throw new IllegalStateException("myTeamPlayer is not found or duplicated. battleId: " + battle.getId());
-        }
-
-        BattleCollectionEntityTeamPlayer player = me.getFirst();
-        BattleResult battleResult = BattleResult.map(battle.getResult());
-        var key = BrawlerBattleResultStatisticsKey.of(clock, battle, player);
-        var stats = getBrawlerBattleResultStats(key);
-        stats.countUp(battleResult);
-        if (battle.isStarPlayer(player)) {
-            stats.starPlayer();
+        for (BattleCollectionEntityTeamPlayer player : battle.findMe()) {
+            BattleResult battleResult = BattleResult.map(battle.getResult());
+            var key = BrawlerBattleResultStatisticsKey.of(clock, battle, player);
+            var stats = getBrawlerBattleResultStats(key);
+            stats.countUp(battleResult);
+            if (battle.isStarPlayer(player)) {
+                stats.starPlayer();
+            }
         }
 
         return true;
