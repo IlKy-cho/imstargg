@@ -10,10 +10,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
 
-import React, {useEffect, useState} from "react";
-import {DataTablePagination} from "@/components/ui/datatable/data-table-pagination";
+import React, { useEffect, useState } from "react";
+import { DataTablePagination } from "@/components/ui/datatable/data-table-pagination";
+import Image from "next/image";
+import gusSadPinIconSrc from "@/../public/icon/brawler/gus/gus_sad_pin.png";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,7 +27,7 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>(
-  {columns, data, pagination}: DataTableProps<TData, TValue>
+  { columns, data, pagination }: DataTableProps<TData, TValue>
 ) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -85,8 +87,19 @@ export function DataTable<TData, TValue>(
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  통계가 존재하지 않거나 준비중입니다.
+                <TableCell colSpan={columns.length} className="h-24">
+                  <div className="flex flex-col gap-1 items-center justify-center">
+                    <Image
+                      src={gusSadPinIconSrc}
+                      alt="data not found"
+                      width={100}
+                      height={100}
+                      className="sm:w-24 sm:h-24 w-16 h-16"
+                    />
+                    <div className="text-zinc-700 text-sm sm:text-base">
+                      통계가 존재하지 않거나 준비중입니다.
+                    </div>
+                  </div>
                 </TableCell>
               </TableRow>
             )}
@@ -95,7 +108,7 @@ export function DataTable<TData, TValue>(
       </div>
 
       {pagination?.enabled &&
-        <DataTablePagination table={table}/>
+        <DataTablePagination table={table} />
       }
     </div>
   )
