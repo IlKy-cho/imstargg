@@ -17,12 +17,8 @@ public class JobParametersInjectionIncrementer implements JobParametersIncrement
     public JobParameters getNext(JobParameters parameters) {
         JobParameters params = (parameters == null) ? new JobParameters() : parameters;
         JobParametersBuilder jobParametersBuilder = new JobParametersBuilder(params);
-        localDateParameters.entrySet().stream()
-                .filter(entry -> !params.getParameters().containsKey(entry.getKey()))
-                .forEach(entry -> jobParametersBuilder.addLocalDate(entry.getKey(), entry.getValue()));
-        longParameters.entrySet().stream()
-                .filter(entry -> !params.getParameters().containsKey(entry.getKey()))
-                .forEach(entry -> jobParametersBuilder.addLong(entry.getKey(), entry.getValue()));
+        localDateParameters.forEach(jobParametersBuilder::addLocalDate);
+        longParameters.forEach(jobParametersBuilder::addLong);
         return jobParametersBuilder.toJobParameters();
     }
 
