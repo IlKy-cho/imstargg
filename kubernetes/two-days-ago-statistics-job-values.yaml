@@ -1,0 +1,6 @@
+app:
+  job:
+    name: twoDaysAgoStatisticsJob
+
+job:
+  schedule: "45 6 * * *"
