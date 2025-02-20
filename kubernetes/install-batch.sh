@@ -6,6 +6,6 @@ sudo microk8s helm install -n app player-ranking-job-batch ./helm/batch -f playe
 sudo microk8s helm install -n app player-update-job-batch ./helm/batch -f player-update-job-values.yaml
 
 sudo microk8s helm install -n app today-statistics-job-batch ./helm/batch -f today-statistics-job-values.yaml
-sudo microk8s helm install -n app one-day-statistics-job-batch ./helm/batch -f one-day-statistics-job-values.yaml
-sudo microk8s helm install -n app two-days-statistics-job-batch ./helm/batch -f two-days-statistics-job-values.yaml
-sudo microk8s helm install -n app three-days-statistics-job-batch ./helm/batch -f three-days-statistics-job-values.yaml
+sudo microk8s helm install -n app one-day-ago-statistics-job-batch ./helm/batch -f one-day-ago-statistics-job-values.yaml
+sudo microk8s helm install -n app two-days-ago-statistics-job-batch ./helm/batch -f two-days-ago-statistics-job-values.yaml
+sudo microk8s helm install -n app three-days-ago-statistics-job-batch ./helm/batch -f three-days-ago-statistics-job-values.yaml
