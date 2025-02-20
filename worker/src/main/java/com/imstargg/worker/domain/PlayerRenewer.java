@@ -77,6 +77,7 @@ public class PlayerRenewer {
     }
 
     private void renewPlayer(PlayerCollectionEntity playerEntity) {
+        log.debug("기존 플레이어 갱신 tag={}", playerEntity.getBrawlStarsTag());
         try {
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag());
             updatePlayer(playerEntity, playerResponse);
@@ -124,6 +125,7 @@ public class PlayerRenewer {
     }
 
     public void renewNewPlayer(UnknownPlayerCollectionEntity unknownPlayerEntity) {
+        log.debug("신규 플레이어 갱신 tag={}", unknownPlayerEntity.getBrawlStarsTag());
         try {
             PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(unknownPlayerEntity.getBrawlStarsTag());
             PlayerCollectionEntity playerEntity = newPlayer(playerResponse);
