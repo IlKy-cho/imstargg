@@ -4,51 +4,14 @@ import React, {useEffect, useState} from "react";
 import {Player} from "@/model/Player";
 import {useSearchParams} from "next/navigation";
 import {PlayerSearchForm} from "@/components/player-search-form";
-import {getPlayerRenewalStatusNew, renewNewPlayer, searchPlayer} from "@/lib/api/player";
+import {searchPlayer} from "@/lib/api/player";
 import {PageHeader} from "@/components/page-header";
 import {SearchedPlayer} from "@/app/player/search/_components/searched-player";
 import Head from "next/head";
 import Loading from "@/app/loading";
 import gusSadPinSrc from "@/../public/icon/brawler/gus/gus_sad_pin.png";
 import Image from "next/image";
-import {isBrawlStarsTag} from "@/lib/brawlstars";
-import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
-import {toast} from "sonner";
 
-async function renew(tag: string) {
-  try {
-    await renewNewPlayer(tag);
-
-    const checkRenewalStatus = async () => {
-      const status = await getPlayerRenewalStatusNew(tag);
-      console.log("Renewal status:", status);
-      if (!status.renewing) {
-        console.log("Renewal finished");
-        return Promise.resolve();
-      } else {
-        return new Promise(resolve => {
-          setTimeout(async () => {
-            await checkRenewalStatus().then(resolve);
-          }, 1000);
-        });
-      }
-    };
-    
-    await checkRenewalStatus();
-
-  } catch (error) {
-    console.error('error:', error);
-    if (error instanceof ApiError) {
-      if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {
-        console.log("현재 새로고침 요청이 많아서 처리할 수 없습니다. 잠시 후 다시 시도해주세요.");
-      } else if (error.error?.type === ApiErrorTypeValue.BRAWLSTARS_IN_MAINTENANCE) {
-        toast("브롤스타즈 서버 점검 중입니다. 잠시 후 다시 시도해주세요.");
-      }
-    }
-    toast.error("알 수 없는 오류가 발생했습니다. 잠시 후 다시 시도해주세요.");
-    console.error(error);
-  }
-}
 
 export default function PlayerSearchResultPage() {
   const searchParams = useSearchParams();
@@ -67,16 +30,7 @@ export default function PlayerSearchResultPage() {
       }
 
       const results = await searchPlayer(query);
-      console.log(results);
-      if ((results && results.length > 0) || !isBrawlStarsTag(query)) {
-        console.log('플레이어 검색 결과:', results);
-        setPlayers(results);
-      } else {
-        console.log('플레이어 갱신 중...query:', query);
-        await renew(query);
-        console.log('플레이어 갱신 완료...query:', query);
-        setPlayers(await searchPlayer(query));
-      }
+      setPlayers(results);
     };
 
     fetchPlayers();
