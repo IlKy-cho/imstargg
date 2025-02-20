@@ -15,6 +15,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
+
 @Configuration
 public class HealthCheckJobConfig {
 
@@ -23,12 +27,15 @@ public class HealthCheckJobConfig {
     private static final String JOB_NAME = "healthCheckJob";
     private static final String STEP_NAME = "healthCheckStep";
 
+    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
 
     public HealthCheckJobConfig(
+            Clock clock,
             JobRepository jobRepository, PlatformTransactionManager txManager
     ) {
+        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
     }
@@ -49,6 +56,9 @@ public class HealthCheckJobConfig {
         return taskletStepBuilder
                 .tasklet((contribution, chunkContext) -> {
                     log.info("<<<<<<<<<<<< 헬스체크 >>>>>>>>>>>>");
+                    log.info("timezone: {}", clock.getZone());
+                    log.info("date: {}", LocalDate.now(clock));
+                    log.info("time: {}", OffsetDateTime.now(clock));
                     return RepeatStatus.FINISHED;
                 }, txManager)
                 .build();
