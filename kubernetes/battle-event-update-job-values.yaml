@@ -3,4 +3,4 @@ app:
     name: battleEventUpdateJob
 
 job:
-  schedule: "0 20 * * *"
+  schedule: "0 5 * * *"
