@@ -12,17 +12,19 @@ public class DateJobParameter {
 
     private static final Logger log = LoggerFactory.getLogger(DateJobParameter.class);
 
+    public static final String KEY = "date";
+
     @Nullable
     private LocalDate date;
 
-    @Value("#{jobParameters['date']}")
+    @Value("#{jobParameters['" + KEY + "']}")
     public void setDate(@Nullable LocalDate date) {
         this.date = date;
     }
 
     @PostConstruct
     void init() {
-        log.debug("JobParameter[date]={}", date);
+        log.debug("JobParameter[" + KEY + "]={}", date);
     }
 
     @Nullable

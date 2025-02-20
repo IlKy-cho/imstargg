@@ -14,8 +14,6 @@ public class DateIncrementer implements JobParametersIncrementer {
 
     private static final Logger log = LoggerFactory.getLogger(DateIncrementer.class);
 
-    private static final String KEY = "date";
-
     private final LocalDate maxDate;
 
     public DateIncrementer(LocalDate maxDate) {
@@ -25,7 +23,7 @@ public class DateIncrementer implements JobParametersIncrementer {
     @Override
     public JobParameters getNext(JobParameters parameters) {
         JobParameters params = (parameters == null) ? new JobParameters() : parameters;
-        JobParameter<?> dateParameter = params.getParameters().get(KEY);
+        JobParameter<?> dateParameter = params.getParameters().get(DateJobParameter.KEY);
         LocalDate date = maxDate;
         if (dateParameter != null) {
             try {
@@ -33,12 +31,12 @@ public class DateIncrementer implements JobParametersIncrementer {
                 LocalDate nextDate = prevDate.plusDays(1);
                 date = date.isBefore(nextDate) ? date : nextDate;
             } catch (DateTimeParseException exception) {
-                throw new IllegalArgumentException("Invalid value for parameter " + KEY, exception);
+                throw new IllegalArgumentException("Invalid value for parameter " + DateJobParameter.KEY, exception);
             }
         }
 
         return new JobParametersBuilder(params)
-                .addLocalDate(KEY, date)
+                .addLocalDate(DateJobParameter.KEY, date)
                 .toJobParameters();
     }
 }
