@@ -30,6 +30,7 @@ class PlayerRenewalEventHandler {
         log.debug("플레이어 갱신 이벤트 수신 event={}", event);
         try {
             playerRenewer.renew(event.tag());
+            log.debug("플레이어 갱신 완료 tag={}", event.tag());
         } catch (Exception ex) {
             log.error("플레이어 갱신 중 예외 발생. tag={}", event.tag(), ex);
             alertManager.alert(AlertCommand.builder()

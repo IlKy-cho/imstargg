@@ -140,6 +140,7 @@ create table unknown_player
     unknown_player_id bigint       not null auto_increment,
     brawlstars_tag    varchar(45)  not null,
     not_found_count   int          not null,
+    version           int          not null,
     created_at        timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at        timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted           boolean      not null default false,
@@ -148,9 +149,6 @@ create table unknown_player
 
 alter table unknown_player
     add constraint uk_unknownplayer__brawlstarstag unique (brawlstars_tag);
-
-create index ix_unknownplayer__status
-    on unknown_player (status);
 
 
 create table player_renewal
