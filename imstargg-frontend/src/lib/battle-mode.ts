@@ -321,7 +321,7 @@ export const battleEventModeBackGroundColor = (mode: BattleEventMode): string =>
       return 'bg-[#00CFFF]';
     case BattleEventModeValue.WIPEOUT:
     case BattleEventModeValue.WIPEOUT_5V5:
-      return 'bg-[#00CFFF]';
+      return 'bg-[#E93BB4]';
     case BattleEventModeValue.HOT_ZONE:
       return 'bg-[#E33B50]';
     case BattleEventModeValue.KNOCKOUT:
