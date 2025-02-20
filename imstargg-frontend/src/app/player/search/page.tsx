@@ -24,10 +24,16 @@ async function renew(tag: string) {
       console.log("Renewal status:", status);
       if (!status.renewing) {
         console.log("Renewal finished");
+        return Promise.resolve();
       } else {
-        setTimeout(checkRenewalStatus, 1000);
+        return new Promise(resolve => {
+          setTimeout(async () => {
+            await checkRenewalStatus().then(resolve);
+          }, 1000);
+        });
       }
     };
+    
     await checkRenewalStatus();
 
   } catch (error) {
@@ -50,7 +56,7 @@ export default function PlayerSearchResultPage() {
   const [players, setPlayers] = useState<Player[] | null>(null);
 
   useEffect(() => {
-
+    console.log('플레이어 검색 결과 페이지 로드...query:', query);
     setPlayers(null);
 
     const fetchPlayers = async () => {
@@ -68,6 +74,7 @@ export default function PlayerSearchResultPage() {
       } else {
         console.log('플레이어 갱신 중...query:', query);
         await renew(query);
+        console.log('플레이어 갱신 완료...query:', query);
         setPlayers(await searchPlayer(query));
       }
     };
