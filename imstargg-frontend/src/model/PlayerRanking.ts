@@ -6,4 +6,5 @@ export interface PlayerRanking {
   iconId: number;
   trophies: number;
   rank: number;
+  rankChange: number | null;
 }
