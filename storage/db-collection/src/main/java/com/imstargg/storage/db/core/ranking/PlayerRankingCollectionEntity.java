@@ -2,6 +2,7 @@ package com.imstargg.storage.db.core.ranking;
 
 import com.imstargg.core.enums.Country;
 import com.imstargg.storage.db.core.BaseEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -34,6 +35,10 @@ public class PlayerRankingCollectionEntity extends BaseEntity {
     @Column(name = "rank_value", nullable = false, updatable = false)
     private int rank;
 
+    @Nullable
+    @Column(name = "rank_change")
+    private Integer rankChange;
+
     protected PlayerRankingCollectionEntity() {
     }
 
@@ -49,9 +54,10 @@ public class PlayerRankingCollectionEntity extends BaseEntity {
         this.rank = rank;
     }
 
-    public void update(RankingEntityPlayer player, int trophies) {
+    public void update(RankingEntityPlayer player, int trophies, @Nullable Integer rankChange) {
         this.player = player;
         this.trophies = trophies;
+        this.rankChange = rankChange;
     }
 
     public Long getId() {
@@ -72,5 +78,10 @@ public class PlayerRankingCollectionEntity extends BaseEntity {
 
     public int getRank() {
         return rank;
+    }
+
+    @Nullable
+    public Integer getRankChange() {
+        return rankChange;
     }
 }

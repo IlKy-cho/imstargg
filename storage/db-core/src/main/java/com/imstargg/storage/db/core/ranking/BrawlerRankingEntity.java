@@ -2,6 +2,7 @@ package com.imstargg.storage.db.core.ranking;
 
 import com.imstargg.core.enums.Country;
 import com.imstargg.storage.db.core.BaseEntity;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -46,6 +47,10 @@ public class BrawlerRankingEntity extends BaseEntity {
     @Column(name = "rank_value", nullable = false, updatable = false)
     private int rank;
 
+    @Nullable
+    @Column(name = "rank_change", updatable = false)
+    private Integer rankChange;
+
     protected BrawlerRankingEntity() {
     }
 
@@ -71,5 +76,10 @@ public class BrawlerRankingEntity extends BaseEntity {
 
     public int getRank() {
         return rank;
+    }
+
+    @Nullable
+    public Integer getRankChange() {
+        return rankChange;
     }
 }
