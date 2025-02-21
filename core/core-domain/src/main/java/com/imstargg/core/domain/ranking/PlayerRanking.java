@@ -11,6 +11,7 @@ public record PlayerRanking(
         @Nullable String clubName,
         BrawlStarsId iconId,
         int trophies,
-        int rank
+        int rank,
+        @Nullable Integer rankChange
 ) {
 }

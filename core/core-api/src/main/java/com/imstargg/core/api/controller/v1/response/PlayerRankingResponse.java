@@ -10,7 +10,8 @@ public record PlayerRankingResponse(
         @Nullable String clubName,
         long iconId,
         int trophies,
-        int rank
+        int rank,
+        @Nullable Integer rankChange
 ) {
 
     public static PlayerRankingResponse of(PlayerRanking playerRanking) {
@@ -21,7 +22,8 @@ public record PlayerRankingResponse(
                 playerRanking.clubName(),
                 playerRanking.iconId().value(),
                 playerRanking.trophies(),
-                playerRanking.rank()
+                playerRanking.rank(),
+                playerRanking.rankChange()
         );
     }
 }
