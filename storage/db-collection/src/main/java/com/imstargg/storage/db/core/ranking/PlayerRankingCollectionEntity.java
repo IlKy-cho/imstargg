@@ -54,10 +54,10 @@ public class PlayerRankingCollectionEntity extends BaseEntity {
         this.rank = rank;
     }
 
-    public void update(RankingEntityPlayer player, int trophies, @Nullable Integer rankChange) {
+    public void update(RankingEntityPlayer player, int trophies, @Nullable Integer prevRank) {
         this.player = player;
         this.trophies = trophies;
-        this.rankChange = rankChange;
+        this.rankChange = prevRank == null ? null : prevRank - this.rank;
     }
 
     public Long getId() {
