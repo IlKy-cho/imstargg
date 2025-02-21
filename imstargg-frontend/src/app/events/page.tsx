@@ -1,11 +1,11 @@
+export const revalidate = 60;
+// export const dynamic = 'force-dynamic';
+
 import {Metadata} from "next";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import {cn, cnWithDefault} from "@/lib/utils";
-import {
-  PageGroupedBattleEventList,
-  PageRotationBattleEventList,
-  PageSoloRankBattleEventList
-} from "./_components/event-list";
+import {getBattleEvents, getRotationBattleEvents, getSoloRankBattleEvents} from "@/lib/api/battle-event";
+import {BattleEventList, GroupedBattleEventList} from "@/components/battle-event";
 import {BrawlStarsIconSrc} from "@/lib/icon";
 import {Separator} from "@/components/ui/separator";
 import Image from "next/image";
@@ -74,6 +74,28 @@ export default async function EventsPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export async function PageRotationBattleEventList() {
+
+  const rotationBattleEvents = await getRotationBattleEvents();
+  return (
+    <BattleEventList battleEvents={rotationBattleEvents.map(event => event.event)}/>
+  );
+}
+
+export async function PageSoloRankBattleEventList() {
+  const battleEvents = await getSoloRankBattleEvents();
+  return (
+    <BattleEventList battleEvents={battleEvents}/>
+  );
+}
+
+export async function PageGroupedBattleEventList() {
+  const battleEvents = await getBattleEvents();
+  return (
+    <GroupedBattleEventList battleEvents={battleEvents}/>
   );
 }
 
