@@ -28,8 +28,8 @@ export default async function BrawlersPage({ searchParams }: Readonly<PageProps>
   const brawlerResultStats = await getBrawlerResultStatistics(
     yesterday,
     statsParams.dateRange,
-    statsParams.trophy,
-    statsParams.soloRankTier
+    statsParams.getTrophyOfType(),
+    statsParams.getSoloRankTierOfType()
   );
 
   return (
