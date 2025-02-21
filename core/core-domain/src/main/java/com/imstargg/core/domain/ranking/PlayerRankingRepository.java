@@ -32,7 +32,8 @@ public class PlayerRankingRepository {
                         entity.getPlayer().getClubName(),
                         new BrawlStarsId(entity.getPlayer().getIconBrawlStarsId()),
                         entity.getTrophies(),
-                        entity.getRank()
+                        entity.getRank(),
+                        entity.getRankChange()
                 )).toList();
     }
 
@@ -45,7 +46,8 @@ public class PlayerRankingRepository {
                         entity.getPlayer().getClubName(),
                         new BrawlStarsId(entity.getPlayer().getIconBrawlStarsId()),
                         entity.getTrophies(),
-                        entity.getRank()
+                        entity.getRank(),
+                        entity.getRankChange()
                 )).toList();
     }
 }
