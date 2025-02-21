@@ -47,7 +47,7 @@ export async function RankingList({rankings, size}: Readonly<RankingListProps>) 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="text-xs sm:text-sm sm:w-12 w-10">순위</TableHead>
+            <TableHead className="text-xs sm:text-sm sm:w-16 w-14">순위</TableHead>
             <TableHead className="text-xs sm:text-sm">플레이어</TableHead>
             <TableHead className="text-xs sm:text-sm w-24 sm:w-36">클럽</TableHead>
             <TableHead className="text-xs sm:text-sm sm:w-16 w-14">트로피</TableHead>
@@ -56,8 +56,13 @@ export async function RankingList({rankings, size}: Readonly<RankingListProps>) 
         <TableBody>
           {rankings.map((ranking) => (
             <TableRow key={ranking.tag}>
-              <TableCell className="text-xs sm:text-sm sm:w-12 w-10">
-                {ranking.rank}
+              <TableCell className="flex gap-1 text-xs sm:text-sm sm:w-16 w-14">
+                <span>
+                  {ranking.rank}
+                </span>
+                <span className={rankChangeColor(ranking.rankChange)}>
+                  {rankChangeText(ranking.rankChange)}
+                </span>
               </TableCell>
               <TableCell className="text-xs sm:text-sm">
                 <Link href={playerHref(ranking.tag)}>
@@ -78,6 +83,30 @@ export async function RankingList({rankings, size}: Readonly<RankingListProps>) 
       </Table>
     </ScrollArea>
   );
+}
+
+function rankChangeColor(rankChange: number | null) {
+  if (rankChange === null) {
+    return "text-amber-500";
+  } else if (rankChange > 0) {
+    return "text-blue-500";
+  } else if (rankChange < 0) {
+    return "text-red-500";
+  }
+
+  return "text-zinc-500";
+}
+
+function rankChangeText(rankChange: number | null) {
+  if (rankChange === null) {
+    return "New";
+  } else if (rankChange > 0) {
+    return `+${rankChange}`;
+  } else if (rankChange < 0) {
+    return rankChange;
+  }
+
+  return "-";
 }
 
 interface RankingTitleProps {
