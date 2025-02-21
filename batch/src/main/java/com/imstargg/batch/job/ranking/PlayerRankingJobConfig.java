@@ -26,6 +26,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration
 public class PlayerRankingJobConfig {
@@ -84,6 +86,12 @@ public class PlayerRankingJobConfig {
                                 .toList()
                 );
 
+                Map<String, Integer> tagToPrevRank = playerRankingEntities.stream()
+                        .collect(Collectors.toMap(
+                                entity -> entity.getPlayer().getBrawlStarsTag(),
+                                PlayerRankingCollectionEntity::getRank
+                        ));
+
                 for (int i = 0; i < playerRankingResponseList.size(); i++) {
                     var response = playerRankingResponseList.get(i);
                     var entityPlayer = new RankingEntityPlayer(
@@ -102,7 +110,7 @@ public class PlayerRankingJobConfig {
                         ));
                     }
                     var entity = playerRankingEntities.get(i);
-                    entity.update(entityPlayer, response.trophies());
+                    entity.update(entityPlayer, response.trophies(), tagToPrevRank.get(entityPlayer.getBrawlStarsTag()));
                 }
 
                 if (playerRankingEntities.size() > playerRankingResponseList.size()) {

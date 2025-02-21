@@ -27,6 +27,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Configuration
 public class BrawlerRankingJobConfig {
@@ -88,7 +90,12 @@ public class BrawlerRankingJobConfig {
                                     .sorted(Comparator.comparingInt(BrawlerRankingCollectionEntity::getRank))
                                     .toList()
                     );
-                    
+                    Map<String, Integer> tagToPrevRank = brawlerRankingEntities.stream()
+                            .collect(Collectors.toMap(
+                                    entity -> entity.getPlayer().getBrawlStarsTag(),
+                                    BrawlerRankingCollectionEntity::getRank
+                            ));
+
                     for (int i = 0; i < brawlerRankingResponseList.size(); i++) {
                         var response = brawlerRankingResponseList.get(i);
                         var entityPlayer = new RankingEntityPlayer(
@@ -109,7 +116,7 @@ public class BrawlerRankingJobConfig {
                         }
 
                         var entity = brawlerRankingEntities.get(i);
-                        entity.update(entityPlayer, response.trophies());
+                        entity.update(entityPlayer, response.trophies(), tagToPrevRank.get(entityPlayer.getBrawlStarsTag()));
                     }
 
                     if (brawlerRankingEntities.size() > brawlerRankingResponseList.size()) {
