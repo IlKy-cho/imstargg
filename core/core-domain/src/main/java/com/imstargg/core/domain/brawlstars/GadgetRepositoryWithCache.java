@@ -12,10 +12,13 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 @Component
 public class GadgetRepositoryWithCache {
@@ -24,9 +27,7 @@ public class GadgetRepositoryWithCache {
     private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
     private final MessageRepository messageRepository;
 
-    private final ConcurrentHashMap<BrawlStarsId, List<GadgetEntity>> brawlerIdToGadgetEntitiesCache = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, MessageCollection> codeToMessageCollectionCache = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, BrawlStarsImageEntity> codeToImageEntityCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<BrawlStarsId, List<Gadget>> brawlerIdToGadgetsCache = new ConcurrentHashMap<>();
 
     public GadgetRepositoryWithCache(
             GadgetJpaRepository gadgetJpaRepository,
@@ -40,51 +41,37 @@ public class GadgetRepositoryWithCache {
 
     @PostConstruct
     void init() {
-        initGadget();
-        initMessage();
-        initImage();
-    }
-
-    private void initGadget() {
-        gadgetJpaRepository.findAll().stream()
-                .collect(groupingBy(GadgetEntity::getBrawlerBrawlStarsId))
-                .forEach((brawlerId, gadgetEntities) ->
-                        brawlerIdToGadgetEntitiesCache.put(
-                                new BrawlStarsId(brawlerId),
-                                gadgetEntities
-                        )
-                );
-    }
-
-    private void initMessage() {
-        messageRepository.getCollectionList(
-                brawlerIdToGadgetEntitiesCache.values().stream()
+        Map<Long, List<GadgetEntity>> brawlerBrawlStarsIdToGadgetEntities = gadgetJpaRepository.findAll().stream()
+                .collect(groupingBy(GadgetEntity::getBrawlerBrawlStarsId));
+        Map<String, MessageCollection> codeToMessageCollection = messageRepository.getCollectionList(
+                brawlerBrawlStarsIdToGadgetEntities.values().stream()
                         .flatMap(List::stream)
                         .map(GadgetEntity::getNameMessageCode)
                         .toList()
-        ).forEach(messageCollection -> codeToMessageCollectionCache.put(messageCollection.code(), messageCollection));
-    }
-
-    private void initImage() {
-        brawlStarsImageJpaRepository.findAllByCodeIn(
-                brawlerIdToGadgetEntitiesCache.values().stream()
+        ).stream().collect(toMap(MessageCollection::code, Function.identity()));
+        Map<String, BrawlStarsImageEntity> codeToImageEntity = brawlStarsImageJpaRepository.findAllByCodeIn(
+                brawlerBrawlStarsIdToGadgetEntities.values().stream()
                         .flatMap(List::stream)
                         .map(GadgetEntity::getBrawlStarsId)
                         .map(BrawlStarsImageType.GADGET::code)
                         .toList()
-        ).forEach(imageEntity -> codeToImageEntityCache.put(imageEntity.getCode(), imageEntity));
+        ).stream().collect(toMap(BrawlStarsImageEntity::getCode, Function.identity()));
+
+        brawlerBrawlStarsIdToGadgetEntities.forEach((brawlerBrawlStarsId, gadgetEntities) -> {
+            brawlerIdToGadgetsCache.put(new BrawlStarsId(brawlerBrawlStarsId), gadgetEntities.stream()
+                    .map(gadgetEntity -> new Gadget(
+                            new BrawlStarsId(gadgetEntity.getBrawlStarsId()),
+                            codeToMessageCollection.get(gadgetEntity.getNameMessageCode()),
+                            Optional.ofNullable(
+                                    codeToImageEntity.get(
+                                            BrawlStarsImageType.GADGET.code(gadgetEntity.getBrawlStarsId())
+                                    )
+                            ).map(BrawlStarsImageEntity::getStoredName).orElse(null)
+                    )).toList());
+        });
     }
 
     public List<Gadget> findAllByBrawlerId(BrawlStarsId brawlerId) {
-        return brawlerIdToGadgetEntitiesCache.getOrDefault(brawlerId, List.of()).stream()
-                .map(gadgetEntity -> new Gadget(
-                        new BrawlStarsId(gadgetEntity.getBrawlStarsId()),
-                        codeToMessageCollectionCache.get(gadgetEntity.getNameMessageCode()),
-                        Optional.ofNullable(
-                                codeToImageEntityCache.get(
-                                        BrawlStarsImageType.GADGET.code(gadgetEntity.getBrawlStarsId())
-                                )
-                        ).map(BrawlStarsImageEntity::getStoredName).orElse(null)
-                )).toList();
+        return brawlerIdToGadgetsCache.getOrDefault(brawlerId, List.of());
     }
 }
