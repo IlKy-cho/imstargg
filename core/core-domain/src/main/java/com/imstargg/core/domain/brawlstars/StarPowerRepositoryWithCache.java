@@ -12,10 +12,13 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
 
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 @Component
 public class StarPowerRepositoryWithCache {
@@ -24,9 +27,8 @@ public class StarPowerRepositoryWithCache {
     private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
     private final MessageRepository messageRepository;
 
-    private final ConcurrentHashMap<BrawlStarsId, List<StarPowerEntity>> brawlerIdToStarPowerEntitiesCache = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, MessageCollection> codeToMessageCollectionCache = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, BrawlStarsImageEntity> codeToImageEntityCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<BrawlStarsId, List<StarPower>> brawlerIdToStarPowersCache = new ConcurrentHashMap<>();
+
 
     public StarPowerRepositoryWithCache(
             StarPowerJpaRepository starPowerJpaRepository,
@@ -40,51 +42,39 @@ public class StarPowerRepositoryWithCache {
 
     @PostConstruct
     void init() {
-        initStarPower();
-        initMessage();
-        initImage();
-    }
-
-    private void initStarPower() {
-        starPowerJpaRepository.findAll().stream()
-                .collect(groupingBy(StarPowerEntity::getBrawlerBrawlStarsId))
-                .forEach((brawlerId, starPowerEntities) ->
-                        brawlerIdToStarPowerEntitiesCache.put(
-                                new BrawlStarsId(brawlerId),
-                                starPowerEntities
-                        )
-                );
-    }
-
-    private void initMessage() {
-        messageRepository.getCollectionList(
-                brawlerIdToStarPowerEntitiesCache.values().stream()
+        Map<Long, List<StarPowerEntity>> brawlerBrawlStarsIdToStarPowerEntities = starPowerJpaRepository.findAll()
+                .stream()
+                .collect(groupingBy(StarPowerEntity::getBrawlerBrawlStarsId));
+        Map<String, MessageCollection> codeToMessageCollection = messageRepository.getCollectionList(
+                brawlerBrawlStarsIdToStarPowerEntities.values().stream()
                         .flatMap(List::stream)
                         .map(StarPowerEntity::getNameMessageCode)
                         .toList()
-        ).forEach(messageCollection -> codeToMessageCollectionCache.put(messageCollection.code(), messageCollection));
-    }
-
-    private void initImage() {
-        brawlStarsImageJpaRepository.findAllByCodeIn(
-                brawlerIdToStarPowerEntitiesCache.values().stream()
+        ).stream().collect(toMap(MessageCollection::code, Function.identity()));
+        Map<String, BrawlStarsImageEntity> codeToImageEntity = brawlStarsImageJpaRepository.findAllByCodeIn(
+                brawlerBrawlStarsIdToStarPowerEntities.values().stream()
                         .flatMap(List::stream)
                         .map(StarPowerEntity::getBrawlStarsId)
                         .map(BrawlStarsImageType.STAR_POWER::code)
                         .toList()
-        ).forEach(imageEntity -> codeToImageEntityCache.put(imageEntity.getCode(), imageEntity));
+        ).stream().collect(toMap(BrawlStarsImageEntity::getCode, Function.identity()));
+
+        brawlerBrawlStarsIdToStarPowerEntities.forEach((brawlerBrawlStarsId, starPowerEntities) -> {
+            brawlerIdToStarPowersCache.put(new BrawlStarsId(brawlerBrawlStarsId), starPowerEntities.stream()
+                    .map(starPowerEntity -> new StarPower(
+                            new BrawlStarsId(starPowerEntity.getBrawlStarsId()),
+                            codeToMessageCollection.get(starPowerEntity.getNameMessageCode()),
+                            Optional.ofNullable(
+                                    codeToImageEntity.get(
+                                            BrawlStarsImageType.STAR_POWER.code(starPowerEntity.getBrawlStarsId())
+                                    )
+                            ).map(BrawlStarsImageEntity::getStoredName).orElse(null)
+                    )).toList());
+        });
     }
 
+
     public List<StarPower> findAllByBrawlerId(BrawlStarsId brawlerId) {
-        return brawlerIdToStarPowerEntitiesCache.getOrDefault(brawlerId, List.of()).stream()
-                .map(starPowerEntity -> new StarPower(
-                        new BrawlStarsId(starPowerEntity.getBrawlStarsId()),
-                        codeToMessageCollectionCache.get(starPowerEntity.getNameMessageCode()),
-                        Optional.ofNullable(
-                                codeToImageEntityCache.get(
-                                        BrawlStarsImageType.STAR_POWER.code(starPowerEntity.getBrawlStarsId())
-                                )
-                        ).map(BrawlStarsImageEntity::getStoredName).orElse(null)
-                )).toList();
+        return brawlerIdToStarPowersCache.getOrDefault(brawlerId, List.of());
     }
 }
