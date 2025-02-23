@@ -14,9 +14,13 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import java.util.function.Function;
+
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toMap;
 
 @Component
 public class GearRepositoryWithCache {
@@ -27,10 +31,7 @@ public class GearRepositoryWithCache {
     private final MessageRepository messageRepository;
 
     private final ConcurrentHashMap<BrawlStarsId, List<BrawlStarsId>> brawlerIdToGearIdsCache = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<BrawlStarsId, GearEntity> gearIdToEntityCache = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, MessageCollection> codeToMessageCollectionCache = new ConcurrentHashMap<>();
-    private final ConcurrentHashMap<String, BrawlStarsImageEntity> codeToImageEntityCache = new ConcurrentHashMap<>();
-
+    private final ConcurrentHashMap<BrawlStarsId, Gear> idToGear = new ConcurrentHashMap<>();
 
     public GearRepositoryWithCache(
             BrawlerGearJpaRepository brawlerGearJpaRepository,
@@ -46,52 +47,49 @@ public class GearRepositoryWithCache {
 
     @PostConstruct
     void init() {
-        initGear();
-        initMessage();
-        initImage();
-    }
-
-    private void initGear() {
         brawlerGearJpaRepository.findAll().stream()
-                .collect(Collectors.groupingBy(BrawlerGearEntity::getBrawlerBrawlStarsId))
+                .collect(groupingBy(BrawlerGearEntity::getBrawlerBrawlStarsId))
                 .forEach((brawlerBrawlStarsId, brawlerGearEntities) -> brawlerIdToGearIdsCache
-                        .put(new BrawlStarsId(brawlerBrawlStarsId), brawlerGearEntities.stream()
-                                .map(BrawlerGearEntity::getGearBrawlStarsId)
-                                .map(BrawlStarsId::new)
-                                .toList()));
-        gearJpaRepository.findAll().forEach(gearEntity -> gearIdToEntityCache
-                .put(new BrawlStarsId(gearEntity.getBrawlStarsId()), gearEntity));
-    }
+                        .put(
+                                new BrawlStarsId(brawlerBrawlStarsId),
+                                brawlerGearEntities.stream()
+                                        .map(BrawlerGearEntity::getGearBrawlStarsId)
+                                        .map(BrawlStarsId::new)
+                                        .toList()
+                        ));
 
-    private void initMessage() {
-        messageRepository.getCollectionList(
-                gearIdToEntityCache.values().stream()
+        Map<Long, GearEntity> brawlStarsIdToGearEntity = gearJpaRepository.findAll().stream()
+                .collect(toMap(GearEntity::getBrawlStarsId, Function.identity()));
+        Map<String, MessageCollection> codeToMessageCollection = messageRepository.getCollectionList(
+                brawlStarsIdToGearEntity.values().stream()
                         .map(GearEntity::getNameMessageCode)
                         .toList()
-        ).forEach(messageCollection -> codeToMessageCollectionCache.put(messageCollection.code(), messageCollection));
-    }
-
-    private void initImage() {
-        brawlStarsImageJpaRepository.findAllByCodeIn(
-                gearIdToEntityCache.keySet().stream()
-                        .map(BrawlStarsId::value)
+        ).stream().collect(toMap(MessageCollection::code, Function.identity()));
+        Map<String, BrawlStarsImageEntity> codeToImageEntity = brawlStarsImageJpaRepository.findAllByCodeIn(
+                brawlStarsIdToGearEntity.keySet().stream()
                         .map(BrawlStarsImageType.GEAR::code)
                         .toList()
-        ).forEach(imageEntity -> codeToImageEntityCache.put(imageEntity.getCode(), imageEntity));
-    }
+        ).stream().collect(toMap(BrawlStarsImageEntity::getCode, Function.identity()));
 
-    public List<Gear> findAllByBrawlerId(BrawlStarsId brawlerId) {
-        return brawlerIdToGearIdsCache.getOrDefault(brawlerId, List.of()).stream()
-                .map(gearIdToEntityCache::get)
-                .map(gearEntity -> new Gear(
+        brawlStarsIdToGearEntity.forEach((brawlStarsId, gearEntity) -> idToGear.put(
+                new BrawlStarsId(brawlStarsId),
+                new Gear(
                         new BrawlStarsId(gearEntity.getBrawlStarsId()),
                         gearEntity.getRarity(),
-                        codeToMessageCollectionCache.get(gearEntity.getNameMessageCode()),
+                        codeToMessageCollection.get(gearEntity.getNameMessageCode()),
                         Optional.ofNullable(
-                                codeToImageEntityCache.get(
+                                codeToImageEntity.get(
                                         BrawlStarsImageType.GEAR.code(gearEntity.getBrawlStarsId())
                                 )
                         ).map(BrawlStarsImageEntity::getStoredName).orElse(null)
-                )).toList();
+                )
+        ));
+    }
+
+
+    public List<Gear> findAllByBrawlerId(BrawlStarsId brawlerId) {
+        return brawlerIdToGearIdsCache.getOrDefault(brawlerId, List.of()).stream()
+                .map(idToGear::get)
+                .toList();
     }
 }
