@@ -77,7 +77,7 @@ export default async function EventsPage() {
   );
 }
 
-export async function PageRotationBattleEventList() {
+async function PageRotationBattleEventList() {
 
   const rotationBattleEvents = await getRotationBattleEvents();
   return (
@@ -85,14 +85,14 @@ export async function PageRotationBattleEventList() {
   );
 }
 
-export async function PageSoloRankBattleEventList() {
+async function PageSoloRankBattleEventList() {
   const battleEvents = await getSoloRankBattleEvents();
   return (
     <BattleEventList battleEvents={battleEvents}/>
   );
 }
 
-export async function PageGroupedBattleEventList() {
+async function PageGroupedBattleEventList() {
   const battleEvents = await getBattleEvents();
   return (
     <GroupedBattleEventList battleEvents={battleEvents}/>
