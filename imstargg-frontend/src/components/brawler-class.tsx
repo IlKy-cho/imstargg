@@ -24,14 +24,15 @@ const iconVariants = cva(
 interface IconProps
   extends VariantProps<typeof iconVariants> {
   brawlerRole: BrawlerRole;
+  className?: string;
 }
 
-export function BrawlerClassIcon({brawlerRole, size}: Readonly<IconProps>) {
+export function BrawlerClassIcon({brawlerRole, size, className}: Readonly<IconProps>) {
   const iconSrc = brawlerClassIconSrc(brawlerRole);
 
   return <Image
     src={iconSrc}
     alt={`${brawlerRole} class icon`}
-    className={cn(iconVariants({size}))}
+    className={cn(iconVariants({size}), className)}
   />
 }

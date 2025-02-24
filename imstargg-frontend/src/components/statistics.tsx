@@ -19,7 +19,6 @@ import {BrawlerRole} from "@/model/enums/BrawlerRole";
 import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
 import {BrawlerClassIcon} from "./brawler-class";
 import {BrawlerLink} from "@/components/brawler-link";
-import {useMediaQuery} from "usehooks-ts";
 import {BattleEvent} from "@/model/BattleEvent";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import {brawlerRarityTitle} from "@/lib/brawler-rarity";
@@ -29,6 +28,7 @@ import Link from "next/link";
 import {battleEventHref} from "@/config/site";
 import { Checkbox } from "./ui/checkbox";
 import { useRouter, useSearchParams } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
@@ -41,7 +41,7 @@ function BrawlerCell({brawler}: { brawler: Brawler | null }) {
           size="sm"
         />
       </BrawlerLink>
-      <div className="md:text-sm text-xs">{brawler ? brawler.name : "❓"}</div>
+      <div className="text-sm hidden sm:block">{brawler ? brawler.name : "❓"}</div>
     </div>
   )
 }
@@ -85,9 +85,9 @@ function EventCell({event}: { event: BattleEvent }) {
   )
 }
 
-function TextCell({value}: { value: string }) {
+function TextCell({value, className}: { value: string, className?: string }) {
   return (
-    <span className="text-xs md:text-sm">
+    <span className={cn("text-xs md:text-sm", className)}>
       {value}
     </span>
   )
@@ -387,7 +387,7 @@ export function BrawlerListStatistics(
     };
   });
 
-  let columns: ColumnDef<BrawlerListStatisticsData>[] = [
+  const columns: ColumnDef<BrawlerListStatisticsData>[] = [
     {
       accessorKey: "brawler",
       enableSorting: false,
@@ -404,17 +404,17 @@ export function BrawlerListStatistics(
       accessorKey: "brawlerRole",
       enableSorting: false,
       header: ({column}) =>
-        <DataTableColumnHeader column={column} title={"유형"}/>,
-      cell: ({row}) => <BrawlerClassIcon brawlerRole={row.original.brawler.role}/>,
+        <DataTableColumnHeader className="hidden sm:block" column={column} title={"유형"}/>,
+      cell: ({row}) => <BrawlerClassIcon className="hidden sm:block" brawlerRole={row.original.brawler.role}/>,
     },
     {
       id: "brawlerRarity",
       accessorKey: "brawlerRarity",
       enableSorting: false,
       header: ({column}) =>
-        <DataTableColumnHeader column={column} title={"희귀도"}/>,
+        <DataTableColumnHeader className="hidden sm:block" column={column} title={"희귀도"}/>,
       cell: ({row}) =>
-        <TextCell value={brawlerRarityTitle(row.original.brawler.rarity)}/>,
+        <TextCell className="hidden sm:block" value={brawlerRarityTitle(row.original.brawler.rarity)}/>,
     },
     {
       accessorKey: "winRate",
@@ -446,13 +446,6 @@ export function BrawlerListStatistics(
         <TextCell value={row.original.totalBattleCount?.toLocaleString() || "N/A"}/>,
     },
   ];
-
-  const isMobile = useMediaQuery('(max-width: 480px)');
-  if (isMobile) {
-    columns = columns
-      .filter(column => column.id !== "brawlerRole")
-      .filter(column => column.id !== "brawlerRarity");
-  }
 
   return (
     <DataTable columns={columns} data={data}/>
