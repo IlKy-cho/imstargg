@@ -11,6 +11,7 @@ public enum SoloRankTierRange {
     MYTHIC,
     LEGENDARY,
     MASTER,
+    PRO
     ;
 
     public static SoloRankTierRange of(SoloRankTier tier) {
@@ -21,7 +22,8 @@ public enum SoloRankTierRange {
             case DIAMOND_1, DIAMOND_2, DIAMOND_3 -> DIAMOND;
             case MYTHIC_1, MYTHIC_2, MYTHIC_3 -> MYTHIC;
             case LEGENDARY_1, LEGENDARY_2, LEGENDARY_3 -> LEGENDARY;
-            case MASTER -> MASTER;
+            case MASTER_1, MASTER_2, MASTER_3 -> MASTER;
+            case PRO -> PRO;
         };
     }
 
