@@ -22,14 +22,17 @@ public enum SoloRankTier {
     LEGENDARY_1,
     LEGENDARY_2,
     LEGENDARY_3,
-    MASTER,
+    MASTER_1,
+    MASTER_2,
+    MASTER_3,
+    PRO
     ;
 
     public static SoloRankTier of(int value) {
         if (value < 1) {
             return BRONZE_1;
-        } else if (value > 19) {
-            return MASTER;
+        } else if (value > 22) {
+            return PRO;
         }
         return switch (value) {
             case 1 -> BRONZE_1;
@@ -50,7 +53,10 @@ public enum SoloRankTier {
             case 16 -> LEGENDARY_1;
             case 17 -> LEGENDARY_2;
             case 18 -> LEGENDARY_3;
-            case 19 -> MASTER;
+            case 19 -> MASTER_1;
+            case 20 -> MASTER_2;
+            case 21 -> MASTER_3;
+            case 22 -> PRO;
             default -> throw new IllegalArgumentException("알 수 없는 티어입니다. value=" + value);
         };
     }
