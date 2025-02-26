@@ -12,25 +12,30 @@ public enum SoloRankTierRangeRange {
             SoloRankTierRange.DIAMOND,
             SoloRankTierRange.MYTHIC,
             SoloRankTierRange.LEGENDARY,
-            SoloRankTierRange.MASTER
+            SoloRankTierRange.MASTER,
+            SoloRankTierRange.PRO
     ),
     DIAMOND_PLUS(
             SoloRankTierRange.DIAMOND,
             SoloRankTierRange.MYTHIC,
             SoloRankTierRange.LEGENDARY,
-            SoloRankTierRange.MASTER
+            SoloRankTierRange.MASTER,
+            SoloRankTierRange.PRO
     ),
     MYTHIC_PLUS(
             SoloRankTierRange.MYTHIC,
             SoloRankTierRange.LEGENDARY,
-            SoloRankTierRange.MASTER
+            SoloRankTierRange.MASTER,
+            SoloRankTierRange.PRO
     ),
     LEGENDARY_PLUS(
             SoloRankTierRange.LEGENDARY,
-            SoloRankTierRange.MASTER
+            SoloRankTierRange.MASTER,
+            SoloRankTierRange.PRO
     ),
-    MASTER(
-            SoloRankTierRange.MASTER
+    MASTER_PLUS(
+            SoloRankTierRange.MASTER,
+            SoloRankTierRange.PRO
     ),
     ;
 
