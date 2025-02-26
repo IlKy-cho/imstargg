@@ -44,6 +44,7 @@ public class StarPowerRepositoryWithCache {
     void init() {
         Map<Long, List<StarPowerEntity>> brawlerBrawlStarsIdToStarPowerEntities = starPowerJpaRepository.findAll()
                 .stream()
+                .filter(StarPowerEntity::isActive)
                 .collect(groupingBy(StarPowerEntity::getBrawlerBrawlStarsId));
         Map<String, MessageCollection> codeToMessageCollection = messageRepository.getCollectionList(
                 brawlerBrawlStarsIdToStarPowerEntities.values().stream()

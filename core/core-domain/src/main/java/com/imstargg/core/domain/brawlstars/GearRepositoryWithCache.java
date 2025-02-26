@@ -48,6 +48,7 @@ public class GearRepositoryWithCache {
     @PostConstruct
     void init() {
         brawlerGearJpaRepository.findAll().stream()
+                .filter(BrawlerGearEntity::isActive)
                 .collect(groupingBy(BrawlerGearEntity::getBrawlerBrawlStarsId))
                 .forEach((brawlerBrawlStarsId, brawlerGearEntities) -> brawlerIdToGearIdsCache
                         .put(
@@ -59,6 +60,7 @@ public class GearRepositoryWithCache {
                         ));
 
         Map<Long, GearEntity> brawlStarsIdToGearEntity = gearJpaRepository.findAll().stream()
+                .filter(GearEntity::isActive)
                 .collect(toMap(GearEntity::getBrawlStarsId, Function.identity()));
         Map<String, MessageCollection> codeToMessageCollection = messageRepository.getCollectionList(
                 brawlStarsIdToGearEntity.values().stream()
