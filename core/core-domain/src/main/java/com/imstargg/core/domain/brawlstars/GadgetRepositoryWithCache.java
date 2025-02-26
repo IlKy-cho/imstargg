@@ -41,7 +41,9 @@ public class GadgetRepositoryWithCache {
 
     @PostConstruct
     void init() {
-        Map<Long, List<GadgetEntity>> brawlerBrawlStarsIdToGadgetEntities = gadgetJpaRepository.findAll().stream()
+        Map<Long, List<GadgetEntity>> brawlerBrawlStarsIdToGadgetEntities = gadgetJpaRepository.findAll()
+                .stream()
+                .filter(GadgetEntity::isActive)
                 .collect(groupingBy(GadgetEntity::getBrawlerBrawlStarsId));
         Map<String, MessageCollection> codeToMessageCollection = messageRepository.getCollectionList(
                 brawlerBrawlStarsIdToGadgetEntities.values().stream()

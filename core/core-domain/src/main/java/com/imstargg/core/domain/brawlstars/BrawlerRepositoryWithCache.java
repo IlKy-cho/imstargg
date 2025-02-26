@@ -54,9 +54,11 @@ public class BrawlerRepositoryWithCache {
     }
 
     private void initBrawler() {
-        brawlerJpaRepository.findAll().forEach(brawlerEntity ->
-                brawlerIdToEntityCache.put(new BrawlStarsId(brawlerEntity.getBrawlStarsId()), brawlerEntity)
-        );
+        brawlerJpaRepository.findAll().stream()
+                .filter(BrawlerEntity::isActive)
+                .forEach(brawlerEntity ->
+                        brawlerIdToEntityCache.put(new BrawlStarsId(brawlerEntity.getBrawlStarsId()), brawlerEntity)
+                );
     }
 
     private void initMessage() {
@@ -72,7 +74,7 @@ public class BrawlerRepositoryWithCache {
                 brawlerIdToEntityCache.values().stream()
                         .map(entity -> BrawlStarsImageType.BRAWLER_PROFILE.code(entity.getBrawlStarsId()))
                         .toList()
-        ).forEach(imageEntity ->
+        ).stream().filter(BrawlStarsImageEntity::isActive).forEach(imageEntity ->
                 codeToImageEntityCache.put(imageEntity.getCode(), imageEntity)
         );
     }
