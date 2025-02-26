@@ -3,7 +3,7 @@ export const SoloRankTierRangeValue = {
   DIAMOND_PLUS: 'DIAMOND_PLUS',
   MYTHIC_PLUS: 'MYTHIC_PLUS',
   LEGENDARY_PLUS: 'LEGENDARY_PLUS',
-  MASTER: 'MASTER',
+  MASTER_PLUS: 'MASTER_PLUS',
 } as const;
 
 export type SoloRankTierRange = typeof SoloRankTierRangeValue[keyof typeof SoloRankTierRangeValue];
@@ -20,7 +20,7 @@ export const soloRankTierRangeTitle = (tier: SoloRankTierRange): string => {
       return '신화+';
     case SoloRankTierRangeValue.LEGENDARY_PLUS:
       return '전설+';
-    case SoloRankTierRangeValue.MASTER:
-      return '마스터';
+    case SoloRankTierRangeValue.MASTER_PLUS:
+      return '마스터+';
   }
 }
