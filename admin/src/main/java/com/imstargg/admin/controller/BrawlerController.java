@@ -1,19 +1,18 @@
 package com.imstargg.admin.controller;
 
-import com.imstargg.admin.controller.request.BattleEventUpdateRequest;
 import com.imstargg.admin.controller.request.BrawlerUpdateRequest;
+import com.imstargg.admin.controller.request.GearUpdateRequest;
+import com.imstargg.admin.controller.request.NewBrawlerGearRequest;
 import com.imstargg.admin.controller.request.NewBrawlerRequest;
+import com.imstargg.admin.controller.request.NewGadgetRequest;
 import com.imstargg.admin.controller.request.NewGearRequest;
+import com.imstargg.admin.controller.request.NewStarPowerRequest;
 import com.imstargg.admin.controller.response.ListResponse;
-import com.imstargg.admin.domain.BattleEvent;
-import com.imstargg.admin.domain.BattleService;
 import com.imstargg.admin.domain.Brawler;
 import com.imstargg.admin.domain.BrawlerService;
 import com.imstargg.admin.domain.Gear;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -22,17 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-public class BrawlStarsController {
+public class BrawlerController {
 
     private final BrawlerService brawlerService;
-    private final BattleService battleService;
 
-    public BrawlStarsController(
-            BrawlerService brawlerService,
-            BattleService battleService
+    public BrawlerController(
+            BrawlerService brawlerService
     ) {
         this.brawlerService = brawlerService;
-        this.battleService = battleService;
     }
 
     @GetMapping("/admin/api/brawlers")
@@ -70,23 +66,30 @@ public class BrawlStarsController {
         brawlerService.registerGear(request.toNewGear());
     }
 
-    @PutMapping("/admin/api/events/{brawlStarsId}/image")
-    public void uploadMapImage(
-            @PathVariable long brawlStarsId, MultipartFile image) {
-        battleService.uploadMapImage(brawlStarsId, image.getResource());
-    }
-
-    @GetMapping("/admin/api/events")
-    public ListResponse<BattleEvent> getEvents() {
-        return new ListResponse<>(battleService.getEventList());
-    }
-
-    @PatchMapping("/admin/api/events/{brawlStarsId}")
-    public void updateEvent(
+    @PutMapping("/admin/api/gears/{brawlStarsId}")
+    public void updateGear(
             @PathVariable long brawlStarsId,
-            @RequestBody @Validated BattleEventUpdateRequest request
+            @Validated @RequestBody GearUpdateRequest request
     ) {
-        battleService.updateBattleEvent(brawlStarsId, request.toBattleEventUpdate());
+        brawlerService.updateGear(brawlStarsId, request.toGearUpdate());
+    }
+
+    @PutMapping("/admin/api/brawlers/{brawlStarsId}/gears")
+    public void registerBrawlerGear(
+            @PathVariable long brawlStarsId, @Validated @RequestBody NewBrawlerGearRequest request) {
+        brawlerService.registerBrawlerGear(brawlStarsId, request.toNewBrawlerGear());
+    }
+
+    @PostMapping("/admin/api/brawlers/{brawlStarsId}/star-powers")
+    public void registerStarPower(
+            @PathVariable long brawlStarsId, @Validated @RequestBody NewStarPowerRequest request) {
+        brawlerService.registerStarPower(brawlStarsId, request.toNewStarPower());
+    }
+
+    @PostMapping("/admin/api/brawlers/{brawlStarsId}/gadgets")
+    public void registerGadget(
+            @PathVariable long brawlStarsId, @Validated @RequestBody NewGadgetRequest request) {
+        brawlerService.registerGadget(brawlStarsId, request.toNewGadget());
     }
 
     @PutMapping("/admin/api/gadgets/{brawlStarsId}/image")
@@ -99,19 +102,5 @@ public class BrawlStarsController {
     public void uploadStarPowerImage(
             @PathVariable long brawlStarsId, MultipartFile image) {
         brawlerService.uploadStarPowerImage(brawlStarsId, image.getResource());
-    }
-
-    @PutMapping("/admin/api/events/{brawlStarsId}/solo-rank")
-    public void registerSoloRankBattleEvent(
-            @PathVariable long brawlStarsId
-    ) {
-        battleService.registerSoloRankBattleEvent(brawlStarsId);
-    }
-
-    @DeleteMapping("/admin/api/events/{brawlStarsId}/solo-rank")
-    public void deleteSoloRankBattleEvent(
-            @PathVariable long brawlStarsId
-    ) {
-        battleService.deleteSoloRankBattleEvent(brawlStarsId);
     }
 }
