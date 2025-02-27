@@ -204,6 +204,27 @@ public class BrawlerService {
     }
 
     @Transactional
+    public void updateGear(long brawlStarsId, GearUpdate gearUpdate) {
+        gearUpdate.names().validate();
+        GearCollectionEntity gear = gearRepository.findByBrawlStarsId(brawlStarsId)
+                .orElseThrow(() -> new AdminException(AdminErrorKind.NOT_FOUND,
+                        "기어를 찾을 수 없습니다. brawlStarsId: " + brawlStarsId));
+
+        Map<Language, MessageCollectionEntity> langToMessage = messageRepository.findAllByCode(gear.getNameMessageCode())
+                .stream()
+                .collect(toMap(MessageCollectionEntity::getLang, m -> m));
+
+        gearUpdate.names().messages().forEach((language, name) -> {
+            if (langToMessage.containsKey(language)) {
+                langToMessage.get(language).update(name);
+            } else {
+                messageRepository.save(
+                        new MessageCollectionEntity(gear.getNameMessageCode(), language, name));
+            }
+        });
+    }
+
+    @Transactional
     public void registerBrawlerGear(long brawlerBrawlStarsId, NewBrawlerGear newBrawlerGear) {
         BrawlerCollectionEntity brawler = brawlerRepository.findByBrawlStarsId(brawlerBrawlStarsId)
                 .orElseThrow(() -> new AdminException(AdminErrorKind.NOT_FOUND,
