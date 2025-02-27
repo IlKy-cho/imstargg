@@ -126,8 +126,10 @@ public class BrawlerService {
 
     @Transactional
     public void register(NewBrawler newBrawler) {
-        validateNewBrawler(newBrawler);
-
+        if (brawlerRepository.findByBrawlStarsId(newBrawler.brawlStarsId()).isPresent()) {
+            throw new AdminException(AdminErrorKind.DUPLICATED,
+                    "이미 등록된 브롤러입니다. brawlStarsId: " + newBrawler.brawlStarsId());
+        }
         newBrawler.names().validate();
         BrawlerCollectionEntity brawler = brawlerRepository.save(new BrawlerCollectionEntity(
                 newBrawler.brawlStarsId(),
@@ -137,60 +139,6 @@ public class BrawlerService {
 
         newBrawler.names().messages().forEach((language, name) -> messageRepository.save(
                 new MessageCollectionEntity(brawler.getNameMessageCode(), language, name)));
-
-        newBrawler.gadgets().forEach(newGadget -> {
-            newGadget.names().validate();
-            GadgetCollectionEntity gadget = gadgetRepository.save(new GadgetCollectionEntity(
-                    newGadget.brawlStarsId(),
-                    brawler.getBrawlStarsId()
-            ));
-
-            newGadget.names().messages().forEach((language, name) -> messageRepository.save(
-                    new MessageCollectionEntity(gadget.getNameMessageCode(), language, name)));
-        });
-
-        newBrawler.starPowers().forEach(newStarPower -> {
-            newStarPower.names().validate();
-            StarPowerCollectionEntity starPower = starPowerRepository.save(new StarPowerCollectionEntity(
-                    newStarPower.brawlStarsId(),
-                    brawler.getBrawlStarsId()
-            ));
-
-            newStarPower.names().messages().forEach((language, name) -> messageRepository.save(
-                    new MessageCollectionEntity(starPower.getNameMessageCode(), language, name)));
-        });
-
-        List<GearCollectionEntity> gearEntities = gearRepository.findAllById(newBrawler.gearIds());
-        if (gearEntities.size() != newBrawler.gearIds().size()) {
-            throw new AdminException(AdminErrorKind.VALIDATION_FAILED,
-                    "존재하지 않는 기어가 포함되어 있습니다. " +
-                            "추가되는 기어 아이디: " + newBrawler.gearIds() +
-                            ", 존재하는 기어 아이디: " + gearEntities.stream().map(GearCollectionEntity::getId).toList());
-        }
-        brawlerGearRepository.saveAll(gearEntities.stream()
-                .map(gear -> new BrawlerGearCollectionEntity(brawler.getBrawlStarsId(), gear.getBrawlStarsId()))
-                .toList());
-    }
-
-    private void validateNewBrawler(NewBrawler newBrawler) {
-        if (brawlerRepository.findByBrawlStarsId(newBrawler.brawlStarsId()).isPresent()) {
-            throw new AdminException(AdminErrorKind.DUPLICATED,
-                    "이미 등록된 브롤러입니다. brawlStarsId: " + newBrawler.brawlStarsId());
-        }
-        List<GadgetCollectionEntity> existingGadgets = gadgetRepository.findAllByBrawlStarsIdIn(
-                newBrawler.gadgets().stream().map(NewGadget::brawlStarsId).toList());
-        if (!existingGadgets.isEmpty()) {
-            throw new AdminException(AdminErrorKind.DUPLICATED,
-                    "이미 등록된 가젯이 포함되어 있습니다. brawlStarsIds: " +
-                            existingGadgets.stream().map(GadgetCollectionEntity::getBrawlStarsId).toList());
-        }
-        List<StarPowerCollectionEntity> existingStarPowers = starPowerRepository.findAllByBrawlStarsIdIn(
-                newBrawler.starPowers().stream().map(NewStarPower::brawlStarsId).toList());
-        if (!existingStarPowers.isEmpty()) {
-            throw new AdminException(AdminErrorKind.DUPLICATED,
-                    "이미 등록된 스타파워가 포함되어 있습니다. brawlStarsIds: " +
-                            existingStarPowers.stream().map(StarPowerCollectionEntity::getBrawlStarsId).toList());
-        }
     }
 
     @Transactional
@@ -239,6 +187,10 @@ public class BrawlerService {
 
     @Transactional
     public void registerGear(NewGear newGear) {
+        if (gearRepository.findByBrawlStarsId(newGear.brawlStarsId()).isPresent()) {
+            throw new AdminException(AdminErrorKind.DUPLICATED,
+                    "이미 등록된 기어입니다. brawlStarsId: " + newGear.brawlStarsId());
+        }
         newGear.names().validate();
         GearCollectionEntity gear = gearRepository.save(
                 new GearCollectionEntity(
@@ -249,6 +201,64 @@ public class BrawlerService {
 
         newGear.names().messages().forEach((language, name) -> messageRepository.save(
                 new MessageCollectionEntity(gear.getNameMessageCode(), language, name)));
+    }
+
+    @Transactional
+    public void registerBrawlerGear(long brawlerBrawlStarsId, NewBrawlerGear newBrawlerGear) {
+        BrawlerCollectionEntity brawler = brawlerRepository.findByBrawlStarsId(brawlerBrawlStarsId)
+                .orElseThrow(() -> new AdminException(AdminErrorKind.NOT_FOUND,
+                        "브롤러를 찾을 수 없습니다. brawlStarsId: " + brawlerBrawlStarsId));
+        GearCollectionEntity gear = gearRepository.findByBrawlStarsId(newBrawlerGear.brawlStarsId())
+                .orElseThrow(() -> new AdminException(AdminErrorKind.NOT_FOUND,
+                        "기어를 찾을 수 없습니다. brawlStarsId: " + newBrawlerGear.brawlStarsId())
+                );
+        BrawlerGearCollectionEntity brawlerGear = brawlerGearRepository.findByBrawlerBrawlStarsIdAndGearBrawlStarsId(
+                brawler.getBrawlStarsId(), gear.getBrawlStarsId()
+        ).orElseGet(() -> new BrawlerGearCollectionEntity(
+                brawler.getBrawlStarsId(), gear.getBrawlStarsId()
+        ));
+        brawlerGear.restore();
+        brawlerGearRepository.save(brawlerGear);
+    }
+
+    @Transactional
+    public void registerStarPower(long brawlerBrawlStarsId, NewStarPower newStarPower) {
+        if (starPowerRepository.findByBrawlStarsId(newStarPower.brawlStarsId()).isPresent()) {
+            throw new AdminException(AdminErrorKind.DUPLICATED,
+                    "이미 등록된 스타파워입니다. brawlStarsId: " + newStarPower.brawlStarsId());
+        }
+        if (brawlerRepository.findByBrawlStarsId(brawlerBrawlStarsId).isEmpty()) {
+            throw new AdminException(AdminErrorKind.NOT_FOUND,
+                    "브롤러를 찾을 수 없습니다. brawlStarsId: " + brawlerBrawlStarsId);
+        }
+        newStarPower.names().validate();
+        StarPowerCollectionEntity starPower = starPowerRepository.save(new StarPowerCollectionEntity(
+                newStarPower.brawlStarsId(),
+                brawlerBrawlStarsId
+        ));
+
+        newStarPower.names().messages().forEach((language, name) -> messageRepository.save(
+                new MessageCollectionEntity(starPower.getNameMessageCode(), language, name)));
+    }
+
+    @Transactional
+    public void registerGadget(long brawlerBrawlStarsId, NewGadget newGadget) {
+        if (gadgetRepository.findByBrawlStarsId(newGadget.brawlStarsId()).isPresent()) {
+            throw new AdminException(AdminErrorKind.DUPLICATED,
+                    "이미 등록된 가젯입니다. brawlStarsId: " + newGadget.brawlStarsId());
+        }
+        if (brawlerRepository.findByBrawlStarsId(brawlerBrawlStarsId).isEmpty()) {
+            throw new AdminException(AdminErrorKind.NOT_FOUND,
+                    "브롤러를 찾을 수 없습니다. brawlStarsId: " + brawlerBrawlStarsId);
+        }
+        newGadget.names().validate();
+        GadgetCollectionEntity gadget = gadgetRepository.save(new GadgetCollectionEntity(
+                newGadget.brawlStarsId(),
+                brawlerBrawlStarsId
+        ));
+
+        newGadget.names().messages().forEach((language, name) -> messageRepository.save(
+                new MessageCollectionEntity(gadget.getNameMessageCode(), language, name)));
     }
 
     public void uploadGadgetImage(long brawlStarsId, Resource resource) {
