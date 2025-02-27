@@ -9,16 +9,12 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.EnumMap;
-import java.util.List;
 
 public record NewBrawlerRequest(
         long brawlStarsId,
         @NotNull BrawlerRarity rarity,
         @NotNull BrawlerRole role,
-        @NotEmpty EnumMap<Language, String> names,
-        @NotNull List<Long> gearIds,
-        @NotNull List<NewGadgetRequest> gadgets,
-        @NotNull List<NewStarPowerRequest> starPowers
+        @NotEmpty EnumMap<Language, String> names
 ) {
 
     public NewBrawler toNewBrawler() {
@@ -26,10 +22,7 @@ public record NewBrawlerRequest(
                 brawlStarsId,
                 rarity,
                 role,
-                new NewMessageCollection(names),
-                gearIds,
-                gadgets.stream().map(NewGadgetRequest::toNewGadget).toList(),
-                starPowers.stream().map(NewStarPowerRequest::toNewStarPower).toList()
+                new NewMessageCollection(names)
         );
     }
 }
