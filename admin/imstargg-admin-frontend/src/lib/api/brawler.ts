@@ -70,6 +70,27 @@ export async function uploadBrawlerProfileImage(brawlerId: number, image: File) 
   }
 }
 
+export async function fetchUploadGearImage(brawlStarsId: number, image: File) {
+  const url = new URL(`${API_BASE_URL}/admin/api/gears/${brawlStarsId}/image`);
+  console.log(image);
+  const formData = new FormData();
+  formData.append('image', image);
+
+  return await fetch(url, {
+    method: 'PUT',
+    body: formData
+  });
+}
+
+export async function uploadGearImage(brawlStarsId: number, image: File) {
+  const response = await fetchUploadGearImage(brawlStarsId, image);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
+
+
+
 export async function fetchUploadGadgetImage(id: number, image: File) {
   const url = new URL(`${API_BASE_URL}/admin/api/gadgets/${id}/image`);
   const formData = new FormData();

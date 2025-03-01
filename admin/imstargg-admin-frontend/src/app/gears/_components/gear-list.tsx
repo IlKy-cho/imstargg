@@ -12,6 +12,8 @@ import {
 import { messagesContent } from "@/lib/message";
 import { imageUrl } from "@/lib/image";
 import Image from "next/image";
+import { GearImageUpload } from "./gear-image-upload";
+
 export async function GearList({gears}: Readonly<{gears: Gear[]}>) {
   return (
     <Table>
@@ -44,8 +46,8 @@ export async function GearList({gears}: Readonly<{gears: Gear[]}>) {
             </TableCell>
             <TableCell>{gear.entity.rarity}</TableCell>
             <TableCell>{messagesContent(gear.names)}</TableCell>
-            <TableCell className="text-right">
-
+            <TableCell className="text-right space-x-2">
+              <GearImageUpload brawlStarsId={gear.entity.brawlStarsId} />
             </TableCell>
           </TableRow>
         ))}
