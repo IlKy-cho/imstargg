@@ -45,16 +45,6 @@ export function BrawlerAdd() {
   const [names, setNames] = useState<Record<Language, string>>(
     initialNewMessages
   );
-  const [gadgets, setGadgets] = useState<GadgetForm[]>([]);
-  const [starPowers, setStarPowers] = useState<StarPowerForm[]>([]);
-  const [gearIds, setGearIds] = useState<number[]>([]);
-  const [gears, setGears] = useState<Gear[]>([]);
-
-  useEffect(() => {
-    getGears()
-      .then(setGears)
-      .catch(error => console.error("기어 목록 로딩 실패:", error));
-  }, []);
 
   const handleSubmit = async () => {
     try {
@@ -63,15 +53,6 @@ export function BrawlerAdd() {
         rarity,
         role,
         names,
-        gearIds,
-        gadgets: gadgets.map(g => ({
-          brawlStarsId: Number(g.brawlStarsId),
-          names: g.names
-        })),
-        starPowers: starPowers.map(s => ({
-          brawlStarsId: Number(s.brawlStarsId),
-          names: s.names
-        }))
       });
       window.location.reload();
     } catch (error) {
@@ -79,34 +60,12 @@ export function BrawlerAdd() {
     }
   };
 
-  const addGadget = () => {
-    setGadgets([...gadgets, {
-      brawlStarsId: "",
-      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
-    }]);
-  };
-
-  const addStarPower = () => {
-    setStarPowers([...starPowers, {
-      brawlStarsId: "",
-      names: Object.fromEntries(LanguageValues.map(lang => [lang, ""])) as Record<Language, string>
-    }]);
-  };
-
-  const removeGadget = (index: number) => {
-    setGadgets(gadgets.filter((_, i) => i !== index));
-  };
-
-  const removeStarPower = (index: number) => {
-    setStarPowers(starPowers.filter((_, i) => i !== index));
-  };
-
   return (
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">브롤러 추가</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[625px] h-[80vh] overflow-y-auto">
+      <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
           <DialogTitle>브롤러 추가</DialogTitle>
           <DialogDescription>
@@ -168,125 +127,6 @@ export function BrawlerAdd() {
               />
             </div>
           ))}
-
-          <div className="border-t pt-4">
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="font-semibold">가젯 추가</h4>
-              <Button type="button" variant="outline" onClick={addGadget}>가젯 추가</Button>
-            </div>
-            {gadgets.map((gadget, index) => (
-              <div key={index} className="border p-4 mb-4 rounded-lg relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-2"
-                  onClick={() => removeGadget(index)}
-                >
-                  <XIcon className="h-4 w-4" />
-                </Button>
-                <div className="grid grid-cols-4 items-center gap-4 mb-4">
-                  <Label className="text-right">브롤스타즈 ID</Label>
-                  <Input
-                    type="number"
-                    value={gadget.brawlStarsId}
-                    onChange={(e) => {
-                      const newGadgets = [...gadgets];
-                      newGadgets[index].brawlStarsId = e.target.value;
-                      setGadgets(newGadgets);
-                    }}
-                    className="col-span-3"
-                  />
-                </div>
-                {LanguageValues.map((language) => (
-                  <div key={language} className="grid grid-cols-4 items-center gap-4">
-                    <Label className="text-right">이름({language})</Label>
-                    <Input
-                      value={gadget.names[language]}
-                      onChange={(e) => {
-                        const newGadgets = [...gadgets];
-                        newGadgets[index].names[language] = e.target.value;
-                        setGadgets(newGadgets);
-                      }}
-                      className="col-span-3"
-                    />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t pt-4">
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="font-semibold">스타파워</h4>
-              <Button type="button" variant="outline" onClick={addStarPower}>스타파워 추가</Button>
-            </div>
-            {starPowers.map((starPower, index) => (
-              <div key={index} className="border p-4 mb-4 rounded-lg relative">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-2"
-                  onClick={() => removeStarPower(index)}
-                >
-                  <XIcon className="h-4 w-4" />
-                </Button>
-                <div className="grid grid-cols-4 items-center gap-4 mb-4">
-                  <Label className="text-right">브롤스타즈 ID</Label>
-                  <Input
-                    type="number"
-                    value={starPower.brawlStarsId}
-                    onChange={(e) => {
-                      const newStarPowers = [...starPowers];
-                      newStarPowers[index].brawlStarsId = e.target.value;
-                      setStarPowers(newStarPowers);
-                    }}
-                    className="col-span-3"
-                  />
-                </div>
-                {LanguageValues.map((language) => (
-                  <div key={language} className="grid grid-cols-4 items-center gap-4">
-                    <Label className="text-right">이름({language})</Label>
-                    <Input
-                      value={starPower.names[language]}
-                      onChange={(e) => {
-                        const newStarPowers = [...starPowers];
-                        newStarPowers[index].names[language] = e.target.value;
-                        setStarPowers(newStarPowers);
-                      }}
-                      className="col-span-3"
-                    />
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t pt-4">
-            <div className="flex justify-between items-center mb-4">
-              <h4 className="font-semibold">기어</h4>
-            </div>
-            <div className="grid grid-cols-4 gap-4">
-              {gears.map((gear) => (
-                <div key={gear.entity.id} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    id={`gear-${gear.entity.id}`}
-                    checked={gearIds.includes(gear.entity.id)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        setGearIds([...gearIds, gear.entity.id]);
-                      } else {
-                        setGearIds(gearIds.filter(id => id !== gear.entity.id));
-                      }
-                    }}
-                  />
-                  <Label htmlFor={`gear-${gear.entity.id}`}>
-                    {gear.names.sort((a, b) => a.lang.localeCompare(b.lang)).map(message => `${message.lang}(${message.content})`).join(' ')}
-                  </Label>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
         <DialogFooter>
           <Button type="submit" onClick={handleSubmit}>추가</Button>

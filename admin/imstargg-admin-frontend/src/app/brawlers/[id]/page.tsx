@@ -3,7 +3,10 @@ import { messagesContent } from "@/lib/message";
 import { imageUrl } from "@/lib/image";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableRow } from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { GadgetAdd } from "./_components/gadget-add";
+import { StarPowerAdd } from "./_components/star-power-add";
+import { GearAdd } from "./_components/gear-add";
 
 type Props = {
   params: Promise<{ id: number }>
@@ -20,6 +23,12 @@ export default async function BrawlerDetailPage({ params }: Readonly<Props>) {
 
   return (
     <div className="space-y-6">
+      <div className="flex justify-end space-x-2">
+        <GadgetAdd brawlStarsId={id} />
+        <StarPowerAdd brawlStarsId={id} />
+        <GearAdd brawlStarsId={id} />
+      </div>
+
       <Card>
         <CardHeader>
           <CardTitle>브롤러 정보</CardTitle>
