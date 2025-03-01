@@ -92,6 +92,12 @@ public class BrawlerController {
         brawlerService.registerGadget(brawlStarsId, request.toNewGadget());
     }
 
+    @PutMapping("/admin/api/gears/{brawlStarsId}/image")
+    public void uploadGearImage(
+            @PathVariable long brawlStarsId, MultipartFile image) {
+        brawlerService.uploadGearImage(brawlStarsId, image.getResource());
+    }
+
     @PutMapping("/admin/api/gadgets/{brawlStarsId}/image")
     public void uploadGadgetImage(
             @PathVariable long brawlStarsId, MultipartFile image) {
