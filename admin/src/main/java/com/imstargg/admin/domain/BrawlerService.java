@@ -282,6 +282,10 @@ public class BrawlerService {
                 new MessageCollectionEntity(gadget.getNameMessageCode(), language, name)));
     }
 
+    public void uploadGearImage(long brawlStarsId, Resource resource) {
+        brawlStarsImageUploader.uploadGear(brawlStarsId, resource);
+    }
+
     public void uploadGadgetImage(long brawlStarsId, Resource resource) {
         brawlStarsImageUploader.uploadGadget(brawlStarsId, resource);
     }
