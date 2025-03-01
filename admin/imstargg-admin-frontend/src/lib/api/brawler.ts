@@ -2,6 +2,9 @@ import {Brawler} from "@/model/Brawler";
 import {API_BASE_URL, ApiError, ListResponse} from "./api";
 import {Gear} from "@/model/Gear";
 import {NewBrawlerRequest} from "@/model/request/NewBrawlerRequest";
+import {NewBrawlerGearRequest} from "@/model/request/NewBrawlerGearRequest";
+import {NewStarPowerRequest} from "@/model/request/NewStarPowerRequest";
+import {NewGadgetRequest} from "@/model/request/NewGadgetRequest";
 
 export async function fetchGetBrawlers(): Promise<Response> {
   const url = new URL(`${API_BASE_URL}/admin/api/brawlers`);
@@ -98,6 +101,60 @@ export async function fetchUploadStarPowerImage(id: number, image: File) {
 
 export async function uploadStarPowerImage(id: number, image: File) {
   const response = await fetchUploadStarPowerImage(id, image);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
+
+export async function fetchRegisterBrawlerGear(brawlStarsId: number, request: NewBrawlerGearRequest) {
+  const url = new URL(`${API_BASE_URL}/admin/api/brawlers/${brawlStarsId}/gears`);
+  return await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ brawlStarsId: request.brawlStarsId })
+  });
+}
+
+export async function registerBrawlerGear(brawlStarsId: number, request: NewBrawlerGearRequest) {
+  const response = await fetchRegisterBrawlerGear(brawlStarsId, request);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
+
+export async function fetchRegisterStarPower(brawlStarsId: number, request: NewStarPowerRequest) {
+  const url = new URL(`${API_BASE_URL}/admin/api/brawlers/${brawlStarsId}/star-powers`);
+  return await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request)
+  });
+}
+
+export async function registerStarPower(brawlStarsId: number, request: NewStarPowerRequest) {
+  const response = await fetchRegisterStarPower(brawlStarsId, request);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
+
+export async function fetchRegisterGadget(brawlStarsId: number, request: NewGadgetRequest) {
+  const url = new URL(`${API_BASE_URL}/admin/api/brawlers/${brawlStarsId}/gadgets`);
+  return await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request)
+  });
+}
+
+export async function registerGadget(brawlStarsId: number, request: NewGadgetRequest) {
+  const response = await fetchRegisterGadget(brawlStarsId, request);
   if (!response.ok) {
     throw await ApiError.create(response);
   }
