@@ -3,7 +3,7 @@ import {GearRarity} from "@/model/enums/GearRarity";
 
 export interface GearEntity extends BaseEntity {
   id: number;
-  brawlStarsId: string;
+  brawlStarsId: number;
   nameMessageCode: string;
   rarity: GearRarity;
 }
