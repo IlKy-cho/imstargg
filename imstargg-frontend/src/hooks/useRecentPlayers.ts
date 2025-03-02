@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 const STORAGE_KEY = "recent-players";
 const MAX_ITEMS = 10;
 
-type RecentPlayerItem = { name: string; tag: string };
+type RecentPlayerItem = { name: string; tag: string; viewedAt: Date };
 
 export const useRecentPlayers = () => {
   const [recentPlayers, setRecentPlayers] = useState<RecentPlayerItem[]>([]);
@@ -13,7 +13,13 @@ export const useRecentPlayers = () => {
     if (typeof window !== "undefined") {
       const storedPlayers = localStorage.getItem(STORAGE_KEY);
       if (storedPlayers) {
-        setRecentPlayers(JSON.parse(storedPlayers));
+        const parsedPlayers = JSON.parse(storedPlayers);
+        setRecentPlayers(
+          parsedPlayers.map((player: any) => ({
+            ...player,
+            viewedAt: new Date(player.viewedAt)
+          }))
+        );
       }
     }
   }, []);
@@ -24,7 +30,7 @@ export const useRecentPlayers = () => {
     let updatedRecentPlayerItems: RecentPlayerItem[];
 
     updatedRecentPlayerItems = [
-      { name: item.name, tag: item.tag },
+      { name: item.name, tag: item.tag, viewedAt: new Date() },
       ...recentPlayers.filter(
         (t) => !(t.name === item.name && t.tag === item.tag)
       )
