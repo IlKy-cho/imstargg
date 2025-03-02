@@ -23,7 +23,6 @@ import java.time.OffsetDateTime;
                 @UniqueConstraint(name = "uk_player__brawlstarstag", columnNames = "brawlstars_tag")
         },
         indexes = {
-                @Index(name = "ix_player__name", columnList = "name"),
                 @Index(name = "ix_player__trophies", columnList = "trophies"),
         }
 )
