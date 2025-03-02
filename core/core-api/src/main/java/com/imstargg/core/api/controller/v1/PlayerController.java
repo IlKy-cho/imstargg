@@ -1,17 +1,13 @@
 package com.imstargg.core.api.controller.v1;
 
 import com.imstargg.core.api.controller.response.ListResponse;
-import com.imstargg.core.api.controller.v1.request.PlayerSearchRequest;
 import com.imstargg.core.api.controller.v1.response.PlayerBrawlerResponse;
 import com.imstargg.core.api.controller.v1.response.PlayerResponse;
 import com.imstargg.core.api.controller.v1.response.RenewalStatusResponse;
 import com.imstargg.core.domain.BrawlStarsTag;
-import com.imstargg.core.domain.PlayerSearchService;
 import com.imstargg.core.domain.PlayerService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,22 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PlayerController {
 
-    private final PlayerSearchService playerSearchService;
     private final PlayerService playerService;
 
-    public PlayerController(PlayerSearchService playerSearchService, PlayerService playerService) {
-        this.playerSearchService = playerSearchService;
+    public PlayerController(PlayerService playerService) {
         this.playerService = playerService;
-    }
-
-    @GetMapping("/api/v1/player/search")
-    public ListResponse<PlayerResponse> search(@ModelAttribute @Validated PlayerSearchRequest request) {
-        return new ListResponse<>(
-                playerSearchService.search(request.toParam())
-                        .stream()
-                        .map(PlayerResponse::from)
-                        .toList()
-        );
     }
 
     @GetMapping("/api/v1/players/{tag}")
