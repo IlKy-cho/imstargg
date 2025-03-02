@@ -5,6 +5,7 @@ import {NewBrawlerRequest} from "@/model/request/NewBrawlerRequest";
 import {NewBrawlerGearRequest} from "@/model/request/NewBrawlerGearRequest";
 import {NewStarPowerRequest} from "@/model/request/NewStarPowerRequest";
 import {NewGadgetRequest} from "@/model/request/NewGadgetRequest";
+import {GearUpdateRequest} from "@/model/request/GearUpdateRequest";
 
 export async function fetchGetBrawlers(): Promise<Response> {
   const url = new URL(`${API_BASE_URL}/admin/api/brawlers`);
@@ -88,8 +89,6 @@ export async function uploadGearImage(brawlStarsId: number, image: File) {
     throw await ApiError.create(response);
   }
 }
-
-
 
 export async function fetchUploadGadgetImage(id: number, image: File) {
   const url = new URL(`${API_BASE_URL}/admin/api/gadgets/${id}/image`);
@@ -176,6 +175,25 @@ export async function fetchRegisterGadget(brawlStarsId: number, request: NewGadg
 
 export async function registerGadget(brawlStarsId: number, request: NewGadgetRequest) {
   const response = await fetchRegisterGadget(brawlStarsId, request);
+  if (!response.ok) {
+    throw await ApiError.create(response);
+  }
+}
+
+export async function fetchUpdateGear(brawlStarsId: number, request: GearUpdateRequest) {
+  const url = new URL(`${API_BASE_URL}/admin/api/gears/${brawlStarsId}`);
+  return await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+    credentials: 'include'
+  });
+}
+
+export async function updateGear(brawlStarsId: number, request: GearUpdateRequest) {
+  const response = await fetchUpdateGear(brawlStarsId, request);
   if (!response.ok) {
     throw await ApiError.create(response);
   }
