@@ -100,32 +100,6 @@ export async function renewNewPlayer(tag: string): Promise<void> {
   }
 }
 
-export async function fetchSearchPlayer(query: string, options?: CacheOptions): Promise<Response> {
-  const url = new URL(`${BASE_URL}/api/v1/player/search`);
-  url.searchParams.append('query', query);
-  if (!options) {
-    return await fetch(url);
-  }
-
-  return await fetch(url, {
-    next: {
-      tags: ['player', 'search', query],
-      revalidate: options.revalidate,
-    }
-  });
-}
-
-export async function searchPlayer(query: string): Promise<Player[]> {
-  const response = await fetchSearchPlayer(query);
-
-  if (!response.ok) {
-    throw await ApiError.create(response);
-  }
-
-  const data = await response.json() as ListResponse<Player>;
-  return data.content;
-}
-
 export async function fetchGetPlayerBrawlers(tag: string, options?: CacheOptions): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/players/${tag}/brawlers`);
   if (!options) {

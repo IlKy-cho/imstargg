@@ -12,7 +12,7 @@ import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
 import {useRecentSearches} from "@/hooks/useRecentSearchs";
 import Link from "next/link";
-import {playerHref, playerSearchResultHref} from "@/config/site";
+import {playerHref} from "@/config/site";
 import {LoaderCircleIcon, SearchIcon, SparkleIcon, XIcon} from "lucide-react";
 import {isBrawlStarsTag} from "@/lib/brawlstars";
 import {getPlayer, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
@@ -90,7 +90,7 @@ export function PlayerSearchForm() {
         await renew(query);
       }
     }
-    router.push(playerSearchResultHref(query));
+    router.push(playerHref(query));
     setLoading(false);
   }
 
@@ -107,7 +107,7 @@ export function PlayerSearchForm() {
                   <FormControl>
                     <Input
                       className="bg-white"
-                      placeholder="플레이어 태그 / 이름"
+                      placeholder="플레이어 태그 (#...)"
                       {...field}
                       onFocus={() => setOpened(true)}
                       onBlur={() => {
