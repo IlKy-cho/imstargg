@@ -15,6 +15,7 @@ import 'dayjs/locale/ko';
 import relativeTime from "dayjs/plugin/relativeTime";
 import PlayerRenewButton from "@/components/player-renew-button";
 import {cn} from "@/lib/utils";
+import PlayerRecentTracker from "@/components/player-recent-tracker";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
@@ -48,13 +49,16 @@ export default async function PlayerPage({params}: Readonly<Props>) {
   const brawlers = await getBrawlers();
 
   return (
-    <div className="space-y-2">
-      <PageHeader>
-        <PlayerProfile player={player}/>
-      </PageHeader>
-      <PagePlayerBrawlerList tag={decodedTag} brawlers={brawlers}/>
-      <PlayerBattleContent player={player} brawlers={brawlers}/>
-    </div>
+    <>
+      <PlayerRecentTracker player={player} />
+      <div className="space-y-2">
+        <PageHeader>
+          <PlayerProfile player={player}/>
+        </PageHeader>
+        <PagePlayerBrawlerList tag={decodedTag} brawlers={brawlers}/>
+        <PlayerBattleContent player={player} brawlers={brawlers}/>
+      </div>
+    </>
   );
 }
 
