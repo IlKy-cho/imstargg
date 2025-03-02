@@ -35,12 +35,6 @@ public class PlayerRepository {
                 .map(this::mapEntityToPlayer);
     }
 
-    public List<Player> findByName(String name) {
-        return playerJpaRepository.findAllByNameAndDeletedFalse(name).stream()
-                .map(this::mapEntityToPlayer)
-                .toList();
-    }
-
     private Player mapEntityToPlayer(PlayerEntity entity) {
         return new Player(
                 new PlayerId(entity.getId()),
