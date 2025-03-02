@@ -128,9 +128,6 @@ create table player
 alter table player
     add constraint uk_player__brawlstarstag unique (brawlstars_tag);
 
-create index ix_player__name
-    on player (name);
-
 create index ix_player__trophies
     on player (trophies);
 
