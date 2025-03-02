@@ -1,5 +1,5 @@
 export const revalidate = 60;
-// export const dynamic = 'force-dynamic';
+export const dynamic = 'force-dynamic';
 
 import {Metadata} from "next";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
