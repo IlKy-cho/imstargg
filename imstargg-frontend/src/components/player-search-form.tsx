@@ -10,7 +10,6 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import React, {useEffect, useRef, useState} from "react";
 import {Form, FormControl, FormField, FormItem, FormMessage} from "@/components/ui/form";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import {useRecentSearches} from "@/hooks/useRecentSearchs";
 import Link from "next/link";
 import {playerHref} from "@/config/site";
 import {LoaderCircleIcon, SearchIcon, SparkleIcon, XIcon} from "lucide-react";
@@ -18,6 +17,7 @@ import {isBrawlStarsTag} from "@/lib/brawlstars";
 import {getPlayer, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
 import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
 import {toast} from "sonner";
+import { useRecentPlayers } from "@/hooks/useRecentPlayers";
 
 async function renew(tag: string) {
   try {
@@ -55,9 +55,11 @@ async function renew(tag: string) {
 }
 
 const formSchema = z.object({
-  nameOrTag: z.string().min(0).max(100, {
-    message: "100자 이하로 입력해주세요."
-  }),
+  tagToSearch: z.string()
+    .min(1, '태그를 입력해주세요')
+    .refine((tag) => isBrawlStarsTag(tag), {
+      message: '올바른 브롤스타즈 태그 형식이 아닙니다. (#XXXXXXXX)',
+    })
 });
 
 export function PlayerSearchForm() {
@@ -67,11 +69,10 @@ export function PlayerSearchForm() {
   const [opened, setOpened] = useState(false);
   const [loading, setLoading] = useState(false);
   const searchResultsRef = useRef<HTMLDivElement>(null);
-  const {addSearchTerm} = useRecentSearches();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      nameOrTag: "",
+      tagToSearch: "",
     },
   });
 
@@ -81,16 +82,13 @@ export function PlayerSearchForm() {
 
   async function onSubmit(value: z.infer<typeof formSchema>) {
     setLoading(true);
-    const query = value.nameOrTag;
-    addSearchTerm({type: 'query', value: query});
-    if (isBrawlStarsTag(query)) {
-      const player = await getPlayer(query);
+    const tagToSearch = value.tagToSearch;
+    const player = await getPlayer(tagToSearch);
       if (player === null) {
-        console.log(`player tag(${query}) 가 존재하지 않습니다. 갱신 시작`);
-        await renew(query);
-      }
+        console.log(`player tag(${tagToSearch}) 가 존재하지 않습니다. 갱신 시작`);
+        await renew(tagToSearch);
     }
-    router.push(playerHref(query));
+    router.push(playerHref(tagToSearch));
     setLoading(false);
   }
 
@@ -101,7 +99,7 @@ export function PlayerSearchForm() {
           <CollapsibleTrigger asChild>
             <FormField
               control={form.control}
-              name="nameOrTag"
+              name="tagToSearch"
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>
@@ -146,28 +144,21 @@ export function PlayerSearchForm() {
 }
 
 function RecentSearches() {
-  const { recentSearches, removeSearchTerm } = useRecentSearches();
+  const { recentPlayers, removeRecentPlayer } = useRecentPlayers()
 
-  if (recentSearches.length === 0) {
+  if (recentPlayers.length == 0) {
     return null;
   }
 
   return (
     <div className="flex flex-col gap-1 border rounded-md p-1 bg-white text-sm shadow-md">
-      {recentSearches.map((search, index) => (
+      {recentPlayers.map((player, index) => (
         <div key={index}>
-          {search.type === 'player' ? (
-            <RecentSearchPlayer 
-              name={search.value.name} 
-              tag={search.value.tag} 
-              onRemove={() => removeSearchTerm({ type: 'player', value: { tag: search.value.tag, name: search.value.name } })}
-            />
-          ) : (
-            <RecentSearchQuery 
-              query={search.value} 
-              onRemove={() => removeSearchTerm({ type: 'query', value: search.value })}
-            />
-          )}
+          <RecentSearchPlayer 
+            name={player.name} 
+            tag={player.tag} 
+            onRemove={() => removeRecentPlayer(player)}
+          />
         </div>
       ))}
     </div>
@@ -188,30 +179,6 @@ function RecentSearchPlayer({
       <Link href={playerHref(tag)} className="flex flex-1 items-center gap-1">
         <SparkleIcon className="h-4 w-4" />
         {name}<span className="text-zinc-500">{tag}</span>
-      </Link>
-      <div 
-        className="p-1 cursor-pointer"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={onRemove}
-      >
-        <XIcon className="h-4 w-4" />
-      </div>
-    </div>
-  );
-}
-
-function RecentSearchQuery({ 
-  query, 
-  onRemove 
-}: Readonly<{ 
-  query: string, 
-  onRemove: () => void 
-}>) {
-  return (
-    <div className="flex items-center justify-between hover:bg-zinc-100">
-      <Link href={playerSearchResultHref(query)} className="flex flex-1 items-center gap-1">
-        <SearchIcon className="h-4 w-4" />
-        {query}
       </Link>
       <div 
         className="p-1 cursor-pointer"
