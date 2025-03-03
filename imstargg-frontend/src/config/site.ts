@@ -12,4 +12,5 @@ export const battleEventHref = (id: number) => `/events/${id}`;
 
 export const brawlerHref = (id: number) => `/brawlers/${id}`;
 
-export const playerHref = (tag: string) => `/players/${encodeURIComponent(tag)}`;
+export const playerHref = (tag: string) =>
+  `/players/${encodeURIComponent(tag)}?renewIfAbsent=true`;

@@ -16,12 +16,18 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import PlayerRenewButton from "@/components/player-renew-button";
 import {cn} from "@/lib/utils";
 import PlayerRecentTracker from "@/components/player-recent-tracker";
+import { processPlayerRenewal } from "@/lib/player";
 
 dayjs.locale('ko');
 dayjs.extend(relativeTime);
 
+interface SearchParams {
+  renewIfAbsent?: boolean;
+}
+
 type Props = {
-  params: Promise<{ tag: string; }>
+  params: Promise<{ tag: string; }>;
+  searchParams: Promise<SearchParams>;
 };
 
 export async function generateMetadata({params}: Readonly<Props>): Promise<Metadata> {
@@ -37,13 +43,22 @@ export async function generateMetadata({params}: Readonly<Props>): Promise<Metad
   }
 }
 
-export default async function PlayerPage({params}: Readonly<Props>) {
+export default async function PlayerPage({params, searchParams}: Readonly<Props>) {
   const { tag } = await params;
+  const { renewIfAbsent } = await searchParams;
   const decodedTag = decodeURIComponent(tag);
-  const player = await getPlayer(decodedTag);
+  let player = await getPlayer(decodedTag);
 
   if (!player) {
-    notFound();
+    console.log(`player not found: ${decodedTag}`);
+    if (renewIfAbsent) {
+      console.log(`renewing player: ${decodedTag}`);
+      await processPlayerRenewal(decodedTag);
+      player = await getPlayer(decodedTag);
+    }
+    if (!player) {
+      notFound();
+    }
   }
 
   const brawlers = await getBrawlers();
