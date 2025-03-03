@@ -1,55 +1,42 @@
 import { Player } from "@/model/Player";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 const STORAGE_KEY = "recent-players";
 const MAX_ITEMS = 10;
 
-type RecentPlayerItem = { name: string; tag: string; viewedAt: Date };
+type RecentPlayerItem = { name: string; tag: string; viewedAt: string };
 
 export const useRecentPlayers = () => {
-  const [recentPlayers, setRecentPlayers] = useState<RecentPlayerItem[]>([]);
-
-  useEffect(() => {
+  const [recentPlayers, setRecentPlayers] = useState<RecentPlayerItem[]>(() => {
     if (typeof window !== "undefined") {
       const storedPlayers = localStorage.getItem(STORAGE_KEY);
       if (storedPlayers) {
-        const parsedPlayers = JSON.parse(storedPlayers);
-        setRecentPlayers(
-          parsedPlayers.map((player: any) => ({
-            ...player,
-            viewedAt: new Date(player.viewedAt)
-          }))
-        );
+        return JSON.parse(storedPlayers);
       }
     }
-  }, []);
+    return [];
+  });
 
   const addRecentPlayer = (item: Player) => {
     if (typeof window === "undefined") return;
 
-    let updatedRecentPlayerItems: RecentPlayerItem[];
+    setRecentPlayers(prevPlayers => {
+      const updatedRecentPlayerItems = [
+        { name: item.name, tag: item.tag, viewedAt: new Date().toISOString() },
+        ...prevPlayers.filter(
+          (t) => !(t.name === item.name && t.tag === item.tag)
+        )
+      ].slice(0, MAX_ITEMS);
 
-    updatedRecentPlayerItems = [
-      { name: item.name, tag: item.tag, viewedAt: new Date() },
-      ...recentPlayers.filter(
-        (t) => !(t.name === item.name && t.tag === item.tag)
-      )
-    ];
-
-    if (updatedRecentPlayerItems.length > MAX_ITEMS) {
-      updatedRecentPlayerItems = updatedRecentPlayerItems.slice(0, MAX_ITEMS);
-    }
-
-    setRecentPlayers(updatedRecentPlayerItems);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedRecentPlayerItems));
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedRecentPlayerItems));
+      return updatedRecentPlayerItems;
+    });
   };
 
   const removeRecentPlayer = (item: RecentPlayerItem) => {
     if (typeof window === "undefined") return;
 
-    let updatedRecentPlayerItems: RecentPlayerItem[];
-
-    updatedRecentPlayerItems = recentPlayers.filter(
+    const updatedRecentPlayerItems = recentPlayers.filter(
       (t) => !(t.name === item.name && t.tag === item.tag)
     );
 
