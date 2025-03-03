@@ -7,6 +7,7 @@ import {getPlayerRenewalStatus, renewPlayer} from "@/lib/api/player";
 import {toast} from "sonner";
 import {useInterval} from "usehooks-ts";
 import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
+import {processPlayerRenewal} from "@/lib/player";
 
 export default function PlayerRenewButton({player}: Readonly<{ player: Player }>) {
   const [renewalEnabled, setRenewalEnabled] = useState(false);
@@ -34,20 +35,8 @@ export default function PlayerRenewButton({player}: Readonly<{ player: Player }>
     setLoading(true);
     setRenewalEnabled(false);
     try {
-      await renewPlayer(player.tag);
-
-      const checkRenewalStatus = async () => {
-        const status = await getPlayerRenewalStatus(player.tag);
-        console.log("Renewal status:", status);
-        if (!status.renewing) {
-          console.log("Renewal finished");
-          window.location.reload();
-        } else {
-          setTimeout(checkRenewalStatus, 1000);
-        }
-      };
-
-      await checkRenewalStatus();
+      await processPlayerRenewal(player.tag);
+      window.location.reload();
     } catch (error) {
       if (error instanceof ApiError) {
         if (error.error?.type === ApiErrorTypeValue.PLAYER_RENEW_UNAVAILABLE) {

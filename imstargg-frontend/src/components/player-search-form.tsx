@@ -14,31 +14,15 @@ import Link from "next/link";
 import {playerHref} from "@/config/site";
 import {LoaderCircleIcon, SearchIcon, SparkleIcon, XIcon} from "lucide-react";
 import {isBrawlStarsTag} from "@/lib/brawlstars";
-import {getPlayer, getPlayerRenewalStatusNew, renewNewPlayer} from "@/lib/api/player";
+import {getPlayer} from "@/lib/api/player";
 import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";
 import {toast} from "sonner";
-import { useRecentPlayers } from "@/hooks/useRecentPlayers";
+import {useRecentPlayers} from "@/hooks/useRecentPlayers";
+import {processNewPlayerRenewal} from "@/lib/player";
 
 async function renew(tag: string) {
   try {
-    await renewNewPlayer(tag);
-
-    const checkRenewalStatus = async () => {
-      const status = await getPlayerRenewalStatusNew(tag);
-      console.log("Renewal status:", status);
-      if (!status.renewing) {
-        console.log("Renewal finished");
-        return Promise.resolve();
-      } else {
-        return new Promise(resolve => {
-          setTimeout(async () => {
-            await checkRenewalStatus().then(resolve);
-          }, 1000);
-        });
-      }
-    };
-
-    await checkRenewalStatus();
+    await processNewPlayerRenewal(tag);
 
   } catch (error) {
     console.error('error:', error);
