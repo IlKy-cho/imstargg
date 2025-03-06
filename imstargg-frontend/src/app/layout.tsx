@@ -5,7 +5,7 @@ import React from "react";
 import SiteHeader from "@/components/site-header";
 import SiteFooter from "@/components/site-footer";
 import {meta} from "@/config/site";
-import {GoogleAnalytics} from "@/lib/third-parties";
+import {GoogleAdSense, GoogleAnalytics} from "@/lib/third-parties";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -37,12 +37,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
+    <GoogleAnalytics/>
+    <GoogleAdSense/>
     <body
       className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
     <div className="flex flex-col min-h-screen">
       <SiteHeader/>
-      <GoogleAnalytics/>
       <div className="flex flex-1">
 
         <main className="flex-1 max-w-screen-lg mx-auto">
