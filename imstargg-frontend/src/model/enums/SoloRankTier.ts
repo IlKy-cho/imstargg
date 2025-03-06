@@ -17,7 +17,10 @@ export const SoloRankTierValue = {
   LEGENDARY_1: 'LEGENDARY_1',
   LEGENDARY_2: 'LEGENDARY_2',
   LEGENDARY_3: 'LEGENDARY_3',
-  MASTER: 'MASTER',
+  MASTER_1: 'MASTER_1',
+  MASTER_2: 'MASTER_2',
+  MASTER_3: 'MASTER_3',
+  PRO: 'PRO',
 } as const;
 
 export type SoloRankTier = typeof SoloRankTierValue[keyof typeof SoloRankTierValue];
@@ -41,7 +44,10 @@ const tierToValue: Record<SoloRankTier, number> = {
   [SoloRankTierValue.LEGENDARY_1]: 16,
   [SoloRankTierValue.LEGENDARY_2]: 17,
   [SoloRankTierValue.LEGENDARY_3]: 18,
-  [SoloRankTierValue.MASTER]: 19,
+  [SoloRankTierValue.MASTER_1]: 19,
+  [SoloRankTierValue.MASTER_2]: 20,
+  [SoloRankTierValue.MASTER_3]: 21,
+  [SoloRankTierValue.PRO]: 22,
 }
 
 const valueToTier: Record<number, SoloRankTier> = Object.entries(tierToValue).reduce(
@@ -57,5 +63,11 @@ export function soloRankTierValue(tier: SoloRankTier) {
 }
 
 export function valueToSoloRankTier(value: number): SoloRankTier {
+  if (value < 1) {
+    return SoloRankTierValue.BRONZE_1;
+  } else if (value > 22) {
+    return SoloRankTierValue.PRO;
+  }
+  
   return valueToTier[value]!;
 }
