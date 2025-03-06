@@ -15,7 +15,7 @@ import 'dayjs/locale/ko';
 import relativeTime from "dayjs/plugin/relativeTime";
 import PlayerRenewButton from "@/components/player-renew-button";
 import {cn} from "@/lib/utils";
-import PlayerRecentTracker from "@/components/player-recent-tracker";
+import PlayerRecentTracker from "@/lib/player-recent-tracker";
 import { processPlayerRenewal } from "@/lib/player";
 
 dayjs.locale('ko');

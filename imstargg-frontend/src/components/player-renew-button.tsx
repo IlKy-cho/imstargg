@@ -3,7 +3,6 @@
 import {LoadingButton} from "@/components/ui/expansion/loading-button";
 import {useCallback, useEffect, useState} from "react";
 import {Player} from "@/model/Player";
-import {getPlayerRenewalStatus, renewPlayer} from "@/lib/api/player";
 import {toast} from "sonner";
 import {useInterval} from "usehooks-ts";
 import {ApiError, ApiErrorTypeValue} from "@/lib/api/api";

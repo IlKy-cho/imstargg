@@ -1,7 +1,13 @@
-import {getPlayerRenewalStatus, getPlayerRenewalStatusNew, renewNewPlayer, renewPlayer} from "@/lib/api/player";
+import {
+  getPlayerRenewalStatus,
+  getPlayerRenewalStatusNew,
+  PlayerRenewalStatusResponse,
+  renewNewPlayer,
+  renewPlayer
+} from "@/lib/api/player";
 
 
-async function handleRenewalStatus(tag: string, getStatus: (tag: string) => Promise<any>) {
+async function handleRenewalStatus(tag: string, getStatus: (tag: string) => Promise<PlayerRenewalStatusResponse>) {
   const checkRenewalStatus = async () => {
     const status = await getStatus(tag);
     console.log("Renewal status:", status);
