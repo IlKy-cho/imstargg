@@ -1,5 +1,6 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.domain.player;
 
+import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.event.PlayerRenewalEvent;
 import com.imstargg.core.event.PlayerRenewalEventQueueProperties;
 import io.awspring.cloud.sqs.operations.SqsTemplate;

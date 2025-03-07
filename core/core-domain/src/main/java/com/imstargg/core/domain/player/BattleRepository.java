@@ -1,5 +1,9 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.domain.player;
 
+import com.imstargg.core.domain.BrawlStarsId;
+import com.imstargg.core.domain.BrawlStarsTag;
+import com.imstargg.core.domain.MessageCollection;
+import com.imstargg.core.domain.Slice;
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.domain.brawlstars.BattleEventMap;
 import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;

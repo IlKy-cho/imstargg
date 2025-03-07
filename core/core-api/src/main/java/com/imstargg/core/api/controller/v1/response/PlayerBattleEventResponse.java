@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.Message;
-import com.imstargg.core.domain.PlayerBattleEvent;
+import com.imstargg.core.domain.player.PlayerBattleEvent;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.Language;
 import jakarta.annotation.Nullable;

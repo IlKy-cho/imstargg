@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.imstargg.core.domain.PlayerBattle;
+import com.imstargg.core.domain.player.PlayerBattle;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;

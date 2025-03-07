@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.imstargg.core.domain.BattlePlayerBrawler;
+import com.imstargg.core.domain.player.BattlePlayerBrawler;
 import jakarta.annotation.Nullable;
 
 public record BattlePlayerBrawlerResponse(

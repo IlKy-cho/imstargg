@@ -1,5 +1,7 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.domain.player;
 
+import com.imstargg.core.domain.BrawlStarsTag;
+import com.imstargg.core.domain.Slice;
 import org.springframework.stereotype.Service;
 
 @Service
