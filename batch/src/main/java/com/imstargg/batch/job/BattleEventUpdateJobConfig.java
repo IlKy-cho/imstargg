@@ -1,6 +1,8 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
+import com.imstargg.core.enums.BattleEventMode;
+import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionJpaRepository;
@@ -21,13 +23,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.toMap;
 
 @Configuration
 class BattleEventUpdateJobConfig {
@@ -80,12 +78,6 @@ class BattleEventUpdateJobConfig {
                                     null
                             );
                     log.debug("eventIds: {}", eventIds);
-                    Map<Long, BattleEventCollectionEntity> eventBrawlStarsIdToEvent = new HashMap<>(
-                            battleEventCollectionJpaRepository
-                                    .findAll()
-                                    .stream()
-                                    .collect(toMap(BattleEventCollectionEntity::getBrawlStarsId, Function.identity()))
-                    );
                     eventIds.stream()
                             .map(eventId -> battleJpaRepository.findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(eventId, null))
                             .filter(Optional::isPresent)
@@ -94,35 +86,60 @@ class BattleEventUpdateJobConfig {
                                     battleEntity.getEvent().getBrawlStarsId() != null
                                             && battleEntity.getEvent().getBrawlStarsId() > 0
                             )
-                            .forEach(battleEntity -> eventBrawlStarsIdToEvent.computeIfAbsent(
-                                            battleEntity.getEvent().getBrawlStarsId(), key -> {
-                                                alertManager.alert(AlertCommand.builder()
-                                                        .title("[" + JOB_NAME + "] 존재하지 않는 이벤트 추가")
-                                                        .content(String.format(
-                                                                """
-                                                                     - 이벤트 ID: %d
-                                                                     - 모드: %s
-                                                                     - 맵: %s
-                                                                """,
-                                                                battleEntity.getEvent().getBrawlStarsId(),
-                                                                battleEntity.getEvent().getMode(),
-                                                                battleEntity.getEvent().getMap())
-                                                        ).build());
-                                                return new BattleEventCollectionEntity(
-                                                        battleEntity.getEvent().getBrawlStarsId(),
-                                                        battleEntity.getEvent().getMode(),
-                                                        battleEntity.getEvent().getMap()
-                                                );
-                                            }
-                                    ).update(
-                                            battleEntity.getEvent().getMode(),
-                                            battleEntity.getEvent().getMap(),
-                                            battleEntity.getMode(),
-                                            battleEntity.getBattleTime()
-                                    )
+                            .forEach(battleEntity -> {
+                                        BattleEventCollectionEntity event = getBattleEventEntity(battleEntity);
+                                        event.update(
+                                                battleEntity.getEvent().getMode(),
+                                                battleEntity.getEvent().getMap(),
+                                                battleEntity.getMode(),
+                                                battleEntity.getBattleTime()
+                                        );
+                                        battleEventCollectionJpaRepository.save(event);
+                                    }
                             );
-                    battleEventCollectionJpaRepository.saveAll(eventBrawlStarsIdToEvent.values());
+
+                    alertNotExistsBattleEventMode();
+
                     return RepeatStatus.FINISHED;
                 }, txManager).build();
+    }
+
+    private BattleEventCollectionEntity getBattleEventEntity(BattleEntity battleEntity) {
+        return battleEventCollectionJpaRepository
+                .findByBrawlStarsId(
+                        Objects.requireNonNull(battleEntity.getEvent().getBrawlStarsId())
+                ).orElseGet(() -> {
+                    alertManager.alert(AlertCommand.builder()
+                            .title("[" + JOB_NAME + "] 존재하지 않는 이벤트 추가")
+                            .content(String.format(
+                                    """
+                                                 - 이벤트 ID: %d
+                                                 - 모드: %s
+                                                 - 맵: %s
+                                            """,
+                                    battleEntity.getEvent().getBrawlStarsId(),
+                                    battleEntity.getEvent().getMode(),
+                                    battleEntity.getEvent().getMap())
+                            ).build());
+                    return new BattleEventCollectionEntity(
+                            battleEntity.getEvent().getBrawlStarsId(),
+                            battleEntity.getEvent().getMode(),
+                            battleEntity.getEvent().getMap()
+                    );
+                });
+    }
+
+    private void alertNotExistsBattleEventMode() {
+        battleEventCollectionJpaRepository.findAll().stream()
+                .map(BattleEventCollectionEntity::getMode)
+                .filter(mode -> BattleEventMode.find(mode) == BattleEventMode.NOT_FOUND)
+                .forEach(mode -> alertManager.alert(AlertCommand.builder()
+                        .title("[" + JOB_NAME + "] 존재하지 않는 모드 추가")
+                        .content(String.format(
+                                """
+                                             - 모드: %s
+                                        """,
+                                mode)
+                        ).build()));
     }
 }
