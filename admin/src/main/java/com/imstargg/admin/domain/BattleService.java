@@ -8,7 +8,6 @@ import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.BaseEntity;
 import com.imstargg.storage.db.core.BattleEntity;
-import com.imstargg.storage.db.core.BattleEntityEvent;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.MessageCollectionEntity;
@@ -66,30 +65,19 @@ public class BattleService {
 
 
     public List<BattleEvent> getEventList() {
-        List<BattleEntity> battles = battleJpaRepository.findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
-                        null,
-                        null
-                )
-                .stream()
-                .map(eventBrawlStarsId ->
-                        eventBrawlStarsIdToLastBattleCache.get(eventBrawlStarsId, key ->
-                                battleJpaRepository
-                                        .findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(eventBrawlStarsId, BattleType.regularTypes())
-                        )
-                )
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toList();
+        List<BattleEventCollectionEntity> events = battleEventCollectionJpaRepository.findAll();
+        Map<Long, BattleEntity> eventIdToLatestBattle = findLatestBattle(events)
+                .stream().collect(toMap(battle -> battle.getEvent().getBrawlStarsId(), Function.identity()));
 
         Map<String, List<MessageCollectionEntity>> mapCodeToNames = messageRepository.findAllByCodeIn(
-                        battles.stream()
-                                .map(BattleEntity::getEvent)
-                                .map(BattleEntityEvent::getMap)
+                        events.stream()
+                                .map(BattleEventCollectionEntity::getMapBrawlStarsName)
                                 .filter(Objects::nonNull)
                                 .map(MessageCodes.BATTLE_MAP_NAME::code)
                                 .toList()
                 ).stream()
                 .collect(Collectors.groupingBy(MessageCollectionEntity::getCode));
+
         Map<String, BrawlStarsImageCollectionEntity> mapImageCodeToImage = brawlStarsImageRepository
                 .findAllByType(BrawlStarsImageType.BATTLE_MAP)
                 .stream()
@@ -101,21 +89,39 @@ public class BattleService {
                 .map(BattleEventCollectionEntity::getBrawlStarsId)
                 .collect(Collectors.toSet());
 
-        return battles.stream()
-                .map(battle -> new BattleEvent(
-                        battle.getEvent(),
+        return events.stream()
+                .map(event -> new BattleEvent(
+                        event,
                         new BattleEventMap(
-                                Optional.ofNullable(battle.getEvent().getMap())
+                                Optional.ofNullable(event.getMapBrawlStarsName())
                                         .map(MessageCodes.BATTLE_MAP_NAME::code)
                                         .map(mapCodeToNames::get)
                                         .orElse(List.of()),
-                                battle.getEvent().getBrawlStarsId() == null ? null :
-                                        mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(battle.getEvent().getBrawlStarsId()))
+                                mapImageCodeToImage.get(BrawlStarsImageType.BATTLE_MAP.code(event.getBrawlStarsId()))
                         ),
-                        battle.getMode(),
-                        battle.getBattleTime().toLocalDateTime(),
-                        soloRankEventBrawlStarsIds.contains(battle.getEvent().getBrawlStarsId())
-                ))
+                        Optional.ofNullable(eventIdToLatestBattle.get(event.getBrawlStarsId()))
+                                .map(BattleEntity::getMode)
+                                .orElse(null),
+                        Optional.ofNullable(eventIdToLatestBattle.get(event.getBrawlStarsId()))
+                                .map(BattleEntity::getBattleTime)
+                                .orElse(null),
+                        soloRankEventBrawlStarsIds.contains(event.getBrawlStarsId())
+                )).toList();
+    }
+
+    private List<BattleEntity> findLatestBattle(List<BattleEventCollectionEntity> events) {
+        return events
+                .stream()
+                .map(BattleEventCollectionEntity::getBrawlStarsId)
+                .map(eventBrawlStarsId ->
+                        eventBrawlStarsIdToLastBattleCache.get(eventBrawlStarsId, key ->
+                                battleJpaRepository
+                                        .findLatestBattleByEventBrawlStarsIdAndBattleTypeIn(
+                                                eventBrawlStarsId, BattleType.regularTypes())
+                        )
+                )
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 .toList();
     }
 
