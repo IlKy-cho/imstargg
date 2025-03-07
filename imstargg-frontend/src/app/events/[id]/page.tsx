@@ -135,8 +135,8 @@ async function StatisticsContent({ battleEvent, statsParams, brawlers }: {
 }
 
 async function PageHeaderContent({ battleEvent }: Readonly<{ battleEvent: BattleEvent }>) {
-  const modeIconSrc = battleEventModeIconSrc(battleEvent.mode) || (battleEvent.battleMode && battleModeIconSrc(battleEvent.battleMode));
-  const modeTitle = battleEventModeTitle(battleEvent.mode) || (battleEvent.battleMode && battleModeTitle(battleEvent.battleMode));
+  const modeIconSrc = battleEventModeIconSrc(battleEvent.mode);
+  const modeTitle = battleEventModeTitle(battleEvent.mode);
   return (
     <div className={cn("flex flex-col gap-1", pageHeaderContainerDefault)}>
       <div className="flex gap-2">

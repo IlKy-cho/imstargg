@@ -3,7 +3,6 @@ package com.imstargg.core.api.controller.v1.response;
 import com.imstargg.core.domain.Message;
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.enums.BattleEventMode;
-import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.Language;
 import jakarta.annotation.Nullable;
 
@@ -13,8 +12,7 @@ public record BattleEventResponse(
         long id,
         BattleEventMode mode,
         @Nullable String mapName,
-        @Nullable String mapImagePath,
-        @Nullable BattleMode battleMode
+        @Nullable String mapImagePath
 ) {
 
     public static BattleEventResponse from(BattleEvent event) {
@@ -25,8 +23,7 @@ public record BattleEventResponse(
                         .flatMap(names -> names.find(Language.KOREAN))
                         .map(Message::content)
                         .orElse(null),
-                event.map().imagePath(),
-                event.battleMode()
+                event.map().imagePath()
         );
     }
 }

@@ -10,8 +10,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
-import java.time.OffsetDateTime;
-
 @Entity
 @Table(name = "battle_event")
 public class BattleEventCollectionEntity extends BaseEntity {
@@ -31,14 +29,6 @@ public class BattleEventCollectionEntity extends BaseEntity {
     @Column(name = "map_brawlstars_name", length = 105)
     private String mapBrawlStarsName;
 
-    @Nullable
-    @Column(name = "battle_mode", length = 45)
-    private String battleMode;
-
-    @Nullable
-    @Column(name = "latest_battle_time")
-    private OffsetDateTime latestBattleTime;
-
     protected BattleEventCollectionEntity() {
     }
 
@@ -54,22 +44,13 @@ public class BattleEventCollectionEntity extends BaseEntity {
 
     public void update(
             String mode,
-            @Nullable String mapBrawlStarsName,
-            @Nullable String battleMode,
-            @Nullable OffsetDateTime latestBattleTime
+            @Nullable String mapBrawlStarsName
     ) {
         if (BattleEventMode.UNKNOWN.getCode().equals(mode)) {
             this.mode = mode;
         }
         if (mapBrawlStarsName != null) {
             this.mapBrawlStarsName = mapBrawlStarsName;
-        }
-        if (battleMode != null) {
-            this.battleMode = battleMode;
-        }
-        if (latestBattleTime != null
-                && (this.latestBattleTime == null || latestBattleTime.isAfter(this.latestBattleTime))) {
-            this.latestBattleTime = latestBattleTime;
         }
     }
 
@@ -88,15 +69,5 @@ public class BattleEventCollectionEntity extends BaseEntity {
     @Nullable
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
-    }
-
-    @Nullable
-    public String getBattleMode() {
-        return battleMode;
-    }
-
-    @Nullable
-    public OffsetDateTime getLatestBattleTime() {
-        return latestBattleTime;
     }
 }
