@@ -1,9 +1,13 @@
 package com.imstargg.core.api.controller.v1.response;
 
+import com.imstargg.core.domain.Message;
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
+import com.imstargg.core.enums.Language;
 import jakarta.annotation.Nullable;
+
+import java.util.Optional;
 
 public record BattleEventResponse(
         long id,
@@ -17,7 +21,10 @@ public record BattleEventResponse(
         return new BattleEventResponse(
                 event.id().value(),
                 event.mode(),
-                event.map().name(),
+                Optional.ofNullable(event.map().names())
+                        .flatMap(names -> names.find(Language.KOREAN))
+                        .map(Message::content)
+                        .orElse(null),
                 event.map().imagePath(),
                 event.battleMode()
         );
