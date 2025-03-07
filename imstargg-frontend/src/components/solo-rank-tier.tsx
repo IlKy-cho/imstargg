@@ -3,7 +3,7 @@ import {SoloRankTier as SoloRankTierType, SoloRankTierValue} from "@/model/enums
 import {cn} from "@/lib/utils";
 import {soloRankTierIconSrc, soloRankTierNumber} from "@/lib/solo-rank-tier";
 
-const soloRankTierTextColor = (tier: SoloRankTierType) => {
+const soloRankTierTextColor = (tier: SoloRankTierType): string => {
   switch (tier) {
     case SoloRankTierValue.BRONZE_1:
     case SoloRankTierValue.BRONZE_2:
@@ -29,8 +29,12 @@ const soloRankTierTextColor = (tier: SoloRankTierType) => {
     case SoloRankTierValue.LEGENDARY_2:
     case SoloRankTierValue.LEGENDARY_3:
       return 'text-[#EB4A59]';
-    case SoloRankTierValue.MASTER:
+    case SoloRankTierValue.MASTER_1:
+    case SoloRankTierValue.MASTER_2:
+    case SoloRankTierValue.MASTER_3:
       return 'text-[#FCEF67]';
+    case SoloRankTierValue.PRO:
+      return 'text-[#84D945]';
   }
 }
 
