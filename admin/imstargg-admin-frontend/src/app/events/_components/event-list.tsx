@@ -67,7 +67,7 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                   {battleEvent.battleMode}
                 </TableCell>
                 <TableCell>
-                  <span className="font-bold">{battleEvent.entity.map}</span>: {messagesContent(battleEvent.map.names)}
+                  <span className="font-bold">{battleEvent.entity.mapBrawlStarsName}</span>: {messagesContent(battleEvent.map.names)}
                 </TableCell>
                 <TableCell>
                   {battleEvent.soloRanked && "O"}

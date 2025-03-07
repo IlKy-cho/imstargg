@@ -1,14 +1,15 @@
 package com.imstargg.admin.domain;
 
-import com.imstargg.storage.db.core.BattleEntityEvent;
+import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
+import jakarta.annotation.Nullable;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 public record BattleEvent(
-        BattleEntityEvent entity,
+        BattleEventCollectionEntity entity,
         BattleEventMap map,
-        String battleMode,
-        LocalDateTime latestBattleTime,
+        @Nullable String battleMode,
+        @Nullable OffsetDateTime latestBattleTime,
         boolean soloRanked
 ) {
 }

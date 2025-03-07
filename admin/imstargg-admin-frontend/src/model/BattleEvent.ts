@@ -1,10 +1,10 @@
 import {BattleEventMap} from "@/model/BattleEventMap";
-import {BattleEntityEvent} from "@/model/entity/BattleEntityEvent";
+import {BattleEventEntity} from "@/model/entity/BattleEventEntity";
 
 export interface BattleEvent {
-  entity: BattleEntityEvent;
+  entity: BattleEventEntity;
   map: BattleEventMap;
-  battleMode: string;
+  battleMode: string | null;
   latestBattleTime: Date | null;
   soloRanked: boolean;
 }
