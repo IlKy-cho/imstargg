@@ -1,7 +1,6 @@
 package com.imstargg.core.domain.brawlstars;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.enums.Language;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,18 +26,18 @@ public class BrawlStarsService {
     }
 
     public List<BattleEvent> getEvents(LocalDate date) {
-        return battleEventReader.getEvents(Language.KOREAN, date);
+        return battleEventReader.getEvents(date);
     }
 
     public BattleEvent getEvent(BrawlStarsId brawlStarsId) {
-        return battleEventReader.getEvent(Language.KOREAN, brawlStarsId);
+        return battleEventReader.getEvent(brawlStarsId);
     }
 
     public List<RotationBattleEvent> getRotationEvents() {
-        return battleEventReader.getRotationEvents(Language.KOREAN);
+        return battleEventReader.getRotationEvents();
     }
 
     public List<BattleEvent> getSoloRankEvents() {
-        return battleEventReader.getSoloRankEvents(Language.KOREAN);
+        return battleEventReader.getSoloRankEvents();
     }
 }

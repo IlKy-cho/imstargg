@@ -11,16 +11,15 @@ import com.imstargg.core.domain.statistics.Counter;
 import com.imstargg.core.domain.statistics.ResultCount;
 import com.imstargg.core.domain.statistics.ResultCounter;
 import com.imstargg.core.domain.statistics.StarPlayerCount;
-import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsJpaRepository;
-import com.imstargg.storage.db.core.statistics.IdHash;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsJpaRepository;
+import com.imstargg.storage.db.core.statistics.IdHash;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
@@ -112,7 +111,7 @@ public class BrawlerResultStatisticsRepository {
         Map<BrawlStarsId, BattleEvent> idToEvent = battleEventRepository.findAllEvents(
                 eventResultStatsEntities.stream()
                         .map(statsEntity -> new BrawlStarsId(statsEntity.getEventBrawlStarsId()))
-                        .toList(), Language.KOREAN
+                        .toList()
         ).stream().collect(Collectors.toMap(BattleEvent::id, Function.identity()));
 
         return eventResultStatsEntities.stream()
