@@ -1,13 +1,16 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
+import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleEventMode;
+import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionJpaRepository;
 import com.imstargg.support.alert.AlertCommand;
 import com.imstargg.support.alert.AlertManager;
+import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.Job;
@@ -27,6 +30,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
+
 @Configuration
 class BattleEventUpdateJobConfig {
 
@@ -37,6 +42,7 @@ class BattleEventUpdateJobConfig {
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
+    private final EntityManagerFactory emf;
 
     private final AlertManager alertManager;
     private final BattleJpaRepository battleJpaRepository;
@@ -45,12 +51,14 @@ class BattleEventUpdateJobConfig {
     BattleEventUpdateJobConfig(
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
+            EntityManagerFactory emf,
             AlertManager alertManager,
             BattleJpaRepository battleJpaRepository,
             BattleEventCollectionJpaRepository battleEventCollectionJpaRepository
     ) {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
+        this.emf = emf;
         this.alertManager = alertManager;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventCollectionJpaRepository = battleEventCollectionJpaRepository;
@@ -99,6 +107,7 @@ class BattleEventUpdateJobConfig {
                             );
 
                     alertNotExistsBattleEventMode();
+                    alertNotExistsBattleType();
 
                     return RepeatStatus.FINISHED;
                 }, txManager).build();
@@ -113,10 +122,10 @@ class BattleEventUpdateJobConfig {
                             .title("[" + JOB_NAME + "] 존재하지 않는 이벤트 추가")
                             .content(String.format(
                                     """
-                                                 - 이벤트 ID: %d
-                                                 - 모드: %s
-                                                 - 맵: %s
-                                            """,
+                                     - 이벤트 ID: %d
+                                     - 모드: %s
+                                     - 맵: %s
+                                    """,
                                     battleEntity.getEvent().getBrawlStarsId(),
                                     battleEntity.getEvent().getMode(),
                                     battleEntity.getEvent().getMap())
@@ -137,9 +146,30 @@ class BattleEventUpdateJobConfig {
                         .title("[" + JOB_NAME + "] 존재하지 않는 모드 추가")
                         .content(String.format(
                                 """
-                                             - 모드: %s
-                                        """,
+                                 - 모드: %s
+                                """,
                                 mode)
                         ).build()));
+    }
+
+    private void alertNotExistsBattleType() {
+        JPAQueryFactoryUtils.getQueryFactory(emf)
+                .select(battleCollectionEntity.event.brawlStarsId, battleCollectionEntity.type)
+                .from(battleCollectionEntity)
+                .groupBy(battleCollectionEntity.event.brawlStarsId, battleCollectionEntity.type)
+                .fetch()
+                .stream()
+                .map(tuple -> tuple.get(battleCollectionEntity.type))
+                .distinct()
+                .filter(battleType -> BattleType.find(battleType) == BattleType.NOT_FOUND)
+                .forEach(battleType -> alertManager.alert(AlertCommand.builder()
+                        .title("[" + JOB_NAME + "] 존재하지 배틀 타입 추가")
+                        .content(String.format(
+                                """
+                                 - 배틀 타입: %s
+                                """,
+                                battleType)
+                        ).build()));
+
     }
 }
