@@ -4,7 +4,7 @@ import GoldIconSrc from '@/../public/icon/solo-rank/icon_rank_sticker_gold.webp'
 import DiamondIconSrc from '@/../public/icon/solo-rank/icon_rank_sticker_diamond.webp';
 import MythicIconSrc from '@/../public/icon/solo-rank/icon_rank_sticker_mythic.webp';
 import LegendaryIconSrc from '@/../public/icon/solo-rank/icon_rank_sticker_legendary.webp';
-import MastersIconSrc from '@/../public/icon/solo-rank/icon_rank_sticker_master.webp';
+import MastersIconSrc from '@/../public/icon/solo-rank/icon_rank_sticker_masters.webp';
 import ProIconSrc from '@/../public/icon/solo-rank/icon_rank_sticker_pro.webp';
 import {SoloRankTier, SoloRankTierValue} from "@/model/enums/SoloRankTier";
 
