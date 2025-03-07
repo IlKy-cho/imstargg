@@ -7,11 +7,11 @@ import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.Language;
 import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityTeamPlayer;
 import com.imstargg.storage.db.core.BattleJpaRepository;
+import com.imstargg.storage.db.core.MessageCodes;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -39,13 +39,13 @@ public class BattleRepository {
         this.battleEventRepository = battleEventRepository;
     }
 
-    public Slice<PlayerBattle> find(Player player, int page, Language language) {
+    public Slice<PlayerBattle> find(Player player, int page) {
         var battleEntitySlice = battleJpaRepository
                 .findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
                         player.id().value(), PageRequest.of(page - 1, PAGE_SIZE));
 
         Map<BrawlStarsId, BattleEvent> eventIdToEvent = findEventIdToEvent(
-                language, battleEntitySlice.getContent());
+                battleEntitySlice.getContent());
 
         return new Slice<>(
                 battleEntitySlice.map(battle -> mapBattle(battle, eventIdToEvent)).toList(),
@@ -53,7 +53,7 @@ public class BattleRepository {
         );
     }
 
-    private Map<BrawlStarsId, BattleEvent> findEventIdToEvent(Language language, List<BattleEntity> battleEntities) {
+    private Map<BrawlStarsId, BattleEvent> findEventIdToEvent(List<BattleEntity> battleEntities) {
         List<BrawlStarsId> eventIds = battleEntities.stream()
                 .map(battle -> battle.getEvent().getBrawlStarsId())
                 .filter(Objects::nonNull)
@@ -61,7 +61,7 @@ public class BattleRepository {
                 .distinct()
                 .map(BrawlStarsId::new)
                 .toList();
-        return battleEventRepository.findAllEvents(eventIds, language).stream()
+        return battleEventRepository.findAllEvents(eventIds).stream()
                 .collect(toMap(BattleEvent::id, Function.identity()));
     }
 
@@ -95,7 +95,10 @@ public class BattleRepository {
                     eventId,
                     BattleEventMode.find(battleEntity.getEvent().getMode()),
                     new BattleEventMap(
-                            battleEntity.getEvent().getMap(),
+                            battleEntity.getEvent().getMap() == null ? null : MessageCollection.newDefault(
+                                    MessageCodes.BATTLE_MAP_NAME.code(battleEntity.getEvent().getMap()),
+                                    battleEntity.getEvent().getMap()
+                            ),
                             null
                     )
             );

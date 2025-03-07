@@ -1,20 +1,28 @@
 package com.imstargg.core.domain.brawlstars;
 
 
+import com.imstargg.core.domain.Message;
+import com.imstargg.core.domain.MessageCollection;
+import com.imstargg.core.enums.Language;
 import com.imstargg.test.java.LongIncrementUtil;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 
 public class BattleEventMapFixture {
 
     @Nullable
-    private String name = "Map" + LongIncrementUtil.next();
+    private MessageCollection names = new MessageCollection(
+            "name-" + LongIncrementUtil.next(),
+            Arrays.stream(Language.values())
+                    .map(language -> new Message(language, "name-" + LongIncrementUtil.next()))
+                    .toList());
     
     @Nullable
     private String imagePath = "/images/maps/" + LongIncrementUtil.next();
 
-    public BattleEventMapFixture name(@Nullable String name) {
-        this.name = name;
+    public BattleEventMapFixture names(MessageCollection names) {
+        this.names = names;
         return this;
     }
 
@@ -24,6 +32,6 @@ public class BattleEventMapFixture {
     }
 
     public BattleEventMap build() {
-        return new BattleEventMap(name, imagePath);
+        return new BattleEventMap(names, imagePath);
     }
 } 

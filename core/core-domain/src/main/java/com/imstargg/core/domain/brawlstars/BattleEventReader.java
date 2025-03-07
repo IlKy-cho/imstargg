@@ -1,7 +1,6 @@
 package com.imstargg.core.domain.brawlstars;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.enums.Language;
 import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import org.springframework.stereotype.Component;
@@ -20,21 +19,21 @@ public class BattleEventReader {
         this.battleEventRepository = battleEventRepository;
     }
 
-    public List<BattleEvent> getEvents(Language language, LocalDate date) {
-        return battleEventRepository.findAllEvents(language, date);
+    public List<BattleEvent> getEvents(LocalDate date) {
+        return battleEventRepository.findAllEvents(date);
     }
 
-    public BattleEvent getEvent(Language language, BrawlStarsId brawlStarsId) {
-        return battleEventRepository.find(brawlStarsId, language)
+    public BattleEvent getEvent(BrawlStarsId brawlStarsId) {
+        return battleEventRepository.find(brawlStarsId)
                 .orElseThrow(() -> new CoreException(CoreErrorType.BATTLE_EVENT_NOT_FOUND,
                         "brawlStarsId: " + brawlStarsId));
     }
 
-    public List<RotationBattleEvent> getRotationEvents(Language language) {
-        return battleEventRepository.findAllRotation(language);
+    public List<RotationBattleEvent> getRotationEvents() {
+        return battleEventRepository.findAllRotation();
     }
 
-    public List<BattleEvent> getSoloRankEvents(Language language) {
-        return battleEventRepository.findAllSoloRank(language);
+    public List<BattleEvent> getSoloRankEvents() {
+        return battleEventRepository.findAllSoloRank();
     }
 }

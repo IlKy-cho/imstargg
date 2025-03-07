@@ -1,13 +1,11 @@
 package com.imstargg.core.domain.brawlstars;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.Message;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.Language;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.brawlstars.BattleEventEntity;
@@ -80,21 +78,21 @@ public class BattleEventRepositoryWithCache {
                 .toList();
     }
 
-    public List<BattleEvent> findAllEvents(Language language, @Nullable LocalDate date) {
-        return findAllEvents(findAllEventIds(date), language);
+    public List<BattleEvent> findAllEvents(@Nullable LocalDate date) {
+        return findAllEvents(findAllEventIds(date));
     }
 
-    public List<BattleEvent> findAllEvents(Collection<BrawlStarsId> eventIds, Language language) {
+    public List<BattleEvent> findAllEvents(Collection<BrawlStarsId> eventIds) {
         eventIds = eventIds.stream().distinct().toList();
-        Map<BrawlStarsId, BattleEvent> idToEventInCache = findAllEventsFromCache(eventIds, language)
+        Map<BrawlStarsId, BattleEvent> idToEventInCache = findAllEventsFromCache(eventIds)
                 .stream()
                 .collect(Collectors.toMap(BattleEvent::id, Function.identity()));
 
         Map<BrawlStarsId, BattleEvent> idToEventNotInCache = findAllEventsFromDb(
-                eventIds.stream().filter(id -> !idToEventInCache.containsKey(id)).toList(), language
+                eventIds.stream().filter(id -> !idToEventInCache.containsKey(id)).toList()
         ).stream().collect(Collectors.toMap(BattleEvent::id, Function.identity()));
 
-        idToEventNotInCache.forEach((id, event) -> battleEventCache.set(id, language, event));
+        idToEventNotInCache.forEach(battleEventCache::set);
 
         return eventIds.stream()
                 .filter(id -> idToEventInCache.containsKey(id) || idToEventNotInCache.containsKey(id))
@@ -102,15 +100,15 @@ public class BattleEventRepositoryWithCache {
                 .toList();
     }
 
-    private List<BattleEvent> findAllEventsFromCache(Collection<BrawlStarsId> eventIds, Language language) {
+    private List<BattleEvent> findAllEventsFromCache(Collection<BrawlStarsId> eventIds) {
         return eventIds.stream()
-                .map(id -> battleEventCache.find(id, language))
+                .map(battleEventCache::find)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toList();
     }
 
-    private List<BattleEvent> findAllEventsFromDb(Collection<BrawlStarsId> eventIds, Language language) {
+    private List<BattleEvent> findAllEventsFromDb(Collection<BrawlStarsId> eventIds) {
         List<Long> eventBrawlStarsIds = eventIds.stream()
                 .map(BrawlStarsId::value)
                 .toList();
@@ -138,11 +136,9 @@ public class BattleEventRepositoryWithCache {
                         BattleEventMode.find(eventEntity.getMode()),
                         new BattleEventMap(
                                 eventEntity.getMapBrawlStarsName() == null ? null :
-                                        codeToMessage.get(MessageCodes.BATTLE_MAP_NAME
-                                                        .code(eventEntity.getMapBrawlStarsName()))
-                                                .find(language)
-                                                .map(Message::content)
-                                                .orElse(eventEntity.getMapBrawlStarsName()),
+                                        codeToMessage.get(MessageCodes.BATTLE_MAP_NAME.code(
+                                                        eventEntity.getMapBrawlStarsName()))
+                                                .defaultMessage(eventEntity.getMapBrawlStarsName()),
                                 Optional.ofNullable(
                                                 codeToImage.get(BrawlStarsImageType.BATTLE_MAP
                                                         .code(eventEntity.getBrawlStarsId()))
@@ -153,15 +149,15 @@ public class BattleEventRepositoryWithCache {
                 )).toList();
     }
 
-    public Optional<BattleEvent> find(@Nullable BrawlStarsId id, Language language) {
+    public Optional<BattleEvent> find(@Nullable BrawlStarsId id) {
         if (id == null) {
             return Optional.empty();
         }
 
-        return findAllEvents(List.of(id), language).stream().findFirst();
+        return findAllEvents(List.of(id)).stream().findFirst();
     }
 
-    public List<RotationBattleEvent> findAllRotation(Language language) {
+    public List<RotationBattleEvent> findAllRotation() {
         return battleEventRotationJpaRepository.findFirst1ByOrderByIdDesc()
                 .map(rotationEntity -> battleEventRotationItemJpaRepository
                         .findAllByBattleEventRotationId(rotationEntity.getId())
@@ -169,18 +165,18 @@ public class BattleEventRepositoryWithCache {
                         .sorted(Comparator.comparingLong(BattleEventRotationItemEntity::getSlotId))
                         .toList()
                 )
-                .map(rotationItemEntities -> mapRotationBattleEvents(rotationItemEntities, language))
+                .map(this::mapRotationBattleEvents)
                 .orElseGet(List::of);
     }
 
     private List<RotationBattleEvent> mapRotationBattleEvents(
-            List<BattleEventRotationItemEntity> rotationItemEntities, Language language
+            List<BattleEventRotationItemEntity> rotationItemEntities
     ) {
         Map<BrawlStarsId, BattleEvent> idToEvent = findAllEvents(
                 rotationItemEntities.stream()
                         .map(BattleEventRotationItemEntity::getEventBrawlStarsId)
                         .map(BrawlStarsId::new)
-                        .toList(), language
+                        .toList()
         ).stream().collect(Collectors.toMap(BattleEvent::id, Function.identity()));
 
         return rotationItemEntities.stream()
@@ -193,14 +189,13 @@ public class BattleEventRepositoryWithCache {
                 )).toList();
     }
 
-    public List<BattleEvent> findAllSoloRank(Language language) {
+    public List<BattleEvent> findAllSoloRank() {
         return findAllEvents(
                 soloRankBattleEventJpaRepository.findAll()
                         .stream()
                         .map(SoloRankBattleEventEntity::getEventBrawlStarsId)
                         .map(BrawlStarsId::new)
-                        .toList(),
-                language
+                        .toList()
         ).stream()
                 .sorted(Comparator.comparing(BattleEvent::mode))
                 .toList();

@@ -1,6 +1,5 @@
 package com.imstargg.core.domain;
 
-import com.imstargg.core.enums.Language;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,14 +25,13 @@ class BattleReaderTest {
         // given
         Player player = new PlayerFixture().build();
         int page = 1;
-        Language language = Language.KOREAN;
         List<PlayerBattle> playerBattles = List.of(new PlayerBattleFixture().build());
-        given(battleRepository.find(player, page, language)).willReturn(new Slice<>(
+        given(battleRepository.find(player, page)).willReturn(new Slice<>(
                 playerBattles, false
         ));
 
         // when
-        var result = battleReader.getList(player, page, language);
+        var result = battleReader.getList(player, page);
 
         // then
         assertThat(result.content()).isEqualTo(playerBattles);
