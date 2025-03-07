@@ -1,6 +1,6 @@
-import { getBattleEvent } from "@/lib/api/battle-event";
-import { notFound } from "next/navigation";
-import { BattleEventStatisticsOption } from "@/components/statistics-option";
+import {getBattleEvent} from "@/lib/api/battle-event";
+import {notFound} from "next/navigation";
+import {BattleEventStatisticsOption} from "@/components/statistics-option";
 import {
   getBattleEventBrawlerRankStatistics,
   getBattleEventBrawlerResultStatistics,
@@ -8,31 +8,31 @@ import {
   getBattleEventBrawlersResultStatistics,
   getBattleEventResultBrawlerEnemyStatistics
 } from "@/lib/api/statistics";
-import { BattleEventModeValue, isResultBattleEventMode } from "@/model/enums/BattleEventMode";
+import {BattleEventModeValue, isResultBattleEventMode} from "@/model/enums/BattleEventMode";
 import {
   BrawlerEnemyResultStatistics,
-  EventBrawlerRankStatistics,
-  EventBrawlerResultStatistics,
   BrawlersRankStatistics,
-  BrawlersResultStatistics
+  BrawlersResultStatistics,
+  EventBrawlerRankStatistics,
+  EventBrawlerResultStatistics
 } from "@/components/statistics";
-import { getBrawlers } from "@/lib/api/brawler";
-import { Brawler } from "@/model/Brawler";
+import {getBrawlers} from "@/lib/api/brawler";
+import {Brawler} from "@/model/Brawler";
 import {
   searchParamsToStatisticsParams,
   StatisticsParams,
   StatisticsSearchParams
 } from "@/model/statistics/StatisticsParams";
-import { BattleEvent } from "@/model/BattleEvent";
-import { battleEventModeIconSrc, battleEventModeTitle, battleModeIconSrc, battleModeTitle } from "@/lib/battle-mode";
-import { Suspense } from "react";
+import {BattleEvent} from "@/model/BattleEvent";
+import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
+import {Suspense} from "react";
 import Loading from "@/app/loading";
-import { yesterdayDate } from "@/lib/date";
-import { PageHeader, pageHeaderContainerDefault } from "@/components/page-header";
+import {yesterdayDate} from "@/lib/date";
+import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import BattleEventMapImage from "@/components/battle-event-map-image";
-import { cn, cnWithDefault } from "@/lib/utils";
+import {cn, cnWithDefault} from "@/lib/utils";
 import Image from "next/image";
-import { BrawlStarsIconSrc } from "@/lib/icon";
+import {BrawlStarsIconSrc} from "@/lib/icon";
 
 type Props = {
   params: Promise<{
