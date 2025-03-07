@@ -6,5 +6,4 @@ export interface BattleEvent {
   id: number;
   mode: BattleEventMode;
   map: BattleEventMap;
-  battleMode: BattleMode | null;
 }

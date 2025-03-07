@@ -8,9 +8,8 @@ import {BrawlerEnemyResultStatistics} from "@/model/statistics/BrawlerEnemyResul
 import {BattleEventResultStatistics} from "@/model/statistics/BattleEventResultStatistics";
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
-import {BattleMode} from "@/model/enums/BattleMode";
 import {BrawlerItemOwnership} from "@/model/statistics/BrawlerItemOwnership";
-import { DateRange } from "@/model/enums/DateRange";
+import {DateRange} from "@/model/enums/DateRange";
 
 export async function fetchGetBattleEventBrawlerResultStatistics(
   eventId: number,
@@ -45,7 +44,6 @@ interface BattleEventResultStatisticsResponse {
   event: {
     id: number;
     mode: BattleEventMode;
-    battleMode: BattleMode;
     mapName: string | null;
     mapImagePath: string | null;
   };
@@ -381,7 +379,6 @@ export async function getBrawlerBattleEventResultStatistics(
         event: {
           id: stat.event.id,
           mode: stat.event.mode,
-          battleMode: stat.event.battleMode,
           map: {
             name: stat.event.mapName,
             imageUrl: stat.event.mapImagePath ? new URL(stat.event.mapImagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null

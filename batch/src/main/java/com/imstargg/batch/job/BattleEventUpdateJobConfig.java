@@ -98,9 +98,7 @@ class BattleEventUpdateJobConfig {
                                         BattleEventCollectionEntity event = getBattleEventEntity(battleEntity);
                                         event.update(
                                                 battleEntity.getEvent().getMode(),
-                                                battleEntity.getEvent().getMap(),
-                                                battleEntity.getMode(),
-                                                battleEntity.getBattleTime()
+                                                battleEntity.getEvent().getMap()
                                         );
                                         battleEventCollectionJpaRepository.save(event);
                                     }

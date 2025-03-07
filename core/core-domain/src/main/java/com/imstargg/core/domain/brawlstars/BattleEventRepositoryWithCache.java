@@ -4,7 +4,6 @@ import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
 import com.imstargg.core.enums.BattleEventMode;
-import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
@@ -144,8 +143,7 @@ public class BattleEventRepositoryWithCache {
                                                         .code(eventEntity.getBrawlStarsId()))
                                         ).map(BrawlStarsImageEntity::getStoredName)
                                         .orElse(null)
-                        ),
-                        eventEntity.getBattleMode() != null ? BattleMode.find(eventEntity.getBattleMode()) : null
+                        )
                 )).toList();
     }
 

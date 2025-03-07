@@ -10,8 +10,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
-import java.time.OffsetDateTime;
-
 @Entity
 @Table(
         name = "battle_event",
@@ -36,14 +34,6 @@ public class BattleEventEntity extends BaseEntity {
     @Column(name = "map_brawlstars_name", length = 105, updatable = false)
     private String mapBrawlStarsName;
 
-    @Nullable
-    @Column(name = "battle_mode", length = 45, updatable = false)
-    private String battleMode;
-
-    @Nullable
-    @Column(name = "latest_battle_time", updatable = false)
-    private OffsetDateTime latestBattleTime;
-
     protected BattleEventEntity() {
     }
 
@@ -62,15 +52,5 @@ public class BattleEventEntity extends BaseEntity {
     @Nullable
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
-    }
-
-    @Nullable
-    public String getBattleMode() {
-        return battleMode;
-    }
-
-    @Nullable
-    public OffsetDateTime getLatestBattleTime() {
-        return latestBattleTime;
     }
 }

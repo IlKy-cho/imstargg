@@ -365,8 +365,6 @@ create table battle_event
     brawlstars_id       bigint       not null,
     mode                varchar(45)  not null,
     map_brawlstars_name varchar(105),
-    battle_mode         varchar(45),
-    latest_battle_time  timestamp(6),
     created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false,
@@ -455,20 +453,45 @@ alter table star_power
     add constraint uk_brawlstarsid unique (brawlstars_id);
 
 
-create table brawl_pass_season
+create table battle_event_rotation
 (
-    brawl_pass_season_id bigint       not null auto_increment,
-    number               int          not null,
-    start_time           timestamp    not null,
-    end_time             timestamp    not null,
-    created_at           timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at           timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted              boolean      not null default false,
-    primary key (brawl_pass_season_id)
+    battle_event_rotation_id bigint       not null auto_increment,
+    created_at               timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at               timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                  boolean      not null default false,
+    primary key (battle_event_rotation_id)
 ) engine = innodb;
 
-alter table brawl_pass_season
-    add constraint uk_brawl_pass_season__number unique (number);
+create table battle_event_rotation_item
+(
+    battle_event_rotation_item_id bigint       not null auto_increment,
+    battle_event_rotation_id      bigint       not null,
+    event_brawlstars_id           bigint       not null,
+    modifiers                     json         not null,
+    slot_id                       bigint       not null,
+    start_time                    timestamp    not null,
+    end_time                      timestamp    not null,
+    created_at                    timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                    timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                       boolean      not null default false,
+    primary key (battle_event_rotation_item_id)
+) engine = innodb;
+
+create index ix_battle_event_rotation_item__1 on battle_event_rotation_item (battle_event_rotation_id);
+
+
+create table solo_rank_battle_event
+(
+    solo_rank_battle_event_id bigint       not null auto_increment,
+    event_brawlstars_id       bigint       not null,
+    created_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at                timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted                   boolean      not null default false,
+    primary key (solo_rank_battle_event_id)
+) engine = innodb;
+
+alter table solo_rank_battle_event
+    add constraint uk_solo_rank_battle_event__key unique (event_brawlstars_id);
 
 -- ranking
 create table player_ranking
@@ -535,43 +558,3 @@ create table club_ranking
 alter table club_ranking
     add constraint uk_club_ranking__country_rank unique (country, rank_value);
 
-
-create table battle_event_rotation
-(
-    battle_event_rotation_id bigint       not null auto_increment,
-    created_at               timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at               timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                  boolean      not null default false,
-    primary key (battle_event_rotation_id)
-) engine = innodb;
-
-create table battle_event_rotation_item
-(
-    battle_event_rotation_item_id bigint       not null auto_increment,
-    battle_event_rotation_id      bigint       not null,
-    event_brawlstars_id           bigint       not null,
-    modifiers                     json         not null,
-    slot_id                       bigint       not null,
-    start_time                    timestamp    not null,
-    end_time                      timestamp    not null,
-    created_at                    timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at                    timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                       boolean      not null default false,
-    primary key (battle_event_rotation_item_id)
-) engine = innodb;
-
-create index ix_battle_event_rotation_item__1 on battle_event_rotation_item (battle_event_rotation_id);
-
-
-create table solo_rank_battle_event
-(
-    solo_rank_battle_event_id bigint       not null auto_increment,
-    event_brawlstars_id       bigint       not null,
-    created_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at                timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                   boolean      not null default false,
-    primary key (solo_rank_battle_event_id)
-) engine = innodb;
-
-alter table solo_rank_battle_event
-    add constraint uk_solo_rank_battle_event__key unique (event_brawlstars_id);
