@@ -1,5 +1,6 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.domain.player;
 
+import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import org.springframework.stereotype.Component;

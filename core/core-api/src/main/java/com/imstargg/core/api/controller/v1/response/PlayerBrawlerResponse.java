@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.PlayerBrawler;
+import com.imstargg.core.domain.player.PlayerBrawler;
 
 import java.util.List;
 

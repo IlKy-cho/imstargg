@@ -5,7 +5,7 @@ import com.imstargg.core.api.controller.v1.response.PlayerBrawlerResponse;
 import com.imstargg.core.api.controller.v1.response.PlayerResponse;
 import com.imstargg.core.api.controller.v1.response.RenewalStatusResponse;
 import com.imstargg.core.domain.BrawlStarsTag;
-import com.imstargg.core.domain.PlayerService;
+import com.imstargg.core.domain.player.PlayerService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

@@ -1,5 +1,6 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.domain.player;
 
+import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.storage.db.core.PlayerRenewalEntity;
 import com.imstargg.storage.db.core.PlayerRenewalJpaRepository;

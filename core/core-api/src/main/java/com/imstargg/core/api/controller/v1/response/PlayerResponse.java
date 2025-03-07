@@ -1,6 +1,6 @@
 package com.imstargg.core.api.controller.v1.response;
 
-import com.imstargg.core.domain.Player;
+import com.imstargg.core.domain.player.Player;
 import com.imstargg.core.enums.SoloRankTier;
 import jakarta.annotation.Nullable;
 

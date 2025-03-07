@@ -1,6 +1,7 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.domain.player;
 
 
+import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.test.java.IntegerIncrementUtil;
 import com.imstargg.test.java.LongIncrementUtil;
 

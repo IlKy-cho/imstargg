@@ -1,4 +1,6 @@
-package com.imstargg.core.domain;
+package com.imstargg.core.domain.player;
+
+import com.imstargg.core.domain.BrawlStarsTag;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
