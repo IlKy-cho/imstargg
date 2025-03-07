@@ -27,6 +27,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.Clock;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +40,7 @@ class EventRotationJobConfig {
     private static final String JOB_NAME = "eventRotationJob";
     private static final String STEP_NAME = "eventRotationStep";
 
+    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
 
@@ -48,6 +51,7 @@ class EventRotationJobConfig {
     private final BattleEventRotationItemCollectionJpaRepository battleEventRotationItemJpaRepository;
 
     EventRotationJobConfig(
+            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             AlertManager alertManager,
@@ -56,6 +60,7 @@ class EventRotationJobConfig {
             BattleEventRotationCollectionJpaRepository battleEventRotationJpaRepository,
             BattleEventRotationItemCollectionJpaRepository battleEventRotationItemJpaRepository
     ) {
+        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.alertManager = alertManager;
@@ -100,12 +105,25 @@ class EventRotationJobConfig {
                     } catch (BrawlStarsClientException.InMaintenance e) {
                         log.info("Brawl Stars is in maintenance", e);
                     }
-
                     battleEventRotationJpaRepository.save(rotationEntity);
                     battleEventRotationItemJpaRepository.saveAll(rotationItemEntities);
+
+                    deleteOldRotation();
                     return RepeatStatus.FINISHED;
                 }, txManager)
                 .build();
+    }
+
+    private void deleteOldRotation() {
+        OffsetDateTime aWeekAgo = OffsetDateTime.now(clock).minusWeeks(1);
+        List<BattleEventRotationCollectionEntity> rotationEntitiesToDelete = battleEventRotationJpaRepository
+                .findAll().stream()
+                .filter(entity -> entity.getCreatedAt().isBefore(aWeekAgo))
+                .toList();
+        List<BattleEventRotationItemCollectionEntity> rotationItemsToDelete = battleEventRotationItemJpaRepository
+                .findAllByRotationIn(rotationEntitiesToDelete);
+        battleEventRotationJpaRepository.deleteAllInBatch(rotationEntitiesToDelete);
+        battleEventRotationItemJpaRepository.deleteAllInBatch(rotationItemsToDelete);
     }
 
     private BattleEventCollectionEntity getBattleEventEntity(ScheduledEventResponse response) {
