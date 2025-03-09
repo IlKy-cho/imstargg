@@ -11,6 +11,7 @@ public enum PlayerStatus {
     PLAYER_UPDATED,
     DORMANT,
     DORMANT_RETURNED,
+    AI,
     DELETED,
     ;
 

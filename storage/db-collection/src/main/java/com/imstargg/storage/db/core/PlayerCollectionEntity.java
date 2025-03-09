@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.PlayerStatus;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
@@ -19,6 +20,7 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -199,11 +201,48 @@ public class PlayerCollectionEntity extends BaseEntity {
         );
     }
 
-    public void battleUpdated(List<OffsetDateTime> updatedBattleTimes) {
-        updatedBattleTimes
+    public void battleUpdated(List<BattleCollectionEntity> updatedBattles) {
+        if (containsInvalidBrawlerInfo(updatedBattles)) {
+            this.status = PlayerStatus.AI;
+            return;
+        }
+
+        updatedBattles
                 .stream()
+                .map(BattleCollectionEntity::getBattleTime)
                 .max(Comparator.naturalOrder())
                 .ifPresent(battleTime -> this.latestBattleTime = battleTime);
+    }
+
+    private boolean containsInvalidBrawlerInfo(List<BattleCollectionEntity> battles) {
+        Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToPlayerBrawler = this.brawlers.stream()
+                .collect(Collectors.toMap(PlayerBrawlerCollectionEntity::getBrawlerBrawlStarsId, Function.identity()));
+
+        for (BattleCollectionEntity battle : battles) {
+            List<BattleCollectionEntityTeamPlayer> myPlayers = battle.getTeams().stream()
+                    .flatMap(Collection::stream)
+                    .filter(player -> player.getBrawlStarsTag().equals(this.brawlStarsTag))
+                    .toList();
+
+            for (BattleCollectionEntityTeamPlayer myPlayer : myPlayers) {
+                BattleCollectionEntityTeamPlayerBrawler battlePlayerBrawler = myPlayer.getBrawler();
+                if (!brawlStarsIdToPlayerBrawler.containsKey(battlePlayerBrawler.getBrawlStarsId())) {
+                    return true;
+                }
+                PlayerBrawlerCollectionEntity playerBrawler = brawlStarsIdToPlayerBrawler.get(
+                        battlePlayerBrawler.getBrawlStarsId());
+                if (playerBrawler.getPower() < battlePlayerBrawler.getPower()) {
+                    return true;
+                }
+                BattleType battleType = BattleType.find(battle.getType());
+                if (battleType == BattleType.RANKED
+                        && playerBrawler.getHighestTrophies() < battlePlayerBrawler.getTrophies()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public void playerUpdated(Clock clock) {
