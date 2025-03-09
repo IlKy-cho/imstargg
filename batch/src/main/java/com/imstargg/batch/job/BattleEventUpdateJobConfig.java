@@ -22,6 +22,7 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.builder.TaskletStepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -47,6 +48,7 @@ class BattleEventUpdateJobConfig {
     private final AlertManager alertManager;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventCollectionJpaRepository battleEventCollectionJpaRepository;
+    private final EntityManagerFactoryBuilderCustomizer entityManagerFactoryBootstrapExecutorCustomizer;
 
     BattleEventUpdateJobConfig(
             JobRepository jobRepository,
@@ -54,14 +56,15 @@ class BattleEventUpdateJobConfig {
             EntityManagerFactory emf,
             AlertManager alertManager,
             BattleJpaRepository battleJpaRepository,
-            BattleEventCollectionJpaRepository battleEventCollectionJpaRepository
-    ) {
+            BattleEventCollectionJpaRepository battleEventCollectionJpaRepository,
+            EntityManagerFactoryBuilderCustomizer entityManagerFactoryBootstrapExecutorCustomizer) {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
         this.alertManager = alertManager;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventCollectionJpaRepository = battleEventCollectionJpaRepository;
+        this.entityManagerFactoryBootstrapExecutorCustomizer = entityManagerFactoryBootstrapExecutorCustomizer;
     }
 
     @Bean(JOB_NAME)
@@ -116,6 +119,11 @@ class BattleEventUpdateJobConfig {
                 .findByBrawlStarsId(
                         Objects.requireNonNull(battleEntity.getEvent().getBrawlStarsId())
                 ).orElseGet(() -> {
+                    BattleEventCollectionEntity entity = new BattleEventCollectionEntity(
+                            battleEntity.getEvent().getBrawlStarsId(),
+                            battleEntity.getEvent().getMode(),
+                            battleEntity.getEvent().getMap()
+                    );
                     alertManager.alert(AlertCommand.builder()
                             .title("[" + JOB_NAME + "] 존재하지 않는 이벤트 추가")
                             .content(String.format(
@@ -124,15 +132,11 @@ class BattleEventUpdateJobConfig {
                                      - 모드: %s
                                      - 맵: %s
                                     """,
-                                    battleEntity.getEvent().getBrawlStarsId(),
-                                    battleEntity.getEvent().getMode(),
-                                    battleEntity.getEvent().getMap())
-                            ).build());
-                    return new BattleEventCollectionEntity(
-                            battleEntity.getEvent().getBrawlStarsId(),
-                            battleEntity.getEvent().getMode(),
-                            battleEntity.getEvent().getMap()
-                    );
+                                    entity.getBrawlStarsId(),
+                                    entity.getMode(),
+                                    entity.getMapBrawlStarsName()
+                            )).build());
+                    return entity;
                 });
     }
 
@@ -159,6 +163,7 @@ class BattleEventUpdateJobConfig {
                 .stream()
                 .map(tuple -> tuple.get(battleCollectionEntity.type))
                 .distinct()
+                .filter(Objects::nonNull)
                 .filter(battleType -> BattleType.find(battleType) == BattleType.NOT_FOUND)
                 .forEach(battleType -> alertManager.alert(AlertCommand.builder()
                         .title("[" + JOB_NAME + "] 존재하지 배틀 타입 추가")
