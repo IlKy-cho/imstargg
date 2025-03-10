@@ -1,17 +1,10 @@
 package com.imstargg.worker.domain;
 
-import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
-import com.imstargg.client.brawlstars.response.AccessoryResponse;
-import com.imstargg.client.brawlstars.response.BattleResponse;
-import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
-import com.imstargg.client.brawlstars.response.GearStatResponse;
-import com.imstargg.client.brawlstars.response.ListResponse;
-import com.imstargg.client.brawlstars.response.PlayerResponse;
-import com.imstargg.client.brawlstars.response.StarPowerResponse;
-import com.imstargg.collection.domain.BattleUpdateApplier;
+import com.imstargg.collection.domain.PlayerUpdater;
+import com.imstargg.collection.domain.PlayerUpdaterFactory;
 import com.imstargg.core.enums.PlayerRenewalStatus;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
@@ -19,32 +12,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
-import java.util.List;
-
 @Component
 public class PlayerRenewer {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerRenewer.class);
 
-    private final Clock clock;
     private final PlayerRepository playerRepository;
     private final PlayerRenewalRepository playerRenewalRepository;
-    private final BrawlStarsClient brawlStarsClient;
-    private final BattleUpdateApplier battleUpdateApplier;
+    private final PlayerUpdaterFactory playerUpdaterFactory;
 
     public PlayerRenewer(
-            Clock clock,
             PlayerRepository playerRepository,
             PlayerRenewalRepository playerRenewalRepository,
-            BrawlStarsClient brawlStarsClient,
-            BattleUpdateApplier battleUpdateApplier
+            PlayerUpdaterFactory playerUpdaterFactory
     ) {
-        this.clock = clock;
         this.playerRepository = playerRepository;
         this.playerRenewalRepository = playerRenewalRepository;
-        this.brawlStarsClient = brawlStarsClient;
-        this.battleUpdateApplier = battleUpdateApplier;
+        this.playerUpdaterFactory = playerUpdaterFactory;
     }
 
     public void renew(String tag) {
@@ -68,9 +52,9 @@ public class PlayerRenewer {
             );
 
             playerRenewalRepository.complete(playerRenewalEntity);
-        } catch(BrawlStarsClientException.InMaintenance e) {
+        } catch (BrawlStarsClientException.InMaintenance e) {
             playerRenewalRepository.inMaintenance(playerRenewalEntity);
-        } catch(Exception e) {
+        } catch (Exception e) {
             playerRenewalRepository.failed(playerRenewalEntity);
             throw e;
         }
@@ -78,105 +62,27 @@ public class PlayerRenewer {
 
     private void renewPlayer(PlayerCollectionEntity playerEntity) {
         log.debug("기존 플레이어 갱신 tag={}", playerEntity.getBrawlStarsTag());
-        try {
-            PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag());
-            updatePlayer(playerEntity, playerResponse);
+        PlayerUpdater playerUpdater = playerUpdaterFactory.create(playerEntity);
+        playerUpdater.update();
+        playerRepository.update(playerUpdater.getPlayerEntity(), playerUpdater.getUpdatedBattleEntities());
 
-            List<BattleCollectionEntity> updatedBattleEntities = updateBattles(playerEntity);
-
-            playerEntity.playerUpdated(clock);
-            playerRepository.update(playerEntity, updatedBattleEntities);
-        } catch (BrawlStarsClientException.NotFound ex) {
-            log.warn("플레이어가 존재하지 않아 삭제합니다. tag={}", playerEntity.getBrawlStarsTag());
-            playerEntity.deleted();
-            playerRepository.save(playerEntity);
-        }
-    }
-
-    private void updatePlayer(PlayerCollectionEntity playerEntity, PlayerResponse playerResponse) {
-        playerEntity.update(
-                playerResponse.name(),
-                playerResponse.nameColor(),
-                playerResponse.icon().id(),
-                playerResponse.trophies(),
-                playerResponse.highestTrophies(),
-                playerResponse.expLevel(),
-                playerResponse.expPoints(),
-                playerResponse.isQualifiedFromChampionshipChallenge(),
-                playerResponse.victories3vs3(),
-                playerResponse.soloVictories(),
-                playerResponse.duoVictories(),
-                playerResponse.bestRoboRumbleTime(),
-                playerResponse.bestTimeAsBigBrawler(),
-                playerResponse.club().tag()
-        );
-        for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
-            playerEntity.updateBrawler(
-                    brawlerResponse.id(),
-                    brawlerResponse.power(),
-                    brawlerResponse.rank(),
-                    brawlerResponse.trophies(),
-                    brawlerResponse.highestTrophies(),
-                    brawlerResponse.gears().stream().map(GearStatResponse::id).toList(),
-                    brawlerResponse.starPowers().stream().map(StarPowerResponse::id).toList(),
-                    brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
-            );
-        }
     }
 
     public void renewNewPlayer(UnknownPlayerCollectionEntity unknownPlayerEntity) {
         log.debug("신규 플레이어 갱신 tag={}", unknownPlayerEntity.getBrawlStarsTag());
-        try {
-            PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(unknownPlayerEntity.getBrawlStarsTag());
-            PlayerCollectionEntity playerEntity = newPlayer(playerResponse);
-
-            List<BattleCollectionEntity> updatedBattleEntities = updateBattles(playerEntity);
-
-            playerEntity.playerUpdated(clock);
-            playerRepository.update(unknownPlayerEntity, playerEntity, updatedBattleEntities);
-        } catch (BrawlStarsClientException.NotFound ex) {
-            log.warn("플레이어가 존재하지 않아 삭제합니다. tag={}", unknownPlayerEntity.getBrawlStarsTag());
+        PlayerCollectionEntity playerEntity = new PlayerCollectionEntity(unknownPlayerEntity.getBrawlStarsTag());
+        PlayerUpdater playerUpdater = playerUpdaterFactory.create(playerEntity);
+        playerUpdater.update();
+        if (playerUpdater.getPlayerEntity().getStatus() == PlayerStatus.DELETED) {
             unknownPlayerEntity.notFound();
             playerRepository.update(unknownPlayerEntity);
-        }
-    }
-
-    private List<BattleCollectionEntity> updateBattles(PlayerCollectionEntity playerEntity) {
-        ListResponse<BattleResponse> battleListResponse = brawlStarsClient.getPlayerRecentBattles(
-                playerEntity.getBrawlStarsTag());
-        return battleUpdateApplier.update(playerEntity, battleListResponse);
-    }
-
-    private PlayerCollectionEntity newPlayer(PlayerResponse playerResponse) {
-        PlayerCollectionEntity playerEntity = new PlayerCollectionEntity(
-                playerResponse.tag(),
-                playerResponse.name(),
-                playerResponse.nameColor(),
-                playerResponse.icon().id(),
-                playerResponse.trophies(),
-                playerResponse.highestTrophies(),
-                playerResponse.expLevel(),
-                playerResponse.expPoints(),
-                playerResponse.isQualifiedFromChampionshipChallenge(),
-                playerResponse.victories3vs3(),
-                playerResponse.soloVictories(),
-                playerResponse.duoVictories(),
-                playerResponse.bestRoboRumbleTime(),
-                playerResponse.bestTimeAsBigBrawler(),
-                playerResponse.club().tag()
-        );
-        for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
-            playerEntity.updateBrawler(
-                    brawlerResponse.id(),
-                    brawlerResponse.trophies(),
-                    brawlerResponse.highestTrophies(),
-                    brawlerResponse.power(),
-                    brawlerResponse.rank(),
-                    brawlerResponse.gears().stream().map(GearStatResponse::id).toList(),
-                    brawlerResponse.starPowers().stream().map(StarPowerResponse::id).toList(),
-                    brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
+        } else {
+            playerRepository.update(
+                    unknownPlayerEntity,
+                    playerUpdater.getPlayerEntity(),
+                    playerUpdater.getUpdatedBattleEntities()
             );
         }
-        return playerRepository.save(playerEntity);
+
     }
 }
