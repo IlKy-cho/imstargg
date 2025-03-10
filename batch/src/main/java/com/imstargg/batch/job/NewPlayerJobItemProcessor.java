@@ -1,9 +1,9 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerTagFilter;
+import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.collection.domain.PlayerUpdater;
 import com.imstargg.collection.domain.PlayerUpdaterFactory;
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
@@ -35,13 +35,12 @@ public class NewPlayerJobItemProcessor
         for (String newPlayerTag : newPlayerTags) {
             PlayerCollectionEntity playerEntity = new PlayerCollectionEntity(newPlayerTag);
             PlayerUpdater playerUpdater = playerUpdaterFactory.create(playerEntity);
-            playerUpdater.updatePlayer();
-            PlayerCollectionEntity updatedPlayerEntity = playerUpdater.getPlayerEntity();
-            if (updatedPlayerEntity.getStatus() == PlayerStatus.DELETED) {
+            try {
+                playerUpdater.updatePlayer();
+                newPlayers.add(playerUpdater.getPlayerEntity());
+            } catch (BrawlStarsClientException.NotFound ex) {
                 log.info("새로운 Player 가 존재하지 않는 것으로 확인되어 스킵. playerTag={}", newPlayerTag);
-                continue;
             }
-            newPlayers.add(updatedPlayerEntity);
         }
 
         log.debug("{}명 Player 가 새로 추가되었습니다.", newPlayers.size());
