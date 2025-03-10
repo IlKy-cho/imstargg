@@ -23,7 +23,7 @@ public class BattleUpdateApplier {
     ) {
         var updatedBattleList = update(
                 playerEntity, battleListResponse, playerEntity.getLatestBattleTime());
-        playerEntity.battleUpdated(updatedBattleList.stream().map(BattleCollectionEntity::getBattleTime).toList());
+        playerEntity.battleUpdated(updatedBattleList);
 
         updateSoloRankTier(playerEntity, updatedBattleList);
 
