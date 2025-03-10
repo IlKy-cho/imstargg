@@ -22,7 +22,6 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.builder.TaskletStepBuilder;
 import org.springframework.batch.repeat.RepeatStatus;
-import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -48,7 +47,6 @@ class BattleEventUpdateJobConfig {
     private final AlertManager alertManager;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventCollectionJpaRepository battleEventCollectionJpaRepository;
-    private final EntityManagerFactoryBuilderCustomizer entityManagerFactoryBootstrapExecutorCustomizer;
 
     BattleEventUpdateJobConfig(
             JobRepository jobRepository,
@@ -56,15 +54,14 @@ class BattleEventUpdateJobConfig {
             EntityManagerFactory emf,
             AlertManager alertManager,
             BattleJpaRepository battleJpaRepository,
-            BattleEventCollectionJpaRepository battleEventCollectionJpaRepository,
-            EntityManagerFactoryBuilderCustomizer entityManagerFactoryBootstrapExecutorCustomizer) {
+            BattleEventCollectionJpaRepository battleEventCollectionJpaRepository
+    ) {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
         this.alertManager = alertManager;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventCollectionJpaRepository = battleEventCollectionJpaRepository;
-        this.entityManagerFactoryBootstrapExecutorCustomizer = entityManagerFactoryBootstrapExecutorCustomizer;
     }
 
     @Bean(JOB_NAME)
