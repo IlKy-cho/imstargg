@@ -3,8 +3,7 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
 import com.imstargg.client.brawlstars.BrawlStarsClient;
-import com.imstargg.collection.domain.BattleUpdateApplier;
-import com.imstargg.core.enums.PlayerStatus;
+import com.imstargg.collection.domain.PlayerUpdaterFactory;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
@@ -20,7 +19,6 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.Chunk;
-import org.springframework.batch.item.support.CompositeItemProcessor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +44,7 @@ class PlayerUpdateJobConfig {
     private final Clock clock;
 
     private final BrawlStarsClient brawlStarsClient;
-    private final BattleUpdateApplier battleUpdateApplier;
+    private final PlayerUpdaterFactory playerUpdaterFactory;
 
     PlayerUpdateJobConfig(
             Properties properties,
@@ -55,7 +53,7 @@ class PlayerUpdateJobConfig {
             EntityManagerFactory emf,
             Clock clock,
             BrawlStarsClient brawlStarsClient,
-            BattleUpdateApplier battleUpdateApplier
+            PlayerUpdaterFactory playerUpdaterFactory
     ) {
         this.properties = properties;
         this.jobRepository = jobRepository;
@@ -63,7 +61,7 @@ class PlayerUpdateJobConfig {
         this.emf = emf;
         this.clock = clock;
         this.brawlStarsClient = brawlStarsClient;
-        this.battleUpdateApplier = battleUpdateApplier;
+        this.playerUpdaterFactory = playerUpdaterFactory;
     }
 
     @Bean(JOB_NAME)
@@ -114,19 +112,8 @@ class PlayerUpdateJobConfig {
 
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
-    CompositeItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> processor() {
-        return new CompositeItemProcessor<>(
-                new PlayerUpdateProcessor(clock, brawlStarsClient),
-                new BattleUpdateProcessor(clock, brawlStarsClient, battleUpdateApplier),
-                item -> {
-                    PlayerCollectionEntity playerEntity = ((PlayerBattleUpdateResult) item).playerEntity();
-                    playerEntity.playerUpdated(clock);
-                    if (playerEntity.getStatus() == PlayerStatus.DORMANT) {
-                        log.info("플레이어가 휴면상태 처리됨 playerTag={}", playerEntity.getBrawlStarsTag());
-                    }
-                    return item;
-                }
-        );
+    PlayerUpdateProcessor processor() {
+        return new PlayerUpdateProcessor(playerUpdaterFactory);
     }
 
     @Bean(STEP_NAME + "ItemWriter")

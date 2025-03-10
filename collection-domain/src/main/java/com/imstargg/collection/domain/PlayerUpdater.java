@@ -44,49 +44,49 @@ public class PlayerUpdater {
     }
 
     public void update() {
-        updatePlayer();
-        updatePlayerBattle();
-
-        playerEntity.playerUpdated(clock);
-        if (playerEntity.getStatus() == PlayerStatus.DORMANT) {
-            log.info("플레이어가 휴면상태 처리됨 playerTag={}", playerEntity.getBrawlStarsTag());
+        try {
+            updatePlayer();
+            updatePlayerBattle();
+            playerEntity.playerUpdated(clock);
+            if (playerEntity.getStatus() == PlayerStatus.DORMANT) {
+                log.info("플레이어가 휴면상태 처리됨 playerTag={}", playerEntity.getBrawlStarsTag());
+            }
+        } catch (BrawlStarsClientException.NotFound ex) {
+            logDeletedPlayer();
+            playerEntity.deleted();
         }
+
     }
 
     public void updatePlayer() {
-        try {
-            PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag());
-            playerEntity.update(
-                    playerResponse.name(),
-                    playerResponse.nameColor(),
-                    playerResponse.icon().id(),
-                    playerResponse.trophies(),
-                    playerResponse.highestTrophies(),
-                    playerResponse.expLevel(),
-                    playerResponse.expPoints(),
-                    playerResponse.isQualifiedFromChampionshipChallenge(),
-                    playerResponse.victories3vs3(),
-                    playerResponse.soloVictories(),
-                    playerResponse.duoVictories(),
-                    playerResponse.bestRoboRumbleTime(),
-                    playerResponse.bestTimeAsBigBrawler(),
-                    playerResponse.club().tag()
+        PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(playerEntity.getBrawlStarsTag());
+        playerEntity.update(
+                playerResponse.name(),
+                playerResponse.nameColor(),
+                playerResponse.icon().id(),
+                playerResponse.trophies(),
+                playerResponse.highestTrophies(),
+                playerResponse.expLevel(),
+                playerResponse.expPoints(),
+                playerResponse.isQualifiedFromChampionshipChallenge(),
+                playerResponse.victories3vs3(),
+                playerResponse.soloVictories(),
+                playerResponse.duoVictories(),
+                playerResponse.bestRoboRumbleTime(),
+                playerResponse.bestTimeAsBigBrawler(),
+                playerResponse.club().tag()
+        );
+        for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
+            playerEntity.updateBrawler(
+                    brawlerResponse.id(),
+                    brawlerResponse.power(),
+                    brawlerResponse.rank(),
+                    brawlerResponse.trophies(),
+                    brawlerResponse.highestTrophies(),
+                    brawlerResponse.gears().stream().map(GearStatResponse::id).toList(),
+                    brawlerResponse.starPowers().stream().map(StarPowerResponse::id).toList(),
+                    brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
             );
-            for (BrawlerStatResponse brawlerResponse : playerResponse.brawlers()) {
-                playerEntity.updateBrawler(
-                        brawlerResponse.id(),
-                        brawlerResponse.power(),
-                        brawlerResponse.rank(),
-                        brawlerResponse.trophies(),
-                        brawlerResponse.highestTrophies(),
-                        brawlerResponse.gears().stream().map(GearStatResponse::id).toList(),
-                        brawlerResponse.starPowers().stream().map(StarPowerResponse::id).toList(),
-                        brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
-                );
-            }
-        } catch (BrawlStarsClientException.NotFound ex) {
-            log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", playerEntity.getBrawlStarsTag());
-            playerEntity.deleted();
         }
         playerUpdated = true;
     }
@@ -99,9 +99,14 @@ public class PlayerUpdater {
             log.debug("삭제된 플레이어는 배틀 업데이트를 스킵합니다. playerTag={}", playerEntity.getBrawlStarsTag());
             return;
         }
+
         ListResponse<BattleResponse> battleListResponse = this.brawlStarsClient.getPlayerRecentBattles(
                 playerEntity.getBrawlStarsTag());
         updatedBattleEntities.addAll(battleUpdateApplier.update(playerEntity, battleListResponse));
+    }
+
+    private void logDeletedPlayer() {
+        log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", playerEntity.getBrawlStarsTag());
     }
 
     public PlayerCollectionEntity getPlayerEntity() {
