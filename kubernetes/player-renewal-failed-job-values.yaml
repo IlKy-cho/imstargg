@@ -1,0 +1,6 @@
+app:
+  job:
+    name: playerRenewalFailedJob
+
+job:
+  schedule: "*/10 * * * *"
