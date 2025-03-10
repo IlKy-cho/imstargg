@@ -2,7 +2,6 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
-import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.collection.domain.PlayerUpdaterFactory;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
@@ -26,8 +25,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.backoff.FixedBackOffPolicy;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import java.time.Clock;
-
 @Configuration
 @EnableConfigurationProperties(PlayerUpdateJobConfig.Properties.class)
 class PlayerUpdateJobConfig {
@@ -41,9 +38,7 @@ class PlayerUpdateJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
-    private final Clock clock;
 
-    private final BrawlStarsClient brawlStarsClient;
     private final PlayerUpdaterFactory playerUpdaterFactory;
 
     PlayerUpdateJobConfig(
@@ -51,16 +46,12 @@ class PlayerUpdateJobConfig {
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
-            Clock clock,
-            BrawlStarsClient brawlStarsClient,
             PlayerUpdaterFactory playerUpdaterFactory
     ) {
         this.properties = properties;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
-        this.clock = clock;
-        this.brawlStarsClient = brawlStarsClient;
         this.playerUpdaterFactory = playerUpdaterFactory;
     }
 
