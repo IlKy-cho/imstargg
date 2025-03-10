@@ -9,16 +9,27 @@ import com.imstargg.client.brawlstars.response.GearStatResponse;
 import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
+import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayerBrawler;
+import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class PlayerUpdater {
 
@@ -26,20 +37,19 @@ public class PlayerUpdater {
 
     private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
-    private final BattleUpdateApplier battleUpdateApplier;
+    private final BattleCollectionEntityFactory battleEntityFactory;
     private final PlayerCollectionEntity playerEntity;
     private final List<BattleCollectionEntity> updatedBattleEntities = new ArrayList<>();
-    private boolean playerUpdated = false;
 
     PlayerUpdater(
             Clock clock,
             BrawlStarsClient brawlStarsClient,
-            BattleUpdateApplier battleUpdateApplier,
+            BattleCollectionEntityFactory battleEntityFactory,
             PlayerCollectionEntity playerEntity
     ) {
         this.clock = clock;
         this.brawlStarsClient = brawlStarsClient;
-        this.battleUpdateApplier = battleUpdateApplier;
+        this.battleEntityFactory = battleEntityFactory;
         this.playerEntity = playerEntity;
     }
 
@@ -47,7 +57,8 @@ public class PlayerUpdater {
         try {
             updatePlayer();
             updatePlayerBattle();
-            playerEntity.playerUpdated(clock);
+            updateLastBattleTime();
+            updatePlayerStatus();
         } catch (BrawlStarsClientException.NotFound ex) {
             log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", playerEntity.getBrawlStarsTag());
             playerEntity.deleted();
@@ -85,21 +96,88 @@ public class PlayerUpdater {
                     brawlerResponse.gadgets().stream().map(AccessoryResponse::id).toList()
             );
         }
-        playerUpdated = true;
     }
 
-    public void updatePlayerBattle() {
-        if (!playerUpdated) {
-            throw new IllegalStateException("Player 정보를 먼저 업데이트 해야 합니다.");
-        }
+    private void updatePlayerBattle() {
         if (playerEntity.getStatus() == PlayerStatus.DELETED) {
             log.debug("삭제된 플레이어는 배틀 업데이트를 스킵합니다. playerTag={}", playerEntity.getBrawlStarsTag());
             return;
         }
 
+        getBattleResponseListToUpdate().stream()
+                .map(battleResponse -> battleEntityFactory.create(playerEntity, battleResponse))
+                .sorted(Comparator.comparing(BattleCollectionEntity::getBattleTime))
+                .forEach(updatedBattleEntities::add);
+        updateSoloRankTier();
+    }
+
+    private List<BattleResponse> getBattleResponseListToUpdate() {
         ListResponse<BattleResponse> battleListResponse = this.brawlStarsClient.getPlayerRecentBattles(
                 playerEntity.getBrawlStarsTag());
-        updatedBattleEntities.addAll(battleUpdateApplier.update(playerEntity, battleListResponse));
+        return Optional.ofNullable(playerEntity.getLatestBattleTime())
+                .map(battle -> battleListResponse.items().stream()
+                        .filter(battleResponse -> battleResponse.battleTime().isAfter(
+                                playerEntity.getLatestBattleTime()))
+                        .toList()
+                ).orElse(battleListResponse.items());
+    }
+
+    private void updateSoloRankTier() {
+        updatedBattleEntities
+                .stream()
+                .filter(battle -> Objects.equals(battle.getType(), BattleType.SOLO_RANKED.getCode()))
+                .max(Comparator.comparing(BattleCollectionEntity::getBattleTime))
+                .map(battle -> battle.findMe().getFirst())
+                .ifPresent(latestSoloRankBattlePlayer ->
+                        playerEntity.updateSoloRankTier(latestSoloRankBattlePlayer.getBrawler().getTrophies())
+                );
+    }
+
+    private void updateLastBattleTime() {
+        updatedBattleEntities
+                .stream()
+                .map(BattleCollectionEntity::getBattleTime)
+                .max(Comparator.naturalOrder())
+                .ifPresent(playerEntity::updateLatestBattleTime);
+    }
+
+    private void updatePlayerStatus() {
+        if (containsInvalidBrawlerInfo()) {
+            playerEntity.ai();
+        } else {
+            playerEntity.playerUpdated(clock);
+        }
+    }
+
+    private boolean containsInvalidBrawlerInfo() {
+        Map<Long, PlayerBrawlerCollectionEntity> brawlStarsIdToPlayerBrawler = playerEntity.getBrawlers().stream()
+                .collect(Collectors.toMap(PlayerBrawlerCollectionEntity::getBrawlerBrawlStarsId, Function.identity()));
+
+        for (BattleCollectionEntity battle : updatedBattleEntities) {
+            List<BattleCollectionEntityTeamPlayer> myPlayers = battle.getTeams().stream()
+                    .flatMap(Collection::stream)
+                    .filter(player -> player.getBrawlStarsTag().equals(playerEntity.getBrawlStarsTag()))
+                    .toList();
+
+            for (BattleCollectionEntityTeamPlayer myPlayer : myPlayers) {
+                BattleCollectionEntityTeamPlayerBrawler battlePlayerBrawler = myPlayer.getBrawler();
+                if (!brawlStarsIdToPlayerBrawler.containsKey(battlePlayerBrawler.getBrawlStarsId())) {
+                    return true;
+                }
+                PlayerBrawlerCollectionEntity playerBrawler = brawlStarsIdToPlayerBrawler.get(
+                        battlePlayerBrawler.getBrawlStarsId());
+                if (playerBrawler.getPower() < battlePlayerBrawler.getPower()) {
+                    return true;
+                }
+                BattleType battleType = BattleType.find(battle.getType());
+                if (battleType == BattleType.RANKED
+                        && playerBrawler.getHighestTrophies() < battlePlayerBrawler.getTrophies()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public PlayerCollectionEntity getPlayerEntity() {

@@ -11,16 +11,16 @@ public class PlayerUpdaterFactory {
 
     private final Clock clock;
     private final BrawlStarsClient brawlStarsClient;
-    private final BattleUpdateApplier battleUpdateApplier;
+    private final BattleCollectionEntityFactory battleEntityFactory;
 
     public PlayerUpdaterFactory(
-            Clock clock, BrawlStarsClient brawlStarsClient, BattleUpdateApplier battleUpdateApplier) {
+            Clock clock, BrawlStarsClient brawlStarsClient, BattleCollectionEntityFactory battleEntityFactory) {
         this.clock = clock;
         this.brawlStarsClient = brawlStarsClient;
-        this.battleUpdateApplier = battleUpdateApplier;
+        this.battleEntityFactory = battleEntityFactory;
     }
 
     public PlayerUpdater create(PlayerCollectionEntity playerEntity) {
-        return new PlayerUpdater(clock, brawlStarsClient, battleUpdateApplier, playerEntity);
+        return new PlayerUpdater(clock, brawlStarsClient, battleEntityFactory, playerEntity);
     }
 }
