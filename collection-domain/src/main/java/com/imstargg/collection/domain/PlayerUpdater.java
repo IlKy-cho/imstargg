@@ -1,9 +1,6 @@
 package com.imstargg.collection.domain;
 
-import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
-import com.imstargg.client.brawlstars.response.BattleResponse;
-import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
@@ -21,7 +18,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,22 +27,19 @@ public class PlayerUpdater {
 
     private final Clock clock;
     private final PlayerUpdateProcessor playerUpdateProcessor;
-    private final BrawlStarsClient brawlStarsClient;
-    private final BattleCollectionEntityFactory battleEntityFactory;
+    private final PlayerBattleUpdateProcessor playerBattleUpdateProcessor;
     private final PlayerCollectionEntity playerEntity;
     private final List<BattleCollectionEntity> updatedBattleEntities = new ArrayList<>();
 
     PlayerUpdater(
             Clock clock,
             PlayerUpdateProcessor playerUpdateProcessor,
-            BrawlStarsClient brawlStarsClient,
-            BattleCollectionEntityFactory battleEntityFactory,
+            PlayerBattleUpdateProcessor playerBattleUpdateProcessor,
             PlayerCollectionEntity playerEntity
     ) {
         this.clock = clock;
         this.playerUpdateProcessor = playerUpdateProcessor;
-        this.brawlStarsClient = brawlStarsClient;
-        this.battleEntityFactory = battleEntityFactory;
+        this.playerBattleUpdateProcessor = playerBattleUpdateProcessor;
         this.playerEntity = playerEntity;
     }
 
@@ -54,6 +47,7 @@ public class PlayerUpdater {
         try {
             updatePlayer();
             updatePlayerBattle();
+            updateSoloRankTier();
             updateLastBattleTime();
             updatePlayerStatus();
         } catch (BrawlStarsClientException.NotFound ex) {
@@ -68,23 +62,9 @@ public class PlayerUpdater {
     }
 
     private void updatePlayerBattle() {
-        getBattleResponseListToUpdate().stream()
-                .map(battleResponse -> battleEntityFactory.create(playerEntity, battleResponse))
-                .sorted(Comparator.comparing(BattleCollectionEntity::getBattleTime))
-                .forEach(updatedBattleEntities::add);
-        updateSoloRankTier();
+        updatedBattleEntities.addAll(playerBattleUpdateProcessor.update(playerEntity));
     }
 
-    private List<BattleResponse> getBattleResponseListToUpdate() {
-        ListResponse<BattleResponse> battleListResponse = this.brawlStarsClient.getPlayerRecentBattles(
-                playerEntity.getBrawlStarsTag());
-        return Optional.ofNullable(playerEntity.getLatestBattleTime())
-                .map(battle -> battleListResponse.items().stream()
-                        .filter(battleResponse -> battleResponse.battleTime().isAfter(
-                                playerEntity.getLatestBattleTime()))
-                        .toList()
-                ).orElse(battleListResponse.items());
-    }
 
     private void updateSoloRankTier() {
         updatedBattleEntities
