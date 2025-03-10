@@ -6,7 +6,7 @@ import com.imstargg.batch.job.support.IdRangeIncrementer;
 import com.imstargg.batch.job.support.IdRangeJobParameter;
 import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
-import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.collection.domain.PlayerUpdaterFactory;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
@@ -53,7 +53,7 @@ public class NewPlayerJobConfig {
     private final TaskExecutor taskExecutor;
 
     private final AlertManager alertManager;
-    private final BrawlStarsClient brawlStarsClient;
+    private final PlayerUpdaterFactory playerUpdaterFactory;
     private final BattleCollectionJpaRepository battleCollectionJpaRepository;
 
     NewPlayerJobConfig(
@@ -62,7 +62,7 @@ public class NewPlayerJobConfig {
             EntityManagerFactory emf,
             TaskExecutor taskExecutor,
             AlertManager alertManager,
-            BrawlStarsClient brawlStarsClient,
+            PlayerUpdaterFactory playerUpdaterFactory,
             BattleCollectionJpaRepository battleCollectionJpaRepository
     ) {
         this.jobRepository = jobRepository;
@@ -70,7 +70,7 @@ public class NewPlayerJobConfig {
         this.emf = emf;
         this.taskExecutor = taskExecutor;
         this.alertManager = alertManager;
-        this.brawlStarsClient = brawlStarsClient;
+        this.playerUpdaterFactory = playerUpdaterFactory;
         this.battleCollectionJpaRepository = battleCollectionJpaRepository;
     }
 
@@ -160,7 +160,7 @@ public class NewPlayerJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerJobItemProcessor processor() {
-        return new NewPlayerJobItemProcessor(playerTagFilter(), brawlStarsClient);
+        return new NewPlayerJobItemProcessor(playerTagFilter(), playerUpdaterFactory);
     }
 
     @Bean(STEP_NAME + "PlayerTagFilter")
