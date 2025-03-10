@@ -10,7 +10,6 @@ import com.imstargg.client.brawlstars.response.ListResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.storage.db.core.BattleCollectionEntity;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayerBrawler;
@@ -99,11 +98,6 @@ public class PlayerUpdater {
     }
 
     private void updatePlayerBattle() {
-        if (playerEntity.getStatus() == PlayerStatus.DELETED) {
-            log.debug("삭제된 플레이어는 배틀 업데이트를 스킵합니다. playerTag={}", playerEntity.getBrawlStarsTag());
-            return;
-        }
-
         getBattleResponseListToUpdate().stream()
                 .map(battleResponse -> battleEntityFactory.create(playerEntity, battleResponse))
                 .sorted(Comparator.comparing(BattleCollectionEntity::getBattleTime))
