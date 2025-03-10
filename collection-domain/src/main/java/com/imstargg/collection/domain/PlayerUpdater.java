@@ -48,11 +48,8 @@ public class PlayerUpdater {
             updatePlayer();
             updatePlayerBattle();
             playerEntity.playerUpdated(clock);
-            if (playerEntity.getStatus() == PlayerStatus.DORMANT) {
-                log.info("플레이어가 휴면상태 처리됨 playerTag={}", playerEntity.getBrawlStarsTag());
-            }
         } catch (BrawlStarsClientException.NotFound ex) {
-            logDeletedPlayer();
+            log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", playerEntity.getBrawlStarsTag());
             playerEntity.deleted();
         }
 
@@ -103,10 +100,6 @@ public class PlayerUpdater {
         ListResponse<BattleResponse> battleListResponse = this.brawlStarsClient.getPlayerRecentBattles(
                 playerEntity.getBrawlStarsTag());
         updatedBattleEntities.addAll(battleUpdateApplier.update(playerEntity, battleListResponse));
-    }
-
-    private void logDeletedPlayer() {
-        log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", playerEntity.getBrawlStarsTag());
     }
 
     public PlayerCollectionEntity getPlayerEntity() {

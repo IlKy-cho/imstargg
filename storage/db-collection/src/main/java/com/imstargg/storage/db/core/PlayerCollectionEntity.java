@@ -144,6 +144,13 @@ public class PlayerCollectionEntity extends BaseEntity {
         this.brawlStarsClubTag = brawlStarsClubTag;
     }
 
+    public PlayerCollectionEntity(
+            String brawlStarsTag
+    ) {
+        this.status = PlayerStatus.NEW;
+        this.brawlStarsTag = brawlStarsTag;
+    }
+
     public boolean updateBrawler(
             long brawlerBrawlStarsId,
             int power,
@@ -189,16 +196,6 @@ public class PlayerCollectionEntity extends BaseEntity {
     public void initializeBrawlStarsIdToBrawler() {
         brawlStarsIdToBrawler = brawlers.stream()
                 .collect(Collectors.toMap(PlayerBrawlerCollectionEntity::getBrawlerBrawlStarsId, Function.identity()));
-    }
-
-    public boolean isNextUpdateCooldownOver(Clock clock) {
-        if (status == PlayerStatus.NEW) {
-            return true;
-        }
-        return status.isNextUpdateCooldownOver(
-                OffsetDateTime.now(clock),
-                getUpdatedAt()
-        );
     }
 
     public void battleUpdated(List<BattleCollectionEntity> updatedBattles) {
