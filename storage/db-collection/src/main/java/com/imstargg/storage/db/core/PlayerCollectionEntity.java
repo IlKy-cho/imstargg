@@ -270,7 +270,7 @@ public class PlayerCollectionEntity extends BaseEntity {
         return updated;
     }
 
-    public void updateSoloRankTier(int soloRankTier) {
+    public void updateSoloRankTier(@Nullable Integer soloRankTier) {
         this.soloRankTier = soloRankTier;
     }
 
