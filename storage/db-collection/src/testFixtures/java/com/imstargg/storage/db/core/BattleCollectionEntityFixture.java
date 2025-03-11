@@ -1,147 +1,49 @@
 package com.imstargg.storage.db.core;
 
 import com.imstargg.core.enums.BattleEventMode;
+import com.imstargg.core.enums.BattleResult;
+import com.imstargg.core.enums.BattleType;
+import com.imstargg.test.java.IntegerIncrementUtil;
 import com.imstargg.test.java.LongIncrementUtil;
-import jakarta.annotation.Nullable;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.util.stream.IntStream;
+import java.util.List;
+import java.util.UUID;
 
 public class BattleCollectionEntityFixture {
 
-    @Nullable
-    private String battleKey;
-
-    @Nullable
-    private OffsetDateTime battleTime;
-
-    @Nullable
-    private BattleCollectionEntityEvent event;
-
-    @Nullable
-    private Long eventId;
-
-    @Nullable
-    private String mode;
-
-    @Nullable
-    private String type;
-
-    @Nullable
-    private String result;
-
-    @Nullable
+    private final String battleKey = UUID.randomUUID().toString();
+    private final OffsetDateTime battleTime = OffsetDateTime.now();
+    private final BattleCollectionEntityEvent event = new BattleCollectionEntityEvent(
+            LongIncrementUtil.next(),
+            BattleEventMode.values()[IntegerIncrementUtil.next(BattleEventMode.values().length)].toString(),
+            "map-" + LongIncrementUtil.next()
+    );
+    private final String mode = BattleEventMode.values()[IntegerIncrementUtil.next(BattleEventMode.values().length)].toString();
+    private final String type = BattleType.values()[IntegerIncrementUtil.next(BattleType.values().length)].toString();
+    private final String result = BattleResult.values()[IntegerIncrementUtil.next(BattleResult.values().length)].toString();
     private Integer rank;
-
-    @Nullable
-    private Integer duration;
-
-    @Nullable
-    private String starPlayerBrawlStarsTag;
-
-    @Nullable
-    private PlayerCollectionEntity player;
-
-    @Nullable
-    private Long brawlerId;
-
-    @Nullable
-    private Integer power;
-
-    @Nullable
-    private Integer brawlerTrophies;
-
-    @Nullable
-    private Integer trophyChange;
-
-    @Nullable
-    private Integer trophySnapshot;
-
-    public BattleCollectionEntityFixture battleKey(String battleKey) {
-        this.battleKey = battleKey;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture battleTime(OffsetDateTime battleTime) {
-        this.battleTime = battleTime;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture event(BattleCollectionEntityEvent event) {
-        this.event = event;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture eventId(Long eventId) {
-        this.eventId = eventId;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture mode(String mode) {
-        this.mode = mode;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture type(String type) {
-        this.type = type;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture rank(Integer rank) {
-        this.rank = rank;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture result(String result) {
-        this.result = result;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture duration(int duration) {
-        this.duration = duration;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture starPlayerBrawlStarsTag(String starPlayerBrawlStarsTag) {
-        this.starPlayerBrawlStarsTag = starPlayerBrawlStarsTag;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture player(PlayerCollectionEntity player) {
-        this.player = player;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture brawlerId(Long brawlerId) {
-        this.brawlerId = brawlerId;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture power(Integer power) {
-        this.power = power;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture brawlerTrophies(Integer brawlerTrophies) {
-        this.brawlerTrophies = brawlerTrophies;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture trophyChange(Integer trophyChange) {
-        this.trophyChange = trophyChange;
-        return this;
-    }
-
-    public BattleCollectionEntityFixture trophySnapshot(Integer trophySnapshot) {
-        this.trophySnapshot = trophySnapshot;
-        return this;
-    }
+    private final Integer duration = IntegerIncrementUtil.next();
+    private final String starPlayerBrawlStarsTag = "#TAG" + LongIncrementUtil.next();
+    private final PlayerCollectionEntity player = new PlayerCollectionEntityFixture().build();
+    private final Integer trophyChange = IntegerIncrementUtil.next(14);
+    private final List<List<BattleCollectionEntityTeamPlayer>> teams = List.of(
+        List.of(
+            new BattleCollectionEntityTeamPlayerFixture()
+                .brawlStarsTag(player.getBrawlStarsTag())
+                .name(player.getName())
+                .build(),
+            new BattleCollectionEntityTeamPlayerFixture().build(),
+            new BattleCollectionEntityTeamPlayerFixture().build()
+        ),
+        List.of(
+            new BattleCollectionEntityTeamPlayerFixture().build(),
+            new BattleCollectionEntityTeamPlayerFixture().build(),
+            new BattleCollectionEntityTeamPlayerFixture().build()
+        )
+    );
 
     public BattleCollectionEntity build() {
-        fillRequiredFields();
-
         return new BattleCollectionEntity(
                 battleKey,
                 battleTime,
@@ -156,65 +58,8 @@ public class BattleCollectionEntityFixture {
                         rank,
                         trophyChange
                 ),
-                IntStream.range(0, 3).mapToObj(i ->
-                        IntStream.range(0, 3).mapToObj(j ->
-                                new BattleCollectionEntityTeamPlayerFixture().build()
-                        ).toList()
-                ).toList()
+               teams
         );
     }
 
-    private void fillRequiredFields() {
-        long fillKey = LongIncrementUtil.next();
-
-        if (battleKey == null) {
-            battleKey = "battleKey-" + fillKey;
-        }
-        if (battleTime == null) {
-            battleTime = OffsetDateTime.ofInstant(Instant.now(), ZoneId.systemDefault());
-        }
-        if (event == null) {
-            event = new BattleCollectionEntityEvent(
-                    fillKey,
-                    BattleEventMode.GEM_GRAB.getCode(),
-                    "map-" + fillKey
-            );
-        }
-        if (eventId == null) {
-            eventId = LongIncrementUtil.next();
-        }
-        if (mode == null) {
-            mode = "mode-" + fillKey;
-        }
-        if (type == null) {
-            type = "type-" + fillKey;
-        }
-        if (result == null) {
-            result = "result-" + fillKey;
-        }
-        if (duration == null) {
-            duration = 120;
-        }
-        if (starPlayerBrawlStarsTag == null) {
-            starPlayerBrawlStarsTag = "starPlayerBrawlStarsTag-" + fillKey;
-        }
-        if (player == null) {
-            player = new PlayerCollectionEntityFixture().build();
-        }
-        if (brawlerId == null) {
-            brawlerId = fillKey;
-        }
-        if (power == null) {
-            power = 10;
-        }
-        if (brawlerTrophies == null) {
-            brawlerTrophies = 100;
-        }
-        if (trophyChange == null) {
-            trophyChange = 10;
-        }
-        if (trophySnapshot == null) {
-            trophySnapshot = 100;
-        }
-    }
 }

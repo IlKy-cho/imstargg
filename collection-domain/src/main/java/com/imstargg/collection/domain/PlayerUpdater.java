@@ -47,9 +47,9 @@ public class PlayerUpdater {
         try {
             updatePlayer();
             updatePlayerBattle();
-            updateSoloRankTier();
-            updateLastBattleTime();
             updatePlayerStatus();
+            updateLastBattleTime();
+            updateSoloRankTier();
         } catch (BrawlStarsClientException.NotFound ex) {
             log.info("Player 가 존재하지 않는 것으로 확인되어 삭제. playerTag={}", playerEntity.getBrawlStarsTag());
             playerEntity.deleted();

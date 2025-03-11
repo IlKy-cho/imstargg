@@ -1,41 +1,25 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.test.java.IntegerIncrementUtil;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
 public class PlayerCollectionEntityFixture {
 
-    @Nullable
-    private String brawlStarsTag;
-
-    @Nullable
-    private String name;
-
-    @Nullable
-    private String nameColor;
-
-    private long iconBrawlStarsId;
-
-    private int trophies;
-
-    private int highestTrophies;
-
-    private int expLevel;
-
-    private int expPoints;
-
-    private boolean qualifiedFromChampionshipChallenge;
-
-    private int victories3vs3;
-
-    private int soloVictories;
-
-    private int duoVictories;
-
-    private int bestRoboRumbleTime;
-
-    private int bestTimeAsBigBrawler;
-
+    private String brawlStarsTag = "#TAG" + LongIncrementUtil.next();
+    private String name = "Player" + LongIncrementUtil.next();
+    private String nameColor = "nameColor" + LongIncrementUtil.next();
+    private long iconBrawlStarsId = LongIncrementUtil.next();
+    private int trophies = IntegerIncrementUtil.next();
+    private int highestTrophies = IntegerIncrementUtil.next();
+    private int expLevel = IntegerIncrementUtil.next();
+    private int expPoints = IntegerIncrementUtil.next();
+    private boolean qualifiedFromChampionshipChallenge = false;
+    private int victories3vs3 = IntegerIncrementUtil.next();
+    private int soloVictories = IntegerIncrementUtil.next();
+    private int duoVictories = IntegerIncrementUtil.next();
+    private int bestRoboRumbleTime = IntegerIncrementUtil.next();
+    private int bestTimeAsBigBrawler = IntegerIncrementUtil.next();
     @Nullable
     private String brawlStarsClubTag;
 
@@ -115,7 +99,6 @@ public class PlayerCollectionEntityFixture {
     }
 
     public PlayerCollectionEntity build() {
-        fillRequiredFields();
         return new PlayerCollectionEntity(
             brawlStarsTag,
             name,
@@ -135,18 +118,4 @@ public class PlayerCollectionEntityFixture {
         );
     }
 
-    private void fillRequiredFields() {
-        if (brawlStarsTag == null) {
-            brawlStarsTag = "brawlStarsTag-" + LongIncrementUtil.next();
-        }
-        if (name == null) {
-            name = "name-" + LongIncrementUtil.next();
-        }
-        if (nameColor == null) {
-            nameColor = "nameColor-" + LongIncrementUtil.next();
-        }
-        if (brawlStarsClubTag == null) {
-            brawlStarsClubTag = "brawlStarsClubTag-" + LongIncrementUtil.next();
-        }
-    }
 }
