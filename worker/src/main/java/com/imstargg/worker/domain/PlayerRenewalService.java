@@ -10,18 +10,18 @@ import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public class PlayerRenewer {
+@Service
+public class PlayerRenewalService {
 
-    private static final Logger log = LoggerFactory.getLogger(PlayerRenewer.class);
+    private static final Logger log = LoggerFactory.getLogger(PlayerRenewalService.class);
 
     private final PlayerRepository playerRepository;
     private final PlayerRenewalRepository playerRenewalRepository;
     private final PlayerUpdaterFactory playerUpdaterFactory;
 
-    public PlayerRenewer(
+    public PlayerRenewalService(
             PlayerRepository playerRepository,
             PlayerRenewalRepository playerRenewalRepository,
             PlayerUpdaterFactory playerUpdaterFactory
