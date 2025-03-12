@@ -87,9 +87,9 @@ class EventRotationJobConfig {
         return taskletStepBuilder
                 .tasklet((contribution, chunkContext) -> {
 
-                    BattleEventRotationCollectionEntity rotationEntity = new BattleEventRotationCollectionEntity();
-                    List<BattleEventRotationItemCollectionEntity> rotationItemEntities = new ArrayList<>();
                     try {
+                        BattleEventRotationCollectionEntity rotationEntity = new BattleEventRotationCollectionEntity();
+                        List<BattleEventRotationItemCollectionEntity> rotationItemEntities = new ArrayList<>();
                         List<ScheduledEventResponse> eventResponseList = brawlStarsClient.getEventRotation();
 
                         eventResponseList.stream()
@@ -101,12 +101,11 @@ class EventRotationJobConfig {
                                         response.startTime(),
                                         response.endTime()
                                 )).forEach(rotationItemEntities::add);
-
+                        battleEventRotationJpaRepository.save(rotationEntity);
+                        battleEventRotationItemJpaRepository.saveAll(rotationItemEntities);
                     } catch (BrawlStarsClientException.InMaintenance e) {
                         log.info("Brawl Stars is in maintenance", e);
                     }
-                    battleEventRotationJpaRepository.save(rotationEntity);
-                    battleEventRotationItemJpaRepository.saveAll(rotationItemEntities);
 
                     deleteOldRotation();
                     return RepeatStatus.FINISHED;

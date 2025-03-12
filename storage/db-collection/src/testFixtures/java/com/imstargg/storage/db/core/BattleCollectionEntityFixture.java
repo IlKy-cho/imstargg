@@ -1,6 +1,7 @@
 package com.imstargg.storage.db.core;
 
 import com.imstargg.core.enums.BattleEventMode;
+import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.test.java.IntegerIncrementUtil;
@@ -16,38 +17,19 @@ public class BattleCollectionEntityFixture {
     private OffsetDateTime battleTime = OffsetDateTime.now();
     private BattleCollectionEntityEvent event = new BattleCollectionEntityEvent(
             LongIncrementUtil.next(),
-            BattleEventMode.values()[IntegerIncrementUtil.next(BattleEventMode.values().length)].toString(),
+            BattleEventMode.values()[IntegerIncrementUtil.next(BattleEventMode.values().length)].getCode(),
             "map-" + LongIncrementUtil.next()
     );
-    private String mode = BattleEventMode.values()[IntegerIncrementUtil.next(BattleEventMode.values().length)].toString();
-    private String type = BattleType.values()[IntegerIncrementUtil.next(BattleType.values().length)].toString();
-    private String result = BattleResult.values()[IntegerIncrementUtil.next(BattleResult.values().length)].toString();
-    private Integer rank;
+    private String mode = BattleEventMode.values()[IntegerIncrementUtil.next(BattleEventMode.values().length)].getCode();
+    private String type = BattleType.values()[IntegerIncrementUtil.next(BattleType.values().length)].getCode();
+    private String result = BattleResult.values()[IntegerIncrementUtil.next(BattleResult.values().length)].getCode();
+    private Integer rank = IntegerIncrementUtil.next(10 + 1);
     private Integer trophies = IntegerIncrementUtil.next(10000);
     private Integer trophyChange = IntegerIncrementUtil.next(14);
     private Integer duration = IntegerIncrementUtil.next();
     private String starPlayerBrawlStarsTag = "#TAG" + LongIncrementUtil.next();
     private PlayerCollectionEntity player = new PlayerCollectionEntityFixture().build();
-    private List<List<BattleCollectionEntityTeamPlayer>> teams = List.of(
-            List.of(
-                    new BattleCollectionEntityTeamPlayerFixture()
-                            .brawlStarsTag(player.getBrawlStarsTag())
-                            .name(player.getName())
-                            .brawler(new BattleCollectionEntityTeamPlayerBrawlerFixture()
-                                    .trophies(trophies)
-                                    .trophyChange(trophyChange)
-                                    .build()
-                            )
-                            .build(),
-                    new BattleCollectionEntityTeamPlayerFixture().build(),
-                    new BattleCollectionEntityTeamPlayerFixture().build()
-            ),
-            List.of(
-                    new BattleCollectionEntityTeamPlayerFixture().build(),
-                    new BattleCollectionEntityTeamPlayerFixture().build(),
-                    new BattleCollectionEntityTeamPlayerFixture().build()
-            )
-    );
+    private List<List<BattleCollectionEntityTeamPlayer>> teams;
 
     public BattleCollectionEntityFixture battleTime(OffsetDateTime battleTime) {
         this.battleTime = battleTime;
@@ -59,18 +41,18 @@ public class BattleCollectionEntityFixture {
         return this;
     }
 
-    public BattleCollectionEntityFixture mode(String mode) {
-        this.mode = mode;
+    public BattleCollectionEntityFixture mode(BattleMode mode) {
+        this.mode = mode.getCode();
         return this;
     }
 
-    public BattleCollectionEntityFixture type(String type) {
-        this.type = type;
+    public BattleCollectionEntityFixture type(BattleType type) {
+        this.type = type.getCode();
         return this;
     }
 
-    public BattleCollectionEntityFixture result(String result) {
-        this.result = result;
+    public BattleCollectionEntityFixture result(BattleResult result) {
+        this.result = result.getCode();
         return this;
     }
 
@@ -124,8 +106,30 @@ public class BattleCollectionEntityFixture {
                         rank,
                         trophyChange
                 ),
-                teams
+                teams != null ? teams : defaultTeams()
         );
     }
 
+    private List<List<BattleCollectionEntityTeamPlayer>> defaultTeams() {
+        return List.of(
+                List.of(
+                        new BattleCollectionEntityTeamPlayerFixture()
+                                .brawlStarsTag(player.getBrawlStarsTag())
+                                .name(player.getName())
+                                .brawler(new BattleCollectionEntityTeamPlayerBrawlerFixture()
+                                        .trophies(trophies)
+                                        .trophyChange(trophyChange)
+                                        .build()
+                                )
+                                .build(),
+                        new BattleCollectionEntityTeamPlayerFixture().build(),
+                        new BattleCollectionEntityTeamPlayerFixture().build()
+                ),
+                List.of(
+                        new BattleCollectionEntityTeamPlayerFixture().build(),
+                        new BattleCollectionEntityTeamPlayerFixture().build(),
+                        new BattleCollectionEntityTeamPlayerFixture().build()
+                )
+        );
+    }
 }
