@@ -29,18 +29,12 @@ public class PlayerRepository {
         this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
     }
 
-    @Transactional
-    public Optional<PlayerCollectionEntity> find(String brawlStarsTag) {
-        return playerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag)
-                .map(player -> {
-                    player.initializeBrawlStarsIdToBrawler();
-                    return player;
-                });
+    public Optional<PlayerCollectionEntity> findPlayer(String brawlStarsTag) {
+        return playerJpaRepository.findVersionedWithBrawlersByBrawlStarsTag(brawlStarsTag);
     }
 
-    @Transactional
-    public Optional<UnknownPlayerCollectionEntity> findUnknown(String brawlStarsTag) {
-        return unknownPlayerJpaRepository.findWithOptimisticLockByBrawlStarsTag(brawlStarsTag);
+    public Optional<UnknownPlayerCollectionEntity> findUnknownPlayer(String brawlStarsTag) {
+        return unknownPlayerJpaRepository.findVersionedByBrawlStarsTag(brawlStarsTag);
     }
 
     public PlayerCollectionEntity save(PlayerCollectionEntity player) {
