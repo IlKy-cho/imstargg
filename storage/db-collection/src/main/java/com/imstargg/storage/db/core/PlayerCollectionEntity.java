@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.PlayerStatus;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.CascadeType;
@@ -19,9 +20,11 @@ import java.time.Clock;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -195,27 +198,48 @@ public class PlayerCollectionEntity extends BaseEntity {
                 .collect(Collectors.toMap(PlayerBrawlerCollectionEntity::getBrawlerBrawlStarsId, Function.identity()));
     }
 
-    public void playerUpdated(Clock clock) {
+    public void playerUpdated(Clock clock, List<BattleCollectionEntity> battles) {
         if (this.status == PlayerStatus.DELETED) {
             return;
         }
 
-        if (durationBetweenLastBattleUpdated(OffsetDateTime.now(clock)).toDays() > 30) {
+        updateLatestBattleTime(battles);
+        updateStatus(clock);
+        updateSoloRankTier(battles);
+    }
+
+    private void updateLatestBattleTime(List<BattleCollectionEntity> battles) {
+        battles.stream()
+                .map(BattleCollectionEntity::getBattleTime)
+                .max(Comparator.naturalOrder())
+                .ifPresent(battleTime -> this.latestBattleTime = battleTime);
+    }
+
+    private void updateStatus(Clock clock) {
+        if (durationBetweenLastBattle(clock).toDays() > 30) {
             this.status = PlayerStatus.DORMANT;
         } else {
             this.status = PlayerStatus.PLAYER_UPDATED;
         }
     }
 
-    private Duration durationBetweenLastBattleUpdated(OffsetDateTime now) {
-        return Duration.between(
-                latestBattleTime != null ? latestBattleTime : getCreatedAt(),
-                now
-        );
+    private void updateSoloRankTier(List<BattleCollectionEntity> battles) {
+        battles
+                .stream()
+                .filter(battle -> Objects.equals(battle.getType(), BattleType.SOLO_RANKED.getCode()))
+                .max(Comparator.comparing(BattleCollectionEntity::getBattleTime))
+                .map(battle -> battle.findMe().getFirst())
+                .ifPresent(latestSoloRankBattlePlayer ->
+                        this.soloRankTier = latestSoloRankBattlePlayer.getBrawler().getTrophies()
+                );
     }
 
-    public void deleted() {
-        this.status = PlayerStatus.DELETED;
+    private Duration durationBetweenLastBattle(Clock clock) {
+        OffsetDateTime now = OffsetDateTime.now(clock);
+        OffsetDateTime latestBattleTimeOrNow = Optional.ofNullable(latestBattleTime)
+                .or(() -> Optional.ofNullable(getCreatedAt()))
+                .orElse(now);
+        return Duration.between(latestBattleTimeOrNow, now);
     }
 
     public boolean update(
@@ -270,16 +294,8 @@ public class PlayerCollectionEntity extends BaseEntity {
         return updated;
     }
 
-    public void updateSoloRankTier(@Nullable Integer soloRankTier) {
-        this.soloRankTier = soloRankTier;
-    }
-
-    public void updateLatestBattleTime(OffsetDateTime latestBattleTime) {
-        this.latestBattleTime = latestBattleTime;
-    }
-
-    public void ai() {
-        this.status = PlayerStatus.AI;
+    public void deleted() {
+        this.status = PlayerStatus.DELETED;
     }
 
     public void dormantReturned() {
@@ -362,5 +378,10 @@ public class PlayerCollectionEntity extends BaseEntity {
     @Nullable
     public OffsetDateTime getLatestBattleTime() {
         return latestBattleTime;
+    }
+
+    @Nullable
+    public Integer getSoloRankTier() {
+        return soloRankTier;
     }
 }
