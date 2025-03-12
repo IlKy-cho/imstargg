@@ -3,7 +3,7 @@ package com.imstargg.worker.handler;
 import com.imstargg.core.event.PlayerRenewalEvent;
 import com.imstargg.support.alert.AlertCommand;
 import com.imstargg.support.alert.AlertManager;
-import com.imstargg.worker.domain.PlayerRenewer;
+import com.imstargg.worker.domain.PlayerRenewalService;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +15,11 @@ class PlayerRenewalEventHandler {
     private static final Logger log = LoggerFactory.getLogger(PlayerRenewalEventHandler.class);
 
     private final AlertManager alertManager;
-    private final PlayerRenewer playerRenewer;
+    private final PlayerRenewalService playerRenewalService;
 
-    public PlayerRenewalEventHandler(AlertManager alertManager, PlayerRenewer playerRenewer) {
+    public PlayerRenewalEventHandler(AlertManager alertManager, PlayerRenewalService playerRenewalService) {
         this.alertManager = alertManager;
-        this.playerRenewer = playerRenewer;
+        this.playerRenewalService = playerRenewalService;
     }
 
     @SqsListener(
@@ -29,7 +29,7 @@ class PlayerRenewalEventHandler {
     void handlePlayerRenewalEvent(PlayerRenewalEvent event) {
         log.debug("플레이어 갱신 이벤트 수신 event={}", event);
         try {
-            playerRenewer.renew(event.tag());
+            playerRenewalService.renew(event.tag());
             log.debug("플레이어 갱신 완료 tag={}", event.tag());
         } catch (Exception ex) {
             log.error("플레이어 갱신 중 예외 발생. tag={}", event.tag(), ex);
