@@ -20,30 +20,32 @@ public class PlayerRenewalService {
     private final PlayerFinder playerFinder;
     private final PlayerRepository playerRepository;
     private final PlayerRenewalRepository playerRenewalRepository;
+    private final PlayerRenewalReader playerRenewalReader;
     private final PlayerUpdaterFactory playerUpdaterFactory;
 
     public PlayerRenewalService(
             PlayerFinder playerFinder,
             PlayerRepository playerRepository,
             PlayerRenewalRepository playerRenewalRepository,
+            PlayerRenewalReader playerRenewalReader,
             PlayerUpdaterFactory playerUpdaterFactory
     ) {
         this.playerFinder = playerFinder;
         this.playerRepository = playerRepository;
         this.playerRenewalRepository = playerRenewalRepository;
+        this.playerRenewalReader = playerRenewalReader;
         this.playerUpdaterFactory = playerUpdaterFactory;
     }
 
     public void renew(String tag) {
-        PlayerRenewalCollectionEntity playerRenewalEntity = playerRenewalRepository.find(tag)
-                .orElseThrow(() -> new IllegalStateException("플레이어 갱신 정보가 존재하지 않습니다. tag=" + tag));
-        if (PlayerRenewalStatus.PENDING != playerRenewalEntity.getStatus()) {
+        PlayerRenewalCollectionEntity playerRenewal = playerRenewalReader.get(tag);
+        if (PlayerRenewalStatus.PENDING != playerRenewal.getStatus()) {
             log.warn("플레이어 갱신 상태가 PENDING이 아니므로 갱신하지 않습니다. tag={}", tag);
             return;
         }
 
         try {
-            playerRenewalRepository.executing(playerRenewalEntity);
+            playerRenewalRepository.executing(playerRenewal);
             playerFinder.findPlayer(tag).ifPresentOrElse(
                     this::renewPlayer,
                     () -> playerFinder.findUnknownPlayer(tag).ifPresentOrElse(
@@ -54,11 +56,11 @@ public class PlayerRenewalService {
                     )
             );
 
-            playerRenewalRepository.complete(playerRenewalEntity);
+            playerRenewalRepository.complete(playerRenewal);
         } catch (BrawlStarsClientException.InMaintenance e) {
-            playerRenewalRepository.inMaintenance(playerRenewalEntity);
+            playerRenewalRepository.inMaintenance(playerRenewal);
         } catch (Exception e) {
-            playerRenewalRepository.failed(playerRenewalEntity);
+            playerRenewalRepository.failed(playerRenewal);
             throw e;
         }
     }

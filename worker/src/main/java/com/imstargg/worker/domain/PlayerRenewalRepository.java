@@ -5,8 +5,6 @@ import com.imstargg.storage.db.core.PlayerRenewalCollectionJpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Component
 public class PlayerRenewalRepository {
 
@@ -14,10 +12,6 @@ public class PlayerRenewalRepository {
 
     public PlayerRenewalRepository(PlayerRenewalCollectionJpaRepository playerRenewalCollectionJpaRepository) {
         this.playerRenewalCollectionJpaRepository = playerRenewalCollectionJpaRepository;
-    }
-
-    public Optional<PlayerRenewalCollectionEntity> find(String tag) {
-        return playerRenewalCollectionJpaRepository.findByBrawlStarsTag(tag);
     }
 
     @Transactional
