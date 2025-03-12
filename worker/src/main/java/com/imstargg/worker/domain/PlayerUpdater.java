@@ -7,18 +7,17 @@ import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Component
-public class PlayerRepository {
+public class PlayerUpdater {
 
     private final PlayerCollectionJpaRepository playerJpaRepository;
     private final BattleCollectionJpaRepository battleJpaRepository;
     private final UnknownPlayerCollectionJpaRepository unknownPlayerJpaRepository;
 
-    public PlayerRepository(
+    public PlayerUpdater(
             PlayerCollectionJpaRepository playerJpaRepository,
             BattleCollectionJpaRepository battleJpaRepository,
             UnknownPlayerCollectionJpaRepository unknownPlayerJpaRepository
@@ -28,22 +27,15 @@ public class PlayerRepository {
         this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
     }
 
-    public PlayerCollectionEntity save(PlayerCollectionEntity player) {
-        return playerJpaRepository.save(player);
+    public void update(UnknownPlayerCollectionEntity unknownPlayer) {
+        unknownPlayerJpaRepository.save(unknownPlayer);
     }
 
-    @Transactional
     public void update(PlayerCollectionEntity player, List<BattleCollectionEntity> battles) {
         playerJpaRepository.save(player);
         battleJpaRepository.saveAll(battles);
     }
 
-    @Transactional
-    public void update(UnknownPlayerCollectionEntity unknownPlayer) {
-        unknownPlayerJpaRepository.save(unknownPlayer);
-    }
-
-    @Transactional
     public void update(
             UnknownPlayerCollectionEntity unknownPlayer,
             PlayerCollectionEntity player,
@@ -53,5 +45,4 @@ public class PlayerRepository {
         playerJpaRepository.save(player);
         battleJpaRepository.saveAll(battles);
     }
-
 }
