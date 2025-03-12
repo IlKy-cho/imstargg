@@ -17,15 +17,18 @@ public class PlayerRenewalService {
 
     private static final Logger log = LoggerFactory.getLogger(PlayerRenewalService.class);
 
+    private final PlayerFinder playerFinder;
     private final PlayerRepository playerRepository;
     private final PlayerRenewalRepository playerRenewalRepository;
     private final PlayerUpdaterFactory playerUpdaterFactory;
 
     public PlayerRenewalService(
+            PlayerFinder playerFinder,
             PlayerRepository playerRepository,
             PlayerRenewalRepository playerRenewalRepository,
             PlayerUpdaterFactory playerUpdaterFactory
     ) {
+        this.playerFinder = playerFinder;
         this.playerRepository = playerRepository;
         this.playerRenewalRepository = playerRenewalRepository;
         this.playerUpdaterFactory = playerUpdaterFactory;
@@ -41,9 +44,9 @@ public class PlayerRenewalService {
 
         try {
             playerRenewalRepository.executing(playerRenewalEntity);
-            playerRepository.findPlayer(tag).ifPresentOrElse(
+            playerFinder.findPlayer(tag).ifPresentOrElse(
                     this::renewPlayer,
-                    () -> playerRepository.findUnknownPlayer(tag).ifPresentOrElse(
+                    () -> playerFinder.findUnknownPlayer(tag).ifPresentOrElse(
                             this::renewNewPlayer,
                             () -> {
                                 throw new IllegalStateException("플레이어 정보가 존재하지 않습니다. tag=" + tag);

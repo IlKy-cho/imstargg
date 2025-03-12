@@ -9,8 +9,5 @@ import java.util.Optional;
 public interface UnknownPlayerCollectionJpaRepository extends JpaRepository<UnknownPlayerCollectionEntity, Long> {
 
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    Optional<UnknownPlayerCollectionEntity> findWithOptimisticLockById(Long id);
-
-    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    Optional<UnknownPlayerCollectionEntity> findWithOptimisticLockByBrawlStarsTag(String brawlStarsTag);
+    Optional<UnknownPlayerCollectionEntity> findVersionedByBrawlStarsTag(String brawlStarsTag);
 }
