@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class PlayerRepository {
@@ -27,14 +26,6 @@ public class PlayerRepository {
         this.playerJpaRepository = playerJpaRepository;
         this.battleJpaRepository = battleJpaRepository;
         this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
-    }
-
-    public Optional<PlayerCollectionEntity> findPlayer(String brawlStarsTag) {
-        return playerJpaRepository.findVersionedWithBrawlersByBrawlStarsTag(brawlStarsTag);
-    }
-
-    public Optional<UnknownPlayerCollectionEntity> findUnknownPlayer(String brawlStarsTag) {
-        return unknownPlayerJpaRepository.findVersionedByBrawlStarsTag(brawlStarsTag);
     }
 
     public PlayerCollectionEntity save(PlayerCollectionEntity player) {
