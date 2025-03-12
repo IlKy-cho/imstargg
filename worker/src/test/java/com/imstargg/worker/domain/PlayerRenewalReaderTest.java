@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Import(PlayerRenewalReader.class)
 class PlayerRenewalReaderTest extends AbstractDataJpaTest {
@@ -37,6 +38,11 @@ class PlayerRenewalReaderTest extends AbstractDataJpaTest {
 
     @Test
     void 플레이어_갱신정보가_존재하지_않으면_예외가_발생한다() {
+        // given
+        String brawlStarsTag = "#12345";
 
+        // when & then
+        assertThatThrownBy(() -> playerRenewalReader.get(brawlStarsTag))
+                .isInstanceOf(IllegalStateException.class);
     }
 }
