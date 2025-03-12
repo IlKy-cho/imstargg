@@ -41,9 +41,9 @@ public class PlayerRenewalService {
 
         try {
             playerRenewalRepository.executing(playerRenewalEntity);
-            playerRepository.find(tag).ifPresentOrElse(
+            playerRepository.findPlayer(tag).ifPresentOrElse(
                     this::renewPlayer,
-                    () -> playerRepository.findUnknown(tag).ifPresentOrElse(
+                    () -> playerRepository.findUnknownPlayer(tag).ifPresentOrElse(
                             this::renewNewPlayer,
                             () -> {
                                 throw new IllegalStateException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
