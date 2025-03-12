@@ -38,8 +38,7 @@ public class PlayerRenewalService {
         }
 
         try {
-            playerRenewal.executing();
-            playerRenewalUpdater.update(playerRenewal);
+            playerRenewalUpdater.executing(playerRenewal);
             playerFinder.findPlayer(tag).ifPresentOrElse(
                     playerRenewalProcessor::renewPlayer,
                     () -> playerFinder.findUnknownPlayer(tag).ifPresentOrElse(
@@ -50,16 +49,14 @@ public class PlayerRenewalService {
                     )
             );
 
-            playerRenewal.complete();
+            playerRenewalUpdater.complete(playerRenewal);
         } catch (BrawlStarsClientException.InMaintenance e) {
-            playerRenewal.inMaintenance();
+            playerRenewalUpdater.inMaintenance(playerRenewal);
         } catch (OptimisticLockingFailureException e) {
             log.warn("플레이어가 이미 갱신 중입니다. tag={}", tag);
         } catch (Exception e) {
-            playerRenewal.failed();
+            playerRenewalUpdater.failed(playerRenewal);
             throw e;
-        } finally {
-            playerRenewalUpdater.update(playerRenewal);
         }
     }
 
