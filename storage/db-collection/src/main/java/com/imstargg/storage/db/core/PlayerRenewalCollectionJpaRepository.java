@@ -11,7 +11,8 @@ import java.util.Optional;
 
 public interface PlayerRenewalCollectionJpaRepository extends JpaRepository<PlayerRenewalCollectionEntity, Long> {
 
-    Optional<PlayerRenewalCollectionEntity> findByBrawlStarsTag(String brawlStarsTag);
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
+    Optional<PlayerRenewalCollectionEntity> findVersionedByBrawlStarsTag(String brawlStarsTag);
 
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     Optional<PlayerRenewalCollectionEntity> findWithOptimisticLockById(Long id);
