@@ -13,7 +13,23 @@ public class PlayerRenewalUpdater {
         this.playerRenewalCollectionJpaRepository = playerRenewalCollectionJpaRepository;
     }
 
-    public void update(PlayerRenewalCollectionEntity playerRenewalEntity) {
+    public void executing(PlayerRenewalCollectionEntity playerRenewalEntity) {
+        playerRenewalEntity.executing();
+        playerRenewalCollectionJpaRepository.save(playerRenewalEntity);
+    }
+
+    public void complete(PlayerRenewalCollectionEntity playerRenewalEntity) {
+        playerRenewalEntity.complete();
+        playerRenewalCollectionJpaRepository.save(playerRenewalEntity);
+    }
+
+    public void inMaintenance(PlayerRenewalCollectionEntity playerRenewalEntity) {
+        playerRenewalEntity.inMaintenance();
+        playerRenewalCollectionJpaRepository.save(playerRenewalEntity);
+    }
+
+    public void failed(PlayerRenewalCollectionEntity playerRenewalEntity) {
+        playerRenewalEntity.failed();
         playerRenewalCollectionJpaRepository.save(playerRenewalEntity);
     }
 }
