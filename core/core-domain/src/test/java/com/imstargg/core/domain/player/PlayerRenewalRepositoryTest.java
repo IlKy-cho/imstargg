@@ -29,13 +29,11 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
 
     @BeforeEach
     void setUp() {
-        clock = Clock.fixed(Instant.parse("2024-01-01T00:00:00Z"), ZoneId.systemDefault());
+        clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
         playerRenewalRepository = new PlayerRenewalRepository(
                 clock,
-                playerRenewalJpaRepository,
-                new PlayerRenewalRepository.Inner(clock, playerRenewalJpaRepository)
+                playerRenewalJpaRepository
         );
-        playerRenewalJpaRepository.deleteAll();
     }
 
     @Test
