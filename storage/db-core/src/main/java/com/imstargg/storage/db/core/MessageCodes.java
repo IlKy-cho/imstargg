@@ -43,16 +43,5 @@ public abstract class MessageCodes {
         public String code(T key) {
             return template.replace(keyPlaceholder, key.toString()).toLowerCase();
         }
-
-        public String key(String code) {
-            int codeKeyIndex = template.indexOf(keyPlaceholder);
-            String prefix = template.substring(0, codeKeyIndex);
-            String suffix = template.substring(codeKeyIndex + keyPlaceholder.length());
-            if (code.startsWith(prefix) && code.endsWith(suffix)) {
-                return code.substring(prefix.length(), code.length() - suffix.length());
-            } else {
-                throw new IllegalArgumentException("코드가 올바르지 않습니다. code: " + code);
-            }
-        }
     }
 }
