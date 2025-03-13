@@ -70,4 +70,54 @@ class MessageCollectionTest {
         // then
         assertThat(found).isEmpty();
     }
+
+    @Test
+    void 기본메시지_생성() {
+        // given
+        String code = "TEST_CODE";
+        String content = "기본 메시지";
+
+        // when
+        MessageCollection collection = MessageCollection.newDefault(code, content);
+
+        // then
+        assertThat(collection.code()).isEqualTo(code);
+        assertThat(collection.messages())
+                .hasSize(1)
+                .containsEntry(Language.DEFAULT, new Message(Language.DEFAULT, content));
+    }
+
+    @Test
+    void 빈_컬렉션의_경우_기본_메시지를_설정할_수_있다() {
+        // given
+        String code = "TEST_CODE";
+        String content = "기본 메시지";
+        MessageCollection collection = new MessageCollection(code, List.of());
+
+        // when
+        MessageCollection updatedCollection = collection.defaultMessage(content);
+
+        // then
+        assertThat(updatedCollection.code()).isEqualTo(code);
+        assertThat(updatedCollection.messages())
+                .hasSize(1)
+                .containsEntry(Language.DEFAULT, new Message(Language.DEFAULT, content));
+    }
+
+    @Test
+    void 컬렉션이_비어있지_않을_경우_기본_메시지를_설정할_수_없다() {
+        // given
+        String code = "TEST_CODE";
+        String content = "기본 메시지";
+        MessageCollection collection = new MessageCollection(code, List.of(new Message(Language.KOREAN, "한글 메시지")));
+
+        // when
+        MessageCollection updatedCollection = collection.defaultMessage(content);
+
+        // then
+        assertThat(updatedCollection.code()).isEqualTo(code);
+        assertThat(updatedCollection.messages())
+                .hasSize(1)
+                .containsEntry(Language.KOREAN, new Message(Language.KOREAN, "한글 메시지"));
+    }
 }
