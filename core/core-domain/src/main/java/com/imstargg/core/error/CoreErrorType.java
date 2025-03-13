@@ -14,6 +14,7 @@ public enum CoreErrorType {
     PLAYER_RENEWAL_UNAVAILABLE(CoreErrorKind.FORBIDDEN, "현재 플레이어 갱신이 불가능 합니다. 잠시후에 다시 시도해주세요.", INFO),
     PLAYER_RENEWAL_TOO_MANY(CoreErrorKind.UNAVAILABLE,
             "플레이어 갱신 요청이 많아 처리가 불가능합니다. 잠시후에 다시 시도해주세요.", WARN),
+    PLAYER_ALREADY_EXISTS(CoreErrorKind.VALIDATION_FAILED, "플레이어가 이미 존재합니다.", INFO),
 
     CLUB_NOT_FOUND(CoreErrorKind.NOT_FOUND, "클럽을 찾을 수 없습니다.", INFO),
 
