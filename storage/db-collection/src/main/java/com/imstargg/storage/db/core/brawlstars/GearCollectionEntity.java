@@ -2,6 +2,7 @@ package com.imstargg.storage.db.core.brawlstars;
 
 import com.imstargg.core.enums.GearRarity;
 import com.imstargg.storage.db.core.BaseEntity;
+import com.imstargg.storage.db.core.MessageCodes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,7 +37,7 @@ public class GearCollectionEntity extends BaseEntity {
     public GearCollectionEntity(long brawlStarsId, GearRarity rarity) {
         this.brawlStarsId = brawlStarsId;
         this.rarity = rarity;
-        this.nameMessageCode = "gear." + brawlStarsId + ".name";
+        this.nameMessageCode = MessageCodes.GEAR_NAME.code(brawlStarsId);
     }
 
     public Long getId() {

@@ -1,6 +1,7 @@
 package com.imstargg.storage.db.core.brawlstars;
 
 import com.imstargg.storage.db.core.BaseEntity;
+import com.imstargg.storage.db.core.MessageCodes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ public class GadgetCollectionEntity extends BaseEntity {
     public GadgetCollectionEntity(long brawlStarsId, long brawlerBrawlStarsId) {
         this.brawlStarsId = brawlStarsId;
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
-        this.nameMessageCode = "gadget." + brawlStarsId + ".name";
+        this.nameMessageCode = MessageCodes.GADGET_NAME.code(brawlStarsId);
     }
 
     public Long getId() {
