@@ -45,7 +45,8 @@ class MessageRepositoryTest extends AbstractDataJpaTest {
         assertThat(collection.code()).isEqualTo(code);
         assertThat(collection.messages())
                 .hasSize(2)
-                .containsKeys(Language.KOREAN, Language.ENGLISH);
+                .containsEntry(Language.KOREAN, new Message(Language.KOREAN, "한글 메시지"))
+                .containsEntry(Language.ENGLISH, new Message(Language.ENGLISH, "English message"));
     }
 
     @Test
@@ -81,16 +82,14 @@ class MessageRepositoryTest extends AbstractDataJpaTest {
         assertThat(collections.get(0).code()).isEqualTo(code1);
         assertThat(collections.get(0).messages())
                 .hasSize(2)
-                .containsKeys(Language.KOREAN, Language.ENGLISH)
-                .containsValues(
-                        new Message(Language.KOREAN, "첫번째 메시지"),
-                        new Message(Language.ENGLISH, "First message")
-                );
+                .containsEntry(Language.KOREAN, new Message(Language.KOREAN, "첫번째 메시지"))
+                .containsEntry(Language.ENGLISH, new Message(Language.ENGLISH, "First message"))
+                ;
         assertThat(collections.get(1).code()).isEqualTo(code2);
         assertThat(collections.get(1).messages())
                 .hasSize(1)
-                .containsKeys(Language.KOREAN)
-                .containsValues(new Message(Language.KOREAN, "두번째 메시지"));
+                .containsEntry(Language.KOREAN, new Message(Language.KOREAN, "두번째 메시지"))
+                ;
         assertThat(collections.get(2).code()).isEqualTo(code3);
         assertThat(collections.get(2).messages())
                 .describedAs("메시지가 없는 컬렉션은 빈 리스트로 반환되어야 한다.")
