@@ -12,10 +12,13 @@ import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.SoloRankTier;
+import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.BattleEntity;
 import com.imstargg.storage.db.core.BattleEntityTeamPlayer;
 import com.imstargg.storage.db.core.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
+import com.imstargg.storage.db.core.PlayerEntity;
+import com.imstargg.storage.db.core.PlayerJpaRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
@@ -32,21 +35,27 @@ public class BattleRepository {
 
     private static final int PAGE_SIZE = 25;
 
+    private final PlayerJpaRepository playerJpaRepository;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventRepositoryWithCache battleEventRepository;
 
     public BattleRepository(
+            PlayerJpaRepository playerJpaRepository,
             BattleJpaRepository battleJpaRepository,
             BattleEventRepositoryWithCache battleEventRepository
     ) {
+        this.playerJpaRepository = playerJpaRepository;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventRepository = battleEventRepository;
     }
 
     public Slice<PlayerBattle> find(Player player, int page) {
+        PlayerEntity playerEntity = playerJpaRepository
+                .findByBrawlStarsTagAndDeletedFalse(player.tag().value())
+                .orElseThrow(() -> new CoreException("Player not found. tag=" + player.tag()));
         var battleEntitySlice = battleJpaRepository
                 .findAllByPlayerPlayerIdAndDeletedFalseOrderByBattleTimeDesc(
-                        player.id().value(), PageRequest.of(page - 1, PAGE_SIZE));
+                        playerEntity.getId(), PageRequest.of(page - 1, PAGE_SIZE));
 
         Map<BrawlStarsId, BattleEvent> eventIdToEvent = findEventIdToEvent(
                 battleEntitySlice.getContent());
