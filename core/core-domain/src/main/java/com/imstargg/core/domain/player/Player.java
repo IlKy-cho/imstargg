@@ -9,7 +9,6 @@ import java.time.Clock;
 import java.time.OffsetDateTime;
 
 public record Player(
-        PlayerId id,
         BrawlStarsTag tag,
         String name,
         String nameColor,

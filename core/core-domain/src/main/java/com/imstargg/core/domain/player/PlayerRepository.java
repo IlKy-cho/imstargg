@@ -39,7 +39,6 @@ public class PlayerRepository {
 
     private Player mapEntityToPlayer(PlayerEntity entity) {
         return new Player(
-                new PlayerId(entity.getId()),
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getName(),
                 entity.getNameColor(),

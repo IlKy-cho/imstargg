@@ -13,7 +13,6 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerFixture {
 
-    private PlayerId id = new PlayerId(LongIncrementUtil.next());
     private BrawlStarsTag tag = new BrawlStarsTag("#TAG" + LongIncrementUtil.next());
     private String name = "Player" + LongIncrementUtil.next();
     private String nameColor = "nameColor" + LongIncrementUtil.next();
@@ -26,11 +25,6 @@ public class PlayerFixture {
     private BrawlStarsTag clubTag = new BrawlStarsTag("CLUB" + LongIncrementUtil.next());
     private OffsetDateTime updatedAt = OffsetDateTime.now(Clock.systemUTC());
     private PlayerStatus status = PlayerStatus.values()[IntegerIncrementUtil.next(PlayerStatus.values().length)];
-
-    public PlayerFixture id(PlayerId id) {
-        this.id = id;
-        return this;
-    }
 
     public PlayerFixture tag(BrawlStarsTag tag) {
         this.tag = tag;
@@ -83,6 +77,6 @@ public class PlayerFixture {
     }
 
     public Player build() {
-        return new Player(id, tag, name, nameColor, iconId, trophies, highestTrophies, soloRankTier, clubTag, updatedAt, status);
+        return new Player(tag, name, nameColor, iconId, trophies, highestTrophies, soloRankTier, clubTag, updatedAt, status);
     }
 } 
