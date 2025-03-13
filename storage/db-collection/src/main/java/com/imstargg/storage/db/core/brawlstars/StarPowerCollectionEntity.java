@@ -1,6 +1,7 @@
 package com.imstargg.storage.db.core.brawlstars;
 
 import com.imstargg.storage.db.core.BaseEntity;
+import com.imstargg.storage.db.core.MessageCodes;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +34,7 @@ public class StarPowerCollectionEntity extends BaseEntity {
     public StarPowerCollectionEntity(long brawlStarsId, long brawlerBrawlStarsId) {
         this.brawlStarsId = brawlStarsId;
         this.brawlerBrawlStarsId = brawlerBrawlStarsId;
-        this.nameMessageCode = "starpower." + brawlStarsId + ".name";
+        this.nameMessageCode = MessageCodes.STAR_POWER_NAME.code(brawlStarsId);
     }
 
     public Long getId() {

@@ -48,7 +48,8 @@ public class GadgetRepositoryWithCache {
         Map<String, MessageCollection> codeToMessageCollection = messageRepository.getCollectionList(
                 brawlerBrawlStarsIdToGadgetEntities.values().stream()
                         .flatMap(List::stream)
-                        .map(GadgetEntity::getNameMessageCode)
+                        .map(GadgetEntity::getBrawlStarsId)
+                        .map(BrawlStarsImageType.GADGET::code)
                         .toList()
         ).stream().collect(toMap(MessageCollection::code, Function.identity()));
         Map<String, BrawlStarsImageEntity> codeToImageEntity = brawlStarsImageJpaRepository.findAllByCodeIn(
