@@ -32,7 +32,8 @@ public class PlayerRenewalRepository {
 
         return new PlayerRenewal(
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
-                entity.getStatus()
+                entity.getStatus(),
+                entity.getCreatedAt()
         );
     }
 
@@ -40,7 +41,8 @@ public class PlayerRenewalRepository {
         return playerRenewalJpaRepository.findByBrawlStarsTag(tag.value())
                 .map(entity -> new PlayerRenewal(
                         new BrawlStarsTag(entity.getBrawlStarsTag()),
-                        entity.getStatus()
+                        entity.getStatus(),
+                        entity.getCreatedAt()
                 ));
     }
 
