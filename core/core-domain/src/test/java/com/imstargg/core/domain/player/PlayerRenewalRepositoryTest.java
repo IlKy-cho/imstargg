@@ -9,10 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.Clock;
-import java.time.Instant;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,13 +21,9 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
     @Autowired
     private PlayerRenewalJpaRepository playerRenewalJpaRepository;
 
-    private Clock clock;
-
     @BeforeEach
     void setUp() {
-        clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
         playerRenewalRepository = new PlayerRenewalRepository(
-                clock,
                 playerRenewalJpaRepository
         );
     }
@@ -40,7 +32,7 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
     void get_존재하는_태그_조회() {
         // given
         String tag = "#123";
-        PlayerRenewalEntity entity = new PlayerRenewalEntity(tag, OffsetDateTime.now(clock));
+        PlayerRenewalEntity entity = new PlayerRenewalEntity(tag);
         playerRenewalJpaRepository.save(entity);
 
         // when
@@ -68,7 +60,7 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
     void find_존재하는_태그_조회() {
         // given
         String tag = "#123";
-        PlayerRenewalEntity entity = new PlayerRenewalEntity(tag, OffsetDateTime.now(clock));
+        PlayerRenewalEntity entity = new PlayerRenewalEntity(tag);
         playerRenewalJpaRepository.save(entity);
 
         // when
@@ -96,12 +88,11 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
     void pending_성공() {
         // given
         String tag = "#123";
-        PlayerRenewalEntity entity = new PlayerRenewalEntity(tag, OffsetDateTime.now(clock));
+        PlayerRenewalEntity entity = new PlayerRenewalEntity(tag);
         playerRenewalJpaRepository.save(entity);
         PlayerRenewal playerRenewal = new PlayerRenewal(
                 new BrawlStarsTag(tag),
-                PlayerRenewalStatus.COMPLETE,
-                OffsetDateTime.now(clock)
+                PlayerRenewalStatus.COMPLETE
         );
 
         // when
@@ -117,10 +108,10 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
     void countRenewing_갱신중인_플레이어_수_조회() {
         // given
         List<PlayerRenewalEntity> entities = List.of(
-                new PlayerRenewalEntity("#1", OffsetDateTime.now(clock)), // NEW
-                new PlayerRenewalEntity("#2", OffsetDateTime.now(clock))  // PENDING
+                new PlayerRenewalEntity("#1"), // NEW
+                new PlayerRenewalEntity("#2")  // PENDING
         );
-        entities.get(1).pending(OffsetDateTime.now(clock));
+        entities.get(1).pending();
         playerRenewalJpaRepository.saveAll(entities);
 
         // when
