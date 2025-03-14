@@ -5,7 +5,7 @@ import com.imstargg.core.domain.BrawlStarsId;
 import java.util.List;
 
 public record PlayerBrawler(
-        BrawlStarsId brawlStarsId,
+        BrawlStarsId id,
         List<BrawlStarsId> gearIds,
         List<BrawlStarsId> starPowerIds,
         List<BrawlStarsId> gadgetIds,

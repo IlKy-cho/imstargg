@@ -18,7 +18,7 @@ public record PlayerBrawlerResponse(
 
     public static PlayerBrawlerResponse from(PlayerBrawler playerBrawler) {
         return new PlayerBrawlerResponse(
-                playerBrawler.brawlStarsId().value(),
+                playerBrawler.id().value(),
                 playerBrawler.gearIds().stream().map(BrawlStarsId::value).toList(),
                 playerBrawler.starPowerIds().stream().map(BrawlStarsId::value).toList(),
                 playerBrawler.gadgetIds().stream().map(BrawlStarsId::value).toList(),

@@ -1,5 +1,6 @@
 package com.imstargg.core.domain.player;
 
+import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.core.enums.SoloRankTier;
@@ -77,6 +78,6 @@ public class PlayerFixture {
     }
 
     public Player build() {
-        return new Player(tag, name, nameColor, iconId, trophies, highestTrophies, soloRankTier, clubTag, updatedAt, status);
+        return new Player(tag, name, nameColor, new BrawlStarsId(iconId), trophies, highestTrophies, soloRankTier, clubTag, updatedAt, status);
     }
 } 
