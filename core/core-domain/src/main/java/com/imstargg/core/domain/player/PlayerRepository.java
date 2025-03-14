@@ -42,7 +42,7 @@ public class PlayerRepository {
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getName(),
                 entity.getNameColor(),
-                entity.getIconBrawlStarsId(),
+                new BrawlStarsId(entity.getIconBrawlStarsId()),
                 entity.getTrophies(),
                 entity.getHighestTrophies(),
                 entity.getSoloRankTier() == null ? null : SoloRankTier.of(entity.getSoloRankTier()),

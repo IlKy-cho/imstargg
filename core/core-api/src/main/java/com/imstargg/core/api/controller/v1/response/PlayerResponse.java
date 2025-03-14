@@ -23,7 +23,7 @@ public record PlayerResponse(
                 player.tag().value(),
                 player.name(),
                 player.nameColor(),
-                player.iconId(),
+                player.iconId().value(),
                 player.trophies(),
                 player.highestTrophies(),
                 player.soloRankTier(),

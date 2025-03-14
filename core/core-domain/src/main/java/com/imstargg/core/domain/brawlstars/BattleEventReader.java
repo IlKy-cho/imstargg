@@ -26,7 +26,7 @@ public class BattleEventReader {
     public BattleEvent getEvent(BrawlStarsId brawlStarsId) {
         return battleEventRepository.find(brawlStarsId)
                 .orElseThrow(() -> new CoreException(CoreErrorType.BATTLE_EVENT_NOT_FOUND,
-                        "brawlStarsId: " + brawlStarsId));
+                        "id: " + brawlStarsId));
     }
 
     public List<RotationBattleEvent> getRotationEvents() {
