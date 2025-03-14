@@ -13,8 +13,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.persistence.Version;
 
-import java.time.OffsetDateTime;
-
 @Entity
 @Table(
         name = "player_renewal",
@@ -39,24 +37,19 @@ public class PlayerRenewalEntity extends BaseEntity {
     @Column(name = "status", columnDefinition = "varchar(25)", nullable = false)
     private PlayerRenewalStatus status;
 
-    @Column(name = "requested_at", nullable = false)
-    private OffsetDateTime requestedAt;
-
     @Version
     private int version;
 
     protected PlayerRenewalEntity() {
     }
 
-    public PlayerRenewalEntity(String brawlStarsTag, OffsetDateTime requestedAt) {
+    public PlayerRenewalEntity(String brawlStarsTag) {
         this.brawlStarsTag = brawlStarsTag;
         this.status = PlayerRenewalStatus.NEW;
-        this.requestedAt = requestedAt;
     }
 
-    public void pending(OffsetDateTime requestedAt) {
+    public void pending() {
         this.status = PlayerRenewalStatus.PENDING;
-        this.requestedAt = requestedAt;
     }
 
     public Long getId() {
@@ -71,7 +64,4 @@ public class PlayerRenewalEntity extends BaseEntity {
         return status;
     }
 
-    public OffsetDateTime getRequestedAt() {
-        return requestedAt;
-    }
 }

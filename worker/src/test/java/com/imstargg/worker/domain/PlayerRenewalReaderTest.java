@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 
-import java.time.OffsetDateTime;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -23,7 +21,7 @@ class PlayerRenewalReaderTest extends AbstractDataJpaTest {
     void 플레이어_갱신정보를_조회한다() {
         // given
         String brawlStarsTag = "#12345";
-        em.persist(new PlayerRenewalEntity(brawlStarsTag, OffsetDateTime.now()));
+        em.persist(new PlayerRenewalEntity(brawlStarsTag));
         em.flush();
         em.clear();
 
