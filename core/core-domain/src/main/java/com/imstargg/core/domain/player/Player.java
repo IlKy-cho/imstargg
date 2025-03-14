@@ -6,7 +6,6 @@ import com.imstargg.core.enums.PlayerStatus;
 import com.imstargg.core.enums.SoloRankTier;
 import jakarta.annotation.Nullable;
 
-import java.time.Clock;
 import java.time.OffsetDateTime;
 
 public record Player(
@@ -21,8 +20,4 @@ public record Player(
         OffsetDateTime updatedAt,
         PlayerStatus status
 ) {
-
-    public boolean isNextUpdateCooldownOver(Clock clock) {
-        return status.isNextUpdateCooldownOver(OffsetDateTime.now(clock), updatedAt);
-    }
 }

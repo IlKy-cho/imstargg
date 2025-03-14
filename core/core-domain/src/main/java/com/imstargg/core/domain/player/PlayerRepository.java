@@ -63,7 +63,7 @@ public class PlayerRepository {
         return new UnknownPlayer(
                 new BrawlStarsTag(entity.getBrawlStarsTag()),
                 entity.getNotFoundCount(),
-                entity.getUpdatedAt().toLocalDateTime()
+                entity.getUpdatedAt()
         );
     }
 

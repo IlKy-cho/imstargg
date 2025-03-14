@@ -92,7 +92,8 @@ class PlayerRenewalRepositoryTest extends AbstractDataJpaTest {
         playerRenewalJpaRepository.save(entity);
         PlayerRenewal playerRenewal = new PlayerRenewal(
                 new BrawlStarsTag(tag),
-                PlayerRenewalStatus.COMPLETE
+                PlayerRenewalStatus.COMPLETE,
+                entity.getUpdatedAt()
         );
 
         // when
