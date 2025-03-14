@@ -27,7 +27,7 @@ class BattleReaderTest {
         Player player = new PlayerFixture().build();
         int page = 1;
         List<PlayerBattle> playerBattles = List.of(new PlayerBattleFixture().build());
-        given(battleRepository.find(player, page)).willReturn(new Slice<>(
+        given(battleRepository.find(player, page, 25)).willReturn(new Slice<>(
                 playerBattles, false
         ));
 

@@ -147,11 +147,7 @@ public class BattleEventRepositoryWithCache {
                 )).toList();
     }
 
-    public Optional<BattleEvent> find(@Nullable BrawlStarsId id) {
-        if (id == null) {
-            return Optional.empty();
-        }
-
+    public Optional<BattleEvent> find(BrawlStarsId id) {
         return findAllEvents(List.of(id)).stream().findFirst();
     }
 
