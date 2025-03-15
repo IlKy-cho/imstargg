@@ -41,6 +41,7 @@ public class PlayerRenewalProcessor {
             unknownPlayerEntity.notFound();
             this.playerUpdater.update(unknownPlayerEntity);
         } else {
+            unknownPlayerEntity.delete();
             this.playerUpdater.update(
                     unknownPlayerEntity,
                     updater.getPlayerEntity(),

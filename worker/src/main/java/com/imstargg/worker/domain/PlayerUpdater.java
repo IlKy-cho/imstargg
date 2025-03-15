@@ -41,7 +41,7 @@ public class PlayerUpdater {
             PlayerCollectionEntity player,
             List<BattleCollectionEntity> battles
     ) {
-        unknownPlayerJpaRepository.delete(unknownPlayer);
+        unknownPlayerJpaRepository.save(unknownPlayer);
         playerJpaRepository.save(player);
         battleJpaRepository.saveAll(battles);
     }
