@@ -3,15 +3,12 @@ package com.imstargg.worker.domain;
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.imstargg.worker.error.WorkerException;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PlayerRenewalService {
-
-    private static final Logger log = LoggerFactory.getLogger(PlayerRenewalService.class);
 
     private final PlayerFinder playerFinder;
     private final PlayerRenewalUpdater playerRenewalUpdater;
@@ -33,8 +30,7 @@ public class PlayerRenewalService {
     public void renew(String tag) {
         PlayerRenewalCollectionEntity playerRenewal = playerRenewalReader.get(tag);
         if (PlayerRenewalStatus.PENDING != playerRenewal.getStatus()) {
-            log.warn("플레이어 갱신 상태가 PENDING이 아니므로 갱신하지 않습니다. tag={}", tag);
-            return;
+            throw new WorkerException("플레이어 갱신 상태가 PENDING이 아닙니다. tag=" + tag);
         }
 
         try {
@@ -44,7 +40,7 @@ public class PlayerRenewalService {
                     () -> playerFinder.findUnknownPlayer(tag).ifPresentOrElse(
                             playerRenewalProcessor::renewNewPlayer,
                             () -> {
-                                throw new IllegalStateException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
+                                throw new WorkerException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
                             }
                     )
             );
@@ -53,7 +49,7 @@ public class PlayerRenewalService {
         } catch (BrawlStarsClientException.InMaintenance e) {
             playerRenewalUpdater.inMaintenance(playerRenewal);
         } catch (OptimisticLockingFailureException e) {
-            log.warn("플레이어가 이미 갱신 중입니다. tag={}", tag);
+            throw new WorkerException("플레이어가 이미 갱신 중입니다.", e);
         } catch (Exception e) {
             playerRenewalUpdater.failed(playerRenewal);
             throw e;
