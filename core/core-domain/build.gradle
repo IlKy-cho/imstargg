@@ -13,6 +13,7 @@ dependencies {
     implementation("com.github.ben-manes.caffeine:caffeine")
 
     testImplementation(project(":storage:db-collection"))
+    testImplementation(project(":tests:java-test-util"))
     testImplementation(testFixtures(project(":storage:db-core")))
     testFixturesImplementation(project(":tests:java-test-util"))
 }

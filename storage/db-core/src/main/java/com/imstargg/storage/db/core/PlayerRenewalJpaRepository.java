@@ -13,7 +13,7 @@ public interface PlayerRenewalJpaRepository extends JpaRepository<PlayerRenewalE
     Optional<PlayerRenewalEntity> findByBrawlStarsTag(String brawlStarsTag);
 
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
-    Optional<PlayerRenewalEntity> findWithOptimisticLockByBrawlStarsTag(String brawlStarsTag);
+    Optional<PlayerRenewalEntity> findVersionedByBrawlStarsTag(String brawlStarsTag);
 
     long countByStatusIn(Collection<PlayerRenewalStatus> statuses);
 }
