@@ -5,6 +5,7 @@ import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -22,10 +23,12 @@ public class PlayerFinder {
         this.unknownPlayerJpaRepository = unknownPlayerJpaRepository;
     }
 
+    @Transactional
     public Optional<PlayerCollectionEntity> findPlayer(String brawlStarsTag) {
         return playerJpaRepository.findVersionedWithBrawlersByBrawlStarsTag(brawlStarsTag);
     }
 
+    @Transactional
     public Optional<UnknownPlayerCollectionEntity> findUnknownPlayer(String brawlStarsTag) {
         return unknownPlayerJpaRepository.findVersionedByBrawlStarsTag(brawlStarsTag);
     }
