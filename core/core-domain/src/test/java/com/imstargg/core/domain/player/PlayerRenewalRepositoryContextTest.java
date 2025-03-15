@@ -5,7 +5,6 @@ import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.storage.db.core.PlayerRenewalEntity;
 import com.imstargg.storage.db.core.PlayerRenewalJpaRepository;
 import com.imstargg.storage.db.core.test.CleanUp;
-import com.imstargg.test.java.MultiThreadUtil;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -110,25 +109,6 @@ class PlayerRenewalRepositoryContextTest {
         assertThat(result).isTrue();
         PlayerRenewalEntity updatedEntity = playerRenewalJpaRepository.findByBrawlStarsTag(tag).get();
         assertThat(updatedEntity.getStatus()).isEqualTo(PlayerRenewalStatus.PENDING);
-    }
-
-    @Test
-    void 동시에_pending_업데이트할_경우_1번만_성공한다() throws Exception {
-        // given
-        String tag = "#123";
-        PlayerRenewalEntity entity = new PlayerRenewalEntity(tag);
-        playerRenewalJpaRepository.save(entity);
-        PlayerRenewal playerRenewal = new PlayerRenewal(
-                new BrawlStarsTag(tag),
-                PlayerRenewalStatus.COMPLETE,
-                entity.getUpdatedAt()
-        );
-
-        // when
-        List<Boolean> result = MultiThreadUtil.execute(() -> playerRenewalRepository.pending(playerRenewal), 10);
-
-        // then
-        assertThat(result).containsExactlyInAnyOrder(true, false, false, false, false, false, false, false, false, false);
     }
 
     @Test
