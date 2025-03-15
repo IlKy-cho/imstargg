@@ -5,10 +5,9 @@ import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.storage.db.core.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
 import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
+import com.imstargg.worker.error.WorkerException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InOrder;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,24 +41,17 @@ class PlayerRenewalServiceTest {
     @Mock
     private PlayerRenewalProcessor playerRenewalProcessor;
 
-    @Captor
-    private ArgumentCaptor<PlayerRenewalCollectionEntity> renewalCaptor;
-
     @Test
-    void 갱신_정보가_PENDING_상태가_아니면_아무_처리하지_않는다() {
+    void 갱신_정보가_PENDING_상태가_아니면_예외가_발생한다() {
         // given
         String tag = "#12345";
         PlayerRenewalCollectionEntity renewal = mock(PlayerRenewalCollectionEntity.class);
         given(playerRenewalReader.get(tag)).willReturn(renewal);
         given(renewal.getStatus()).willReturn(PlayerRenewalStatus.COMPLETE);
 
-        // when
-        playerRenewalService.renew(tag);
-
-        // then
-        then(playerRenewalUpdater).shouldHaveNoInteractions();
-        then(playerFinder).shouldHaveNoInteractions();
-        then(playerRenewalProcessor).shouldHaveNoInteractions();
+        // when & then
+        assertThatThrownBy(() -> playerRenewalService.renew(tag))
+                .isInstanceOf(WorkerException.class);
     }
 
     @Test
@@ -115,7 +107,7 @@ class PlayerRenewalServiceTest {
 
         // when & then
         assertThatThrownBy(() -> playerRenewalService.renew(tag))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(WorkerException.class);
         then(playerRenewalUpdater).should().executing(renewal);
         then(playerRenewalUpdater).should().failed(renewal);
     }
@@ -138,7 +130,7 @@ class PlayerRenewalServiceTest {
     }
 
     @Test
-    void 이미_갱신중이면_아무처리_하지_않는다() {
+    void 이미_갱신중이면_예외가_발생한다() {
         // given
         String tag = "#12345";
         PlayerRenewalCollectionEntity renewal = mock(PlayerRenewalCollectionEntity.class);
@@ -148,12 +140,8 @@ class PlayerRenewalServiceTest {
                 .when(playerRenewalUpdater).executing(renewal);
 
         // when
-        playerRenewalService.renew(tag);
-
-        // then
-        then(playerRenewalUpdater).should().executing(renewal);
-        then(playerFinder).shouldHaveNoInteractions();
-        then(playerRenewalProcessor).shouldHaveNoInteractions();
+        assertThatThrownBy(() -> playerRenewalService.renew(tag))
+                .isInstanceOf(WorkerException.class);
     }
 
     @Test
