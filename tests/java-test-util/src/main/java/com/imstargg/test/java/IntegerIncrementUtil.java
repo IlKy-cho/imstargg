@@ -18,6 +18,10 @@ public abstract class IntegerIncrementUtil {
         return value.incrementAndGet() % (bound - origin) + origin;
     }
 
+    public static <T> T next(T[] values) {
+        return values[next(values.length)];
+    }
+
     private IntegerIncrementUtil() {
         throw new UnsupportedOperationException();
     }

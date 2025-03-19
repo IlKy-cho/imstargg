@@ -71,6 +71,10 @@ public enum BattleEventMode {
         return ENUM_BY_CODE.getOrDefault(code, NOT_FOUND);
     }
 
+    public static Set<BattleEventMode> showdowns() {
+        return Set.of(SOLO_SHOWDOWN, DUO_SHOWDOWN, TRIO_SHOWDOWN);
+    }
+
     BattleEventMode(String code) {
         this.code = code;
     }
