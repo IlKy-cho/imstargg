@@ -3,4 +3,4 @@ app:
     name: playerUpdateJob
 
 job:
-  schedule: "*/20 * * * *"
+  schedule: "*/10 * * * *"
