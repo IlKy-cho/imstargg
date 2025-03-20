@@ -492,6 +492,18 @@ create table solo_rank_battle_event
 alter table solo_rank_battle_event
     add constraint uk_solo_rank_battle_event__key unique (event_brawlstars_id);
 
+
+create table solo_rank_season
+(
+    solo_rank_season_id bigint       not null auto_increment primary key,
+    start_at            timestamp    not null,
+    end_at              timestamp    not null,
+    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted             boolean      not null default false
+);
+
+
 -- ranking
 create table player_ranking
 (
