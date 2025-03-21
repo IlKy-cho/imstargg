@@ -18,7 +18,7 @@ export default async function AboutPage() {
         </div>
         <div className="sm:p-4 p-2">
           <h2 className="text-xl font-bold">열심히 만들어보겠습니다.</h2>
-          <p>아직 만든지 얼마 안되서 버그도 있을 수 있고 기능도 많이 부족합니다.(25.11.19 부터 시작함)</p>
+          <p>아직 만든지 얼마 안되서 버그도 있을 수 있고 기능도 많이 부족합니다.(24.11.19 부터 시작함)</p>
           <p>제가 열심히 만들어서 이것저것 추가해볼테니 재밌게 사용해주시면 감사드리곘습니다.</p>
         </div>
         <div className="sm:p-4 p-2">
