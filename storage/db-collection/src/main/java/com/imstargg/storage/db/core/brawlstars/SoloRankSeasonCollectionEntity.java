@@ -26,8 +26,10 @@ public class SoloRankSeasonCollectionEntity extends BaseEntity {
     @Column(name = "solo_rank_season_id")
     private Long id;
 
+    @Column(name = "season_number", nullable = false, updatable = false)
     private int number;
 
+    @Column(name = "season_month", nullable = false, updatable = false)
     private int month;
 
     @Column(name = "start_at", nullable = false, updatable = false)
