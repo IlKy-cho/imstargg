@@ -1,8 +1,8 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;

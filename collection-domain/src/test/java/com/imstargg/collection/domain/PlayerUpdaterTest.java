@@ -2,7 +2,7 @@ package com.imstargg.collection.domain;
 
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import com.imstargg.storage.db.core.PlayerCollectionEntityFixture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

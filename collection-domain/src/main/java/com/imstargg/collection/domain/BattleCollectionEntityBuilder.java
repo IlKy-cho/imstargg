@@ -3,12 +3,12 @@ package com.imstargg.collection.domain;
 import com.imstargg.client.brawlstars.response.BattleResponse;
 import com.imstargg.client.brawlstars.response.BattleResultBrawlerResponse;
 import com.imstargg.client.brawlstars.response.BattleResultPlayerResponse;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionEntityEvent;
-import com.imstargg.storage.db.core.BattleCollectionEntityPlayer;
-import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayerBrawler;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityEvent;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityPlayer;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayerBrawler;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 
 import java.util.Collection;
 import java.util.List;

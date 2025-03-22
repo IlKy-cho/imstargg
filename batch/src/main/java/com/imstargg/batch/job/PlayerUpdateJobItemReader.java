@@ -2,7 +2,7 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.querydsl.QuerydslZeroPagingItemReader;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManagerFactory;
@@ -11,7 +11,8 @@ import jakarta.persistence.EntityTransaction;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
+import static com.imstargg.storage.db.core.player.QPlayerCollectionEntity.playerCollectionEntity;
+
 
 public class PlayerUpdateJobItemReader extends QuerydslZeroPagingItemReader<PlayerCollectionEntity> {
 

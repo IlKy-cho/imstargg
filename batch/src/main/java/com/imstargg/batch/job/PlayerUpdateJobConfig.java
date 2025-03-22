@@ -3,7 +3,7 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
 import com.imstargg.collection.domain.PlayerUpdaterFactory;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
 import org.slf4j.Logger;

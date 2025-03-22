@@ -34,6 +34,9 @@ public class BattleEventEntity extends BaseEntity {
     @Column(name = "map_brawlstars_name", length = 105, updatable = false)
     private String mapBrawlStarsName;
 
+    @Column(name = "solo_ranked", nullable = false, updatable = false)
+    private boolean soloRanked;
+
     protected BattleEventEntity() {
     }
 

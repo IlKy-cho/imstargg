@@ -5,7 +5,7 @@ import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.storage.db.core.BattleJpaRepository;
+import com.imstargg.storage.db.core.player.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.brawlstars.BattleEventEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventJpaRepository;

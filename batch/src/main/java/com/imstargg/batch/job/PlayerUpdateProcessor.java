@@ -3,7 +3,7 @@ package com.imstargg.batch.job;
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.collection.domain.PlayerUpdater;
 import com.imstargg.collection.domain.PlayerUpdaterFactory;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import org.springframework.batch.item.ItemProcessor;
 
 public class PlayerUpdateProcessor implements ItemProcessor<PlayerCollectionEntity, PlayerBattleUpdateResult> {

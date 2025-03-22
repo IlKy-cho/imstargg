@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayerBrawler;
 import com.imstargg.test.java.IntegerIncrementUtil;
 import com.imstargg.test.java.LongIncrementUtil;
 

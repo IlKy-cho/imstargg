@@ -13,12 +13,12 @@ import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.error.CoreException;
-import com.imstargg.storage.db.core.BattleEntity;
-import com.imstargg.storage.db.core.BattleEntityTeamPlayer;
-import com.imstargg.storage.db.core.BattleJpaRepository;
+import com.imstargg.storage.db.core.player.BattleEntity;
+import com.imstargg.storage.db.core.player.BattleEntityTeamPlayer;
+import com.imstargg.storage.db.core.player.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
-import com.imstargg.storage.db.core.PlayerEntity;
-import com.imstargg.storage.db.core.PlayerJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerEntity;
+import com.imstargg.storage.db.core.player.PlayerJpaRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 

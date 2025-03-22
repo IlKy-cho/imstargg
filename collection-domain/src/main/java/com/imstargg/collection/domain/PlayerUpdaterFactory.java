@@ -1,6 +1,6 @@
 package com.imstargg.collection.domain;
 
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;

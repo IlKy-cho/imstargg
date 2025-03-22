@@ -1,7 +1,7 @@
 package com.imstargg.batch.domain;
 
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.UnknownPlayerCollectionEntity;
 import jakarta.annotation.Nullable;
 
 public record NewPlayer(

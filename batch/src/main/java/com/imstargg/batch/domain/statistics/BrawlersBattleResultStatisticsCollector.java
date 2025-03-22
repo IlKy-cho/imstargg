@@ -1,7 +1,7 @@
 package com.imstargg.batch.domain.statistics;
 
 import com.imstargg.core.enums.BattleResult;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BattleStatisticsEntityBrawlers;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
 

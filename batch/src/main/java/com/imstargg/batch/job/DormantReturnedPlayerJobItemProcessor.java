@@ -2,9 +2,9 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,8 @@ import org.springframework.batch.item.ItemProcessor;
 import java.util.List;
 import java.util.concurrent.ConcurrentSkipListSet;
 
-import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
+import static com.imstargg.storage.db.core.player.QPlayerCollectionEntity.playerCollectionEntity;
+
 
 public class DormantReturnedPlayerJobItemProcessor
         implements ItemProcessor<BattleCollectionEntity, List<PlayerCollectionEntity>> {

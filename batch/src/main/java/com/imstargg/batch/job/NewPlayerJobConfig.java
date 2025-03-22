@@ -7,9 +7,9 @@ import com.imstargg.batch.job.support.IdRangeJobParameter;
 import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
 import com.imstargg.collection.domain.PlayerUpdaterFactory;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import jakarta.persistence.EntityManagerFactory;
@@ -35,7 +35,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
+import static com.imstargg.storage.db.core.player.QBattleCollectionEntity.battleCollectionEntity;
+
 
 @Configuration
 public class NewPlayerJobConfig {

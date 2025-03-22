@@ -10,7 +10,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
-import static com.imstargg.storage.db.core.QPlayerCollectionEntity.playerCollectionEntity;
+import static com.imstargg.storage.db.core.player.QPlayerCollectionEntity.playerCollectionEntity;
+
 
 public class PlayerTagFilter {
 

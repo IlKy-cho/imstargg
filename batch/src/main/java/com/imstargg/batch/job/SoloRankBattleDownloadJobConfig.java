@@ -5,8 +5,8 @@ import com.imstargg.batch.job.support.querydsl.QuerydslEntityCursorItemReader;
 import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
 import jakarta.persistence.EntityManagerFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
 import static com.imstargg.storage.db.core.brawlstars.QSoloRankBattleEventCollectionEntity.soloRankBattleEventCollectionEntity;
+import static com.imstargg.storage.db.core.player.QBattleCollectionEntity.battleCollectionEntity;
 
 @Configuration
 public class SoloRankBattleDownloadJobConfig {

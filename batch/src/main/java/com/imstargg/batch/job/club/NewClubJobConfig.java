@@ -34,8 +34,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
-import static com.imstargg.storage.db.core.QPlayerEntity.playerEntity;
 import static com.imstargg.storage.db.core.club.QClubCollectionEntity.clubCollectionEntity;
+import static com.imstargg.storage.db.core.player.QPlayerEntity.playerEntity;
 
 @Configuration
 public class NewClubJobConfig {

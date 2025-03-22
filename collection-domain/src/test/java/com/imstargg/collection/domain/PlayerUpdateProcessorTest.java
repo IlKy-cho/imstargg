@@ -8,7 +8,7 @@ import com.imstargg.client.brawlstars.response.PlayerClubResponse;
 import com.imstargg.client.brawlstars.response.PlayerIconResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
