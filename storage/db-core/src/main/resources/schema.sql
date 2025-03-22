@@ -496,12 +496,17 @@ alter table solo_rank_battle_event
 create table solo_rank_season
 (
     solo_rank_season_id bigint       not null auto_increment primary key,
+    season_number       int          not null,
+    season_month        int          not null,
     start_at            timestamp    not null,
     end_at              timestamp    not null,
     created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false
 );
+
+alter table solo_rank_season
+    add constraint uk_solo_rank_season__key unique (season_number, season_month);
 
 
 -- ranking
