@@ -56,4 +56,8 @@ public class BattleEventEntity extends BaseEntity {
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
     }
+
+    public boolean isSoloRanked() {
+        return soloRanked;
+    }
 }
