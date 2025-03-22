@@ -2,8 +2,8 @@ package com.imstargg.worker.domain;
 
 import com.imstargg.collection.domain.PlayerUpdaterFactory;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.UnknownPlayerCollectionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;

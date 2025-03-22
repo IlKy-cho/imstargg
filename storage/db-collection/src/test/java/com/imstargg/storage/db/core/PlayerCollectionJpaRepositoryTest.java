@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.storage.db.core.player.PlayerCollectionJpaRepository;
 import com.imstargg.storage.db.core.test.AbstractDataJpaTest;
 
 import org.hibernate.Hibernate;

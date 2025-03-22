@@ -4,6 +4,11 @@ import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityEvent;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityPlayer;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import com.imstargg.test.java.IntegerIncrementUtil;
 import com.imstargg.test.java.LongIncrementUtil;
 

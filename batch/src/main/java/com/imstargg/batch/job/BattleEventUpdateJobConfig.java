@@ -4,8 +4,8 @@ import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.util.JPAQueryFactoryUtils;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.storage.db.core.BattleEntity;
-import com.imstargg.storage.db.core.BattleJpaRepository;
+import com.imstargg.storage.db.core.player.BattleEntity;
+import com.imstargg.storage.db.core.player.BattleJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionJpaRepository;
 import com.imstargg.support.alert.AlertCommand;
@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
+import static com.imstargg.storage.db.core.player.QBattleCollectionEntity.battleCollectionEntity;
+
 
 @Configuration
 class BattleEventUpdateJobConfig {

@@ -2,8 +2,8 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.core.enums.PlayerRenewalStatus;
-import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
-import com.imstargg.storage.db.core.PlayerRenewalCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerRenewalCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerRenewalCollectionJpaRepository;
 import com.imstargg.support.alert.AlertManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

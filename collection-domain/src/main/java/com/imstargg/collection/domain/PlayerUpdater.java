@@ -1,8 +1,8 @@
 package com.imstargg.collection.domain;
 
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

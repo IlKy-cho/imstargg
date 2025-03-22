@@ -4,12 +4,12 @@ import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.enums.SoloRankTier;
 import com.imstargg.core.error.CoreException;
-import com.imstargg.storage.db.core.PlayerBrawlerEntity;
-import com.imstargg.storage.db.core.PlayerBrawlerJpaRepository;
-import com.imstargg.storage.db.core.PlayerEntity;
-import com.imstargg.storage.db.core.PlayerJpaRepository;
-import com.imstargg.storage.db.core.UnknownPlayerEntity;
-import com.imstargg.storage.db.core.UnknownPlayerJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerBrawlerEntity;
+import com.imstargg.storage.db.core.player.PlayerBrawlerJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerEntity;
+import com.imstargg.storage.db.core.player.PlayerJpaRepository;
+import com.imstargg.storage.db.core.player.UnknownPlayerEntity;
+import com.imstargg.storage.db.core.player.UnknownPlayerJpaRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

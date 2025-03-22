@@ -1,9 +1,9 @@
 package com.imstargg.admin.domain;
 
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionJpaRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Service;
 

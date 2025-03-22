@@ -4,8 +4,8 @@ import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
@@ -33,7 +33,8 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static com.imstargg.storage.db.core.QBattleCollectionEntity.battleCollectionEntity;
+import static com.imstargg.storage.db.core.player.QBattleCollectionEntity.battleCollectionEntity;
+
 
 @Configuration
 public class DormantReturnedPlayerJobConfig {

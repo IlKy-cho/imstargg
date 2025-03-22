@@ -2,9 +2,9 @@ package com.imstargg.worker.domain;
 
 import com.imstargg.collection.domain.PlayerUpdaterFactory;
 import com.imstargg.core.enums.PlayerStatus;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.UnknownPlayerCollectionEntity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

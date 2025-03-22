@@ -2,8 +2,8 @@ package com.imstargg.batch.job.statistics;
 
 import com.imstargg.batch.domain.statistics.StatisticsCollector;
 import com.imstargg.batch.domain.statistics.StatisticsCollectorFactory;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemProcessor;

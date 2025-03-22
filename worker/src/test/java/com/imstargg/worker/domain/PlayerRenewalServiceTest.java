@@ -2,9 +2,9 @@ package com.imstargg.worker.domain;
 
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
 import com.imstargg.core.enums.PlayerRenewalStatus;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerRenewalCollectionEntity;
+import com.imstargg.storage.db.core.player.UnknownPlayerCollectionEntity;
 import com.imstargg.worker.error.WorkerException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

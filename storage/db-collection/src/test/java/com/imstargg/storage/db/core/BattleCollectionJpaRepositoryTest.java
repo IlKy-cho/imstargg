@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core;
 
+import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
 import com.imstargg.storage.db.core.test.AbstractDataJpaTest;
 import org.springframework.beans.factory.annotation.Autowired;
 

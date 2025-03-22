@@ -2,7 +2,7 @@ package com.imstargg.batch.job.statistics;
 
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.core.enums.TrophyRange;
-import com.imstargg.storage.db.core.PlayerBrawlerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerBrawlerCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerCountCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerItemCountCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
@@ -32,7 +32,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.imstargg.storage.db.core.QPlayerBrawlerCollectionEntity.playerBrawlerCollectionEntity;
+import static com.imstargg.storage.db.core.player.QPlayerBrawlerCollectionEntity.playerBrawlerCollectionEntity;
 import static com.imstargg.storage.db.core.statistics.QBrawlerCountCollectionEntity.brawlerCountCollectionEntity;
 import static com.imstargg.storage.db.core.statistics.QBrawlerItemCountCollectionEntity.brawlerItemCountCollectionEntity;
 

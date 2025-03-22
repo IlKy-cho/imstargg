@@ -6,7 +6,7 @@ import com.imstargg.client.brawlstars.response.BrawlerStatResponse;
 import com.imstargg.client.brawlstars.response.GearStatResponse;
 import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.client.brawlstars.response.StarPowerResponse;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import org.springframework.stereotype.Component;
 
 @Component

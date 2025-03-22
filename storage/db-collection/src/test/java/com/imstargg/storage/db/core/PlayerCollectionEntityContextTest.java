@@ -1,6 +1,8 @@
 package com.imstargg.storage.db.core;
 
 import com.imstargg.core.enums.PlayerStatus;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionJpaRepository;
 import com.imstargg.storage.db.core.test.AbstractDataJpaTest;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -19,7 +21,7 @@ class PlayerCollectionEntityContextTest extends AbstractDataJpaTest {
     @Autowired
     private PlayerCollectionJpaRepository repository;
 
-    private Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+    private final Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
 
     @Test
     void 생성하면_notUpdatedCount는_0_updateWeight는_now로_초기화되고_정상적으로_저장된다() {

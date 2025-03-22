@@ -1,7 +1,7 @@
 package com.imstargg.worker.domain;
 
-import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
-import com.imstargg.storage.db.core.PlayerRenewalEntity;
+import com.imstargg.storage.db.core.player.PlayerRenewalCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerRenewalEntity;
 import com.imstargg.storage.db.core.test.AbstractDataJpaTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

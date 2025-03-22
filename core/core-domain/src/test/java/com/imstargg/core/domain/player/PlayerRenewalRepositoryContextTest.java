@@ -2,8 +2,8 @@ package com.imstargg.core.domain.player;
 
 import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.enums.PlayerRenewalStatus;
-import com.imstargg.storage.db.core.PlayerRenewalEntity;
-import com.imstargg.storage.db.core.PlayerRenewalJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerRenewalEntity;
+import com.imstargg.storage.db.core.player.PlayerRenewalJpaRepository;
 import com.imstargg.storage.db.core.test.CleanUp;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Tag;

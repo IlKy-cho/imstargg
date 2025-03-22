@@ -1,7 +1,7 @@
 package com.imstargg.worker.domain;
 
-import com.imstargg.storage.db.core.PlayerRenewalCollectionEntity;
-import com.imstargg.storage.db.core.PlayerRenewalCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerRenewalCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerRenewalCollectionJpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 

@@ -8,9 +8,9 @@ import com.imstargg.client.brawlstars.response.EventResponse;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.storage.db.core.BattleCollectionEntity;
-import com.imstargg.storage.db.core.BattleCollectionEntityTeamPlayer;
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntity;
+import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;

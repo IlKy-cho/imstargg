@@ -4,8 +4,8 @@ import com.imstargg.batch.domain.statistics.BrawlersBattleResultStatisticsCollec
 import com.imstargg.batch.job.support.DateJobParameter;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
 import com.imstargg.batch.job.support.JpaItemListWriter;
-import com.imstargg.storage.db.core.BattleCollectionJpaRepository;
-import com.imstargg.storage.db.core.BattleJpaRepository;
+import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.BattleJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsCollectionEntity;
 import com.imstargg.support.alert.AlertManager;
 import jakarta.persistence.EntityManagerFactory;

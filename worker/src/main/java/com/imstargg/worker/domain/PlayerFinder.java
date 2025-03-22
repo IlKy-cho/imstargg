@@ -1,9 +1,9 @@
 package com.imstargg.worker.domain;
 
-import com.imstargg.storage.db.core.PlayerCollectionEntity;
-import com.imstargg.storage.db.core.PlayerCollectionJpaRepository;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionEntity;
-import com.imstargg.storage.db.core.UnknownPlayerCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.PlayerCollectionJpaRepository;
+import com.imstargg.storage.db.core.player.UnknownPlayerCollectionEntity;
+import com.imstargg.storage.db.core.player.UnknownPlayerCollectionJpaRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
