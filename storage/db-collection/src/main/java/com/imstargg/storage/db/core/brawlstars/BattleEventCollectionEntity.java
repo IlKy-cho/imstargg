@@ -29,6 +29,9 @@ public class BattleEventCollectionEntity extends BaseEntity {
     @Column(name = "map_brawlstars_name", length = 105)
     private String mapBrawlStarsName;
 
+    @Column(name = "solo_ranked", nullable = false)
+    private boolean soloRanked;
+
     protected BattleEventCollectionEntity() {
     }
 
@@ -54,6 +57,10 @@ public class BattleEventCollectionEntity extends BaseEntity {
         }
     }
 
+    public void updateSoloRanked(boolean soloRanked) {
+        this.soloRanked = soloRanked;
+    }
+
     public Long getId() {
         return id;
     }
@@ -69,5 +76,9 @@ public class BattleEventCollectionEntity extends BaseEntity {
     @Nullable
     public String getMapBrawlStarsName() {
         return mapBrawlStarsName;
+    }
+
+    public boolean isSoloRanked() {
+        return soloRanked;
     }
 }

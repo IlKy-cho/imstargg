@@ -364,6 +364,7 @@ create table battle_event
     brawlstars_id       bigint       not null,
     mode                varchar(45)  not null,
     map_brawlstars_name varchar(105),
+    solo_ranked         boolean      not null default false,
     created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
     updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
     deleted             boolean      not null default false,
