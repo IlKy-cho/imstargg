@@ -5,7 +5,6 @@ import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
 import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleType;
-import com.imstargg.storage.db.core.player.BattleJpaRepository;
 import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.brawlstars.BattleEventEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventJpaRepository;
@@ -15,8 +14,8 @@ import com.imstargg.storage.db.core.brawlstars.BattleEventRotationJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
-import com.imstargg.storage.db.core.brawlstars.SoloRankBattleEventEntity;
-import com.imstargg.storage.db.core.brawlstars.SoloRankBattleEventJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.SoloRankSeasonJpaRepository;
+import com.imstargg.storage.db.core.player.BattleJpaRepository;
 import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +39,7 @@ public class BattleEventRepositoryWithCache {
     private final BrawlStarsImageJpaRepository brawlStarsImageJpaRepository;
     private final BattleEventRotationJpaRepository battleEventRotationJpaRepository;
     private final BattleEventRotationItemJpaRepository battleEventRotationItemJpaRepository;
-    private final SoloRankBattleEventJpaRepository soloRankBattleEventJpaRepository;
+    private final SoloRankSeasonJpaRepository soloRankSeasonJpaRepository;
     private final MessageRepository messageRepository;
     private final BattleEventCache battleEventCache;
 
@@ -51,7 +50,7 @@ public class BattleEventRepositoryWithCache {
             BrawlStarsImageJpaRepository brawlStarsImageJpaRepository,
             BattleEventRotationJpaRepository battleEventRotationJpaRepository,
             BattleEventRotationItemJpaRepository battleEventRotationItemJpaRepository,
-            SoloRankBattleEventJpaRepository soloRankBattleEventJpaRepository,
+            SoloRankSeasonJpaRepository soloRankSeasonJpaRepository,
             MessageRepository messageRepository,
             BattleEventCache battleEventCache
     ) {
@@ -61,7 +60,7 @@ public class BattleEventRepositoryWithCache {
         this.brawlStarsImageJpaRepository = brawlStarsImageJpaRepository;
         this.battleEventRotationJpaRepository = battleEventRotationJpaRepository;
         this.battleEventRotationItemJpaRepository = battleEventRotationItemJpaRepository;
-        this.soloRankBattleEventJpaRepository = soloRankBattleEventJpaRepository;
+        this.soloRankSeasonJpaRepository = soloRankSeasonJpaRepository;
         this.messageRepository = messageRepository;
         this.battleEventCache = battleEventCache;
     }
@@ -184,13 +183,16 @@ public class BattleEventRepositoryWithCache {
     }
 
     public List<BattleEvent> findAllSoloRank() {
-        return findAllEvents(
-                soloRankBattleEventJpaRepository.findAll()
-                        .stream()
-                        .map(SoloRankBattleEventEntity::getEventBrawlStarsId)
-                        .map(BrawlStarsId::new)
-                        .toList()
-        ).stream()
+        return soloRankSeasonJpaRepository.findFirstByOrderByNumberDescMonthDesc()
+                .map(season -> battleEventCache.getSoloRankEventIds(() -> battleJpaRepository
+                        .findAllDistinctEventBrawlStarsIdsByBattleTypeInAndGreaterThanEqualBattleTime(
+                                List.of(BattleType.SOLO_RANKED),
+                                season.getStartAt()
+                        ).stream().map(BrawlStarsId::new).toList()
+                ))
+                .map(this::findAllEvents)
+                .orElseGet(List::of)
+                .stream()
                 .sorted(Comparator.comparing(BattleEvent::mode))
                 .toList();
     }
