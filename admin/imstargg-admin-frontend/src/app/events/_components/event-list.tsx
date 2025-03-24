@@ -1,20 +1,11 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
+import {Table, TableBody, TableCell, TableFooter, TableHead, TableHeader, TableRow,} from "@/components/ui/table"
 import Image from "next/image"
-import { BattleEvent } from "@/model/BattleEvent";
+import {BattleEvent} from "@/model/BattleEvent";
 import React from "react";
 import {EventMapImageUpload} from "./event-map-image-upload";
 import {imageUrl} from "@/lib/image";
 import {messagesContent} from "@/lib/message";
-import { EventUpdate } from "./event-update";
-import { EventSoloRank } from "./event-solo-rank";
+import {EventUpdate} from "./event-update";
 
 type Props = {
   battleEvents: BattleEvent[];
@@ -85,10 +76,6 @@ export default function EventList({battleEvents}: Readonly<Props>) {
                     }
                     {battleEvent.entity.brawlStarsId !== null && battleEvent.entity.brawlStarsId !== 0 ?
                       <EventUpdate battleEvent={battleEvent}/>
-                      : null
-                    }
-                    {battleEvent.entity.brawlStarsId !== null && battleEvent.entity.brawlStarsId !== 0 ?
-                      <EventSoloRank battleEvent={battleEvent}/>
                       : null
                     }
                 </TableCell>
