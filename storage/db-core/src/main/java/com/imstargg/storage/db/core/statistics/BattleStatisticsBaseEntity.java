@@ -11,6 +11,12 @@ abstract class BattleStatisticsBaseEntity {
     @Column(name = "event_brawlstars_id", updatable = false, nullable = false)
     private long eventBrawlStarsId;
 
+    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
+    private long brawlerBrawlStarsId;
+
+    @Column(name = "tier_range", length = 25, updatable = false)
+    private String tierRange;
+
     @Column(name = "battle_date", updatable = false, nullable = false)
     private LocalDate battleDate;
 
@@ -19,6 +25,14 @@ abstract class BattleStatisticsBaseEntity {
 
     public long getEventBrawlStarsId() {
         return eventBrawlStarsId;
+    }
+
+    public long getBrawlerBrawlStarsId() {
+        return brawlerBrawlStarsId;
+    }
+
+    public String getTierRange() {
+        return tierRange;
     }
 
     public LocalDate getBattleDate() {
