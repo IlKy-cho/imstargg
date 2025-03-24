@@ -1,5 +1,8 @@
 package com.imstargg.core.enums;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 public enum SoloRankTierRange {
 
     BRONZE_SILVER_GOLD_PLUS(SoloRankTier.BRONZE_1),
@@ -13,6 +16,12 @@ public enum SoloRankTierRange {
 
     SoloRankTierRange(SoloRankTier minTier) {
         this.minTier = minTier;
+    }
+
+    public static List<SoloRankTierRange> findAll(int value) {
+        return Stream.of(SoloRankTierRange.values())
+                .filter(tierRange -> value >= tierRange.getMinTier().getValue())
+                .toList();
     }
 
     public SoloRankTier getMinTier() {

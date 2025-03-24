@@ -41,4 +41,7 @@ public enum SoloRankTier {
             .orElseGet(() -> value < 1 ? BRONZE_1 : PRO);
     }
 
+    public int getValue() {
+        return value;
+    }
 }
