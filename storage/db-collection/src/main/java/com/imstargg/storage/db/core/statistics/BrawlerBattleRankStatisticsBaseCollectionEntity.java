@@ -1,5 +1,6 @@
 package com.imstargg.storage.db.core.statistics;
 
+import com.imstargg.core.enums.TrophyRange;
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -20,9 +21,12 @@ abstract class BrawlerBattleRankStatisticsBaseCollectionEntity extends BattleSta
     }
 
     protected BrawlerBattleRankStatisticsBaseCollectionEntity(
-            long eventBrawlStarsId, LocalDate battleDate
+            long eventBrawlStarsId,
+            long brawlerBrawlStarsId,
+            TrophyRange trophyRange,
+            LocalDate battleDate
     ) {
-        super(eventBrawlStarsId, battleDate);
+        super(eventBrawlStarsId, brawlerBrawlStarsId, trophyRange, battleDate);
         rankToCounts = new HashMap<>();
     }
 

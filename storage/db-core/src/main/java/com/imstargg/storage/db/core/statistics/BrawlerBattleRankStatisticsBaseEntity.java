@@ -11,7 +11,7 @@ import java.util.Map;
 abstract class BrawlerBattleRankStatisticsBaseEntity extends BattleStatisticsBaseEntity {
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "rank_to_counts", columnDefinition = "json", updatable = false, nullable = false)
+    @Column(name = "rank_to_counts", columnDefinition = "json", nullable = false, updatable = false)
     private Map<Integer, Long> rankToCounts;
 
     protected BrawlerBattleRankStatisticsBaseEntity() {
@@ -19,18 +19,5 @@ abstract class BrawlerBattleRankStatisticsBaseEntity extends BattleStatisticsBas
 
     public Map<Integer, Long> getRankToCounts() {
         return rankToCounts;
-    }
-
-    public long getTotalBattleCount() {
-        return rankToCounts.values().stream().mapToLong(Long::longValue).sum();
-    }
-
-    public long getRankWeightedSum() {
-        return rankToCounts.entrySet().stream()
-                .mapToLong(entry -> entry.getKey() * entry.getValue()).sum();
-    }
-
-    public double getAverageRank() {
-        return (double) getRankWeightedSum() / getTotalBattleCount();
     }
 }

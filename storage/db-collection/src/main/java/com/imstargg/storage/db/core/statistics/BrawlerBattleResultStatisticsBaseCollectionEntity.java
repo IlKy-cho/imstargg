@@ -3,26 +3,13 @@ package com.imstargg.storage.db.core.statistics;
 import com.imstargg.core.enums.BattleResult;
 import com.imstargg.core.enums.SoloRankTierRange;
 import com.imstargg.core.enums.TrophyRange;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.MappedSuperclass;
 
 import java.time.LocalDate;
 
 @MappedSuperclass
 abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleStatisticsBaseCollectionEntity {
-
-    @Nullable
-    @Enumerated(EnumType.STRING)
-    @Column(name = "solo_rank_tier_range", length = 25, updatable = false)
-    private SoloRankTierRange soloRankTierRange;
-
-    @Nullable
-    @Enumerated(EnumType.STRING)
-    @Column(name = "trophy_range", length = 25, updatable = false)
-    private TrophyRange trophyRange;
 
     @Column(name = "victory_count", nullable = false)
     private long victoryCount;
@@ -37,14 +24,35 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
     }
 
     protected BrawlerBattleResultStatisticsBaseCollectionEntity(
-            long battleEventId,
-            LocalDate battleDate,
-            @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange
+            long eventBrawlStarsId,
+            long brawlerBrawlStarsId,
+            TrophyRange trophyRange,
+            LocalDate battleDate
     ) {
-        super(battleEventId, battleDate);
-        this.soloRankTierRange = soloRankTierRange;
-        this.trophyRange = trophyRange;
+        super(eventBrawlStarsId, brawlerBrawlStarsId, trophyRange, battleDate);
+        this.victoryCount = 0;
+        this.defeatCount = 0;
+        this.drawCount = 0;
+    }
+
+    protected BrawlerBattleResultStatisticsBaseCollectionEntity(
+            long eventBrawlStarsId,
+            long brawlerBrawlStarsId,
+            SoloRankTierRange soloRankTierRange,
+            LocalDate battleDate
+    ) {
+        super(eventBrawlStarsId, brawlerBrawlStarsId, soloRankTierRange, battleDate);
+        this.victoryCount = 0;
+        this.defeatCount = 0;
+        this.drawCount = 0;
+    }
+
+    protected BrawlerBattleResultStatisticsBaseCollectionEntity(
+            long eventBrawlStarsId,
+            long brawlerBrawlStarsId,
+            LocalDate battleDate
+    ) {
+        super(eventBrawlStarsId, brawlerBrawlStarsId, battleDate);
         this.victoryCount = 0;
         this.defeatCount = 0;
         this.drawCount = 0;
@@ -68,16 +76,6 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
         victoryCount = 0;
         defeatCount = 0;
         drawCount = 0;
-    }
-
-    @Nullable
-    public SoloRankTierRange getSoloRankTierRange() {
-        return soloRankTierRange;
-    }
-
-    @Nullable
-    public TrophyRange getTrophyRange() {
-        return trophyRange;
     }
 
     public long getVictoryCount() {

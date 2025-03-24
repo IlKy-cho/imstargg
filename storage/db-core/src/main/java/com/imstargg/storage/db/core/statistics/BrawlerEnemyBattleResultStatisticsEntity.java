@@ -11,17 +11,21 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_enemy_battle_result_stats_v2",
+        name = "brawler_enemy_battle_result_stats_v3",
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_brawler_enemy_battle_result_stats__key",
-                        columnNames = {"event_brawlstars_id", "battle_date", "trophy_range", "solo_rank_tier_range", "brawler_brawlstars_id", "enemy_brawler_brawlstars_id"}
+                        columnNames = {"event_brawlstars_id", "brawler_brawlstars_id", "tier_range", "battle_date", "enemy_brawler_brawlstars_id"}
                 )
         },
         indexes = {
                 @Index(
-                        name = "ix_brawler_enemy_battle_result_stats__1",
-                        columnList = "battle_date desc, trophy_range, solo_rank_tier_range, brawler_brawlstars_id"
+                        name = "ix_brawler_battle_result_stats__1",
+                        columnList = "battle_date desc"
+                ),
+                @Index(
+                        name = "ix_brawler_battle_result_stats__2",
+                        columnList = "brawler_brawlstars_id, tier_range, battle_date desc"
                 )
         }
 )
@@ -32,8 +36,6 @@ public class BrawlerEnemyBattleResultStatisticsEntity extends BrawlerBattleResul
     @Column(name = "brawler_enemy_battle_result_stats_id")
     private Long id;
 
-    @Column(name = "brawler_brawlstars_id", updatable = false, nullable = false)
-    private long brawlerBrawlStarsId;
 
     @Column(name = "enemy_brawler_brawlstars_id", updatable = false, nullable = false)
     private long enemyBrawlerBrawlStarsId;
@@ -43,10 +45,6 @@ public class BrawlerEnemyBattleResultStatisticsEntity extends BrawlerBattleResul
 
     public Long getId() {
         return id;
-    }
-
-    public long getBrawlerBrawlStarsId() {
-        return brawlerBrawlStarsId;
     }
 
     public long getEnemyBrawlerBrawlStarsId() {

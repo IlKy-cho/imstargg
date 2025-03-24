@@ -11,11 +11,11 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "brawler_battle_rank_stats_v3",
+        name = "brawler_pair_battle_rank_stats_v3",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_brawler_battle_rank_stats__key",
-                        columnNames = {"event_brawlstars_id", "brawler_brawlstars_id", "tier_range", "battle_date"}
+                        name = "uk_brawler_pair_battle_rank_stats__key",
+                        columnNames = {"event_brawlstars_id", "brawler_brawlstars_id", "tier_range", "battle_date", "pair_brawler_brawlstars_id"}
                 )
         },
         indexes = {
@@ -25,18 +25,24 @@ import jakarta.persistence.UniqueConstraint;
                 )
         }
 )
-public class BrawlerBattleRankStatisticsEntity extends BrawlerBattleRankStatisticsBaseEntity {
+public class BrawlerPairBattleRankStatisticsEntity extends BrawlerBattleRankStatisticsBaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brawler_battle_rank_stats_id")
+    @Column(name = "brawler_pair_battle_rank_stats_id")
     private Long id;
 
-    protected BrawlerBattleRankStatisticsEntity() {
+    @Column(name = "pair_brawler_brawlstars_id", updatable = false, nullable = false)
+    private long pairBrawlerBrawlStarsId;
+
+    protected BrawlerPairBattleRankStatisticsEntity() {
     }
 
     public Long getId() {
         return id;
     }
 
+    public long getPairBrawlerBrawlStarsId() {
+        return pairBrawlerBrawlStarsId;
+    }
 }
