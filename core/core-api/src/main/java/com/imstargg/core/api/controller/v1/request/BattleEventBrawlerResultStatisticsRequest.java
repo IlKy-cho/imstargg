@@ -3,8 +3,6 @@ package com.imstargg.core.api.controller.v1.request;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.statistics.event.BattleEventBrawlerResultStatisticsParam;
 import com.imstargg.core.enums.DateRange;
-import com.imstargg.core.enums.SoloRankTierRangeRange;
-import com.imstargg.core.enums.TrophyRangeRange;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 

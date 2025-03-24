@@ -20,7 +20,6 @@ import com.imstargg.core.api.controller.v1.response.BrawlersResultStatisticsResp
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.statistics.brawler.BrawlerStatisticsService;
 import com.imstargg.core.domain.statistics.event.BattleEventStatisticsService;
-import com.imstargg.core.enums.TrophyRangeRange;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
