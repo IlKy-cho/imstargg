@@ -1,5 +1,8 @@
 package com.imstargg.core.enums;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 public enum TrophyRange {
 
     TROPHY_0_PLUS(0),
@@ -11,6 +14,12 @@ public enum TrophyRange {
 
     TrophyRange(int minTrophy) {
         this.minTrophy = minTrophy;
+    }
+
+    public static List<TrophyRange> findAll(int trophy) {
+        return Stream.of(TrophyRange.values())
+                .filter(trophyRange -> trophy >= trophyRange.getMinTrophy())
+                .toList();
     }
 
     public int getMinTrophy() {
