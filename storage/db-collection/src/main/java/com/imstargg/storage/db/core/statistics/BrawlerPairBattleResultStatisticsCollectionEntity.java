@@ -12,21 +12,21 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "brawlers_battle_result_stats_v3")
-public class BrawlersBattleResultStatisticsCollectionEntity extends BrawlerBattleResultStatisticsBaseCollectionEntity {
+@Table(name = "brawler_pair_battle_result_stats_v3")
+public class BrawlerPairBattleResultStatisticsCollectionEntity extends BrawlerBattleResultStatisticsBaseCollectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "brawlers_battle_result_stats_id")
+    @Column(name = "brawler_pair_battle_result_stats_id")
     private Long id;
 
     @Column(name = "pair_brawler_brawlstars_id", updatable = false, nullable = false)
     private long pairBrawlerBrawlStarsId;
 
-    protected BrawlersBattleResultStatisticsCollectionEntity() {
+    protected BrawlerPairBattleResultStatisticsCollectionEntity() {
     }
 
-    public BrawlersBattleResultStatisticsCollectionEntity(
+    public BrawlerPairBattleResultStatisticsCollectionEntity(
             long eventBrawlStarsId,
             long brawlerBrawlStarsId,
             TrophyRange trophyRange,
@@ -38,7 +38,7 @@ public class BrawlersBattleResultStatisticsCollectionEntity extends BrawlerBattl
         this.pairBrawlerBrawlStarsId = pairBrawlerBrawlStarsId;
     }
 
-    public BrawlersBattleResultStatisticsCollectionEntity(
+    public BrawlerPairBattleResultStatisticsCollectionEntity(
             long eventBrawlStarsId,
             long brawlerBrawlStarsId,
             SoloRankTierRange soloRankTierRange,
@@ -49,7 +49,7 @@ public class BrawlersBattleResultStatisticsCollectionEntity extends BrawlerBattl
         this.pairBrawlerBrawlStarsId = pairBrawlerBrawlStarsId;
     }
 
-    public BrawlersBattleResultStatisticsCollectionEntity(
+    public BrawlerPairBattleResultStatisticsCollectionEntity(
             long eventBrawlStarsId,
             long brawlerBrawlStarsId,
             LocalDate battleDate,
