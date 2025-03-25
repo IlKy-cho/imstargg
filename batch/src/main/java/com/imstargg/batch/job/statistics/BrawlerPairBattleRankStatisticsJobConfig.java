@@ -1,7 +1,7 @@
 package com.imstargg.batch.job.statistics;
 
 import com.imstargg.batch.domain.statistics.BattleStatisticsCollectionValidator;
-import com.imstargg.batch.domain.statistics.BrawlerBattleResultStatisticsCollector;
+import com.imstargg.batch.domain.statistics.BrawlerPairBattleRankStatisticsCollector;
 import com.imstargg.batch.domain.statistics.StatisticsCollector;
 import com.imstargg.batch.job.BattleItemReaderFactory;
 import com.imstargg.batch.job.support.ExceptionAlertJobExecutionListener;
@@ -10,8 +10,8 @@ import com.imstargg.batch.job.support.IdRangeJobParameter;
 import com.imstargg.batch.job.support.querydsl.QuerydslEntityCursorItemReader;
 import com.imstargg.storage.db.core.player.BattleCollectionEntity;
 import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionEntity;
-import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionJpaRepository;
+import com.imstargg.storage.db.core.statistics.BrawlerPairBattleRankStatisticsCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerPairBattleRankStatisticsCollectionJpaRepository;
 import com.imstargg.support.alert.AlertManager;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -29,10 +29,10 @@ import java.time.Clock;
 import java.util.Objects;
 
 @Configuration
-public class BrawlerBattleResultStatisticsJobConfig {
+public class BrawlerPairBattleRankStatisticsJobConfig {
 
-    private static final String JOB_NAME = "brawlerBattleResultStatisticsJob";
-    private static final String STEP_NAME = "brawlerBattleResultStatisticsStep";
+    private static final String JOB_NAME = "brawlerPairBattleRankStatisticsJob";
+    private static final String STEP_NAME = "brawlerPairBattleRankStatisticsStep";
     private static final int CHUNK_SIZE = 1000;
 
     private final Clock clock;
@@ -41,16 +41,16 @@ public class BrawlerBattleResultStatisticsJobConfig {
 
     private final AlertManager alertManager;
     private final BattleCollectionJpaRepository battleCollectionJpaRepository;
-    private final BrawlerBattleResultStatisticsCollectionJpaRepository brawlerBattleResultStatisticsCollectionJpaRepository;
+    private final BrawlerPairBattleRankStatisticsCollectionJpaRepository brawlerPairBattleRankStatisticsCollectionJpaRepository;
     private final BattleItemReaderFactory battleItemReaderFactory;
 
-    public BrawlerBattleResultStatisticsJobConfig(
+    public BrawlerPairBattleRankStatisticsJobConfig(
             Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             AlertManager alertManager,
             BattleCollectionJpaRepository battleCollectionJpaRepository,
-            BrawlerBattleResultStatisticsCollectionJpaRepository brawlerBattleResultStatisticsCollectionJpaRepository,
+            BrawlerPairBattleRankStatisticsCollectionJpaRepository pairBattleRankStatisticsCollectionJpaRepository,
             BattleItemReaderFactory battleItemReaderFactory
     ) {
         this.clock = clock;
@@ -58,7 +58,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
         this.txManager = txManager;
         this.alertManager = alertManager;
         this.battleCollectionJpaRepository = battleCollectionJpaRepository;
-        this.brawlerBattleResultStatisticsCollectionJpaRepository = brawlerBattleResultStatisticsCollectionJpaRepository;
+        this.brawlerPairBattleRankStatisticsCollectionJpaRepository = pairBattleRankStatisticsCollectionJpaRepository;
         this.battleItemReaderFactory = battleItemReaderFactory;
     }
 
@@ -85,6 +85,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
         return new IdRangeJobParameter();
     }
 
+
     @Bean(STEP_NAME)
     @JobScope
     Step step() {
@@ -96,7 +97,7 @@ public class BrawlerBattleResultStatisticsJobConfig {
                 .build();
     }
 
-    @Bean(STEP_NAME + "ItemReader" )
+    @Bean(STEP_NAME + "ItemReader")
     @StepScope
     QuerydslEntityCursorItemReader<BattleCollectionEntity> reader() {
         return battleItemReaderFactory.create(
@@ -106,18 +107,19 @@ public class BrawlerBattleResultStatisticsJobConfig {
         );
     }
 
-    @Bean(STEP_NAME + "ItemWriter" )
+
+    @Bean(STEP_NAME + "ItemWriter")
     @StepScope
-    StatisticsJobItemWriter<BrawlerBattleResultStatisticsCollectionEntity> writer() {
+    StatisticsJobItemWriter<BrawlerPairBattleRankStatisticsCollectionEntity> writer() {
         return new StatisticsJobItemWriter<>(collector());
     }
 
     @Bean(STEP_NAME + "StatisticsCollector")
     @StepScope
-    StatisticsCollector<BrawlerBattleResultStatisticsCollectionEntity> collector() {
-        return new BrawlerBattleResultStatisticsCollector(
+    StatisticsCollector<BrawlerPairBattleRankStatisticsCollectionEntity> collector() {
+        return new BrawlerPairBattleRankStatisticsCollector(
                 battleStatisticsCollectionValidator(),
-                brawlerBattleResultStatisticsCollectionJpaRepository
+                brawlerPairBattleRankStatisticsCollectionJpaRepository
         );
     }
 
