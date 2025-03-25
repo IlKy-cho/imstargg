@@ -101,26 +101,27 @@ public class BrawlerCountJobConfig {
 
                         playerBrawlerEntities.forEach(playerBrawlerEntity -> {
                             long brawlerBrawlStarsId = playerBrawlerEntity.getBrawlerBrawlStarsId();
-                            TrophyRange trophyRange = TrophyRange.of(playerBrawlerEntity.getHighestTrophies());
-                            brawlerCounts.compute(
-                                    new BrawlerCountKey(brawlerBrawlStarsId, trophyRange),
-                                    (k, v) -> v == null ? 1 : v + 1
-                            );
-                            playerBrawlerEntity.getGadgetBrawlStarsIds().forEach(gadgetBrawlStarsId ->
-                                    brawlerItemCounts.compute(
-                                            new BrawlerItemCountKey(brawlerBrawlStarsId, gadgetBrawlStarsId, trophyRange),
-                                            (k, v) -> v == null ? 1 : v + 1
-                                    ));
-                            playerBrawlerEntity.getStarPowerBrawlStarsIds().forEach(starPowerBrawlStarsId ->
-                                    brawlerItemCounts.compute(
-                                            new BrawlerItemCountKey(brawlerBrawlStarsId, starPowerBrawlStarsId, trophyRange),
-                                            (k, v) -> v == null ? 1 : v + 1
-                                    ));
-                            playerBrawlerEntity.getGearBrawlStarsIds().forEach(gearBrawlStarsId ->
-                                    brawlerItemCounts.compute(
-                                            new BrawlerItemCountKey(brawlerBrawlStarsId, gearBrawlStarsId, trophyRange),
-                                            (k, v) -> v == null ? 1 : v + 1
-                                    ));
+                            TrophyRange.findAll(playerBrawlerEntity.getHighestTrophies()).forEach(trophyRange -> {
+                                brawlerCounts.compute(
+                                        new BrawlerCountKey(brawlerBrawlStarsId, trophyRange),
+                                        (k, v) -> v == null ? 1 : v + 1
+                                );
+                                playerBrawlerEntity.getGadgetBrawlStarsIds().forEach(gadgetBrawlStarsId ->
+                                        brawlerItemCounts.compute(
+                                                new BrawlerItemCountKey(brawlerBrawlStarsId, gadgetBrawlStarsId, trophyRange),
+                                                (k, v) -> v == null ? 1 : v + 1
+                                        ));
+                                playerBrawlerEntity.getStarPowerBrawlStarsIds().forEach(starPowerBrawlStarsId ->
+                                        brawlerItemCounts.compute(
+                                                new BrawlerItemCountKey(brawlerBrawlStarsId, starPowerBrawlStarsId, trophyRange),
+                                                (k, v) -> v == null ? 1 : v + 1
+                                        ));
+                                playerBrawlerEntity.getGearBrawlStarsIds().forEach(gearBrawlStarsId ->
+                                        brawlerItemCounts.compute(
+                                                new BrawlerItemCountKey(brawlerBrawlStarsId, gearBrawlStarsId, trophyRange),
+                                                (k, v) -> v == null ? 1 : v + 1
+                                        ));
+                            });
                         });
                     }
 
