@@ -1,6 +1,5 @@
 package com.imstargg.storage.db.core.player;
 
-import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
@@ -14,7 +13,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.OffsetDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -89,10 +87,6 @@ public class BattleCollectionEntity extends BaseEntity {
         this.teams = teams;
     }
 
-    public boolean existsEventId() {
-        return event.getBrawlStarsId() != null && event.getBrawlStarsId() > 0;
-    }
-
     public boolean isStarPlayer(BattleCollectionEntityTeamPlayer teamPlayer) {
         return Objects.equals(
                 this.getStarPlayerBrawlStarsTag(),
@@ -138,69 +132,10 @@ public class BattleCollectionEntity extends BaseEntity {
         return enemyTeams.getFirst();
     }
 
-    public List<BattlePlayerCombination> myPlayerCombinations() {
-        return findMe().stream()
-                .flatMap(me -> findEnemyTeams().stream()
-                        .flatMap(Collection::stream)
-                        .map(enemyTeamPlayer -> new BattlePlayerCombination(me, enemyTeamPlayer))
-                ).toList();
-    }
-
-    public List<BattlePlayerCombination> playerCombinations() {
-        return findMyTeam().stream()
-                .flatMap(myTeamPlayer -> findEnemyTeams().stream()
-                        .flatMap(Collection::stream)
-                        .map(enemyTeamPlayer -> new BattlePlayerCombination(myTeamPlayer, enemyTeamPlayer))
-                ).toList();
-    }
-
-    public List<BattleTeamCombination> myTeamCombinations() {
-        return new BattlePlayerCombinationBuilder(findMyTeam()).build().stream()
-                .map(BattleTeamCombination::new)
-                .toList();
-    }
-
-    public List<BattleTeamCombination> myPlayerTeamCombinations() {
-        return myTeamCombinations().stream()
-                .filter(combination -> combination.players().stream()
-                        .anyMatch(p -> p.getBrawlStarsTag().equals(player.getPlayer().getBrawlStarsTag()))
-                ).toList();
-    }
-
-    public List<BattleTeamCombination> enemyTeamCombinations() {
-        return new BattlePlayerCombinationBuilder(findEnemyTeam()).build().stream()
-                .map(BattleTeamCombination::new)
-                .toList();
-    }
-
-    public boolean containsDuplicateBrawler() {
-        List<Long> brawlerIds = teams.stream()
-                .flatMap(List::stream)
-                .map(BattleCollectionEntityTeamPlayer::getBrawler)
-                .map(BattleCollectionEntityTeamPlayerBrawler::getBrawlStarsId)
-                .toList();
-
-        return brawlerIds.size() != brawlerIds.stream().distinct().count();
-    }
-
     public List<BattleCollectionEntityTeamPlayer> getAllPlayers() {
         return teams.stream()
                 .flatMap(List::stream)
                 .toList();
-    }
-
-    public boolean canResultStatisticsCollected() {
-        return result != null
-                && existsEventId()
-                && BattleType.find(type).isOfficial()
-                && teams.size() == 2
-                && !containsDuplicateBrawler();
-    }
-
-    public boolean canRankStatisticsCollected() {
-        return player.getRank() != null
-                && existsEventId()
-                && BattleType.find(type).isRegular();
     }
 
     public Long getId() {
