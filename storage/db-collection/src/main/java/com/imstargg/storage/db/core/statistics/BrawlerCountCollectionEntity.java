@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "brawler_count_v2")
+@Table(name = "brawler_count_v3")
 public class BrawlerCountCollectionEntity extends BaseEntity {
 
     @Id

@@ -332,6 +332,41 @@ create index ix_brawlers_battle_result_stats__2
     on brawler_pair_battle_result_stats_v3 (brawler_brawlstars_id, tier_range, battle_date desc);
 
 
+create table brawler_count_v3
+(
+    brawler_count_id      bigint       not null auto_increment,
+    brawler_brawlstars_id bigint       not null,
+    trophy_range          varchar(25)  not null,
+    count_value           int          not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
+    primary key (brawler_count_id)
+);
+
+alter table brawler_count_v3
+    add constraint uk_brawler_count__key
+        unique (brawler_brawlstars_id, trophy_range);
+
+
+create table brawler_item_count_v3
+(
+    brawler_item_count_id bigint       not null auto_increment,
+    brawler_brawlstars_id bigint       not null,
+    item_brawlstars_id    bigint       not null,
+    trophy_range          varchar(25)  not null,
+    count_value           int          not null,
+    created_at            timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at            timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted               boolean      not null default false,
+    primary key (brawler_item_count_id)
+);
+
+alter table brawler_item_count_v3
+    add constraint uk_brawler_item_count__key
+        unique (brawler_brawlstars_id, item_brawlstars_id, trophy_range);
+
+
 -- BrawlStars
 create table battle_event
 (
