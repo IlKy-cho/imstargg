@@ -5,7 +5,6 @@ import com.imstargg.admin.controller.response.ListResponse;
 import com.imstargg.admin.domain.BattleEvent;
 import com.imstargg.admin.domain.BattleService;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,20 +39,6 @@ public class BattleController {
             @RequestBody @Validated BattleEventUpdateRequest request
     ) {
         battleService.updateBattleEvent(brawlStarsId, request.toBattleEventUpdate());
-    }
-
-    @PutMapping("/admin/api/events/{brawlStarsId}/solo-rank")
-    public void registerSoloRankBattleEvent(
-            @PathVariable long brawlStarsId
-    ) {
-        battleService.registerSoloRankBattleEvent(brawlStarsId);
-    }
-
-    @DeleteMapping("/admin/api/events/{brawlStarsId}/solo-rank")
-    public void deleteSoloRankBattleEvent(
-            @PathVariable long brawlStarsId
-    ) {
-        battleService.deleteSoloRankBattleEvent(brawlStarsId);
     }
 
 }
