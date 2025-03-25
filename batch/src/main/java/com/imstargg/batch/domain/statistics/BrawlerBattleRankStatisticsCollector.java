@@ -1,51 +1,95 @@
 package com.imstargg.batch.domain.statistics;
 
+import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.player.BattleCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerBattleRankStatisticsCollectionJpaRepository;
+import jakarta.annotation.PostConstruct;
 
-import java.time.Clock;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 
 public class BrawlerBattleRankStatisticsCollector
         implements StatisticsCollector<BrawlerBattleRankStatisticsCollectionEntity> {
 
-    private final Clock clock;
-    private final ConcurrentMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache;
+    private final BattleStatisticsCollectionValidator validator;
+    private final BrawlerBattleRankStatisticsCollectionJpaRepository jpaRepository;
+    private final ConcurrentMap<Key, BrawlerBattleRankStatisticsCollectionEntity> cache = new ConcurrentHashMap<>();
 
     public BrawlerBattleRankStatisticsCollector(
-            Clock clock,
-            ConcurrentMap<BrawlerBattleRankStatisticsKey, BrawlerBattleRankStatisticsCollectionEntity> cache
+            BattleStatisticsCollectionValidator validator,
+            BrawlerBattleRankStatisticsCollectionJpaRepository jpaRepository
     ) {
-        this.clock = clock;
-        this.cache = cache;
+        this.validator = validator;
+        this.jpaRepository = jpaRepository;
+    }
+
+    @PostConstruct
+    void init() {
+        jpaRepository.findAllByBattleDateGreaterThanEqual(validator.getMinCollectableBattleDate())
+                .forEach(entity -> cache.put(Key.of(entity), entity));
     }
 
     @Override
     public boolean collect(BattleCollectionEntity battle) {
-        if (!battle.canRankStatisticsCollected()) {
+        if (!validator.validateRankStatisticsCollection(battle)) {
             return false;
         }
-        var key = BrawlerBattleRankStatisticsKey.of(clock, battle);
-        var stats = getBrawlerBattleResultStats(key);
-        stats.countUp(Objects.requireNonNull(battle.getPlayer().getRank()));
+
+        Key.of(battle).forEach(key ->
+                getStats(key).countUp(
+                        Objects.requireNonNull(battle.getPlayer().getRank())
+                )
+        );
         return true;
     }
 
-    @Override
-    public List<BrawlerBattleRankStatisticsCollectionEntity> result() {
-        return List.copyOf(cache.values());
-    }
-
-
-    private BrawlerBattleRankStatisticsCollectionEntity getBrawlerBattleResultStats(BrawlerBattleRankStatisticsKey key) {
+    private BrawlerBattleRankStatisticsCollectionEntity getStats(
+            Key key) {
         return cache.computeIfAbsent(key, k -> new BrawlerBattleRankStatisticsCollectionEntity(
                 k.eventBrawlStarsId(),
-                k.battleDate(),
+                k.brawlerBrawlStarsId(),
                 k.trophyRange(),
-                k.brawlerBrawlStarsId()
+                k.battleDate()
         ));
+    }
+
+    @Override
+    public void save() {
+        jpaRepository.saveAll(cache.values());
+    }
+
+    record Key(
+            long eventBrawlStarsId,
+            long brawlerBrawlStarsId,
+            TrophyRange trophyRange,
+            LocalDate battleDate
+    ) {
+
+        static Key of(BrawlerBattleRankStatisticsCollectionEntity statsEntity) {
+            return new Key(
+                    statsEntity.getEventBrawlStarsId(),
+                    statsEntity.getBrawlerBrawlStarsId(),
+                    TrophyRange.valueOf(statsEntity.getTierRange()),
+                    statsEntity.getBattleDate()
+            );
+        }
+
+        static List<Key> of(BattleCollectionEntity battle) {
+            return battle.findMe().stream()
+                    .flatMap(myPlayer ->
+                            TrophyRange.findAll(myPlayer.getBrawler().getTrophies()).stream()
+                                    .map(trophyRange -> new Key(
+                                            Objects.requireNonNull(battle.getEvent().getBrawlStarsId()),
+                                            myPlayer.getBrawler().getBrawlStarsId(),
+                                            trophyRange,
+                                            battle.getBattleTime().toLocalDate()
+                                    ))
+                    ).toList();
+        }
     }
 }
