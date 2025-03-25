@@ -47,11 +47,13 @@ export async function generateMetadata({ params }: Readonly<Props>) {
   if (!battleEvent) {
     notFound();
   }
+  const mapName = battleEvent.map.name ?? "(이름 없음)";
+  const modeTitle = battleEventModeTitle(battleEvent.mode);
   return {
-    title: `${battleEventModeTitle(battleEvent.mode)} ${battleEvent.map.name}`,
+    title: modeTitle ? `${mapName}(${modeTitle})` : mapName,
     description: `브롤스타즈 이벤트 ${battleEvent.mode} ${battleEvent.map.name}의 정보 및 통계입니다.`,
     openGraph: {
-      images: battleEvent.map.imageUrl || "",
+      images: battleEvent.map.imageUrl ?? "",
     },
   }
 }
