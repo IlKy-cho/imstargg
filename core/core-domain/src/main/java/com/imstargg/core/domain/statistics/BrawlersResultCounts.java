@@ -6,7 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record BrawlersResultCounts(
-        List<BrawlersResultCount> counts
+        List<BrawlerPairResultCount> counts
 ) {
 
     public static BrawlersResultCounts empty() {
@@ -15,7 +15,7 @@ public record BrawlersResultCounts(
 
     public long totalBattleCount() {
         return counts.stream()
-                .map(BrawlersResultCount::resultCount)
+                .map(BrawlerPairResultCount::resultCount)
                 .mapToLong(ResultCount::totalBattleCount)
                 .sum();
     }
@@ -26,10 +26,10 @@ public record BrawlersResultCounts(
 
     public BrawlersResultCounts merge(BrawlersResultCounts other) {
         var brawlerIdToCount = new HashMap<>(counts.stream().collect(
-                Collectors.toMap(BrawlersResultCount::brawlerIds, Function.identity())
+                Collectors.toMap(BrawlerPairResultCount::brawlerIds, Function.identity())
         ));
         other.counts.forEach(otherCount -> {
-            BrawlersResultCount count = brawlerIdToCount.get(otherCount.brawlerIds());
+            BrawlerPairResultCount count = brawlerIdToCount.get(otherCount.brawlerIds());
             if (count == null) {
                 brawlerIdToCount.put(otherCount.brawlerIds(), otherCount);
             } else {

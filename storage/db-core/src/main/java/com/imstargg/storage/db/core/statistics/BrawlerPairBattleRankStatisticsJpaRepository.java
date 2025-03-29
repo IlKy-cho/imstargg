@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 
-public interface BrawlerBattleResultStatisticsJpaRepository extends JpaRepository<BrawlerBattleResultStatisticsEntity, Long> {
+public interface BrawlerPairBattleRankStatisticsJpaRepository extends JpaRepository<BrawlerPairBattleRankStatisticsEntity, Long> {
 
-    Slice<BrawlerBattleResultStatisticsEntity> findSliceByEventBrawlStarsIdAndTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
+    Slice<BrawlerPairBattleRankStatisticsEntity> findSliceByEventBrawlStarsIdAndBrawlerBrawlStarsIdAndTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
             long eventBrawlStarsId,
+            long brawlerBrawlStarsId,
             @Nullable String tierRange,
             LocalDate battleDateStart,
             LocalDate battleDateEnd,
