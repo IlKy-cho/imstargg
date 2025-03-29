@@ -21,10 +21,10 @@ public class BattleEventStatisticsCache {
     private static final Duration TTL = Duration.ofHours(2);
     private static final String VERSION = "v2";
     private static final String EVENT_CACHE_KEY = "event";
+    private static final String BRAWLER_ID_CACHE_KEY = "brawler-id";
     private static final String TIER_RANGE_CACHE_KEY = "tier-range";
     private static final String START_DATE_CACHE_KEY = "start-date";
     private static final String END_DATE_CACHE_KEY = "end-date";
-    private static final String BRAWLER_ID_CACHE_KEY = "brawler-id";
 
     private final StringRedisTemplate redisTemplate;
     private final ObjectMapperHelper objectMapper;

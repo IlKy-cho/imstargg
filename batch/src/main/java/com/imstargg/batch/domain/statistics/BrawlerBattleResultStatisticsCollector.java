@@ -10,7 +10,6 @@ import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsColl
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsCollectionJpaRepository;
 import jakarta.annotation.Nullable;
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityManager;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -38,7 +37,7 @@ public class BrawlerBattleResultStatisticsCollector
     }
 
     @PostConstruct
-    void init(EntityManager em) {
+    void init() {
         jpaRepository.findAllByBattleDateGreaterThanEqual(validator.getMinCollectableBattleDate())
                 .forEach(entity -> cache.put(Key.of(entity), entity));
     }

@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 public record BattleEventBrawlerRankStatisticsParam(
         BrawlStarsId eventId,
+        TrophyRange trophyRange,
         LocalDate startDate,
-        LocalDate endDate,
-        TrophyRange trophyRange
+        LocalDate endDate
 ) {
 
 }

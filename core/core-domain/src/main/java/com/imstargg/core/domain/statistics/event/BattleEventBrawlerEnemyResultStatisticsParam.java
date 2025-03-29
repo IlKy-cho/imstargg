@@ -8,8 +8,8 @@ import java.time.LocalDate;
 public record BattleEventBrawlerEnemyResultStatisticsParam(
         BrawlStarsId eventId,
         BrawlStarsId brawlerId,
+        TierRange tierRange,
         LocalDate startDate,
-        LocalDate endDate,
-        TierRange tierRange
+        LocalDate endDate
 ) {
 }
