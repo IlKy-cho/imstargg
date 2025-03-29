@@ -51,11 +51,11 @@ public class BattleEventRankStatisticsRepository {
             hasNext = statsEntitySlice.hasNext();
             pageRequest = pageRequest.next();
 
-            for (BrawlerBattleRankStatisticsEntity statsEntity : statsEntitySlice.getContent()) {
+            statsEntitySlice.forEach(statsEntity -> {
                 BrawlStarsId brawlerId = new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId());
                 RankCount rankCount = new RankCount(statsEntity.getRankToCounts());
                 brawlerIdToRankCount.merge(brawlerId, rankCount, RankCount::merge);
-            }
+            });
         }
 
         return brawlerIdToRankCount.entrySet().stream()
@@ -82,11 +82,11 @@ public class BattleEventRankStatisticsRepository {
             hasNext = statsEntitySlice.hasNext();
             pageRequest = pageRequest.next();
 
-            for (BrawlerPairBattleRankStatisticsEntity statsEntity : statsEntitySlice) {
+            statsEntitySlice.forEach(statsEntity -> {
                 BrawlStarsId pairBrawlerId = new BrawlStarsId(statsEntity.getPairBrawlerBrawlStarsId());
                 RankCount rankCount = new RankCount(statsEntity.getRankToCounts());
                 pairBrawlerIdToRankCount.merge(pairBrawlerId, rankCount, RankCount::merge);
-            }
+            });
         }
 
         return pairBrawlerIdToRankCount.entrySet().stream()
