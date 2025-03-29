@@ -63,7 +63,7 @@ public class BattleEventRankStatisticsRepository {
                 .toList();
     }
 
-    public List<BrawlerPairRankCount> findBrawlersRankCounts(
+    public List<BrawlerPairRankCount> findBrawlerPairRankCounts(
             BrawlStarsId eventId,
             BrawlStarsId brawlerId,
             TrophyRange trophyRange,

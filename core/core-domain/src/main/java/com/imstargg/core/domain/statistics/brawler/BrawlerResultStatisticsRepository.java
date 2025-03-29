@@ -4,9 +4,8 @@ import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
 import com.imstargg.core.domain.statistics.BattleEventResultCount;
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultCount;
 import com.imstargg.core.domain.statistics.BrawlerResultCount;
-import com.imstargg.core.domain.statistics.BrawlersResultCount;
+import com.imstargg.core.domain.statistics.BrawlerPairResultCount;
 import com.imstargg.core.domain.statistics.Counter;
 import com.imstargg.core.domain.statistics.ResultCount;
 import com.imstargg.core.domain.statistics.ResultCounter;
@@ -17,8 +16,8 @@ import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEnti
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsJpaRepository;
-import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsEntity;
-import com.imstargg.storage.db.core.statistics.BrawlersBattleResultStatisticsJpaRepository;
+import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsEntity;
+import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.IdHash;
 import jakarta.annotation.Nullable;
 import org.springframework.data.domain.PageRequest;
@@ -38,18 +37,18 @@ public class BrawlerResultStatisticsRepository {
     private static final int PAGE_SIZE = 1000;
 
     private final BrawlerBattleResultStatisticsJpaRepository brawlerBattleResultStatisticsJpaRepository;
-    private final BrawlersBattleResultStatisticsJpaRepository brawlersBattleResultStatisticsJpaRepository;
+    private final BrawlerPairBattleResultStatisticsJpaRepository brawlerPairBattleResultStatisticsJpaRepository;
     private final BrawlerEnemyBattleResultStatisticsJpaRepository brawlerEnemyBattleResultStatisticsJpaRepository;
     private final BattleEventRepositoryWithCache battleEventRepository;
 
     public BrawlerResultStatisticsRepository(
             BrawlerBattleResultStatisticsJpaRepository brawlerBattleResultStatisticsJpaRepository,
-            BrawlersBattleResultStatisticsJpaRepository brawlersBattleResultStatisticsJpaRepository,
+            BrawlerPairBattleResultStatisticsJpaRepository brawlerPairBattleResultStatisticsJpaRepository,
             BrawlerEnemyBattleResultStatisticsJpaRepository brawlerEnemyBattleResultStatisticsJpaRepository,
             BattleEventRepositoryWithCache battleEventRepository
     ) {
         this.brawlerBattleResultStatisticsJpaRepository = brawlerBattleResultStatisticsJpaRepository;
-        this.brawlersBattleResultStatisticsJpaRepository = brawlersBattleResultStatisticsJpaRepository;
+        this.brawlerPairBattleResultStatisticsJpaRepository = brawlerPairBattleResultStatisticsJpaRepository;
         this.brawlerEnemyBattleResultStatisticsJpaRepository = brawlerEnemyBattleResultStatisticsJpaRepository;
         this.battleEventRepository = battleEventRepository;
     }
@@ -127,7 +126,7 @@ public class BrawlerResultStatisticsRepository {
                 )).toList();
     }
 
-    public List<BrawlersResultCount> findBrawlerBrawlersResultCounts(
+    public List<BrawlerPairResultCount> findBrawlerBrawlersResultCounts(
             BrawlStarsId brawlerId,
             LocalDate date,
             @Nullable TrophyRange trophyRange,
@@ -138,7 +137,7 @@ public class BrawlerResultStatisticsRepository {
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
         while (hasNext) {
-            Slice<BrawlersBattleResultStatisticsEntity> slice = brawlersBattleResultStatisticsJpaRepository
+            Slice<BrawlerPairBattleResultStatisticsEntity> slice = brawlerPairBattleResultStatisticsJpaRepository
                     .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndBrawlersNum(
                             date,
                             trophyRange, soloRankTierRange,
@@ -159,7 +158,7 @@ public class BrawlerResultStatisticsRepository {
         }
 
         return brawlerIdHashToCounter.entrySet().stream()
-                .map(entry -> new BrawlersResultCount(
+                .map(entry -> new BrawlerPairResultCount(
                         entry.getKey().ids().stream().map(BrawlStarsId::new).toList(),
                         new ResultCount(
                                 entry.getValue().getVictoryCount(),

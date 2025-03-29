@@ -2,12 +2,10 @@ package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.statistics.BattleEventResultCounts;
 import com.imstargg.core.domain.statistics.BattleEventResultStatistics;
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultCounts;
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerResultCounts;
 import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
-import com.imstargg.core.domain.statistics.BrawlersResultCounts;
-import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerPairResultCounts;
+import com.imstargg.core.domain.statistics.BrawlerPairResultStatistics;
 import com.imstargg.core.domain.statistics.StatisticsCache;
 import com.imstargg.core.support.FutureUtils;
 import org.springframework.stereotype.Component;
@@ -66,20 +64,20 @@ public class BrawlerStatisticsReaderWithCache {
                 });
     }
 
-    public List<BrawlersResultStatistics> getBrawlerBrawlersResultStatistics(
+    public List<BrawlerPairResultStatistics> getBrawlerBrawlersResultStatistics(
             BrawlerBrawlersResultStatisticsParam param
     ) {
         return cache.find(param)
                 .orElseGet(() -> {
-                    List<BrawlersResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
+                    List<BrawlerPairResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
                             .map(reader::getBrawlerBrawlersResultCounts)
                             .toList());
 
-                    BrawlersResultCounts mergedCounts = countsList.stream()
-                            .reduce(BrawlersResultCounts::merge)
-                            .orElseGet(BrawlersResultCounts::empty);
+                    BrawlerPairResultCounts mergedCounts = countsList.stream()
+                            .reduce(BrawlerPairResultCounts::merge)
+                            .orElseGet(BrawlerPairResultCounts::empty);
 
-                    List<BrawlersResultStatistics> statistics = mergedCounts.toStatistics();
+                    List<BrawlerPairResultStatistics> statistics = mergedCounts.toStatistics();
                     cache.set(param, statistics);
                     return statistics;
                 });

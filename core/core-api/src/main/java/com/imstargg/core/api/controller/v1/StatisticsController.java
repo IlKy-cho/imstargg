@@ -61,7 +61,7 @@ public class StatisticsController {
             @ModelAttribute @Validated BattleEventBrawlersResultStatisticsRequest request
     ) {
         return new ListResponse<>(
-                battleEventStatisticsService.getBattleEventBrawlersResultStatistics(
+                battleEventStatisticsService.getBattleEventBrawlerPairResultStatistics(
                                 request.toParam(new BrawlStarsId(eventId)))
                         .stream()
                         .map(BrawlersResultStatisticsResponse::of)

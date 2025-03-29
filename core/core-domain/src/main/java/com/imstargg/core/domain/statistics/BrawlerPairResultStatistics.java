@@ -2,10 +2,9 @@ package com.imstargg.core.domain.statistics;
 
 import com.imstargg.core.domain.BrawlStarsId;
 
-import java.util.List;
-
-public record BrawlersResultStatistics(
-        List<BrawlStarsId> brawlerIds,
+public record BrawlerPairResultStatistics(
+        BrawlStarsId brawlerId,
+        BrawlStarsId otherBrawlerId,
         long totalBattleCount,
         double winRate,
         double pickRate
