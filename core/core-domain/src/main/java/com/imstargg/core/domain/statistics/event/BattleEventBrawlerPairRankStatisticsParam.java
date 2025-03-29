@@ -5,9 +5,13 @@ import com.imstargg.core.enums.TrophyRange;
 
 import java.time.LocalDate;
 
-public record BattleEventBrawlerRankCountParam(
+public record BattleEventBrawlerPairRankStatisticsParam(
         BrawlStarsId eventId,
-        LocalDate battleDate,
+        BrawlStarsId brawlerId,
+        LocalDate startDate,
+        LocalDate endDate,
         TrophyRange trophyRange
 ) {
+
+
 }

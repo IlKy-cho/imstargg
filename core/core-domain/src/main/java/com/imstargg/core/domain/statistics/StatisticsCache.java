@@ -8,8 +8,8 @@ import com.imstargg.core.domain.statistics.brawler.BrawlerResultStatisticsParam;
 import com.imstargg.core.domain.statistics.event.BattleEventBrawlerEnemyResultStatisticsParam;
 import com.imstargg.core.domain.statistics.event.BattleEventBrawlerRankStatisticsParam;
 import com.imstargg.core.domain.statistics.event.BattleEventBrawlerResultStatisticsParam;
-import com.imstargg.core.domain.statistics.event.BattleEventBrawlersRankStatisticsParam;
-import com.imstargg.core.domain.statistics.event.BattleEventBrawlersResultStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlerPairRankStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlerPairResultStatisticsParam;
 import com.imstargg.core.support.ObjectMapperHelper;
 import com.imstargg.storage.db.core.cache.CacheKeyBuilder;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -136,7 +136,7 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private String key(BattleEventBrawlersResultStatisticsParam param) {
+    private String key(BattleEventBrawlerPairResultStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-result-stats", "v1")
                 .add("event").add(param.eventId().value())
                 .add("brawlerId").add(param.brawlerId().value())
@@ -148,14 +148,14 @@ public class StatisticsCache {
                 .build();
     }
 
-    public Optional<List<BrawlersResultStatistics>> find(BattleEventBrawlersResultStatisticsParam param) {
+    public Optional<List<BrawlersResultStatistics>> find(BattleEventBrawlerPairResultStatisticsParam param) {
         return Optional.ofNullable(
                 redisTemplate.opsForValue().get(key(param))
         ).map(value -> objectMapper.read(value, new TypeReference<>() {
         }));
     }
 
-    public void set(BattleEventBrawlersResultStatisticsParam param, List<BrawlersResultStatistics> statistics) {
+    public void set(BattleEventBrawlerPairResultStatisticsParam param, List<BrawlersResultStatistics> statistics) {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
@@ -179,7 +179,7 @@ public class StatisticsCache {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
-    private String key(BattleEventBrawlersRankStatisticsParam param) {
+    private String key(BattleEventBrawlerPairRankStatisticsParam param) {
         return new CacheKeyBuilder("battle-event-brawlers-rank-stats", "v1")
                 .add("event").add(param.eventId().value())
                 .add("brawlerId").add(param.brawlerId().value())
@@ -190,14 +190,14 @@ public class StatisticsCache {
                 .build();
     }
 
-    public Optional<List<BrawlersRankStatistics>> find(BattleEventBrawlersRankStatisticsParam param) {
+    public Optional<List<BrawlersRankStatistics>> find(BattleEventBrawlerPairRankStatisticsParam param) {
         return Optional.ofNullable(
                 redisTemplate.opsForValue().get(key(param))
         ).map(value -> objectMapper.read(value, new TypeReference<>() {
         }));
     }
 
-    public void set(BattleEventBrawlersRankStatisticsParam param, List<BrawlersRankStatistics> statistics) {
+    public void set(BattleEventBrawlerPairRankStatisticsParam param, List<BrawlersRankStatistics> statistics) {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 

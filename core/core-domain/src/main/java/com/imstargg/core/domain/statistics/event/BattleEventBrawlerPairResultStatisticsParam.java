@@ -7,12 +7,13 @@ import jakarta.annotation.Nullable;
 
 import java.time.LocalDate;
 
-public record BattleEventBrawlersResultCountParam(
+public record BattleEventBrawlerPairResultStatisticsParam(
         BrawlStarsId eventId,
         BrawlStarsId brawlerId,
-        LocalDate battleDate,
+        LocalDate startDate,
+        LocalDate endDate,
         @Nullable TrophyRange trophyRange,
-        @Nullable SoloRankTierRange soloRankTierRange,
-        int brawlersNum
+        @Nullable SoloRankTierRange soloRankTierRange
 ) {
+
 }
