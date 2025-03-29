@@ -18,4 +18,12 @@ public interface BrawlerEnemyBattleResultStatisticsJpaRepository
             LocalDate battleDateEnd,
             Pageable pageable
     );
+
+    Slice<BrawlerEnemyBattleResultStatisticsEntity> findSliceByBrawlerBrawlStarsIdAndTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
+            long brawlerBrawlStarsId,
+            @Nullable String tierRange,
+            LocalDate battleDateStart,
+            LocalDate battleDateEnd,
+            Pageable pageable
+    );
 }

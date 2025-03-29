@@ -58,7 +58,7 @@ public class BattleEventResultStatisticsRepository {
             hasNext = statsEntitySlice.hasNext();
             pageRequest = pageRequest.next();
 
-            for (BrawlerBattleResultStatisticsEntity statsEntity : statsEntitySlice) {
+            statsEntitySlice.forEach(statsEntity -> {
                 BrawlStarsId brawlerId = new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId());
                 ResultCount resultCount = new ResultCount(
                         statsEntity.getVictoryCount(),
@@ -68,7 +68,7 @@ public class BattleEventResultStatisticsRepository {
                 StarPlayerCount starPlayerCount = new StarPlayerCount(statsEntity.getStarPlayerCount());
                 brawlerIdToResultCount.merge(brawlerId, resultCount, ResultCount::merge);
                 brawlerIdToStarPlayerCount.merge(brawlerId, starPlayerCount, StarPlayerCount::merge);
-            }
+            });
         }
 
         return brawlerIdToResultCount.entrySet().stream()
@@ -97,7 +97,7 @@ public class BattleEventResultStatisticsRepository {
             hasNext = statsEntitySlice.hasNext();
             pageRequest = pageRequest.next();
 
-            for (BrawlerPairBattleResultStatisticsEntity statsEntity : statsEntitySlice) {
+            statsEntitySlice.forEach(statsEntity -> {
                 BrawlStarsId pairBrawlerId = new BrawlStarsId(statsEntity.getPairBrawlerBrawlStarsId());
                 ResultCount resultCount = new ResultCount(
                         statsEntity.getVictoryCount(),
@@ -105,7 +105,7 @@ public class BattleEventResultStatisticsRepository {
                         statsEntity.getDrawCount()
                 );
                 pairBrawlerIdToResultCount.merge(pairBrawlerId, resultCount, ResultCount::merge);
-            }
+            });
         }
 
         return pairBrawlerIdToResultCount.entrySet().stream()
@@ -131,7 +131,7 @@ public class BattleEventResultStatisticsRepository {
             hasNext = statsEntitySlice.hasNext();
             pageRequest = pageRequest.next();
 
-            for (BrawlerEnemyBattleResultStatisticsEntity statsEntity : statsEntitySlice) {
+            statsEntitySlice.forEach(statsEntity -> {
                 BrawlStarsId enemyBrawlerId = new BrawlStarsId(statsEntity.getEnemyBrawlerBrawlStarsId());
                 ResultCount resultCount = new ResultCount(
                         statsEntity.getVictoryCount(),
@@ -139,7 +139,7 @@ public class BattleEventResultStatisticsRepository {
                         statsEntity.getDrawCount()
                 );
                 enemyBrawlerIdToResultCount.merge(enemyBrawlerId, resultCount, ResultCount::merge);
-            }
+            });
         }
 
         return enemyBrawlerIdToResultCount.entrySet().stream()

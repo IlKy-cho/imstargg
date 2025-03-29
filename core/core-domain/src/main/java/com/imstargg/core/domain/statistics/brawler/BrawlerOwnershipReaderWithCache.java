@@ -2,7 +2,6 @@ package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.Brawler;
-import com.imstargg.core.domain.statistics.ItemRate;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -4,22 +4,17 @@ import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.BattleEvent;
 import com.imstargg.core.domain.brawlstars.BattleEventRepositoryWithCache;
 import com.imstargg.core.domain.statistics.BattleEventResultCount;
-import com.imstargg.core.domain.statistics.BrawlerResultCount;
 import com.imstargg.core.domain.statistics.BrawlerPairResultCount;
-import com.imstargg.core.domain.statistics.Counter;
+import com.imstargg.core.domain.statistics.BrawlerResultCount;
 import com.imstargg.core.domain.statistics.ResultCount;
-import com.imstargg.core.domain.statistics.ResultCounter;
 import com.imstargg.core.domain.statistics.StarPlayerCount;
-import com.imstargg.core.enums.SoloRankTierRange;
-import com.imstargg.core.enums.TrophyRange;
+import com.imstargg.core.domain.statistics.TierRange;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerBattleResultStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerEnemyBattleResultStatisticsJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsJpaRepository;
-import com.imstargg.storage.db.core.statistics.IdHash;
-import jakarta.annotation.Nullable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Component;
@@ -54,158 +49,150 @@ public class BrawlerResultStatisticsRepository {
     }
 
     public List<BrawlerResultCount> findBrawlerResultCounts(
-            LocalDate battleDate,
-            @Nullable TrophyRange trophyRange, @Nullable SoloRankTierRange soloRankTierRange
+            TierRange tierRange,
+            LocalDate startDate,
+            LocalDate endDate
     ) {
-        Map<BrawlStarsId, ResultCounter> brawlerIdToResultCounter = new HashMap<>();
-        Map<BrawlStarsId, Counter> brawlerIdToStarPlayerCounter = new HashMap<>();
+        Map<BrawlStarsId, ResultCount> brawlerIdToResultCount = new HashMap<>();
+        Map<BrawlStarsId, StarPlayerCount> brawlerIdToStarPlayerCount = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
         while (hasNext) {
             Slice<BrawlerBattleResultStatisticsEntity> slice = brawlerBattleResultStatisticsJpaRepository
-                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRange(
-                            battleDate, trophyRange, soloRankTierRange, pageRequest
+                    .findSliceByTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
+                            tierRange.value(), startDate, endDate, pageRequest
                     );
             hasNext = slice.hasNext();
             pageRequest = pageRequest.next();
 
             slice.forEach(statsEntity -> {
                 BrawlStarsId brawlerId = new BrawlStarsId(statsEntity.getBrawlerBrawlStarsId());
-                ResultCounter resultCounter = brawlerIdToResultCounter.computeIfAbsent(
-                        brawlerId, k -> new ResultCounter()
+                ResultCount resultCount = new ResultCount(
+                        statsEntity.getVictoryCount(),
+                        statsEntity.getDefeatCount(),
+                        statsEntity.getDrawCount()
                 );
-                resultCounter.addVictory(statsEntity.getVictoryCount());
-                resultCounter.addDefeat(statsEntity.getDefeatCount());
-                resultCounter.addDraw(statsEntity.getDrawCount());
-
-                Counter starPlayerCounter = brawlerIdToStarPlayerCounter.computeIfAbsent(
-                        brawlerId, k -> new Counter()
-                );
-                starPlayerCounter.add(statsEntity.getStarPlayerCount());
+                StarPlayerCount starPlayerCount = new StarPlayerCount(statsEntity.getStarPlayerCount());
+                brawlerIdToResultCount.merge(brawlerId, resultCount, ResultCount::merge);
+                brawlerIdToStarPlayerCount.merge(brawlerId, starPlayerCount, StarPlayerCount::merge);
             });
         }
 
-        return brawlerIdToResultCounter.entrySet().stream()
+        return brawlerIdToResultCount.entrySet().stream()
                 .map(entry -> new BrawlerResultCount(
                         entry.getKey(),
-                        new ResultCount(
-                                entry.getValue().getVictoryCount(),
-                                entry.getValue().getDefeatCount(),
-                                entry.getValue().getDrawCount()
-                        ),
-                        new StarPlayerCount(brawlerIdToStarPlayerCounter.get(entry.getKey()).getCount())
+                        entry.getValue(),
+                        brawlerIdToStarPlayerCount.get(entry.getKey())
                 )).toList();
     }
 
     public List<BattleEventResultCount> findBrawlerBattleEventResultCounts(
             BrawlStarsId brawlerId,
-            LocalDate date,
-            @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange
+            TierRange tierRange,
+            LocalDate startDate,
+            LocalDate endDate
     ) {
-        List<BrawlerBattleResultStatisticsEntity> eventResultStatsEntities = brawlerBattleResultStatisticsJpaRepository
-                .findAllByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
-                        date, trophyRange, soloRankTierRange, brawlerId.value()
+        Map<BrawlStarsId, ResultCount> eventIdToResultCount = new HashMap<>();
+        Map<BrawlStarsId, StarPlayerCount> eventIdToStarPlayerCount = new HashMap<>();
+        var pageRequest = PageRequest.ofSize(PAGE_SIZE);
+        boolean hasNext = true;
+        while (hasNext) {
+            Slice<BrawlerBattleResultStatisticsEntity> statsEntitySlice = brawlerBattleResultStatisticsJpaRepository
+                    .findSliceByBrawlerBrawlStarsIdAndTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
+                            brawlerId.value(), tierRange.value(), startDate, endDate, PageRequest.ofSize(PAGE_SIZE)
+                    );
+            hasNext = statsEntitySlice.hasNext();
+            pageRequest = pageRequest.next();
+
+            statsEntitySlice.forEach(statsEntity -> {
+                BrawlStarsId eventId = new BrawlStarsId(statsEntity.getEventBrawlStarsId());
+                ResultCount resultCount = new ResultCount(
+                        statsEntity.getVictoryCount(),
+                        statsEntity.getDefeatCount(),
+                        statsEntity.getDrawCount()
                 );
+                StarPlayerCount starPlayerCount = new StarPlayerCount(statsEntity.getStarPlayerCount());
+                eventIdToResultCount.merge(eventId, resultCount, ResultCount::merge);
+                eventIdToStarPlayerCount.merge(eventId, starPlayerCount, StarPlayerCount::merge);
+            });
+        }
+
         Map<BrawlStarsId, BattleEvent> idToEvent = battleEventRepository.findAllEvents(
-                eventResultStatsEntities.stream()
-                        .map(statsEntity -> new BrawlStarsId(statsEntity.getEventBrawlStarsId()))
-                        .toList()
+                eventIdToStarPlayerCount.keySet()
         ).stream().collect(Collectors.toMap(BattleEvent::id, Function.identity()));
 
-        return eventResultStatsEntities.stream()
-                .filter(statsEntity -> idToEvent.containsKey(new BrawlStarsId(statsEntity.getEventBrawlStarsId())))
-                .map(statsEntity -> new BattleEventResultCount(
-                        idToEvent.get(new BrawlStarsId(statsEntity.getEventBrawlStarsId())),
-                        new ResultCount(
-                                statsEntity.getVictoryCount(),
-                                statsEntity.getDefeatCount(),
-                                statsEntity.getDrawCount()
-                        ),
-                        new StarPlayerCount(statsEntity.getStarPlayerCount())
+        return eventIdToResultCount.entrySet().stream()
+                .map(entry -> new BattleEventResultCount(
+                        idToEvent.get(entry.getKey()),
+                        entry.getValue(),
+                        eventIdToStarPlayerCount.get(entry.getKey())
                 )).toList();
     }
 
-    public List<BrawlerPairResultCount> findBrawlerBrawlersResultCounts(
+    public List<BrawlerPairResultCount> findBrawlerPairResultCounts(
             BrawlStarsId brawlerId,
-            LocalDate date,
-            @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange,
-            int brawlersNum
+            TierRange tierRange,
+            LocalDate startDate,
+            LocalDate endDate
     ) {
-        Map<IdHash, ResultCounter> brawlerIdHashToCounter = new HashMap<>();
+        Map<BrawlStarsId, ResultCount> pairBrawlerIdToResultCount = new HashMap<>();
         var pageRequest = PageRequest.ofSize(PAGE_SIZE);
         boolean hasNext = true;
         while (hasNext) {
-            Slice<BrawlerPairBattleResultStatisticsEntity> slice = brawlerPairBattleResultStatisticsJpaRepository
-                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsIdAndBrawlersNum(
-                            date,
-                            trophyRange, soloRankTierRange,
-                            brawlerId.value(),
-                            brawlersNum,
-                            pageRequest
+            Slice<BrawlerPairBattleResultStatisticsEntity> statsEntitySlice = brawlerPairBattleResultStatisticsJpaRepository
+                    .findSliceByBrawlerBrawlStarsIdAndTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
+                            brawlerId.value(), tierRange.value(), startDate, endDate, pageRequest
                     );
-            hasNext = slice.hasNext();
+            hasNext = statsEntitySlice.hasNext();
             pageRequest = pageRequest.next();
 
-            slice.forEach(statsEntity -> {
-                IdHash brawlerIdHash = new IdHash(statsEntity.getBrawlers().getIdHash());
-                ResultCounter counter = brawlerIdHashToCounter.computeIfAbsent(brawlerIdHash, k -> new ResultCounter());
-                counter.addVictory(statsEntity.getVictoryCount());
-                counter.addDefeat(statsEntity.getDefeatCount());
-                counter.addDraw(statsEntity.getDrawCount());
-            });
-        }
-
-        return brawlerIdHashToCounter.entrySet().stream()
-                .map(entry -> new BrawlerPairResultCount(
-                        entry.getKey().ids().stream().map(BrawlStarsId::new).toList(),
-                        new ResultCount(
-                                entry.getValue().getVictoryCount(),
-                                entry.getValue().getDefeatCount(),
-                                entry.getValue().getDrawCount()
-                        )
-                )).toList();
-    }
-
-    public List<BrawlerEnemyResultCount> findBrawlerEnemyResultCounts(
-            BrawlStarsId brawlerId,
-            LocalDate date,
-            @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange
-    ) {
-        Map<BrawlStarsId, ResultCounter> enemyBrawlerIdToResultCounter = new HashMap<>();
-        var pageRequest = PageRequest.ofSize(PAGE_SIZE);
-        boolean hasNext = true;
-        while (hasNext) {
-            Slice<BrawlerEnemyBattleResultStatisticsEntity> slice = brawlerEnemyBattleResultStatisticsJpaRepository
-                    .findSliceByBattleDateAndTrophyRangeAndSoloRankTierRangeAndBrawlerBrawlStarsId(
-                            date, trophyRange, soloRankTierRange, brawlerId.value(), pageRequest
-                    );
-            hasNext = slice.hasNext();
-            pageRequest = pageRequest.next();
-
-            slice.forEach(statsEntity -> {
-                BrawlStarsId enemyBrawlerId = new BrawlStarsId(statsEntity.getEnemyBrawlerBrawlStarsId());
-                ResultCounter resultCounter = enemyBrawlerIdToResultCounter.computeIfAbsent(
-                        enemyBrawlerId, k -> new ResultCounter()
+            statsEntitySlice.forEach(statsEntity -> {
+                var pairBrawlerId = new BrawlStarsId(statsEntity.getPairBrawlerBrawlStarsId());
+                var resultCount = new ResultCount(
+                        statsEntity.getVictoryCount(),
+                        statsEntity.getDefeatCount(),
+                        statsEntity.getDrawCount()
                 );
-                resultCounter.addVictory(statsEntity.getVictoryCount());
-                resultCounter.addDefeat(statsEntity.getDefeatCount());
-                resultCounter.addDraw(statsEntity.getDrawCount());
+                pairBrawlerIdToResultCount.merge(pairBrawlerId, resultCount, ResultCount::merge);
             });
         }
 
-        return enemyBrawlerIdToResultCounter.entrySet().stream()
-                .map(entry -> new BrawlerEnemyResultCount(
-                        brawlerId,
-                        entry.getKey(),
-                        new ResultCount(
-                                entry.getValue().getVictoryCount(),
-                                entry.getValue().getDefeatCount(),
-                                entry.getValue().getDrawCount()
-                        )
-                )).toList();
+        return pairBrawlerIdToResultCount.entrySet().stream()
+                .map(entry -> new BrawlerPairResultCount(brawlerId, entry.getKey(), entry.getValue()))
+                .toList();
+    }
+
+    public List<BrawlerPairResultCount> findBrawlerEnemyResultCounts(
+            BrawlStarsId brawlerId,
+            TierRange tierRange,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
+        Map<BrawlStarsId, ResultCount> enemyBrawlerIdToResultCount = new HashMap<>();
+        var pageRequest = PageRequest.ofSize(PAGE_SIZE);
+        boolean hasNext = true;
+        while (hasNext) {
+            Slice<BrawlerEnemyBattleResultStatisticsEntity> statsEntitySlice = brawlerEnemyBattleResultStatisticsJpaRepository
+                    .findSliceByBrawlerBrawlStarsIdAndTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
+                            brawlerId.value(), tierRange.value(), startDate, endDate, pageRequest
+                    );
+            hasNext = statsEntitySlice.hasNext();
+            pageRequest = pageRequest.next();
+
+            statsEntitySlice.forEach(statsEntity -> {
+                var enemyBrawlerId = new BrawlStarsId(statsEntity.getEnemyBrawlerBrawlStarsId());
+                var resultCount = new ResultCount(
+                        statsEntity.getVictoryCount(),
+                        statsEntity.getDefeatCount(),
+                        statsEntity.getDrawCount()
+                );
+                enemyBrawlerIdToResultCount.merge(enemyBrawlerId, resultCount, ResultCount::merge);
+            });
+        }
+
+        return enemyBrawlerIdToResultCount.entrySet().stream()
+                .map(entry -> new BrawlerPairResultCount(brawlerId, entry.getKey(), entry.getValue()))
+                .toList();
     }
 
 }

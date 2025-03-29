@@ -3,16 +3,15 @@ package com.imstargg.core.domain.statistics.brawler;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.BrawlerReader;
 import com.imstargg.core.domain.statistics.BattleEventResultStatistics;
-import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerPairResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
+import com.imstargg.core.enums.TrophyRange;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class BrawlerStatisticsService {
-
-    private static final int MINIMUM_BATTLE_COUNT = 10;
 
     private final BrawlerReader brawlerReader;
     private final BrawlerStatisticsReaderWithCache brawlerStatisticsReader;
@@ -31,40 +30,28 @@ public class BrawlerStatisticsService {
     public List<BrawlerResultStatistics> getBrawlerResultStatistics(
             BrawlerResultStatisticsParam params
     ) {
-        return brawlerStatisticsReader.getBrawlerResultStatistics(params)
-                .stream()
-                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
-                .toList();
+        return brawlerStatisticsReader.getBrawlerResultStatistics(params);
     }
 
     public List<BattleEventResultStatistics> getBrawlerBattleEventResultStatistics(
             BrawlerBattleEventResultStatisticsParam param
     ) {
-        return brawlerStatisticsReader.getBrawlerBattleEventResultStatistics(param)
-                .stream()
-                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
-                .toList();
+        return brawlerStatisticsReader.getBrawlerBattleEventResultStatistics(param);
     }
 
     public List<BrawlerPairResultStatistics> getBrawlerBrawlersResultStatistics(
-            BrawlerBrawlersResultStatisticsParam param
+            BrawlerPairResultStatisticsParam param
     ) {
-        return brawlerStatisticsReader.getBrawlerBrawlersResultStatistics(param)
-                .stream()
-                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
-                .toList();
+        return brawlerStatisticsReader.getBrawlerPairResultStatistics(param);
     }
 
-    public List<BrawlerEnemyResultStatistics> getBrawlerEnemyResultStatistics(
+    public List<BrawlerPairResultStatistics> getBrawlerEnemyResultStatistics(
             BrawlerEnemyResultStatisticsParam param
     ) {
-        return brawlerStatisticsReader.getBrawlerEnemyResultStatistics(param)
-                .stream()
-                .filter(stats -> stats.totalBattleCount() > MINIMUM_BATTLE_COUNT)
-                .toList();
+        return brawlerStatisticsReader.getBrawlerEnemyResultStatistics(param);
     }
 
-    public BrawlerItemOwnership getOwnershipRate(BrawlStarsId id, TrophyRangeRange trophyRangeRange) {
-        return brawlerOwnershipReader.get(brawlerReader.get(id), trophyRangeRange);
+    public BrawlerItemOwnership getOwnershipRate(BrawlStarsId id, TrophyRange trophyRange) {
+        return brawlerOwnershipReader.get(brawlerReader.get(id), trophyRange);
     }
 }

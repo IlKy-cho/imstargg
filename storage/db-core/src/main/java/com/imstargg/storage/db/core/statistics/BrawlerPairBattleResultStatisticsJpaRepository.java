@@ -17,4 +17,12 @@ public interface BrawlerPairBattleResultStatisticsJpaRepository extends JpaRepos
             LocalDate battleDateEnd,
             Pageable pageable
     );
+
+    Slice<BrawlerPairBattleResultStatisticsEntity> findSliceByBrawlerBrawlStarsIdAndTierRangeAndBattleDateGreaterThanEqualAndBattleDateLessThanEqual(
+            long brawlerBrawlStarsId,
+            @Nullable String tierRange,
+            LocalDate battleDateStart,
+            LocalDate battleDateEnd,
+            Pageable pageable
+    );
 }
