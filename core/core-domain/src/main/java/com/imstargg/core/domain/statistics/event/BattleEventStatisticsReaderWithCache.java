@@ -1,17 +1,13 @@
 package com.imstargg.core.domain.statistics.event;
 
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultCounts;
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerRankCounts;
 import com.imstargg.core.domain.statistics.BrawlerRankStatistics;
 import com.imstargg.core.domain.statistics.BrawlerResultCounts;
 import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
-import com.imstargg.core.domain.statistics.BrawlersRankCounts;
-import com.imstargg.core.domain.statistics.BrawlersRankStatistics;
-import com.imstargg.core.domain.statistics.BrawlersResultCounts;
-import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
-import com.imstargg.core.domain.statistics.StatisticsCache;
-import com.imstargg.core.support.FutureUtils;
+import com.imstargg.core.domain.statistics.BrawlerPairRankCounts;
+import com.imstargg.core.domain.statistics.BrawlerPairRankStatistics;
+import com.imstargg.core.domain.statistics.BrawlerPairResultCounts;
+import com.imstargg.core.domain.statistics.BrawlerPairResultStatistics;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -19,106 +15,72 @@ import java.util.List;
 @Component
 public class BattleEventStatisticsReaderWithCache {
 
-    private final BattleEventStatisticsCountReaderWithAsync reader;
-    private final StatisticsCache cache;
+    private final BattleEventResultStatisticsRepository battleEventResultStatisticsRepository;
+    private final BattleEventRankStatisticsRepository battleEventRankStatisticsRepository;
+    private final BattleEventStatisticsCache cache;
 
     public BattleEventStatisticsReaderWithCache(
-            BattleEventStatisticsCountReaderWithAsync reader,
-            StatisticsCache cache
+            BattleEventResultStatisticsRepository battleEventResultStatisticsRepository,
+            BattleEventRankStatisticsRepository battleEventRankStatisticsRepository,
+            BattleEventStatisticsCache cache
     ) {
-        this.reader = reader;
+        this.battleEventResultStatisticsRepository = battleEventResultStatisticsRepository;
+        this.battleEventRankStatisticsRepository = battleEventRankStatisticsRepository;
         this.cache = cache;
     }
 
     public List<BrawlerResultStatistics> getBattleEventBrawlerResultStatistics(
-            BattleEventBrawlerResultStatisticsParam params
+            BattleEventBrawlerResultStatisticsParam param
     ) {
-        return cache.find(params)
-                .orElseGet(() -> {
-                    List<BrawlerResultCounts> countsList = FutureUtils.get(params.toCountParams().stream()
-                            .map(reader::getBattleEventBrawlerResultCounts)
-                            .toList());
-
-                    BrawlerResultCounts mergedCounts = countsList.stream()
-                            .reduce(BrawlerResultCounts::merge)
-                            .orElseGet(BrawlerResultCounts::empty);
-
-                    List<BrawlerResultStatistics> statistics = mergedCounts.toStatistics();
-                    cache.set(params, statistics);
-                    return statistics;
-                });
+        return cache.get(param, key -> {
+            var counts = new BrawlerResultCounts(battleEventResultStatisticsRepository.findBrawlerResultCounts(
+                    key.eventId(), key.tierRange(), key.startDate(), key.endDate()
+            ));
+            return counts.toStatistics();
+        });
     }
 
-    public List<BrawlersResultStatistics> getBattleEventBrawlersResultStatistics(
-            BattleEventBrawlersResultStatisticsParam param) {
-        return cache.find(param)
-                .orElseGet(() -> {
-                    List<BrawlersResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
-                            .map(reader::getBattleEventBrawlersResultCounts)
-                            .toList());
+    public List<BrawlerPairResultStatistics> getBattleEventBrawlerPairResultStatistics(
+            BattleEventBrawlerPairResultStatisticsParam param
+    ) {
+        return cache.get(param, key -> {
+            var counts = new BrawlerPairResultCounts(battleEventResultStatisticsRepository.findBrawlerPairResultCounts(
+                    key.eventId(), key.brawlerId(), key.tierRange(), key.startDate(), key.endDate()
+            ));
+            return counts.toStatistics();
+        });
+    }
 
-                    BrawlersResultCounts mergedCounts = countsList.stream()
-                            .reduce(BrawlersResultCounts::merge)
-                            .orElseGet(BrawlersResultCounts::empty);
-
-                    List<BrawlersResultStatistics> statistics = mergedCounts.toStatistics();
-                    cache.set(param, statistics);
-                    return statistics;
-                });
+    public List<BrawlerPairResultStatistics> getBattleEventBrawlerEnemyResultStatistics(
+            BattleEventBrawlerEnemyResultStatisticsParam param
+    ) {
+        return cache.get(param, key -> {
+            var counts = new BrawlerPairResultCounts(battleEventResultStatisticsRepository.findBrawlerEnemyResultCounts(
+                    key.eventId(), key.brawlerId(), key.tierRange(), key.startDate(), key.endDate()
+            ));
+            return counts.toStatistics();
+        });
     }
 
     public List<BrawlerRankStatistics> getBattleEventBrawlerRankStatistics(
-            BattleEventBrawlerRankStatisticsParam params
+            BattleEventBrawlerRankStatisticsParam param
     ) {
-        return cache.find(params)
-                .orElseGet(() -> {
-                    List<BrawlerRankCounts> countsList = FutureUtils.get(params.toCountParams().stream()
-                            .map(reader::getBattleEventBrawlerRankCounts)
-                            .toList());
-
-                    BrawlerRankCounts mergedCounts = countsList.stream()
-                            .reduce(BrawlerRankCounts::merge)
-                            .orElseGet(BrawlerRankCounts::empty);
-
-                    List<BrawlerRankStatistics> statistics = mergedCounts.toStatistics();
-                    cache.set(params, statistics);
-                    return statistics;
-                });
+        return cache.get(param, key -> {
+            var counts = new BrawlerRankCounts(battleEventRankStatisticsRepository.findBrawlerRankCounts(
+                    key.eventId(), key.trophyRange(), key.startDate(), key.endDate()
+            ));
+            return counts.toStatistics();
+        });
     }
 
-    public List<BrawlersRankStatistics> getBattleEventBrawlersRankStatistics(
-            BattleEventBrawlersRankStatisticsParam params) {
-        return cache.find(params)
-                .orElseGet(() -> {
-                    List<BrawlersRankCounts> countsList = FutureUtils.get(params.toCountParams().stream()
-                            .map(reader::getBattleEventBrawlersRankCounts)
-                            .toList());
-
-                    BrawlersRankCounts mergedCounts = countsList.stream()
-                            .reduce(BrawlersRankCounts::merge)
-                            .orElseGet(BrawlersRankCounts::empty);
-
-                    List<BrawlersRankStatistics> statistics = mergedCounts.toStatistics();
-                    cache.set(params, statistics);
-                    return statistics;
-                });
-    }
-
-    public List<BrawlerEnemyResultStatistics> getBattleEventBrawlerEnemyResultStatistics(
-            BattleEventBrawlerEnemyResultStatisticsParam param) {
-        return cache.find(param)
-                .orElseGet(() -> {
-                    List<BrawlerEnemyResultCounts> countsList = FutureUtils.get(param.toCountParams().stream()
-                            .map(reader::getBattleEventBrawlerEnemyResultCounts)
-                            .toList());
-
-                    BrawlerEnemyResultCounts mergedCounts = countsList.stream()
-                            .reduce(BrawlerEnemyResultCounts::merge)
-                            .orElseGet(BrawlerEnemyResultCounts::empty);
-
-                    List<BrawlerEnemyResultStatistics> statistics = mergedCounts.toStatistics();
-                    cache.set(param, statistics);
-                    return statistics;
-                });
+    public List<BrawlerPairRankStatistics> getBattleEventBrawlersRankStatistics(
+            BattleEventBrawlerPairRankStatisticsParam param
+    ) {
+        return cache.get(param, key -> {
+            var counts = new BrawlerPairRankCounts(battleEventRankStatisticsRepository.findBrawlerPairRankCounts(
+                    key.eventId(), key.brawlerId(), key.trophyRange(), key.startDate(), key.endDate()
+            ));
+            return counts.toStatistics();
+        });
     }
 }

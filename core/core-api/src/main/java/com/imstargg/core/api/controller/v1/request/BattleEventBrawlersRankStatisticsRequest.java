@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1.request;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.statistics.event.BattleEventBrawlersRankStatisticsParam;
+import com.imstargg.core.domain.statistics.event.BattleEventBrawlerPairRankStatisticsParam;
 import com.imstargg.core.enums.DateRange;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,8 +14,8 @@ public record BattleEventBrawlersRankStatisticsRequest(
         @NotNull TrophyRangeRange trophyRange
 ) {
 
-    public BattleEventBrawlersRankStatisticsParam toParam(BrawlStarsId eventId) {
-        return new BattleEventBrawlersRankStatisticsParam(
+    public BattleEventBrawlerPairRankStatisticsParam toParam(BrawlStarsId eventId) {
+        return new BattleEventBrawlerPairRankStatisticsParam(
                 eventId,
                 new BrawlStarsId(brawlerId),
                 date(),

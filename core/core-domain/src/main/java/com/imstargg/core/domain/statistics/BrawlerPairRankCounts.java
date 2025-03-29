@@ -5,12 +5,12 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public record BrawlersRankCounts(
+public record BrawlerPairRankCounts(
         List<BrawlerPairRankCount> counts
 ) {
 
-    public static BrawlersRankCounts empty() {
-        return new BrawlersRankCounts(List.of());
+    public static BrawlerPairRankCounts empty() {
+        return new BrawlerPairRankCounts(List.of());
     }
 
     public long totalBattleCount() {
@@ -24,7 +24,7 @@ public record BrawlersRankCounts(
         return counts.isEmpty();
     }
 
-    public BrawlersRankCounts merge(BrawlersRankCounts other) {
+    public BrawlerPairRankCounts merge(BrawlerPairRankCounts other) {
         var brawlerIdToCount = new HashMap<>(counts.stream().collect(
                 Collectors.toMap(BrawlerPairRankCount::brawlerIds, Function.identity())
         ));
@@ -38,13 +38,13 @@ public record BrawlersRankCounts(
             }
         });
 
-        return new BrawlersRankCounts(brawlerIdToCount.values().stream().toList());
+        return new BrawlerPairRankCounts(brawlerIdToCount.values().stream().toList());
     }
 
-    public List<BrawlersRankStatistics> toStatistics() {
+    public List<BrawlerPairRankStatistics> toStatistics() {
         long totalBattleCount = totalBattleCount();
         return counts.stream()
-                .map(count -> new BrawlersRankStatistics(
+                .map(count -> new BrawlerPairRankStatistics(
                         count.brawlerIds(),
                         count.rankCount().totalBattleCount(),
                         count.rankCount().averageRank(),

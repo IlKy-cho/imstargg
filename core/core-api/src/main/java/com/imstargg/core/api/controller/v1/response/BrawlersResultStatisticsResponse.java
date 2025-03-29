@@ -1,7 +1,7 @@
 package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
+import com.imstargg.core.domain.statistics.BrawlerPairResultStatistics;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public record BrawlersResultStatisticsResponse(
         double pickRate
 ) {
 
-    public static BrawlersResultStatisticsResponse of(BrawlersResultStatistics statistics) {
+    public static BrawlersResultStatisticsResponse of(BrawlerPairResultStatistics statistics) {
         return new BrawlersResultStatisticsResponse(
                 statistics.brawlerIds().stream().map(BrawlStarsId::value).toList(),
                 statistics.totalBattleCount(),

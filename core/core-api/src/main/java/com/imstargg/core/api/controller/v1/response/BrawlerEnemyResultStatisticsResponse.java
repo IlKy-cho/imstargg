@@ -1,7 +1,5 @@
 package com.imstargg.core.api.controller.v1.response;
 
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
-
 public record BrawlerEnemyResultStatisticsResponse(
         long brawlerId,
         long enemyBrawlerId,

@@ -79,7 +79,7 @@ public class BattleEventResultStatisticsRepository {
                 ).toList();
     }
 
-    public List<BrawlerPairResultCount> findBrawlersResultCounts(
+    public List<BrawlerPairResultCount> findBrawlerPairResultCounts(
             BrawlStarsId eventId,
             BrawlStarsId brawlerId,
             TierRange tierRange,

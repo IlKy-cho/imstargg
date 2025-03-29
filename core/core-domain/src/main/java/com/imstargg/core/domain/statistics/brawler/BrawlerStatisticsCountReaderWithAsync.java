@@ -1,9 +1,8 @@
 package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.statistics.BattleEventResultCounts;
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultCounts;
 import com.imstargg.core.domain.statistics.BrawlerResultCounts;
-import com.imstargg.core.domain.statistics.BrawlersResultCounts;
+import com.imstargg.core.domain.statistics.BrawlerPairResultCounts;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -47,9 +46,9 @@ public class BrawlerStatisticsCountReaderWithAsync {
         );
     }
 
-    public Future<BrawlersResultCounts> getBrawlerBrawlersResultCounts(BrawlerBrawlersResultCountParam param) {
+    public Future<BrawlerPairResultCounts> getBrawlerBrawlersResultCounts(BrawlerBrawlersResultCountParam param) {
         return CompletableFuture.completedFuture(
-                new BrawlersResultCounts(
+                new BrawlerPairResultCounts(
                         brawlerResultStatisticsRepository.findBrawlerBrawlersResultCounts(
                                 param.brawlerId(),
                                 param.date(),

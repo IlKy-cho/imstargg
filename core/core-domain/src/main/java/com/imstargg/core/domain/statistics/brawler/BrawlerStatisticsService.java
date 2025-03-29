@@ -3,10 +3,8 @@ package com.imstargg.core.domain.statistics.brawler;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.BrawlerReader;
 import com.imstargg.core.domain.statistics.BattleEventResultStatistics;
-import com.imstargg.core.domain.statistics.BrawlerEnemyResultStatistics;
 import com.imstargg.core.domain.statistics.BrawlerResultStatistics;
-import com.imstargg.core.domain.statistics.BrawlersResultStatistics;
-import com.imstargg.core.enums.TrophyRangeRange;
+import com.imstargg.core.domain.statistics.BrawlerPairResultStatistics;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,7 +46,7 @@ public class BrawlerStatisticsService {
                 .toList();
     }
 
-    public List<BrawlersResultStatistics> getBrawlerBrawlersResultStatistics(
+    public List<BrawlerPairResultStatistics> getBrawlerBrawlersResultStatistics(
             BrawlerBrawlersResultStatisticsParam param
     ) {
         return brawlerStatisticsReader.getBrawlerBrawlersResultStatistics(param)

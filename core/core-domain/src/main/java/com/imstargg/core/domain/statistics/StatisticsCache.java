@@ -83,14 +83,14 @@ public class StatisticsCache {
                 .build();
     }
 
-    public Optional<List<BrawlersResultStatistics>> find(BrawlerBrawlersResultStatisticsParam param) {
+    public Optional<List<BrawlerPairResultStatistics>> find(BrawlerBrawlersResultStatisticsParam param) {
         return Optional.ofNullable(
                 redisTemplate.opsForValue().get(key(param))
         ).map(value -> objectMapper.read(value, new TypeReference<>() {
         }));
     }
 
-    public void set(BrawlerBrawlersResultStatisticsParam param, List<BrawlersResultStatistics> statistics) {
+    public void set(BrawlerBrawlersResultStatisticsParam param, List<BrawlerPairResultStatistics> statistics) {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
@@ -148,14 +148,14 @@ public class StatisticsCache {
                 .build();
     }
 
-    public Optional<List<BrawlersResultStatistics>> find(BattleEventBrawlerPairResultStatisticsParam param) {
+    public Optional<List<BrawlerPairResultStatistics>> find(BattleEventBrawlerPairResultStatisticsParam param) {
         return Optional.ofNullable(
                 redisTemplate.opsForValue().get(key(param))
         ).map(value -> objectMapper.read(value, new TypeReference<>() {
         }));
     }
 
-    public void set(BattleEventBrawlerPairResultStatisticsParam param, List<BrawlersResultStatistics> statistics) {
+    public void set(BattleEventBrawlerPairResultStatisticsParam param, List<BrawlerPairResultStatistics> statistics) {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 
@@ -190,14 +190,14 @@ public class StatisticsCache {
                 .build();
     }
 
-    public Optional<List<BrawlersRankStatistics>> find(BattleEventBrawlerPairRankStatisticsParam param) {
+    public Optional<List<BrawlerPairRankStatistics>> find(BattleEventBrawlerPairRankStatisticsParam param) {
         return Optional.ofNullable(
                 redisTemplate.opsForValue().get(key(param))
         ).map(value -> objectMapper.read(value, new TypeReference<>() {
         }));
     }
 
-    public void set(BattleEventBrawlerPairRankStatisticsParam param, List<BrawlersRankStatistics> statistics) {
+    public void set(BattleEventBrawlerPairRankStatisticsParam param, List<BrawlerPairRankStatistics> statistics) {
         redisTemplate.opsForValue().set(key(param), objectMapper.write(statistics), TTL);
     }
 

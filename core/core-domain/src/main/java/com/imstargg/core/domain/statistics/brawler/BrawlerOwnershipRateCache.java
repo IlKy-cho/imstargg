@@ -1,7 +1,6 @@
 package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.BrawlStarsId;
-import com.imstargg.core.enums.TrophyRangeRange;
 import com.imstargg.core.support.ObjectMapperHelper;
 import com.imstargg.storage.db.core.cache.CacheKeyBuilder;
 import org.springframework.data.redis.core.StringRedisTemplate;
