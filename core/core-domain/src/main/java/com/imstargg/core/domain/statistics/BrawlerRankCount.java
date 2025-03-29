@@ -8,16 +8,4 @@ public record BrawlerRankCount(
 ) {
 
 
-    public BrawlerRankCount merge(BrawlerRankCount other) {
-        if (!brawlerId.equals(other.brawlerId)) {
-            throw new IllegalArgumentException(
-                    "Brawler ID is not matched. " + brawlerId + " != " + other.brawlerId);
-        }
-
-        return new BrawlerRankCount(
-                brawlerId,
-                rankCount.merge(other.rankCount)
-        );
-    }
-
 }
