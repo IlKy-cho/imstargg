@@ -1,14 +1,14 @@
 package com.imstargg;
 
-import org.junit.jupiter.api.Tag;
+import com.imstargg.core.domain.test.ContextTest;
+import com.imstargg.core.domain.test.TestContextConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 @SpringBootApplication
-@SpringBootTest
-@Tag("context")
-class CoreDomainApplicationTest {
+@Import(TestContextConfig.class)
+class CoreDomainApplicationTest extends ContextTest {
 
     @Test
     void contextLoads() {

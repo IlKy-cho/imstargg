@@ -4,7 +4,7 @@ import com.imstargg.core.domain.BrawlStarsId;
 
 public record BrawlerPairRankCount(
         BrawlStarsId brawlerId,
-        BrawlStarsId pairBrawlerId,
+        BrawlStarsId otherBrawlerId,
         RankCount rankCount
 ) {
 

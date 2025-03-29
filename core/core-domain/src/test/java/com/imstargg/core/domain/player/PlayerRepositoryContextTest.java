@@ -2,6 +2,7 @@ package com.imstargg.core.domain.player;
 
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.BrawlStarsTag;
+import com.imstargg.core.domain.test.ContextTest;
 import com.imstargg.core.error.CoreErrorType;
 import com.imstargg.core.error.CoreException;
 import com.imstargg.storage.db.core.player.PlayerBrawlerCollectionEntity;
@@ -10,10 +11,8 @@ import com.imstargg.storage.db.core.player.UnknownPlayerEntity;
 import com.imstargg.storage.db.core.test.CleanUp;
 import com.imstargg.storage.db.core.test.EntityAppender;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import java.util.List;
@@ -21,10 +20,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@Tag("context")
-@SpringBootTest
 @Import(EntityAppender.class)
-class PlayerRepositoryContextTest {
+class PlayerRepositoryContextTest extends ContextTest {
 
     @Autowired
     private EntityAppender entityAppender;

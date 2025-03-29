@@ -1,24 +1,21 @@
 package com.imstargg.core.domain.player;
 
 import com.imstargg.core.domain.BrawlStarsTag;
+import com.imstargg.core.domain.test.ContextTest;
 import com.imstargg.core.enums.PlayerRenewalStatus;
 import com.imstargg.storage.db.core.player.PlayerRenewalEntity;
 import com.imstargg.storage.db.core.player.PlayerRenewalJpaRepository;
 import com.imstargg.storage.db.core.test.CleanUp;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Tag("context")
-@SpringBootTest
-class PlayerRenewalRepositoryContextTest {
+class PlayerRenewalRepositoryContextTest extends ContextTest {
 
     @Autowired
     private CleanUp cleanUp;
