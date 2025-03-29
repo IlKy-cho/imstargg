@@ -8,15 +8,4 @@ public record BrawlerResultCount(
         StarPlayerCount starPlayerCount
 ) {
 
-    public BrawlerResultCount merge(BrawlerResultCount other) {
-        if (!brawlerId.equals(other.brawlerId)) {
-            throw new IllegalArgumentException("Brawler ID is not matched. " + brawlerId + " != " + other.brawlerId);
-        }
-
-        return new BrawlerResultCount(
-                brawlerId,
-                resultCount.merge(other.resultCount),
-                starPlayerCount.merge(other.starPlayerCount)
-        );
-    }
 }
