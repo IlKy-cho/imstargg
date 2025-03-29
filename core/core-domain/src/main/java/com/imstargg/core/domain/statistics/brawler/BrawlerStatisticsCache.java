@@ -19,8 +19,7 @@ public class BrawlerStatisticsCache {
 
     private static final Duration TTL = Duration.ofHours(2);
     private static final String VERSION = "v2";
-    private static final String EVENT_CACHE_KEY = "event";
-    private static final String BRAWLER_ID_CACHE_KEY = "brawler-id";
+    private static final String BRAWLER_CACHE_KEY = "brawler";
     private static final String TIER_RANGE_CACHE_KEY = "tier-range";
     private static final String START_DATE_CACHE_KEY = "start-date";
     private static final String END_DATE_CACHE_KEY = "end-date";
@@ -76,7 +75,7 @@ public class BrawlerStatisticsCache {
 
     private String key(BrawlerPairResultStatisticsParam param) {
         return new CacheKeyBuilder("brawler-pair-result-stats", VERSION)
-                .add(BRAWLER_ID_CACHE_KEY).add(param.brawlerId().value())
+                .add(BRAWLER_CACHE_KEY).add(param.brawlerId().value())
                 .add(START_DATE_CACHE_KEY).add(param.startDate())
                 .add(END_DATE_CACHE_KEY).add(param.endDate())
                 .add(TIER_RANGE_CACHE_KEY).add(param.tierRange().value())
@@ -100,7 +99,7 @@ public class BrawlerStatisticsCache {
 
     private String key(BrawlerEnemyResultStatisticsParam param) {
         return new CacheKeyBuilder("brawler-enemy-result-stats", VERSION)
-                .add(BRAWLER_ID_CACHE_KEY).add(param.brawlerId().value())
+                .add(BRAWLER_CACHE_KEY).add(param.brawlerId().value())
                 .add(START_DATE_CACHE_KEY).add(param.startDate())
                 .add(END_DATE_CACHE_KEY).add(param.endDate())
                 .add(TIER_RANGE_CACHE_KEY).add(param.tierRange().value())
@@ -124,7 +123,7 @@ public class BrawlerStatisticsCache {
 
     private String key(BrawlerBattleEventResultStatisticsParam param) {
         return new CacheKeyBuilder("brawler-event-result-stats", VERSION)
-                .add(BRAWLER_ID_CACHE_KEY).add(param.brawlerId().value())
+                .add(BRAWLER_CACHE_KEY).add(param.brawlerId().value())
                 .add(START_DATE_CACHE_KEY).add(param.startDate())
                 .add(END_DATE_CACHE_KEY).add(param.endDate())
                 .add(TIER_RANGE_CACHE_KEY).add(param.tierRange().value())

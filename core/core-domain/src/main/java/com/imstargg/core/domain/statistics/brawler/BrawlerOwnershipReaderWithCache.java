@@ -2,6 +2,7 @@ package com.imstargg.core.domain.statistics.brawler;
 
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.brawlstars.Brawler;
+import com.imstargg.core.enums.TrophyRange;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,40 +19,32 @@ public class BrawlerOwnershipReaderWithCache {
         this.cache = cache;
     }
 
-    public BrawlerItemOwnership get(Brawler brawler, TrophyRangeRange trophyRangeRange) {
-        return cache.get(brawler.id(), trophyRangeRange, () -> load(brawler, trophyRangeRange));
+    public BrawlerItemOwnership get(Brawler brawler, TrophyRange trophyRange) {
+        return cache.get(brawler, trophyRange, (b, tr) -> load(brawler, trophyRange));
     }
 
-    private BrawlerItemOwnership load(Brawler brawler, TrophyRangeRange trophyRangeRange) {
-        int brawlerCount = trophyRangeRange.getRanges().stream()
-                .mapToInt(range -> brawlerCountRepository.getBrawlerCount(brawler, range))
-                .sum();
+    private BrawlerItemOwnership load(Brawler brawler, TrophyRange trophyRange) {
+        int brawlerCount = brawlerCountRepository.getBrawlerCount(brawler, trophyRange);
         return new BrawlerItemOwnership(
                 brawler.gadgets().stream().map(gadget ->
                         rate(
                                 gadget.id(),
                                 brawlerCount,
-                                trophyRangeRange.getRanges().stream().mapToInt(range ->
-                                        brawlerCountRepository.getGadgetCount(brawler, gadget, range)
-                                ).sum()
+                                brawlerCountRepository.getGadgetCount(brawler, gadget, trophyRange)
                         )
                 ).toList(),
                 brawler.starPowers().stream().map(starPower ->
                         rate(
                                 starPower.id(),
                                 brawlerCount,
-                                trophyRangeRange.getRanges().stream().mapToInt(range ->
-                                        brawlerCountRepository.getStarPowerCount(brawler, starPower, range)
-                                ).sum()
+                                brawlerCountRepository.getStarPowerCount(brawler, starPower, trophyRange)
                         )
                 ).toList(),
                 brawler.gears().stream().map(gear ->
                         rate(
                                 gear.id(),
                                 brawlerCount,
-                                trophyRangeRange.getRanges().stream().mapToInt(range ->
-                                        brawlerCountRepository.getGearCount(brawler, gear, range)
-                                ).sum()
+                                brawlerCountRepository.getGearCount(brawler, gear, trophyRange)
                         )
                 ).toList()
         );
