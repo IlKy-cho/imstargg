@@ -13,8 +13,11 @@ import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
 import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsCollectionEntity;
 import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsCollectionJpaRepository;
 import com.imstargg.support.alert.AlertManager;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.StepExecutionListener;
 import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.job.DefaultJobParametersValidator;
@@ -93,6 +96,13 @@ public class BrawlerPairBattleResultStatisticsJobConfig {
                 .<BattleCollectionEntity, BattleCollectionEntity>chunk(CHUNK_SIZE, txManager)
                 .reader(reader())
                 .writer(writer())
+                .listener(new StepExecutionListener() {
+                    @Override
+                    public ExitStatus afterStep(StepExecution stepExecution) {
+                        collector().save();
+                        return null;
+                    }
+                })
                 .build();
     }
 

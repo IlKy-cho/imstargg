@@ -7,9 +7,9 @@ import java.time.LocalDate;
 
 public record BattleEventBrawlerResultStatisticsParam(
         BrawlStarsId eventId,
+        TierRange tierRange,
         LocalDate startDate,
-        LocalDate endDate,
-        TierRange tierRange
+        LocalDate endDate
 ) {
 
 }
