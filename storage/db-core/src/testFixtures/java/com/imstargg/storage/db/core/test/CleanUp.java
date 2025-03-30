@@ -1,7 +1,7 @@
 package com.imstargg.storage.db.core.test;
 
+import com.imstargg.storage.db.core.support.JpaUtils;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Table;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ public class CleanUp {
     @Transactional
     public void all() {
         entityManager.getMetamodel().getEntities().forEach(entityType -> {
-            String tableName = entityType.getJavaType().getAnnotation(Table.class).name();
+            String tableName = JpaUtils.getTableName(entityType.getJavaType());
             jdbcTemplate.execute("TRUNCATE TABLE " + tableName);
         });
     }
