@@ -39,7 +39,7 @@ public class BrawlerStatisticsService {
         return brawlerStatisticsReader.getBrawlerBattleEventResultStatistics(param);
     }
 
-    public List<BrawlerPairResultStatistics> getBrawlerBrawlersResultStatistics(
+    public List<BrawlerPairResultStatistics> getBrawlerPairResultStatistics(
             BrawlerPairResultStatisticsParam param
     ) {
         return brawlerStatisticsReader.getBrawlerPairResultStatistics(param);

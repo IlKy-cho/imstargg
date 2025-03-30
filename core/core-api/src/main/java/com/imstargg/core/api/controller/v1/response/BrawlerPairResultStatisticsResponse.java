@@ -2,16 +2,16 @@ package com.imstargg.core.api.controller.v1.response;
 
 import com.imstargg.core.domain.statistics.BrawlerPairResultStatistics;
 
-public record BrawlerEnemyResultStatisticsResponse(
+public record BrawlerPairResultStatisticsResponse(
         long brawlerId,
-        long enemyBrawlerId,
+        long pairBrawlerId,
         long totalBattleCount,
         double winRate,
         double pickRate
 ) {
 
-    public static BrawlerEnemyResultStatisticsResponse of(BrawlerPairResultStatistics statistics) {
-        return new BrawlerEnemyResultStatisticsResponse(
+    public static BrawlerPairResultStatisticsResponse of(BrawlerPairResultStatistics statistics) {
+        return new BrawlerPairResultStatisticsResponse(
                 statistics.brawlerId().value(),
                 statistics.otherBrawlerId().value(),
                 statistics.totalBattleCount(),

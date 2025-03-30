@@ -5,7 +5,6 @@ spring:
     - cache-core.yml
     - core-event.yml
     - aws.yml
-    - brawlstars-news-client.yml
 
   task:
     execution:
