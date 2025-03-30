@@ -5,9 +5,9 @@ import {BrawlerStatisticsOption} from "@/components/statistics-option";
 import React from "react";
 import {BrawlerListStatistics} from "@/components/statistics";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
-import {yesterdayDate} from "@/lib/date";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import {cn} from "@/lib/utils";
+import {Temporal} from "@js-temporal/polyfill";
 
 export const metadata: Metadata = {
   title: `브롤러`,
@@ -20,13 +20,13 @@ type PageProps = {
 };
 
 export default async function BrawlersPage({ searchParams }: Readonly<PageProps>) {
-  const yesterday = yesterdayDate();
+  const date = Temporal.Now.plainDateISO();
   
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 
   const brawlers = await getBrawlers();
   const brawlerResultStats = await getBrawlerResultStatistics(
-    yesterday,
+    date,
     statsParams.dateRange,
     statsParams.getTrophyOfType(),
     statsParams.getSoloRankTierOfType()
