@@ -44,7 +44,7 @@ public class BattleEventStatisticsService {
     }
 
 
-    public List<BrawlerPairRankStatistics> getBattleEventBrawlersRankStatistics(
+    public List<BrawlerPairRankStatistics> getBattleEventBrawlerPairRankStatistics(
             BattleEventBrawlerPairRankStatisticsParam param
     ) {
         return battleEventStatisticsReader.getBattleEventBrawlersRankStatistics(param);

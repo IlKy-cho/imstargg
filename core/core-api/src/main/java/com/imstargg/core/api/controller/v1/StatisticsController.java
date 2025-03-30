@@ -4,10 +4,10 @@ import com.imstargg.core.api.controller.response.ListResponse;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerEnemyResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerRankStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerResultStatisticsRequest;
-import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersRankStatisticsRequest;
-import com.imstargg.core.api.controller.v1.request.BattleEventBrawlersResultStatisticsRequest;
+import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerPairRankStatisticsRequest;
+import com.imstargg.core.api.controller.v1.request.BattleEventBrawlerPairResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerBattleEventResultStatisticsRequest;
-import com.imstargg.core.api.controller.v1.request.BrawlerBrawlersResultStatisticsRequest;
+import com.imstargg.core.api.controller.v1.request.BrawlerPairResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerEnemyResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.request.BrawlerResultStatisticsRequest;
 import com.imstargg.core.api.controller.v1.response.BattleEventResultStatisticsResponse;
@@ -15,11 +15,13 @@ import com.imstargg.core.api.controller.v1.response.BrawlerEnemyResultStatistics
 import com.imstargg.core.api.controller.v1.response.BrawlerItemOwnershipResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerRankStatisticsResponse;
 import com.imstargg.core.api.controller.v1.response.BrawlerResultStatisticsResponse;
-import com.imstargg.core.api.controller.v1.response.BrawlersRankStatisticsResponse;
-import com.imstargg.core.api.controller.v1.response.BrawlersResultStatisticsResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlerPairRankStatisticsResponse;
+import com.imstargg.core.api.controller.v1.response.BrawlerPairResultStatisticsResponse;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.statistics.brawler.BrawlerStatisticsService;
 import com.imstargg.core.domain.statistics.event.BattleEventStatisticsService;
+import com.imstargg.core.enums.TrophyRange;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,7 +43,7 @@ public class StatisticsController {
         this.brawlerStatisticsService = brawlerStatisticsService;
     }
 
-    @GetMapping("/api/v1/statistics/events/{eventId}/result/brawler")
+    @GetMapping("/api/v1/statistics/events/{eventId}/result")
     public ListResponse<BrawlerResultStatisticsResponse> getBattleEventResultBrawlerStatistics(
             @PathVariable long eventId,
             @ModelAttribute @Validated BattleEventBrawlerResultStatisticsRequest request
@@ -55,21 +57,21 @@ public class StatisticsController {
         );
     }
 
-    @GetMapping("/api/v1/statistics/events/{eventId}/result/brawlers")
-    public ListResponse<BrawlersResultStatisticsResponse> getBattleEventResultBrawlersStatistics(
+    @GetMapping("/api/v1/statistics/events/{eventId}/result/pair")
+    public ListResponse<BrawlerPairResultStatisticsResponse> getBattleEventResultBrawlerPairStatistics(
             @PathVariable long eventId,
-            @ModelAttribute @Validated BattleEventBrawlersResultStatisticsRequest request
+            @ModelAttribute @Validated BattleEventBrawlerPairResultStatisticsRequest request
     ) {
         return new ListResponse<>(
                 battleEventStatisticsService.getBattleEventBrawlerPairResultStatistics(
                                 request.toParam(new BrawlStarsId(eventId)))
                         .stream()
-                        .map(BrawlersResultStatisticsResponse::of)
+                        .map(BrawlerPairResultStatisticsResponse::of)
                         .toList()
         );
     }
 
-    @GetMapping("/api/v1/statistics/events/{eventId}/result/brawler-enemy")
+    @GetMapping("/api/v1/statistics/events/{eventId}/result/enemy")
     public ListResponse<BrawlerEnemyResultStatisticsResponse> getBattleEventResultBrawlerEnemyStatistics(
             @PathVariable long eventId,
             @ModelAttribute @Validated BattleEventBrawlerEnemyResultStatisticsRequest request
@@ -83,8 +85,8 @@ public class StatisticsController {
         );
     }
 
-    @GetMapping("/api/v1/statistics/events/{eventId}/rank/brawler")
-    public ListResponse<BrawlerRankStatisticsResponse> getBattleEventRankBrawlerStatistics(
+    @GetMapping("/api/v1/statistics/events/{eventId}/rank")
+    public ListResponse<BrawlerRankStatisticsResponse> getBattleEventRankBrawlerPairStatistics(
             @PathVariable long eventId,
             @ModelAttribute @Validated BattleEventBrawlerRankStatisticsRequest request
     ) {
@@ -97,21 +99,21 @@ public class StatisticsController {
         );
     }
 
-    @GetMapping("/api/v1/statistics/events/{eventId}/rank/brawlers")
-    public ListResponse<BrawlersRankStatisticsResponse> getBattleEventRankBrawlersStatistics(
+    @GetMapping("/api/v1/statistics/events/{eventId}/rank/pair")
+    public ListResponse<BrawlerPairRankStatisticsResponse> getBattleEventRankBrawlerPairStatistics(
             @PathVariable long eventId,
-            @ModelAttribute @Validated BattleEventBrawlersRankStatisticsRequest request
+            @ModelAttribute @Validated BattleEventBrawlerPairRankStatisticsRequest request
     ) {
         return new ListResponse<>(
-                battleEventStatisticsService.getBattleEventBrawlersRankStatistics(
+                battleEventStatisticsService.getBattleEventBrawlerPairRankStatistics(
                                 request.toParam(new BrawlStarsId(eventId)))
                         .stream()
-                        .map(BrawlersRankStatisticsResponse::of)
+                        .map(BrawlerPairRankStatisticsResponse::of)
                         .toList()
         );
     }
 
-    @GetMapping("/api/v1/statistics/brawler-result")
+    @GetMapping("/api/v1/statistics/brawler/result")
     public ListResponse<BrawlerResultStatisticsResponse> getBrawlerResultStatistics(
             @ModelAttribute @Validated BrawlerResultStatisticsRequest request
     ) {
@@ -137,21 +139,21 @@ public class StatisticsController {
         );
     }
 
-    @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/brawlers-result")
-    public ListResponse<BrawlersResultStatisticsResponse> getBrawlerBrawlersResultStatistics(
+    @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/result/pair")
+    public ListResponse<BrawlerPairResultStatisticsResponse> getBrawlerBrawlerPairResultStatistics(
             @PathVariable long brawlerId,
-            @ModelAttribute @Validated BrawlerBrawlersResultStatisticsRequest request
+            @ModelAttribute @Validated BrawlerPairResultStatisticsRequest request
     ) {
         return new ListResponse<>(
-                brawlerStatisticsService.getBrawlerBrawlersResultStatistics(
+                brawlerStatisticsService.getBrawlerPairResultStatistics(
                                 request.toParam(new BrawlStarsId(brawlerId))
                         ).stream()
-                        .map(BrawlersResultStatisticsResponse::of)
+                        .map(BrawlerPairResultStatisticsResponse::of)
                         .toList()
         );
     }
 
-    @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/enemy-result")
+    @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/result/enemy")
     public ListResponse<BrawlerEnemyResultStatisticsResponse> getBrawlerEnemyResultStatistics(
             @PathVariable long brawlerId,
             @ModelAttribute @Validated BrawlerEnemyResultStatisticsRequest request
@@ -167,7 +169,8 @@ public class StatisticsController {
 
     @GetMapping("/api/v1/statistics/brawlers/{brawlerId}/ownership")
     public BrawlerItemOwnershipResponse getBrawlerOwnershipRate(
-            @PathVariable long brawlerId, @RequestParam TrophyRangeRange trophyRange
+            @PathVariable long brawlerId,
+            @Validated @NotNull @RequestParam TrophyRange trophyRange
     ) {
         return BrawlerItemOwnershipResponse.of(
                 brawlerStatisticsService.getOwnershipRate(new BrawlStarsId(brawlerId), trophyRange)
