@@ -27,12 +27,12 @@ import {BattleEvent} from "@/model/BattleEvent";
 import {battleEventModeIconSrc, battleEventModeTitle} from "@/lib/battle-mode";
 import {Suspense} from "react";
 import Loading from "@/app/loading";
-import {yesterdayDate} from "@/lib/date";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import BattleEventMapImage from "@/components/battle-event-map-image";
 import {cn, cnWithDefault} from "@/lib/utils";
 import Image from "next/image";
 import {BrawlStarsIconSrc} from "@/lib/icon";
+import {Temporal} from "@js-temporal/polyfill";
 
 type Props = {
   params: Promise<{
@@ -65,7 +65,6 @@ export default async function EventPage({ params, searchParams }: Readonly<Props
     notFound();
   }
 
-
   const brawlerList = await getBrawlers();
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 
@@ -88,12 +87,12 @@ export default async function EventPage({ params, searchParams }: Readonly<Props
   );
 };
 
-async function StatisticsContent({ battleEvent, statsParams, brawlers }: {
+async function StatisticsContent({ battleEvent, statsParams, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
   brawlers: Brawler[]
-}) {
-  const date = yesterdayDate();
+}>) {
+  const date = Temporal.Now.plainDateISO();
 
   return (
     <div className="flex flex-col sm:flex-row gap-2">
@@ -109,8 +108,7 @@ async function StatisticsContent({ battleEvent, statsParams, brawlers }: {
             <Title value="브롤러 시너지" />
             {statsParams.brawlerId ? (
               <Suspense fallback={<Loading />}>
-                <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date}
-                  brawlers={brawlers} />
+                <PageBrawlersStatistics battleEvent={battleEvent} statsParams={statsParams} date={date} brawlers={brawlers} />
               </Suspense>
             ) : (
               <PageBrawlerNotSelected />
@@ -154,7 +152,7 @@ async function PageHeaderContent({ battleEvent }: Readonly<{ battleEvent: Battle
             <span className="text-xl sm:text-2xl font-bold">{modeTitle}</span>
           </div>
           <div className="text-lg sm:text-xl text-zinc-700">
-            {battleEvent.map.name || '❓'}
+            {battleEvent.map.name ?? '❓'}
           </div>
         </div>
       </div>
@@ -162,7 +160,7 @@ async function PageHeaderContent({ battleEvent }: Readonly<{ battleEvent: Battle
   );
 }
 
-async function Title({ value }: { value: string }) {
+async function Title({ value }: Readonly<{ value: string }>) {
   return (
     <h2 className="text-xl font-bold text-gray-800 border-b-2 border-zinc-500 pb-1 mb-4">
       {value}
@@ -173,14 +171,16 @@ async function Title({ value }: { value: string }) {
 async function PageBrawlerStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
-  date: Date,
+  date: Temporal.PlainDate,
   brawlers: Brawler[]
 }>) {
 
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
       <EventBrawlerResultStatistics
-        statsList={await getBattleEventBrawlerResultStatistics(battleEvent.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
+        statsList={await getBattleEventBrawlerResultStatistics(
+          battleEvent.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())
+      }
         brawlers={brawlers}
         selectedBrawlerId={statsParams.brawlerId} />
     ) : (
@@ -194,7 +194,7 @@ async function PageBrawlerStatistics({ battleEvent, statsParams, date, brawlers 
 async function PageBrawlersStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
-  date: Date,
+  date: Temporal.PlainDate,
   brawlers: Brawler[]
 }>) {
 
@@ -214,7 +214,7 @@ async function PageBrawlersStatistics({ battleEvent, statsParams, date, brawlers
 async function PageBrawlerEnemyStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
-  date: Date,
+  date: Temporal.PlainDate,
   brawlers: Brawler[]
 }>) {
 

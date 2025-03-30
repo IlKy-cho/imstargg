@@ -28,7 +28,6 @@ import {BrawlerStarPowerList} from "@/components/starpower";
 import {BrawlerGearList} from "@/components/gear";
 import Loading from "@/app/loading";
 import {Suspense} from "react";
-import {yesterdayDate} from "@/lib/date";
 import {PageHeader} from "@/components/page-header";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
@@ -37,6 +36,7 @@ import {brawlerClassTitle} from "@/lib/brawler-class";
 import {brawlerRarityTitle} from "@/lib/brawler-rarity";
 import {cn, cnWithDefault} from "@/lib/utils";
 import {brawlerBackgroundColor} from "@/lib/brawler";
+import {Temporal} from "@js-temporal/polyfill";
 
 interface SearchParams extends StatisticsSearchParams{
   country?: Country;
@@ -57,7 +57,7 @@ export async function generateMetadata({params}: Readonly<Props>): Promise<Metad
     title: `${brawler.name}`,
     description: `브롤스타즈 브롤러 ${brawler.name}의 정보 및 통계입니다.`,
     openGraph: {
-      images: brawler.imageUrl || "",
+      images: brawler.imageUrl ?? "",
     },
   }
 }
@@ -154,7 +154,7 @@ async function StatisticsContent(
     brawlers: Brawler[]
   }>) {
 
-  const date = yesterdayDate();
+  const date = Temporal.Now.plainDateISO()
 
   return (
     <div className="flex flex-col gap-4">
@@ -185,7 +185,7 @@ async function StatisticsContent(
 async function PageEventStatistics({brawler, statsParams, date}: Readonly<{
   brawler: Brawler,
   statsParams: StatisticsParams,
-  date: Date
+  date: Temporal.PlainDate,
 }>) {
 
   return (
@@ -196,7 +196,7 @@ async function PageEventStatistics({brawler, statsParams, date}: Readonly<{
 async function PageBrawlersStatistics({brawler, statsParams, date, brawlers}: Readonly<{
   brawler: Brawler,
   statsParams: StatisticsParams,
-  date: Date,
+  date: Temporal.PlainDate,
   brawlers: Brawler[]
 }>) {
 
@@ -208,7 +208,7 @@ async function PageBrawlersStatistics({brawler, statsParams, date, brawlers}: Re
 async function PageEnemyStatistics({brawler, statsParams, date, brawlers}: Readonly<{
   brawler: Brawler,
   statsParams: StatisticsParams,
-  date: Date,
+  date: Temporal.PlainDate,
   brawlers: Brawler[]
 }>) {
 
