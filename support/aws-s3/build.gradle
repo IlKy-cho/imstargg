@@ -1,6 +1,4 @@
 dependencies {
     implementation(project(":support:aws"))
     api("io.awspring.cloud:spring-cloud-aws-starter-s3")
-
-    implementation("cloud.localstack:localstack-utils:${localstackUtilsVersion}")
 }

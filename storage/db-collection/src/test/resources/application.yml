@@ -1,6 +1,9 @@
 spring:
+  profiles:
+    active: test
+
   config.import:
-    - db-core-test.yml
+    - db-core.yml
 
 #logging.level:
 #  org.hibernate:

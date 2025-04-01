@@ -46,8 +46,10 @@ out/
 node-22.12.0
 
 ### Spring Properties ###
-application-*.properties
-application-*.yml
+application-local.properties
+application-local.yml
+application-local-dev.properties
+application-local-dev.yml
 
 ### Data ###
 data/

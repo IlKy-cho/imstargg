@@ -1,3 +1,5 @@
 spring:
+  profiles.active: test
+
   config.import:
-    - core-domain-test.yml
+    - core-domain.yml

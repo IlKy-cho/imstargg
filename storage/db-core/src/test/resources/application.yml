@@ -1,3 +1,6 @@
 spring:
-  config.import:
-    - db-core-test.yml
+  profiles:
+    active: test
+  config:
+    import:
+      - db-core.yml

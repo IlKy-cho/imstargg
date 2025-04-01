@@ -1,0 +1,87 @@
+spring:
+  application.name: batch
+
+  config:
+    import:
+      - logging.yml
+      - db-core.yml
+      - brawlstars-client.yml
+      - alert-manager.yml
+
+  main.web-application-type: none
+
+  batch:
+    job:
+      enabled: true
+      name: ${job.name:healthCheckJob}
+    jdbc:
+      initialize-schema: never
+      isolation-level-for-create: default
+
+  datasource:
+    hikari:
+      minimum-idle: 0
+      maximum-pool-size: 20
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 30
+          batch_versioned_data: false
+        order_inserts: true
+        order_updates: true
+
+  task:
+    execution:
+      thread-name-prefix: "batch-async-task-"
+      pool:
+        core-size: 10
+        max-size: 10
+        queue-capacity: 10000
+      shutdown:
+        await-termination: true
+        await-termination-period: 10000
+
+app:
+  batch:
+    player-update-job:
+      chunk-size: 10
+
+#logging.level:
+#  org.hibernate:
+#    SQL: debug
+#    orm.jdbc.bind: trace
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+---
+spring:
+  config:
+    activate:
+      on-profile: local-dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+---
+spring:
+  config:
+    activate:
+      on-profile: live
+
+---
+spring:
+  config.activate.on-profile: test
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: embedded

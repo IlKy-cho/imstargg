@@ -2,25 +2,11 @@ spring:
   application:
     name: imstargg-admin
 
-  config.import:
-    - db-core.yml
-    - aws.yml
-
   profiles:
     active: local
+    include:
+      - admin
 
-  web.resources.add-mappings: false
-  mvc.problemdetails.enabled: true
-
-  jpa:
-    open-in-view: true
----
-spring:
-  config.activate.on-profile: local
-
-logging.level:
-    org.apache.coyote.http11: trace
-
----
-spring:
-  config.activate.on-profile: live
+  config.import:
+    - aws-s3.yml
+    - db-core.yml

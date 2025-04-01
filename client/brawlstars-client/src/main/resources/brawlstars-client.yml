@@ -27,16 +27,19 @@ app.client.brawlstars:
   keys: ${BRAWL_STARS_API_KEYS}
 
 ---
-spring.config.activate.on-profile: local
+spring:
+  config.activate.on-profile: local
 
 ---
-spring.config.activate.on-profile:
-  - local-dev
-  - dev
+spring:
+  config.activate.on-profile:
+    - local-dev
+    - dev
 
 ---
-spring.config.activate.on-profile:
-  - live
+spring:
+  config.activate.on-profile:
+    - live
 
 resilience4j:
   ratelimiter:
@@ -45,3 +48,12 @@ resilience4j:
         limit-for-period: 10
 
 spring.cloud.openfeign.client.config.brawlstars.loggerLevel: NONE
+---
+spring:
+  config.activate.on-profile:
+    - test
+
+app:
+  client.brawlstars:
+    url: "https://test-brawlstars-client.com"
+    keys: "test-key"

@@ -7,7 +7,14 @@ spring:
     password: ${DATABASE_PASSWORD}
     hikari:
       pool-name: core-db-pool
+      minimum-idle: 5
+      maximum-pool-size: 5
+      connection-timeout: 1100
+      validation-timeout: 1000
+      keepalive-time: 30000
+      max-lifetime: 1800000
       data-source-properties:
+        socketTimeout: 3000
         cachePrepStmts: true
         prepStmtCacheSize: 250
         prepStmtCacheSqlLimit: 2048
@@ -39,40 +46,80 @@ spring:
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: local
+  config.activate.on-profile: local
 
   datasource:
     url: jdbc:mysql://localhost:3306/imstargg
     username: root
     password:
 
-#logging.level:
-#  org.hibernate:
-#    SQL: debug
-#    orm.jdbc.bind: trace
+logging.level:
+  org.hibernate:
+    SQL: debug
+    orm.jdbc.bind: trace
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: local-dev
+  config.activate.on-profile: local-dev
 
-#logging.level:
-#  org.hibernate:
-#    SQL: debug
-#    orm.jdbc.bind: trace
+logging.level:
+  org.hibernate:
+    SQL: debug
+    orm.jdbc.bind: trace
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: dev
+  config.activate.on-profile: dev
 
 ---
 spring:
-  config:
-    activate:
-      on-profile: live
+  config.activate.on-profile: live
 
+  datasource:
+    hikari:
+      minimum-idle: 20
+      maximum-pool-size: 30
+
+---
+spring:
+  config.activate.on-profile: batch
+
+  datasource:
+    hikari:
+      minimum-idle: 0
+      maximum-pool-size: 20
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 30
+          batch_versioned_data: false
+        order_inserts: true
+        order_updates: true
+---
+spring:
+  config.activate.on-profile: batch
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 30
+          batch_versioned_data: false
+        order_inserts: true
+        order_updates: true
+---
+spring:
+  config.activate.on-profile: test
+
+  datasource:
+    url: jdbc:h2:mem:test-db;MODE=MySQL;
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
