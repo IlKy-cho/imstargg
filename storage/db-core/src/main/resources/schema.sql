@@ -379,7 +379,7 @@ create table stats_collected_battle
 ) engine = innodb;
 
 alter table stats_collected_battle
-    add constraint uk_stats_collected_battle__key unique (stats_key);
+    add constraint uk_stats_collected_battle__statskey unique (stats_key);
 
 
 -- BrawlStars
