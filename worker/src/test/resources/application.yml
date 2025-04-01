@@ -1,9 +1,5 @@
 spring:
 
-  config:
-    import:
-      - db-core-test.yml
-      - core-event-test.yml
-      - aws-test.yml
-      - brawlstars-client.yml
-
+  profiles:
+    active: test
+    include: worker

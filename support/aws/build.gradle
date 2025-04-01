@@ -1,2 +1,3 @@
 dependencies {
+    api("cloud.localstack:localstack-utils:${localstackUtilsVersion}")
 }

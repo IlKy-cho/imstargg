@@ -1,19 +1,14 @@
+---
+spring:
+  config.activate.on-profile:
+    - local
+    - local-dev
 
 ---
 spring:
-  config:
-    activate:
-      on-profile:
-      - local
-      - local-dev
-
----
-spring:
-  config:
-    activate:
-      on-profile:
-      - dev
-      - live
+  config.activate.on-profile:
+    - dev
+    - live
 
 app:
   alert:

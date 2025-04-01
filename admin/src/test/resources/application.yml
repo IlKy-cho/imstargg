@@ -1,4 +1,4 @@
 spring:
-  config.import:
-    - db-core-test.yml
-    - aws-test.yml
+  profiles:
+    active: test
+    include: admin

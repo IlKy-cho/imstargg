@@ -6,3 +6,11 @@ spring:
       credentials:
         access-key: ${AWS_ACCESS_KEY}
         secret-key: ${AWS_SECRET_KEY}
+---
+spring:
+  config.activate.on-profile: test
+  cloud:
+    aws:
+      credentials:
+        access-key: test-aws-access-key
+        secret-key: test-aws-secret-key

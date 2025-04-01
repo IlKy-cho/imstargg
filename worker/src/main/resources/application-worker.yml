@@ -1,0 +1,36 @@
+spring:
+  config:
+    import:
+      - db-core.yml
+      - core-event.yml
+      - brawlstars-client.yml
+      - aws-sqs.yml
+      - logging.yml
+      - monitoring.yml
+
+  jpa:
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 30
+          batch_versioned_data: false
+        order_inserts: true
+        order_updates: true
+
+---
+spring:
+  config.activate.on-profile: local
+
+
+---
+spring:
+  config.activate.on-profile: local-dev
+
+---
+spring:
+  config.activate.on-profile: dev
+
+---
+spring:
+  config.activate.on-profile: live
+

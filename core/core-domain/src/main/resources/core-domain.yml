@@ -1,10 +1,9 @@
 spring:
   config.import:
     - db-core.yml
-    - db-core-connection.yml
     - cache-core.yml
     - core-event.yml
-    - aws.yml
+    - aws-sqs.yml
 
   task:
     execution:

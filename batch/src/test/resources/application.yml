@@ -1,23 +1,4 @@
 spring:
-  config.import:
-    - db-core-test.yml
-    - brawlstars-client.yml
-
-  batch:
-    job:
-      enabled: false
-    jdbc:
-      initialize-schema: embedded
-      isolation-level-for-create: default
-
-app:
-  client.brawlstars:
-    url: "https://example.brawlstars.com"
-    keys: "test-key"
-  batch:
-    battleUpdateJob:
-      chunk-size: 10
-    newPlayerUpdateJob:
-      chunk-size: 10
-    playerUpdateJob:
-      chunk-size: 10
+  profiles:
+    active: test
+    include: batch
