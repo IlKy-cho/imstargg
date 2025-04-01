@@ -24,6 +24,7 @@ public class BrawlerPairBattleResultStatisticsCollector
     private final BattleStatisticsCollectionValidator validator;
     private final BrawlerPairBattleResultStatisticsCollectionJpaRepository jpaRepository;
     private final ConcurrentMap<Key, BrawlerPairBattleResultStatisticsCollectionEntity> cache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, BrawlerPairBattleResultStatisticsCollectionEntity> statsToSave = new ConcurrentHashMap<>();
 
     public BrawlerPairBattleResultStatisticsCollector(
             BattleStatisticsCollectionValidator validator,
@@ -54,33 +55,33 @@ public class BrawlerPairBattleResultStatisticsCollector
     }
 
     private BrawlerPairBattleResultStatisticsCollectionEntity getStats(Key key) {
-        return cache.computeIfAbsent(key, k -> Optional.ofNullable(k.trophyRange)
+        return statsToSave.compute(key, (k, v) -> cache.computeIfAbsent(k, k1 -> Optional.ofNullable(key.trophyRange())
                 .map(trophyRange -> new BrawlerPairBattleResultStatisticsCollectionEntity(
-                        k.eventBrawlStarsId(),
-                        k.brawlerBrawlStarsId(),
+                        key.eventBrawlStarsId(),
+                        key.brawlerBrawlStarsId(),
                         trophyRange,
-                        k.battleDate(),
-                        k.pairBrawlerBrawlStarsId()
-                )).or(() -> Optional.ofNullable(k.soloRankTierRange())
+                        key.battleDate(),
+                        key.pairBrawlerBrawlStarsId()
+                )).or(() -> Optional.ofNullable(key.soloRankTierRange())
                         .map(soloRankTierRange -> new BrawlerPairBattleResultStatisticsCollectionEntity(
-                                k.eventBrawlStarsId(),
-                                k.brawlerBrawlStarsId(),
+                                key.eventBrawlStarsId(),
+                                key.brawlerBrawlStarsId(),
                                 soloRankTierRange,
-                                k.battleDate(),
-                                k.pairBrawlerBrawlStarsId()
+                                key.battleDate(),
+                                key.pairBrawlerBrawlStarsId()
                         )))
                 .orElseGet(() -> new BrawlerPairBattleResultStatisticsCollectionEntity(
-                        k.eventBrawlStarsId(),
-                        k.brawlerBrawlStarsId(),
-                        k.battleDate(),
-                        k.pairBrawlerBrawlStarsId()
+                        key.eventBrawlStarsId(),
+                        key.brawlerBrawlStarsId(),
+                        key.battleDate(),
+                        key.pairBrawlerBrawlStarsId()
                 ))
-        );
+        ));
     }
 
     @Override
     public void save() {
-        jpaRepository.saveAll(cache.values());
+        jpaRepository.saveAll(statsToSave.values());
     }
 
     record Key(

@@ -19,6 +19,7 @@ public class BrawlerPairBattleRankStatisticsCollector
     private final BattleStatisticsCollectionValidator validator;
     private final BrawlerPairBattleRankStatisticsCollectionJpaRepository jpaRepository;
     private final ConcurrentMap<Key, BrawlerPairBattleRankStatisticsCollectionEntity> cache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, BrawlerPairBattleRankStatisticsCollectionEntity> statsToSave = new ConcurrentHashMap<>();
 
     public BrawlerPairBattleRankStatisticsCollector(
             BattleStatisticsCollectionValidator validator,
@@ -50,17 +51,17 @@ public class BrawlerPairBattleRankStatisticsCollector
 
     @Override
     public void save() {
-        jpaRepository.saveAll(cache.values());
+        jpaRepository.saveAll(statsToSave.values());
     }
 
     private BrawlerPairBattleRankStatisticsCollectionEntity getStats(Key key) {
-        return cache.computeIfAbsent(key, k -> new BrawlerPairBattleRankStatisticsCollectionEntity(
-                k.eventBrawlStarsId(),
-                k.brawlerBrawlStarsId(),
-                k.trophyRange(),
-                k.battleDate(),
-                k.pairBrawlerBrawlStarsId()
-        ));
+        return statsToSave.compute(key, (k, v) -> cache.computeIfAbsent(k, k1 -> new BrawlerPairBattleRankStatisticsCollectionEntity(
+                key.eventBrawlStarsId(),
+                key.brawlerBrawlStarsId(),
+                key.trophyRange(),
+                key.battleDate(),
+                key.pairBrawlerBrawlStarsId()
+        )));
     }
 
     record Key(
