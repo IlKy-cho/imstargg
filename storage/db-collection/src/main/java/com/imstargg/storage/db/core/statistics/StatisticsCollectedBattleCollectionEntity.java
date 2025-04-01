@@ -13,8 +13,8 @@ import jakarta.persistence.UniqueConstraint;
         name = "stats_collected_battle",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_stats_collected_battle__key",
-                        columnNames = {"key"}
+                        name = "uk_stats_collected_battle__statskey",
+                        columnNames = {"stats_key"}
                 )
         }
 )
