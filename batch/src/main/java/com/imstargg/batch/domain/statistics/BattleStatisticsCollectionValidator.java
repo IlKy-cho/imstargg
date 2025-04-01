@@ -14,7 +14,7 @@ import java.util.Set;
 
 public class BattleStatisticsCollectionValidator {
 
-    private static final Duration COLLECTED_DURATION = Duration.ofDays(30);
+    private static final Duration COLLECTED_DURATION = Duration.ofDays(14);
     private static final Set<BattleType> RESULT_STATISTICS_BATTLE_TYPES = Set.of(
             BattleType.RANKED,
             BattleType.SOLO_RANKED,

@@ -24,6 +24,7 @@ public class BrawlerEnemyBattleResultStatisticsCollector
     private final BattleStatisticsCollectionValidator validator;
     private final BrawlerEnemyBattleResultStatisticsCollectionJpaRepository jpaRepository;
     private final ConcurrentMap<Key, BrawlerEnemyBattleResultStatisticsCollectionEntity> cache = new ConcurrentHashMap<>();
+    private final ConcurrentMap<Key, BrawlerEnemyBattleResultStatisticsCollectionEntity> statsToSave = new ConcurrentHashMap<>();
 
     public BrawlerEnemyBattleResultStatisticsCollector(
             BattleStatisticsCollectionValidator validator,
@@ -54,33 +55,33 @@ public class BrawlerEnemyBattleResultStatisticsCollector
     }
 
     private BrawlerEnemyBattleResultStatisticsCollectionEntity getBrawlerEnemyBattleResultStats(Key key) {
-        return cache.computeIfAbsent(key, k -> Optional.ofNullable(k.trophyRange)
+        return statsToSave.compute(key, (k, v) -> cache.computeIfAbsent(k, k1 -> Optional.ofNullable(key.trophyRange())
                 .map(trophyRange -> new BrawlerEnemyBattleResultStatisticsCollectionEntity(
-                        k.eventBrawlStarsId(),
-                        k.brawlerBrawlStarsId(),
+                        key.eventBrawlStarsId(),
+                        key.brawlerBrawlStarsId(),
                         trophyRange,
-                        k.battleDate(),
-                        k.enemyBrawlerBrawlStarsId()
-                )).or(() -> Optional.ofNullable(k.soloRankTierRange())
+                        key.battleDate(),
+                        key.enemyBrawlerBrawlStarsId()
+                )).or(() -> Optional.ofNullable(key.soloRankTierRange())
                         .map(soloRankTierRange -> new BrawlerEnemyBattleResultStatisticsCollectionEntity(
-                                k.eventBrawlStarsId(),
-                                k.brawlerBrawlStarsId(),
+                                key.eventBrawlStarsId(),
+                                key.brawlerBrawlStarsId(),
                                 soloRankTierRange,
-                                k.battleDate(),
-                                k.enemyBrawlerBrawlStarsId()
+                                key.battleDate(),
+                                key.enemyBrawlerBrawlStarsId()
                         )))
                 .orElseGet(() -> new BrawlerEnemyBattleResultStatisticsCollectionEntity(
-                        k.eventBrawlStarsId(),
-                        k.brawlerBrawlStarsId(),
-                        k.battleDate(),
-                        k.enemyBrawlerBrawlStarsId()
+                        key.eventBrawlStarsId(),
+                        key.brawlerBrawlStarsId(),
+                        key.battleDate(),
+                        key.enemyBrawlerBrawlStarsId()
                 ))
-        );
+        ));
     }
 
     @Override
     public void save() {
-        jpaRepository.saveAll(cache.values());
+        jpaRepository.saveAll(statsToSave.values());
     }
 
     record Key(
