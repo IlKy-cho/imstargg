@@ -72,12 +72,6 @@ abstract class BrawlerBattleResultStatisticsBaseCollectionEntity extends BattleS
         }
     }
 
-    public void init() {
-        victoryCount = 0;
-        defeatCount = 0;
-        drawCount = 0;
-    }
-
     public long getVictoryCount() {
         return victoryCount;
     }
