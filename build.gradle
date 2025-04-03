@@ -38,12 +38,15 @@ subprojects {
     dependencies {
         implementation(platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"))
         implementation(platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}"))
+        implementation(platform("org.testcontainers:testcontainers-bom:${testContainersVersion}"))
 
         implementation("com.google.code.findbugs:jsr305:3.0.2")
         testFixturesImplementation("com.google.code.findbugs:jsr305:3.0.2")
 
         testImplementation("org.springframework.boot:spring-boot-starter-test")
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+        testImplementation("org.testcontainers:testcontainers")
+        testImplementation("org.testcontainers:junit-jupiter")
     }
 
     configurations {
