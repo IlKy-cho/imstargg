@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -44,8 +43,8 @@ public class BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustomImpl
         }
         jdbcTemplate.batchUpdate("INSERT INTO " + JpaUtils.getTableName(BrawlerPairBattleResultStatisticsCollectionEntity.class) +
                         " (event_brawlstars_id, brawler_brawlstars_id, tier_range, battle_date, " +
-                        "pair_brawler_brawlstars_id, victory_count, defeat_count, draw_count, created_at, updated_at, deleted) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "pair_brawler_brawlstars_id, victory_count, defeat_count, draw_count, deleted) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -58,11 +57,7 @@ public class BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustomImpl
                         ps.setLong(6, entity.getVictoryCount());
                         ps.setLong(7, entity.getDefeatCount());
                         ps.setLong(8, entity.getDrawCount());
-                        Instant createdAt = entity.getCreatedAt() != null ? entity.getCreatedAt().toInstant() : now;
-                        Instant updatedAt = entity.getUpdatedAt() != null ? entity.getUpdatedAt().toInstant() : now;
-                        ps.setTimestamp(9, Timestamp.from(createdAt));
-                        ps.setTimestamp(10, Timestamp.from(updatedAt));
-                        ps.setBoolean(11, entity.isDeleted());
+                        ps.setBoolean(9, entity.isDeleted());
                     }
 
                     @Override
@@ -79,7 +74,7 @@ public class BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustomImpl
         }
 
         jdbcTemplate.batchUpdate("UPDATE " + JpaUtils.getTableName(BrawlerPairBattleResultStatisticsCollectionEntity.class) +
-                        " SET victory_count = ?, defeat_count = ?, draw_count = ?, updated_at = ?, deleted = ? WHERE id = ?",
+                        " SET victory_count = ?, defeat_count = ?, draw_count = ?, deleted = ? WHERE brawler_pair_battle_result_stats_id = ?",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -87,10 +82,8 @@ public class BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustomImpl
                         ps.setLong(1, entity.getVictoryCount());
                         ps.setLong(2, entity.getDefeatCount());
                         ps.setLong(3, entity.getDrawCount());
-                        Instant updatedAt = entity.getUpdatedAt() != null ? entity.getUpdatedAt().toInstant() : now;
-                        ps.setTimestamp(4, Timestamp.from(updatedAt));
-                        ps.setBoolean(5, entity.isDeleted());
-                        ps.setLong(6, entity.getId());
+                        ps.setBoolean(4, entity.isDeleted());
+                        ps.setLong(5, entity.getId());
                     }
 
                     @Override
