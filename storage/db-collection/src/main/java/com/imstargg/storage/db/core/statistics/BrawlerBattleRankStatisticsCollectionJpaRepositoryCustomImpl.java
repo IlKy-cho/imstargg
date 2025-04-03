@@ -11,7 +11,6 @@ import java.io.UncheckedIOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.List;
@@ -47,8 +46,8 @@ public class BrawlerBattleRankStatisticsCollectionJpaRepositoryCustomImpl
             return;
         }
         jdbcTemplate.batchUpdate("INSERT INTO " + JpaUtils.getTableName(BrawlerBattleRankStatisticsCollectionEntity.class) +
-                        " (event_brawlstars_id, brawler_brawlstars_id, tier_range, battle_date, rank_to_counts, created_at, updated_at, deleted) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                        " (event_brawlstars_id, brawler_brawlstars_id, tier_range, battle_date, rank_to_counts, deleted) " +
+                        "VALUES (?, ?, ?, ?, ?, ?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -63,11 +62,7 @@ public class BrawlerBattleRankStatisticsCollectionJpaRepositoryCustomImpl
                         } catch (JsonProcessingException e) {
                             throw new UncheckedIOException(e);
                         }
-                        Instant createdAt = entity.getCreatedAt() != null ? entity.getCreatedAt().toInstant() : now;
-                        Instant updatedAt = entity.getUpdatedAt() != null ? entity.getUpdatedAt().toInstant() : now;
-                        ps.setTimestamp(6, Timestamp.from(createdAt));
-                        ps.setTimestamp(7, Timestamp.from(updatedAt));
-                        ps.setBoolean(8, entity.isDeleted());
+                        ps.setBoolean(6, entity.isDeleted());
                     }
 
                     @Override
@@ -84,20 +79,18 @@ public class BrawlerBattleRankStatisticsCollectionJpaRepositoryCustomImpl
         }
 
         jdbcTemplate.batchUpdate("UPDATE " + JpaUtils.getTableName(BrawlerBattleRankStatisticsCollectionEntity.class) +
-                        " SET rank_to_counts = ?, updated_at = ?, deleted = ? WHERE id = ?",
+                        " SET rank_to_counts = ?, deleted = ? WHERE brawler_battle_rank_stats_id = ?",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
                         BrawlerBattleRankStatisticsCollectionEntity entity = entitiesToUpdate.get(i);
-                        Instant updatedAt = entity.getUpdatedAt() != null ? entity.getUpdatedAt().toInstant() : now;
                         try {
                             ps.setString(1, objectMapper.writeValueAsString(entity.getRankToCounts()));
                         } catch (JsonProcessingException e) {
                             throw new UncheckedIOException(e);
                         }
-                        ps.setTimestamp(2, Timestamp.from(updatedAt));
-                        ps.setBoolean(3, entity.isDeleted());
-                        ps.setLong(4, entity.getId());
+                        ps.setBoolean(2, entity.isDeleted());
+                        ps.setLong(3, entity.getId());
                     }
 
                     @Override

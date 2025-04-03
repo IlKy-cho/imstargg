@@ -48,8 +48,8 @@ public class BrawlerPairBattleRankStatisticsCollectionJpaRepositoryCustomImpl
         }
         jdbcTemplate.batchUpdate("INSERT INTO " + JpaUtils.getTableName(BrawlerPairBattleRankStatisticsCollectionEntity.class) +
                         " (event_brawlstars_id, brawler_brawlstars_id, tier_range, battle_date, " +
-                        "pair_brawler_brawlstars_id, rank_to_counts, created_at, updated_at, deleted) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                        "pair_brawler_brawlstars_id, rank_to_counts, deleted) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -64,11 +64,7 @@ public class BrawlerPairBattleRankStatisticsCollectionJpaRepositoryCustomImpl
                         } catch (JsonProcessingException e) {
                             throw new UncheckedIOException(e);
                         }
-                        Instant createdAt = entity.getCreatedAt() != null ? entity.getCreatedAt().toInstant() : now;
-                        Instant updatedAt = entity.getUpdatedAt() != null ? entity.getUpdatedAt().toInstant() : now;
-                        ps.setTimestamp(7, Timestamp.from(createdAt));
-                        ps.setTimestamp(8, Timestamp.from(updatedAt));
-                        ps.setBoolean(9, entity.isDeleted());
+                        ps.setBoolean(7, entity.isDeleted());
                     }
 
                     @Override
@@ -85,7 +81,7 @@ public class BrawlerPairBattleRankStatisticsCollectionJpaRepositoryCustomImpl
         }
 
         jdbcTemplate.batchUpdate("UPDATE " + JpaUtils.getTableName(BrawlerPairBattleRankStatisticsCollectionEntity.class) +
-                        " SET rank_to_counts = ?, updated_at = ?, deleted = ? WHERE id = ?",
+                        " SET rank_to_counts = ?, deleted = ? WHERE brawler_pair_battle_rank_stats_id = ?",
                 new BatchPreparedStatementSetter() {
                     @Override
                     public void setValues(PreparedStatement ps, int i) throws SQLException {
@@ -95,10 +91,8 @@ public class BrawlerPairBattleRankStatisticsCollectionJpaRepositoryCustomImpl
                         } catch (JsonProcessingException e) {
                             throw new UncheckedIOException(e);
                         }
-                        Instant updatedAt = entity.getUpdatedAt() != null ? entity.getUpdatedAt().toInstant() : now;
-                        ps.setTimestamp(2, Timestamp.from(updatedAt));
-                        ps.setBoolean(3, entity.isDeleted());
-                        ps.setLong(4, entity.getId());
+                        ps.setBoolean(2, entity.isDeleted());
+                        ps.setLong(3, entity.getId());
                     }
 
                     @Override
