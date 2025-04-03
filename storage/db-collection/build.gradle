@@ -14,6 +14,7 @@ dependencies {
 
     // Test
     testImplementation(testFixtures(project(":storage:db-core")))
+    testImplementation("org.testcontainers:mysql")
 
     // Test Fixtures
     testFixturesImplementation(testFixtures(project(":storage:db-core")))
