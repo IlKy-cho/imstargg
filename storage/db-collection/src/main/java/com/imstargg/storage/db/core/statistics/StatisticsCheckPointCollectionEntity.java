@@ -39,6 +39,9 @@ public class StatisticsCheckPointCollectionEntity {
     }
 
     public void updateLastBattleId(long lastBattleId) {
+        if (lastBattleId <= this.lastBattleId) {
+            return;
+        }
         this.lastBattleId = lastBattleId;
     }
 
