@@ -15,8 +15,8 @@ public record NewMessageCollection(
 ) {
 
     private static final EnumMap<Language, Pattern> VALIDATION_PATTERNS = new EnumMap<>(Map.of(
-            Language.ENGLISH, Pattern.compile("[A-Za-z0-9\\-'&\\s.!(),?]+"),
-            Language.KOREAN, Pattern.compile("[가-힣0-9\\-'&\\s.!(),?]+")
+            Language.ENGLISH, Pattern.compile("[A-Za-z0-9\\-'&\\s.!(),?%]+"),
+            Language.KOREAN, Pattern.compile("[가-힣0-9\\-'&\\s.!(),?%]+")
     ));
 
     static {
