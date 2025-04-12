@@ -10,36 +10,36 @@ import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(
-        name = "stats_collected_battle",
+        name = "stats_checkpoint",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_stats_collected_battle__statskey",
+                        name = "uk_stats_checkpoint__statskey",
                         columnNames = {"stats_key"}
                 )
         }
 )
-public class StatisticsCollectedBattleCollectionEntity {
+public class StatisticsCheckPointCollectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "stats_collected_battle_id")
+    @Column(name = "stats_checkpoint_id")
     private Long id;
 
     @Column(name = "stats_key", nullable = false, updatable = false)
     private String key;
 
-    @Column(name = "last_collected_id", nullable = false)
-    private long lastCollectedId = 0;
+    @Column(name = "last_battle_id", nullable = false)
+    private long lastBattleId = 0;
 
-    protected StatisticsCollectedBattleCollectionEntity() {
+    protected StatisticsCheckPointCollectionEntity() {
     }
 
-    public StatisticsCollectedBattleCollectionEntity(String key) {
+    public StatisticsCheckPointCollectionEntity(String key) {
         this.key = key;
     }
 
-    public void updateLastCollectedId(long lastCollectedId) {
-        this.lastCollectedId = lastCollectedId;
+    public void updateLastBattleId(long lastBattleId) {
+        this.lastBattleId = lastBattleId;
     }
 
     public Long getId() {
@@ -50,7 +50,7 @@ public class StatisticsCollectedBattleCollectionEntity {
         return key;
     }
 
-    public long getLastCollectedId() {
-        return lastCollectedId;
+    public long getLastBattleId() {
+        return lastBattleId;
     }
 }
