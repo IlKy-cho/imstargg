@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.time.Clock;
-import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 public class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryCustomImpl
@@ -26,19 +24,18 @@ public class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryCustomImpl
 
     @Transactional
     @Override
-    public void saveAllWithNative(Clock clock, List<BrawlerEnemyBattleResultStatisticsCollectionEntity> entities) {
+    public void saveAllWithNative(Collection<BrawlerEnemyBattleResultStatisticsCollectionEntity> entities) {
         List<BrawlerEnemyBattleResultStatisticsCollectionEntity> entitiesToInsert = entities.stream()
                 .filter(entity -> entity.getId() == null)
                 .toList();
         List<BrawlerEnemyBattleResultStatisticsCollectionEntity> entitiesToUpdate = entities.stream()
                 .filter(entity -> entity.getId() != null)
                 .toList();
-        Instant now = clock.instant();
-        insertEntities(entitiesToInsert, now);
-        updateEntities(entitiesToUpdate, now);
+        insertEntities(entitiesToInsert);
+        updateEntities(entitiesToUpdate);
     }
 
-    private void insertEntities(List<BrawlerEnemyBattleResultStatisticsCollectionEntity> entitiesToInsert, Instant now) {
+    private void insertEntities(List<BrawlerEnemyBattleResultStatisticsCollectionEntity> entitiesToInsert) {
         if (entitiesToInsert.isEmpty()) {
             return;
         }
@@ -69,7 +66,7 @@ public class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryCustomImpl
         );
     }
 
-    private void updateEntities(List<BrawlerEnemyBattleResultStatisticsCollectionEntity> entitiesToUpdate, Instant now) {
+    private void updateEntities(List<BrawlerEnemyBattleResultStatisticsCollectionEntity> entitiesToUpdate) {
         if (entitiesToUpdate.isEmpty()) {
             return;
         }

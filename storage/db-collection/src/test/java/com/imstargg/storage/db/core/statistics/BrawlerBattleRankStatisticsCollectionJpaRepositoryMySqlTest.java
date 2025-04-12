@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +16,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Tag("context")
+@Tag("develop")
 class BrawlerBattleRankStatisticsCollectionJpaRepositoryMySqlTest extends MySqlContainerTest {
 
     @Autowired
@@ -35,7 +33,6 @@ class BrawlerBattleRankStatisticsCollectionJpaRepositoryMySqlTest extends MySqlC
     @Test
     void mysql_네이티브쿼리로_엔티티를_저장한다() {
         // given
-        var clock = Clock.fixed(Instant.now(), Clock.systemUTC().getZone());
         var entity = new BrawlerBattleRankStatisticsCollectionEntity(
                 1L,
                 2L,
@@ -46,7 +43,7 @@ class BrawlerBattleRankStatisticsCollectionJpaRepositoryMySqlTest extends MySqlC
         entity.countUp(2);
 
         // when
-        repository.saveAllWithNative(clock, List.of(entity));
+        repository.saveAllWithNative(List.of(entity));
 
         // then
         var result = repository.findAll().getFirst();
@@ -67,20 +64,19 @@ class BrawlerBattleRankStatisticsCollectionJpaRepositoryMySqlTest extends MySqlC
     @Test
     void mysql_네이티브쿼리로_엔티티를_업데이트한다() {
         // given
-        var clock = Clock.fixed(Instant.now(), Clock.systemUTC().getZone());
         var entity = new BrawlerBattleRankStatisticsCollectionEntity(
                 1L,
                 2L,
                 TrophyRange.TROPHY_0_PLUS,
                 LocalDate.of(2025, 4, 3)
         );
-        repository.saveAllWithNative(clock, List.of(entity));
+        repository.saveAllWithNative(List.of(entity));
 
         // when
         var insertedEntity = repository.findAll().getFirst();
         insertedEntity.countUp(1);
         insertedEntity.countUp(2);
-        repository.saveAllWithNative(clock, List.of(insertedEntity));
+        repository.saveAllWithNative(List.of(insertedEntity));
 
         // then
         var result = repository.findAll().getFirst();
