@@ -8,13 +8,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(
         name = "stats_checkpoint",
         uniqueConstraints = {
                 @UniqueConstraint(
-                        name = "uk_stats_checkpoint__statskey",
-                        columnNames = {"stats_key"}
+                        name = "uk_stats_checkpoint__statskey_battledate",
+                        columnNames = {"stats_key", "battle_date"}
                 )
         }
 )
@@ -28,21 +30,25 @@ public class StatisticsCheckPointCollectionEntity {
     @Column(name = "stats_key", nullable = false, updatable = false)
     private String key;
 
-    @Column(name = "last_battle_id", nullable = false)
-    private long lastBattleId = 0;
+    @Column(name = "battle_date", nullable = false, updatable = false)
+    private LocalDate battleDate;
+
+    @Column(name = "battle_id", nullable = false)
+    private long battleId = 0;
 
     protected StatisticsCheckPointCollectionEntity() {
     }
 
-    public StatisticsCheckPointCollectionEntity(String key) {
+    public StatisticsCheckPointCollectionEntity(String key, LocalDate battleDate) {
         this.key = key;
+        this.battleDate = battleDate;
     }
 
-    public void updateLastBattleId(long lastBattleId) {
-        if (lastBattleId <= this.lastBattleId) {
+    public void updateBattleId(long battleId) {
+        if (battleId <= this.battleId) {
             return;
         }
-        this.lastBattleId = lastBattleId;
+        this.battleId = battleId;
     }
 
     public Long getId() {
@@ -53,7 +59,11 @@ public class StatisticsCheckPointCollectionEntity {
         return key;
     }
 
-    public long getLastBattleId() {
-        return lastBattleId;
+    public LocalDate getBattleDate() {
+        return battleDate;
+    }
+
+    public long getBattleId() {
+        return battleId;
     }
 }

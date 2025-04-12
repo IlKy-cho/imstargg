@@ -370,16 +370,17 @@ alter table brawler_item_count_v3
 create table stats_checkpoint
 (
     stats_checkpoint_id bigint       not null auto_increment,
-    stats_key                 varchar(255) not null,
-    last_battle_id         bigint       not null,
-    created_at                timestamp(6) not null default CURRENT_TIMESTAMP(6),
-    updated_at                timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
-    deleted                   boolean      not null default false,
+    stats_key           varchar(255) not null,
+    battle_date         date         not null,
+    battle_id           bigint       not null,
+    created_at          timestamp(6) not null default CURRENT_TIMESTAMP(6),
+    updated_at          timestamp(6) not null default CURRENT_TIMESTAMP(6) on update CURRENT_TIMESTAMP(6),
+    deleted             boolean      not null default false,
     primary key (stats_checkpoint_id)
 ) engine = innodb;
 
 alter table stats_checkpoint
-    add constraint uk_stats_checkpoint__statskey unique (stats_key);
+    add constraint uk_stats_checkpoint__statskey_battledate unique (stats_key, battle_date);
 
 
 -- BrawlStars
