@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Clock;
-import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 public class BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustomImpl
@@ -25,19 +24,18 @@ public class BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustomImpl
 
     @Transactional
     @Override
-    public void saveAllWithNative(Clock clock, List<BrawlerPairBattleResultStatisticsCollectionEntity> entities) {
+    public void saveAllWithNative(Collection<BrawlerPairBattleResultStatisticsCollectionEntity> entities) {
         List<BrawlerPairBattleResultStatisticsCollectionEntity> entitiesToInsert = entities.stream()
                 .filter(entity -> entity.getId() == null)
                 .toList();
         List<BrawlerPairBattleResultStatisticsCollectionEntity> entitiesToUpdate = entities.stream()
                 .filter(entity -> entity.getId() != null)
                 .toList();
-        Instant now = clock.instant();
-        insertEntities(entitiesToInsert, now);
-        updateEntities(entitiesToUpdate, now);
+        insertEntities(entitiesToInsert);
+        updateEntities(entitiesToUpdate);
     }
 
-    private void insertEntities(List<BrawlerPairBattleResultStatisticsCollectionEntity> entitiesToInsert, Instant now) {
+    private void insertEntities(List<BrawlerPairBattleResultStatisticsCollectionEntity> entitiesToInsert) {
         if (entitiesToInsert.isEmpty()) {
             return;
         }
@@ -68,7 +66,7 @@ public class BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustomImpl
         );
     }
 
-    private void updateEntities(List<BrawlerPairBattleResultStatisticsCollectionEntity> entitiesToUpdate, Instant now) {
+    private void updateEntities(List<BrawlerPairBattleResultStatisticsCollectionEntity> entitiesToUpdate) {
         if (entitiesToUpdate.isEmpty()) {
             return;
         }

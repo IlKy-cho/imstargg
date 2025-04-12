@@ -11,8 +11,7 @@ import java.io.UncheckedIOException;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Clock;
-import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 public class BrawlerBattleRankStatisticsCollectionJpaRepositoryCustomImpl
@@ -29,19 +28,18 @@ public class BrawlerBattleRankStatisticsCollectionJpaRepositoryCustomImpl
 
     @Transactional
     @Override
-    public void saveAllWithNative(Clock clock, List<BrawlerBattleRankStatisticsCollectionEntity> entities) {
+    public void saveAllWithNative(Collection<BrawlerBattleRankStatisticsCollectionEntity> entities) {
         List<BrawlerBattleRankStatisticsCollectionEntity> entitiesToInsert = entities.stream()
                 .filter(entity -> entity.getId() == null)
                 .toList();
         List<BrawlerBattleRankStatisticsCollectionEntity> entitiesToUpdate = entities.stream()
                 .filter(entity -> entity.getId() != null)
                 .toList();
-        Instant now = clock.instant();
-        insertEntities(entitiesToInsert, now);
-        updateEntities(entitiesToUpdate, now);
+        insertEntities(entitiesToInsert);
+        updateEntities(entitiesToUpdate);
     }
 
-    private void insertEntities(List<BrawlerBattleRankStatisticsCollectionEntity> entitiesToInsert, Instant now) {
+    private void insertEntities(List<BrawlerBattleRankStatisticsCollectionEntity> entitiesToInsert) {
         if (entitiesToInsert.isEmpty()) {
             return;
         }
@@ -73,7 +71,7 @@ public class BrawlerBattleRankStatisticsCollectionJpaRepositoryCustomImpl
         );
     }
 
-    private void updateEntities(List<BrawlerBattleRankStatisticsCollectionEntity> entitiesToUpdate, Instant now) {
+    private void updateEntities(List<BrawlerBattleRankStatisticsCollectionEntity> entitiesToUpdate) {
         if (entitiesToUpdate.isEmpty()) {
             return;
         }

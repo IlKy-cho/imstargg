@@ -8,8 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.time.Clock;
-import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
 
 public class BrawlerBattleResultStatisticsCollectionJpaRepositoryCustomImpl
@@ -25,19 +24,18 @@ public class BrawlerBattleResultStatisticsCollectionJpaRepositoryCustomImpl
 
     @Transactional
     @Override
-    public void saveAllWithNative(Clock clock, List<BrawlerBattleResultStatisticsCollectionEntity> entities) {
+    public void saveAllWithNative(Collection<BrawlerBattleResultStatisticsCollectionEntity> entities) {
         List<BrawlerBattleResultStatisticsCollectionEntity> entitiesToInsert = entities.stream()
                 .filter(entity -> entity.getId() == null)
                 .toList();
         List<BrawlerBattleResultStatisticsCollectionEntity> entitiesToUpdate = entities.stream()
                 .filter(entity -> entity.getId() != null)
                 .toList();
-        Instant now = clock.instant();
-        insertEntities(entitiesToInsert, now);
-        updateEntities(entitiesToUpdate, now);
+        insertEntities(entitiesToInsert);
+        updateEntities(entitiesToUpdate);
     }
 
-    private void insertEntities(List<BrawlerBattleResultStatisticsCollectionEntity> entitiesToInsert, Instant now) {
+    private void insertEntities(List<BrawlerBattleResultStatisticsCollectionEntity> entitiesToInsert) {
         if (entitiesToInsert.isEmpty()) {
             return;
         }
@@ -68,7 +66,7 @@ public class BrawlerBattleResultStatisticsCollectionJpaRepositoryCustomImpl
         );
     }
 
-    private void updateEntities(List<BrawlerBattleResultStatisticsCollectionEntity> entitiesToUpdate, Instant now) {
+    private void updateEntities(List<BrawlerBattleResultStatisticsCollectionEntity> entitiesToUpdate) {
         if (entitiesToUpdate.isEmpty()) {
             return;
         }

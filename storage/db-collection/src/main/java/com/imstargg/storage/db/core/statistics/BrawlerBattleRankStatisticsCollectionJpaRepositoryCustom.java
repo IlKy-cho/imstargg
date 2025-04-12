@@ -1,9 +1,8 @@
 package com.imstargg.storage.db.core.statistics;
 
-import java.time.Clock;
-import java.util.List;
+import java.util.Collection;
 
 public interface BrawlerBattleRankStatisticsCollectionJpaRepositoryCustom {
 
-    void saveAllWithNative(Clock clock, List<BrawlerBattleRankStatisticsCollectionEntity> entities);
+    void saveAllWithNative(Collection<BrawlerBattleRankStatisticsCollectionEntity> entities);
 }

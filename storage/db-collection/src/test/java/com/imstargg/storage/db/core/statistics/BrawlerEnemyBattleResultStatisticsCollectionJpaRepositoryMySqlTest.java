@@ -10,15 +10,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.Clock;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-@Tag("context")
+@Tag("develop")
 class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryMySqlTest extends MySqlContainerTest {
 
     @Autowired
@@ -35,7 +33,6 @@ class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryMySqlTest extends
     @Test
     void mysql_네이티브쿼리로_엔티티를_저장한다() {
         // given
-        var clock = Clock.fixed(Instant.now(), Clock.systemUTC().getZone());
         var entity = new BrawlerEnemyBattleResultStatisticsCollectionEntity(
                 1L,
                 2L,
@@ -48,7 +45,7 @@ class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryMySqlTest extends
         entity.countUp(BattleResult.DEFEAT);
 
         // when
-        repository.saveAllWithNative(clock, List.of(entity));
+        repository.saveAllWithNative(List.of(entity));
 
         // then
         var result = repository.findAll().getFirst();
@@ -69,7 +66,6 @@ class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryMySqlTest extends
     @Test
     void mysql_네이티브쿼리로_엔티티를_업데이트한다() {
         // given
-        var clock = Clock.fixed(Instant.now(), Clock.systemUTC().getZone());
         var entity = new BrawlerEnemyBattleResultStatisticsCollectionEntity(
                 1L,
                 2L,
@@ -77,13 +73,13 @@ class BrawlerEnemyBattleResultStatisticsCollectionJpaRepositoryMySqlTest extends
                 LocalDate.of(2025, 4, 3),
                 3L
         );
-        repository.saveAllWithNative(clock, List.of(entity));
+        repository.saveAllWithNative(List.of(entity));
 
         // when
         var insertedEntity = repository.findAll().getFirst();
         insertedEntity.countUp(BattleResult.VICTORY);
         insertedEntity.countUp(BattleResult.DRAW);
-        repository.saveAllWithNative(clock, List.of(insertedEntity));
+        repository.saveAllWithNative(List.of(insertedEntity));
 
         // then
         var result = repository.findAll().getFirst();
