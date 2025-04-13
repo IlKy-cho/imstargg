@@ -8,7 +8,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Component
-public class BrawlerBattleRankStatisticsCollectorFactory {
+public class BrawlerBattleRankStatisticsCollectorFactory
+        implements StatisticsCollectorFactory<BrawlerBattleRankStatisticsCollectionEntity> {
 
     private final BattleStatisticsCollectionValidator validator;
     private final BrawlerBattleRankStatisticsCollectionJpaRepository statsRepository;
@@ -21,7 +22,8 @@ public class BrawlerBattleRankStatisticsCollectorFactory {
         this.statsRepository = statsRepository;
     }
 
-    public BrawlerBattleRankStatisticsCollector create(
+    @Override
+    public StatisticsCollector<BrawlerBattleRankStatisticsCollectionEntity> create(
             LocalDate battleDate
     ) {
         List<BrawlerBattleRankStatisticsCollectionEntity> statsEntities = statsRepository.findAllByBattleDate(battleDate);
