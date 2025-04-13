@@ -6,17 +6,12 @@ import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayerBrawler;
 import org.springframework.stereotype.Component;
 
-import java.time.Clock;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
 @Component
 public class BattleStatisticsCollectionValidator {
 
-    private static final Duration COLLECTED_DURATION = Duration.ofDays(14);
     private static final Set<BattleType> RESULT_STATISTICS_BATTLE_TYPES = Set.of(
             BattleType.RANKED,
             BattleType.SOLO_RANKED,
@@ -28,15 +23,8 @@ public class BattleStatisticsCollectionValidator {
             BattleType.RANKED
     );
 
-    private final Clock clock;
-
-    public BattleStatisticsCollectionValidator(Clock clock) {
-        this.clock = clock;
-    }
-
     public boolean validateResultStatisticsCollection(BattleCollectionEntity battle) {
-        return withinCollectableDuration(battle)
-                && battle.getResult() != null
+        return battle.getResult() != null
                 && existsEventId(battle)
                 && RESULT_STATISTICS_BATTLE_TYPES.contains(BattleType.find(battle.getType()))
                 && !containsDuplicateBrawler(battle)
@@ -44,19 +32,9 @@ public class BattleStatisticsCollectionValidator {
     }
 
     public boolean validateRankStatisticsCollection(BattleCollectionEntity battle) {
-        return withinCollectableDuration(battle)
-                && battle.getPlayer().getRank() != null
+        return battle.getPlayer().getRank() != null
                 && existsEventId(battle)
                 && RANK_STATISTICS_BATTLE_TYPES.contains(BattleType.find(battle.getType()));
-    }
-
-    public LocalDate getMinCollectableBattleDate() {
-        return OffsetDateTime.now(clock).minus(COLLECTED_DURATION).toLocalDate();
-    }
-
-    private boolean withinCollectableDuration(BattleCollectionEntity battle) {
-        return battle.getBattleTime().toLocalDate()
-                .isAfter(getMinCollectableBattleDate());
     }
 
     private boolean existsEventId(BattleCollectionEntity battle) {
