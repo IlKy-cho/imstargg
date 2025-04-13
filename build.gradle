@@ -135,6 +135,7 @@ subprojects {
 
     tasks.register('developTest', Test) {
         group = 'verification'
+        maxHeapSize = "1024m"
         useJUnitPlatform {
             includeTags('develop')
         }
