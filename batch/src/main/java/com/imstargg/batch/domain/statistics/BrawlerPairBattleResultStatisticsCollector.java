@@ -7,9 +7,8 @@ import com.imstargg.core.enums.TrophyRange;
 import com.imstargg.storage.db.core.player.BattleCollectionEntity;
 import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsCollectionEntity;
-import com.imstargg.storage.db.core.statistics.BrawlerPairBattleResultStatisticsCollectionJpaRepository;
+
 import jakarta.annotation.Nullable;
-import jakarta.annotation.PostConstruct;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,27 +16,25 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class BrawlerPairBattleResultStatisticsCollector
         implements StatisticsCollector<BrawlerPairBattleResultStatisticsCollectionEntity> {
 
     private final BattleStatisticsCollectionValidator validator;
-    private final BrawlerPairBattleResultStatisticsCollectionJpaRepository jpaRepository;
-    private final ConcurrentMap<Key, BrawlerPairBattleResultStatisticsCollectionEntity> cache = new ConcurrentHashMap<>();
-    private final ConcurrentMap<Key, BrawlerPairBattleResultStatisticsCollectionEntity> statsToSave = new ConcurrentHashMap<>();
+    private final LocalDate battleDate;
+    private final ConcurrentMap<Key, BrawlerPairBattleResultStatisticsCollectionEntity> cache;
 
     public BrawlerPairBattleResultStatisticsCollector(
             BattleStatisticsCollectionValidator validator,
-            BrawlerPairBattleResultStatisticsCollectionJpaRepository jpaRepository
+            LocalDate battleDate,
+            List<BrawlerPairBattleResultStatisticsCollectionEntity> statsEntities
     ) {
         this.validator = validator;
-        this.jpaRepository = jpaRepository;
-    }
-
-    @PostConstruct
-    void init() {
-        jpaRepository.findAllByBattleDateGreaterThanEqual(validator.getMinCollectableBattleDate())
-                .forEach(entity -> cache.put(Key.of(entity), entity));
+        this.battleDate = battleDate;
+        this.cache = new ConcurrentHashMap<>(statsEntities.stream()
+                .collect(Collectors.toMap(Key::of, Function.identity())));
     }
 
     @Override
@@ -55,33 +52,33 @@ public class BrawlerPairBattleResultStatisticsCollector
     }
 
     private BrawlerPairBattleResultStatisticsCollectionEntity getStats(Key key) {
-        return statsToSave.compute(key, (k, v) -> cache.computeIfAbsent(k, k1 -> Optional.ofNullable(key.trophyRange())
+        return cache.computeIfAbsent(key, k1 -> Optional.ofNullable(key.trophyRange())
                 .map(trophyRange -> new BrawlerPairBattleResultStatisticsCollectionEntity(
                         key.eventBrawlStarsId(),
                         key.brawlerBrawlStarsId(),
                         trophyRange,
-                        key.battleDate(),
+                        this.battleDate,
                         key.pairBrawlerBrawlStarsId()
                 )).or(() -> Optional.ofNullable(key.soloRankTierRange())
                         .map(soloRankTierRange -> new BrawlerPairBattleResultStatisticsCollectionEntity(
                                 key.eventBrawlStarsId(),
                                 key.brawlerBrawlStarsId(),
                                 soloRankTierRange,
-                                key.battleDate(),
+                                this.battleDate,
                                 key.pairBrawlerBrawlStarsId()
                         )))
                 .orElseGet(() -> new BrawlerPairBattleResultStatisticsCollectionEntity(
                         key.eventBrawlStarsId(),
                         key.brawlerBrawlStarsId(),
-                        key.battleDate(),
+                        this.battleDate,
                         key.pairBrawlerBrawlStarsId()
                 ))
-        ));
+        );
     }
 
     @Override
-    public void save() {
-        jpaRepository.saveAll(statsToSave.values());
+    public List<BrawlerPairBattleResultStatisticsCollectionEntity> getStatistics() {
+        return cache.values().stream().toList();
     }
 
     record Key(
@@ -89,8 +86,7 @@ public class BrawlerPairBattleResultStatisticsCollector
             long brawlerBrawlStarsId,
             long pairBrawlerBrawlStarsId,
             @Nullable TrophyRange trophyRange,
-            @Nullable SoloRankTierRange soloRankTierRange,
-            LocalDate battleDate
+            @Nullable SoloRankTierRange soloRankTierRange
     ) {
 
         static Key of(BrawlerPairBattleResultStatisticsCollectionEntity statsEntity) {
@@ -99,8 +95,7 @@ public class BrawlerPairBattleResultStatisticsCollector
                     statsEntity.getBrawlerBrawlStarsId(),
                     statsEntity.getPairBrawlerBrawlStarsId(),
                     TierRangeUtils.findTrophyRange(statsEntity.getTierRange()).orElse(null),
-                    TierRangeUtils.findSoloRankTierRange(statsEntity.getTierRange()).orElse(null),
-                    statsEntity.getBattleDate()
+                    TierRangeUtils.findSoloRankTierRange(statsEntity.getTierRange()).orElse(null)
             );
         }
 
@@ -114,10 +109,8 @@ public class BrawlerPairBattleResultStatisticsCollector
                     myPlayer.getBrawler().getBrawlStarsId(),
                     teamPlayer.getBrawler().getBrawlStarsId(),
                     trophyRange,
-                    soloRankTierRange,
-                    battle.getBattleTime().toLocalDate()
+                    soloRankTierRange
             ));
         }
     }
-
 }

@@ -4,6 +4,7 @@ import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.player.BattleCollectionEntity;
 import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayerBrawler;
+import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.Duration;
@@ -12,6 +13,7 @@ import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
+@Component
 public class BattleStatisticsCollectionValidator {
 
     private static final Duration COLLECTED_DURATION = Duration.ofDays(14);

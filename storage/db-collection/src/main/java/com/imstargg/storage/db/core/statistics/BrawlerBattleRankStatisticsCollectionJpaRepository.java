@@ -8,5 +8,5 @@ import java.util.List;
 public interface BrawlerBattleRankStatisticsCollectionJpaRepository
         extends JpaRepository<BrawlerBattleRankStatisticsCollectionEntity, Long>, BrawlerBattleRankStatisticsCollectionJpaRepositoryCustom {
 
-    List<BrawlerBattleRankStatisticsCollectionEntity> findAllByBattleDateGreaterThanEqual(LocalDate battleDate);
+    List<BrawlerBattleRankStatisticsCollectionEntity> findAllByBattleDate(LocalDate battleDate);
 }
