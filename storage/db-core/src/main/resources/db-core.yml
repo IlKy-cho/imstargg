@@ -88,6 +88,8 @@ spring:
     hikari:
       minimum-idle: 0
       maximum-pool-size: 20
+      data-source-properties:
+        socketTimeout: 0
 
   jpa:
     properties:
