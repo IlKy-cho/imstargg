@@ -46,10 +46,12 @@ public class StatisticsJobItemProcessor<T> implements ItemProcessor<LocalDate, L
         int collectedCount = 0;
         int totalCount = 0;
         while (hasNext) {
+            log.debug("Statistics[{}] processing date[{}] page[{}]", jobName, item, page);
             List<BattleCollectionEntity> battles = battleItemReader.read(page, PAGE_SIZE);
             if (battles.size() < PAGE_SIZE) {
                 hasNext = false;
             }
+            page++;
 
             for (BattleCollectionEntity battle : battles) {
                 checkPoint.updateBattleId(battle.getId());
