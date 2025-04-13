@@ -9,5 +9,5 @@ public interface BrawlerPairBattleRankStatisticsCollectionJpaRepository
         extends JpaRepository<BrawlerPairBattleRankStatisticsCollectionEntity, Long>,
         BrawlerPairBattleRankStatisticsCollectionJpaRepositoryCustom {
 
-    List<BrawlerPairBattleRankStatisticsCollectionEntity> findAllByBattleDateGreaterThanEqual(LocalDate battleDate);
+    List<BrawlerPairBattleRankStatisticsCollectionEntity> findAllByBattleDate(LocalDate battleDate);
 }

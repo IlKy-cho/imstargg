@@ -8,12 +8,11 @@ import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.Objects;
 
 import static com.imstargg.storage.db.core.player.QBattleCollectionEntity.battleCollectionEntity;
 
 public class BattleItemReader {
-
-    private static final int PAGE_SIZE = 1000;
 
     private final EntityManagerFactory entityManagerFactory;
     private final OffsetDateTime fromBattleTime;
@@ -32,11 +31,12 @@ public class BattleItemReader {
         this.offsetBattleId = offsetBattleId;
     }
 
-    public List<BattleCollectionEntity> read(int page) {
-        EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
+    public List<BattleCollectionEntity> read(int page, int size) {
+        EntityManager entityManager = Objects.requireNonNull(EntityManagerFactoryUtils.getTransactionalEntityManager(
+                entityManagerFactory));
         JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
 
-        return queryFactory
+        List<BattleCollectionEntity> battleEntities = queryFactory
                 .selectFrom(battleCollectionEntity)
                 .join(battleCollectionEntity.player.player).fetchJoin()
                 .where(
@@ -45,9 +45,11 @@ public class BattleItemReader {
                         battleCollectionEntity.battleTime.lt(toBattleTime)
                 )
                 .orderBy(battleCollectionEntity.battleTime.desc())
-                .limit(PAGE_SIZE)
-                .offset((long) page * PAGE_SIZE)
+                .limit(size)
+                .offset((long) page * size)
                 .fetch();
+        battleEntities.forEach(entityManager::detach);
+        return battleEntities;
     }
 
 }
