@@ -6,8 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface BrawlerPairBattleResultStatisticsCollectionJpaRepository
-        extends JpaRepository<BrawlerPairBattleResultStatisticsCollectionEntity, Long>,
-        BrawlerPairBattleResultStatisticsCollectionJpaRepositoryCustom {
+        extends JpaRepository<BrawlerPairBattleResultStatisticsCollectionEntity, Long> {
 
     List<BrawlerPairBattleResultStatisticsCollectionEntity> findAllByBattleDate(LocalDate battleDate);
 }
