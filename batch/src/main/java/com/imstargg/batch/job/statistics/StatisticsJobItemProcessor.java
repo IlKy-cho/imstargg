@@ -64,7 +64,7 @@ public class StatisticsJobItemProcessor<T> implements ItemProcessor<LocalDate, L
 
         List<T> statistics = collector.getStatistics();
         log.info("Statistics[{}] collect {}/{} items in date[{}] >> Total {} case statistics",
-                jobName, collectedCount, totalCount, item, statistics.stream());
+                jobName, collectedCount, totalCount, item, statistics.size());
 
         statisticsCheckPointer.save(checkPoint);
         return statistics;
