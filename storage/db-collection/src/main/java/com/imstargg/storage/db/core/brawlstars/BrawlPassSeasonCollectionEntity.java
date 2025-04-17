@@ -1,6 +1,5 @@
 package com.imstargg.storage.db.core.brawlstars;
 
-import com.imstargg.storage.db.core.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,21 +12,16 @@ import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAdjusters;
 
 @Entity
-@Table(name = "solo_rank_season")
-public class SoloRankSeasonCollectionEntity extends BaseEntity {
-
-    private static final int SEASON_MAX_MONTH = 4;
+@Table(name = "brawl_pass_season")
+public class BrawlPassSeasonCollectionEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "solo_rank_season_id")
+    @Column(name = "brawl_pass_season_id")
     private Long id;
 
     @Column(name = "season_number", nullable = false, updatable = false)
     private int number;
-
-    @Column(name = "season_month", nullable = false, updatable = false)
-    private int month;
 
     @Column(name = "start_at", nullable = false, updatable = false)
     private OffsetDateTime startAt;
@@ -35,42 +29,35 @@ public class SoloRankSeasonCollectionEntity extends BaseEntity {
     @Column(name = "end_at", nullable = false, updatable = false)
     private OffsetDateTime endAt;
 
-    public static SoloRankSeasonCollectionEntity createFirst() {
-        return new SoloRankSeasonCollectionEntity(
-                1,
-                1,
-                OffsetDateTime.parse("2025-02-25T18:00:00+09:00"),
-                OffsetDateTime.parse("2025-04-16T18:00:00+09:00")
+    public static BrawlPassSeasonCollectionEntity create37Season() {
+        return new BrawlPassSeasonCollectionEntity(
+                37,
+                OffsetDateTime.parse("2025-04-03T18:00:00+09:00"),
+                OffsetDateTime.parse("2025-05-01T18:00:00+09:00")
         );
     }
 
-    protected SoloRankSeasonCollectionEntity() {
+    protected BrawlPassSeasonCollectionEntity() {
     }
 
-    private SoloRankSeasonCollectionEntity(
+    private BrawlPassSeasonCollectionEntity(
             int number,
-            int month,
             OffsetDateTime startAt,
             OffsetDateTime endAt
     ) {
         this.number = number;
-        this.month = month;
         this.startAt = startAt;
         this.endAt = endAt;
     }
 
-    public SoloRankSeasonCollectionEntity next() {
-        int nextMonth = month < SEASON_MAX_MONTH ? month + 1 : 1;
-        int nextNumber = nextMonth == 1 ? number + 1 : number;
-        OffsetDateTime nextMonthThirdThursday = endAt
+    public BrawlPassSeasonCollectionEntity next() {
+        OffsetDateTime nextStartAt = this.endAt;
+        OffsetDateTime nextEndAt = endAt
                 .plusMonths(1)
                 .withDayOfMonth(1)
-                .with(TemporalAdjusters.dayOfWeekInMonth(3, DayOfWeek.THURSDAY));
-        OffsetDateTime nextStartAt = endAt.plusDays(1);
-        OffsetDateTime nextEndAt = nextMonthThirdThursday.minusDays(1);
-        return new SoloRankSeasonCollectionEntity(
-                nextNumber,
-                nextMonth,
+                .with(TemporalAdjusters.dayOfWeekInMonth(1, DayOfWeek.THURSDAY));
+        return new BrawlPassSeasonCollectionEntity(
+                this.number + 1,
                 nextStartAt,
                 nextEndAt
         );
@@ -82,10 +69,6 @@ public class SoloRankSeasonCollectionEntity extends BaseEntity {
 
     public int getNumber() {
         return number;
-    }
-
-    public int getMonth() {
-        return month;
     }
 
     public OffsetDateTime getStartAt() {

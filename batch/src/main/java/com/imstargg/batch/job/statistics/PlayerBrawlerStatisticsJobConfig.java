@@ -30,7 +30,7 @@ public class PlayerBrawlerStatisticsJobConfig {
 
     private static final String JOB_NAME = "playerBrawlerStatisticsJob";
     private static final String STEP_NAME = "playerBrawlerStatisticsStep";
-    private static final int CHUNK_SIZE = 20_000;
+    private static final int CHUNK_SIZE = 10_000;
 
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;

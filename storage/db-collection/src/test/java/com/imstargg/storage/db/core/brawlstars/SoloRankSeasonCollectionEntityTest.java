@@ -2,16 +2,11 @@ package com.imstargg.storage.db.core.brawlstars;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.Clock;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class SoloRankSeasonCollectionEntityTest {
-
-    private final Clock clock = Clock.system(ZoneId.of("Asia/Seoul"));
 
     @Test
     void 첫_시즌을_생성한다() {
@@ -22,10 +17,10 @@ class SoloRankSeasonCollectionEntityTest {
         // then
         assertThat(result.getId()).isNull();
         assertThat(result.getStartAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 2, 25, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-02-25T18:00:00+09:00")
         );
         assertThat(result.getEndAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 4, 16, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-04-16T18:00:00+09:00")
         );
         assertThat(result.getNumber()).isEqualTo(1);
         assertThat(result.getMonth()).isEqualTo(1);
@@ -46,28 +41,28 @@ class SoloRankSeasonCollectionEntityTest {
         assertThat(season_1_2.getNumber()).isEqualTo(1);
         assertThat(season_1_2.getMonth()).isEqualTo(2);
         assertThat(season_1_2.getStartAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 4, 17, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-04-17T18:00:00+09:00")
         );
         assertThat(season_1_2.getEndAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 5, 14, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-05-14T18:00:00+09:00")
         );
 
         assertThat(season_1_3.getNumber()).isEqualTo(1);
         assertThat(season_1_3.getMonth()).isEqualTo(3);
         assertThat(season_1_3.getStartAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 5, 15, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-05-15T18:00:00+09:00")
         );
         assertThat(season_1_3.getEndAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 6, 18, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-06-18T18:00:00+09:00")
         );
 
         assertThat(season_1_4.getNumber()).isEqualTo(1);
         assertThat(season_1_4.getMonth()).isEqualTo(4);
         assertThat(season_1_4.getStartAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 6, 19, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-06-19T18:00:00+09:00")
         );
         assertThat(season_1_4.getEndAt()).isEqualTo(
-                ZonedDateTime.of(LocalDateTime.of(2025, 7, 16, 18, 0), clock.getZone()).toOffsetDateTime()
+                OffsetDateTime.parse("2025-07-16T18:00:00+09:00")
         );
     }
 }

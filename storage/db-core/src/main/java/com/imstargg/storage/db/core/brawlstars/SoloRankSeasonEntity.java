@@ -20,8 +20,6 @@ import java.time.OffsetDateTime;
 )
 public class SoloRankSeasonEntity extends BaseEntity {
 
-    private static final int SEASON_MAX_MONTH = 4;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "solo_rank_season_id")
