@@ -28,7 +28,7 @@ export class StatisticsParams {
     brawlerId?: number
   ) {
     this.type = type ?? StatisticsBattleTypeValue.ALL;
-    this.dateRange = dateRange ?? DateRangeValue.ONE_WEEK;
+    this.dateRange = dateRange ?? DateRangeValue.TWO_WEEKS;
     this.trophy = trophy ?? TrophyRangeValue.TROPHY_500_PLUS;
     this.soloRankTier = soloRankTier ?? SoloRankTierRangeValue.DIAMOND_PLUS;
     this.brawlerId = brawlerId;
