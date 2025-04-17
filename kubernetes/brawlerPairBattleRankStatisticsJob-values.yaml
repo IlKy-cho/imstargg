@@ -1,0 +1,6 @@
+app:
+  job:
+    name: brawlerPairBattleRankStatisticsJob
+
+job:
+  schedule: "0 10 * * *"

@@ -1,6 +1,0 @@
-app:
-  job:
-    name: threeDaysAgoStatisticsJob
-
-job:
-  schedule: "45 5 * * *"
