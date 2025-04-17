@@ -25,6 +25,7 @@ public class BrawlerPairBattleResultStatisticsCollector
     private final BattleStatisticsCollectionValidator validator;
     private final LocalDate battleDate;
     private final ConcurrentMap<Key, BrawlerPairBattleResultStatisticsCollectionEntity> cache;
+    private final ConcurrentMap<Key, BrawlerPairBattleResultStatisticsCollectionEntity> statsToSave = new ConcurrentHashMap<>();
 
     public BrawlerPairBattleResultStatisticsCollector(
             BattleStatisticsCollectionValidator validator,
@@ -52,7 +53,7 @@ public class BrawlerPairBattleResultStatisticsCollector
     }
 
     private BrawlerPairBattleResultStatisticsCollectionEntity getStats(Key key) {
-        return cache.computeIfAbsent(key, k1 -> Optional.ofNullable(key.trophyRange())
+        var stats = cache.computeIfAbsent(key, k1 -> Optional.ofNullable(key.trophyRange())
                 .map(trophyRange -> new BrawlerPairBattleResultStatisticsCollectionEntity(
                         key.eventBrawlStarsId(),
                         key.brawlerBrawlStarsId(),
@@ -74,11 +75,13 @@ public class BrawlerPairBattleResultStatisticsCollector
                         key.pairBrawlerBrawlStarsId()
                 ))
         );
+        statsToSave.put(key, stats);
+        return stats;
     }
 
     @Override
     public List<BrawlerPairBattleResultStatisticsCollectionEntity> getStatistics() {
-        return cache.values().stream().toList();
+        return statsToSave.values().stream().toList();
     }
 
     record Key(
