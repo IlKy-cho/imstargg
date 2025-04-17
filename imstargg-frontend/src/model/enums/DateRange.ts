@@ -24,7 +24,7 @@ export const dateRangeTitle = (dateRange: DateRange): string => {
   }
 }
 
-export const calculateEndDate = (date: Temporal.PlainDate, dateRange: DateRange): Temporal.PlainDate => {
+export const calculateStartDate = (date: Temporal.PlainDate, dateRange: DateRange): Temporal.PlainDate => {
   switch (dateRange) {
     case DateRangeValue.THREE_DAYS:
       return date.subtract({ days: 3 });

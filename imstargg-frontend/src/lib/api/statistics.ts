@@ -9,7 +9,7 @@ import {BattleEventResultStatistics} from "@/model/statistics/BattleEventResultS
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import {BrawlerItemOwnership} from "@/model/statistics/BrawlerItemOwnership";
-import {calculateEndDate, DateRange} from "@/model/enums/DateRange";
+import {calculateStartDate, DateRange} from "@/model/enums/DateRange";
 import {Temporal} from "@js-temporal/polyfill";
 
 export async function fetchGetBattleEventBrawlerResultStatistics(
@@ -21,9 +21,9 @@ export async function fetchGetBattleEventBrawlerResultStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result`);
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -85,10 +85,10 @@ export async function fetchGetBattleEventBrawlersResultStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/pair`);
-  const endDate = calculateEndDate(date, dateRange);
+  const startDate = calculateStartDate(date, dateRange);
   url.searchParams.append('brawlerId', brawlerId.toString());
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -147,9 +147,9 @@ export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/enemy`);
   url.searchParams.append('brawlerId', brawlerId.toString());
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -198,9 +198,9 @@ export async function fetchGetBattleEventBrawlerRankStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank`);
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   url.searchParams.append('trophyRange', trophyRange);
   if (!options) {
     return await fetch(url);
@@ -244,9 +244,9 @@ export async function fetchGetBattleEventBrawlersRankStatistics(
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank/pair`);
   url.searchParams.append('brawlerId', brawlerId.toString());
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   url.searchParams.append('trophyRange', trophyRange);
   if (!options) {
     return await fetch(url);
@@ -297,9 +297,9 @@ export async function fetchGetBrawlerResultStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawler/result`);
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -346,9 +346,9 @@ export async function fetchGetBrawlerBattleEventResultStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result`);
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -382,7 +382,7 @@ export async function getBrawlerBattleEventResultStatistics(
   if (response.ok) {
     const data = await response.json() as ListResponse<BattleEventResultStatisticsResponse>;
     return data.content
-      .sort((a, b) => b.winRate - a.winRate)
+      .toSorted((a, b) => b.winRate - a.winRate)
       .map(stat => ({
         event: {
           id: stat.event.id,
@@ -411,9 +411,9 @@ export async function fetchGetBrawlerBrawlersResultStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result/pair`);
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -468,9 +468,9 @@ export async function fetchGetBrawlerEnemyResultStatistics(
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result/enemy`);
-  const endDate = calculateEndDate(date, dateRange);
-  url.searchParams.append('startDate', date.toString());
-  url.searchParams.append('endDate', endDate.toString());
+  const startDate = calculateStartDate(date, dateRange);
+  url.searchParams.append('endDate', date.toString());
+  url.searchParams.append('startDate', startDate.toString());
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
