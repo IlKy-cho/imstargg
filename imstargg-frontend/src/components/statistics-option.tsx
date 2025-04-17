@@ -13,7 +13,7 @@ import {StatisticsBattleType, StatisticsBattleTypeValue, StatisticsBattleTypeVal
 import { DateRange, dateRangeTitle, DateRangeValues } from "@/model/enums/DateRange";
 
 
-function BattleTypeSelect({ battleType }: { battleType?: StatisticsBattleType }) {
+function BattleTypeSelect({ battleType }: Readonly<{ battleType?: StatisticsBattleType }>) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -41,7 +41,7 @@ function BattleTypeSelect({ battleType }: { battleType?: StatisticsBattleType })
   )
 }
 
-function TrophySelect({ trophy }: { trophy?: TrophyRange }) {
+function TrophySelect({ trophy }: Readonly<{ trophy?: TrophyRange }>) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -82,7 +82,7 @@ function TrophySelect({ trophy }: { trophy?: TrophyRange }) {
   )
 }
 
-function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
+function SoloRankTierSelect({ tier }: Readonly<{ tier?: SoloRankTierRange }>) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -111,7 +111,7 @@ function SoloRankTierSelect({ tier }: { tier?: SoloRankTierRange }) {
   )
 }
 
-function DateRangeSelect({ dateRange }: { dateRange?: DateRange }) {
+function DateRangeSelect({ dateRange }: Readonly<{ dateRange?: DateRange }>) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -141,7 +141,7 @@ function DateRangeSelect({ dateRange }: { dateRange?: DateRange }) {
 
 function BattleTypeTierSelect(
   { battleType, trophy, soloRankTier }
-  : { battleType: StatisticsBattleType, trophy?: TrophyRange, soloRankTier?: SoloRankTierRange }
+  : Readonly<{ battleType: StatisticsBattleType, trophy?: TrophyRange, soloRankTier?: SoloRankTierRange }>
 ) {
   return (
     <div className="flex gap-2">
