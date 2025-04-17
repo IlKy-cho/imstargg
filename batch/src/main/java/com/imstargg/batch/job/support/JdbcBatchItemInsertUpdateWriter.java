@@ -15,6 +15,8 @@ public class JdbcBatchItemInsertUpdateWriter<T> implements ItemWriter<T>, Initia
 
     private static final Logger log = LoggerFactory.getLogger(JdbcBatchItemInsertUpdateWriter.class);
 
+    private static final int DEFAULT_BATCH_SIZE = 100000;
+
     private final JdbcBatchItemWriter<T> insertItemWriter;
 
     private final JdbcBatchItemWriter<T> updateItemWriter;
@@ -44,19 +46,28 @@ public class JdbcBatchItemInsertUpdateWriter<T> implements ItemWriter<T>, Initia
             }
         }
 
-        log.debug("Total {} items to insert and {} items to update", itemsToInsert.size(), itemsToUpdate.size());
+        log.debug("Total {} insert and {} update", itemsToInsert.size(), itemsToUpdate.size());
+        doWrite(insertItemWriter::write, itemsToInsert);
+        doWrite(updateItemWriter::write, itemsToUpdate);
+    }
 
-        if (!itemsToInsert.isEmpty()) {
-            insertItemWriter.write(new Chunk<>(itemsToInsert));
+    private void doWrite(WriteFunction<T> writer, List<T> items) throws Exception {
+        for (int start = 0; start < items.size(); start += DEFAULT_BATCH_SIZE) {
+            int end = Math.min(start + DEFAULT_BATCH_SIZE, items.size());
+            List<T> batch = items.subList(start, end);
+            writer.write(new Chunk<>(batch));
         }
-        if (!itemsToUpdate.isEmpty()) {
-            updateItemWriter.write(new Chunk<>(itemsToUpdate));
-        }
+
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         insertItemWriter.afterPropertiesSet();
         updateItemWriter.afterPropertiesSet();
+    }
+
+    @FunctionalInterface
+    private interface WriteFunction<T> {
+        void write(Chunk<T> chunk) throws Exception;
     }
 }
