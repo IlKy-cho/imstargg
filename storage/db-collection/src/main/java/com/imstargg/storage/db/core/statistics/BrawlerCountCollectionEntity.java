@@ -39,8 +39,12 @@ public class BrawlerCountCollectionEntity extends BaseEntity {
         this.count = count;
     }
 
-    public void update(int count) {
-        this.count = count;
+    public void init() {
+        this.count = 0;
+    }
+
+    public void countUp() {
+        this.count += 1;
     }
 
     public Long getId() {
