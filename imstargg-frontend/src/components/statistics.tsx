@@ -13,7 +13,7 @@ import {ColumnDef} from "@tanstack/react-table";
 import {DataTableColumnHeader} from "@/components/ui/datatable/column-header";
 import {DataTable} from "@/components/ui/datatable/data-table";
 import {BrawlerResultStatistics as BrawlerResultStatisticsModel} from "@/model/statistics/BrawlerResultStatistics";
-import {BrawlersResultStatistics as BrawlersResultStatisticsModel} from "@/model/statistics/BrawlersResultStatistics";
+import {BrawlerPairResultStatistics as BrawlersResultStatisticsModel} from "@/model/statistics/BrawlerPairResultStatistics";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {BrawlerRole} from "@/model/enums/BrawlerRole";
 import {BrawlerRarity} from "@/model/enums/BrawlerRarity";
@@ -32,7 +32,7 @@ import { cn } from "@/lib/utils";
 
 const toPercentage = (value: number): string => `${(value * 100).toFixed(2)}%`;
 
-function BrawlerCell({brawler}: { brawler: Brawler | null }) {
+function BrawlerCell({brawler}: Readonly<{ brawler: Brawler | null }>) {
   return (
     <div className="flex flex-col sm:flex-row gap-1 sm:items-center items-start">
       <BrawlerLink brawler={brawler}>
@@ -46,22 +46,7 @@ function BrawlerCell({brawler}: { brawler: Brawler | null }) {
   )
 }
 
-function BrawlersCell({brawlers}: { brawlers: Array<Brawler | null> }) {
-  return (
-    <div className="flex gap-1">
-      {brawlers.map(brawler => (
-        <BrawlerLink brawler={brawler} key={brawler?.id}>
-          <BrawlerProfileImage
-            brawler={brawler}
-            size="xs"
-          />
-        </BrawlerLink>
-      ))}
-    </div>
-  )
-}
-
-function EventCell({event}: { event: BattleEvent }) {
+function EventCell({event}: Readonly<{ event: BattleEvent }>) {
   const modeIconSrc = battleEventModeIconSrc(event.mode);
   return (
     <div className="flex gap-1">
@@ -85,7 +70,7 @@ function EventCell({event}: { event: BattleEvent }) {
   )
 }
 
-function TextCell({value, className}: { value: string, className?: string }) {
+function TextCell({value, className}: Readonly<{ value: string, className?: string }>) {
   return (
     <span className={cn("text-xs md:text-sm", className)}>
       {value}
@@ -170,7 +155,7 @@ type BrawlersRankStatisticsProps = {
   statsList: BrawlersRankStatisticsModel[]
 };
 
-export function BrawlersRankStatistics(
+export function BrawlerPairRankStatistics(
   {brawlers, statsList}: Readonly<BrawlersRankStatisticsProps>
 ) {
   const brawlerCollection = new BrawlerCollection(brawlers);
@@ -181,9 +166,8 @@ export function BrawlersRankStatistics(
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"브롤러 조합"}/>,
       cell: ({row}) => {
-        const brawlersList = row.original.brawlerIds.map(id => brawlerCollection.find(id));
         return (
-          <BrawlersCell brawlers={brawlersList}/>
+          <BrawlerCell brawler={brawlerCollection.find(row.original.pairBrawlerId)}/>
         );
       },
     },
@@ -300,7 +284,7 @@ type BrawlersResultStatisticsProps = {
   statsList: BrawlersResultStatisticsModel[]
 };
 
-export function BrawlersResultStatistics(
+export function BrawlerPairResultStatistics(
   {brawlers, statsList}: Readonly<BrawlersResultStatisticsProps>
 ) {
   const brawlerCollection = new BrawlerCollection(brawlers);
@@ -311,9 +295,8 @@ export function BrawlersResultStatistics(
       header: ({column}) =>
         <DataTableColumnHeader column={column} title={"브롤러 조합"}/>,
       cell: ({row}) => {
-        const brawlersList = row.original.brawlerIds.map(id => brawlerCollection.find(id));
         return (
-          <BrawlersCell brawlers={brawlersList}/>
+          <BrawlerCell brawler={brawlerCollection.find(row.original.pairBrawlerId)}/>
         );
       },
     },

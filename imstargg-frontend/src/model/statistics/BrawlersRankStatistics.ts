@@ -1,5 +1,6 @@
 export interface BrawlersRankStatistics {
-  brawlerIds: number[];
+  brawlerId: number;
+  pairBrawlerId: number;
   totalBattleCount: number;
   averageRank: number;
   pickRate: number
