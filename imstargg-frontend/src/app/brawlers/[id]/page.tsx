@@ -10,7 +10,7 @@ import {BrawlerItemOwnershipOption, BrawlerStatisticsOption} from "@/components/
 import {
   BattleEventResultStatistics,
   BrawlerEnemyResultStatistics,
-  BrawlersResultStatistics
+  BrawlerPairResultStatistics
 } from "@/components/statistics";
 import {Brawler, BrawlerCollection} from "@/model/Brawler";
 import {
@@ -201,7 +201,7 @@ async function PageBrawlersStatistics({brawler, statsParams, date, brawlers}: Re
 }>) {
 
   return (
-    <BrawlersResultStatistics statsList={await getBrawlerBrawlersResultStatistics(brawler.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
+    <BrawlerPairResultStatistics statsList={await getBrawlerBrawlersResultStatistics(brawler.id, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())} brawlers={brawlers}/>
   );
 }
 

@@ -11,8 +11,8 @@ import {
 import {BattleEventModeValue, isResultBattleEventMode} from "@/model/enums/BattleEventMode";
 import {
   BrawlerEnemyResultStatistics,
-  BrawlersRankStatistics,
-  BrawlersResultStatistics,
+  BrawlerPairRankStatistics,
+  BrawlerPairResultStatistics,
   EventBrawlerRankStatistics,
   EventBrawlerResultStatistics
 } from "@/components/statistics";
@@ -200,11 +200,11 @@ async function PageBrawlersStatistics({ battleEvent, statsParams, date, brawlers
 
   return (
     isResultBattleEventMode(battleEvent.mode) ? (
-      <BrawlersResultStatistics
+      <BrawlerPairResultStatistics
         statsList={await getBattleEventBrawlersResultStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.getTrophyOfType(), statsParams.getSoloRankTierOfType())}
         brawlers={brawlers} />
     ) : (
-      <BrawlersRankStatistics
+      <BrawlerPairRankStatistics
         statsList={await getBattleEventBrawlersRankStatistics(battleEvent.id, statsParams.brawlerId!, date, statsParams.dateRange, statsParams.trophy)}
         brawlers={brawlers} />
     )
