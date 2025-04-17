@@ -3,6 +3,7 @@ package com.imstargg.core.domain.brawlstars;
 import com.imstargg.core.domain.BrawlStarsId;
 import com.imstargg.core.domain.MessageCollection;
 import com.imstargg.core.domain.MessageRepository;
+import com.imstargg.storage.db.core.MessageCodes;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageEntity;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageJpaRepository;
 import com.imstargg.storage.db.core.brawlstars.BrawlStarsImageType;
@@ -49,7 +50,7 @@ public class GadgetRepositoryWithCache {
                 brawlerBrawlStarsIdToGadgetEntities.values().stream()
                         .flatMap(List::stream)
                         .map(GadgetEntity::getBrawlStarsId)
-                        .map(BrawlStarsImageType.GADGET::code)
+                        .map(MessageCodes.GADGET_NAME::code)
                         .toList()
         ).stream().collect(toMap(MessageCollection::code, Function.identity()));
         Map<String, BrawlStarsImageEntity> codeToImageEntity = brawlStarsImageJpaRepository.findAllByCodeIn(
