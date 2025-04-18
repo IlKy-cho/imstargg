@@ -68,8 +68,12 @@ public class PlayerBrawlerStatisticsCollector {
 
     @Transactional
     public void save() {
-        em.persist(brawlerCounts.values());
-        em.persist(brawlerItemCounts.values());
+        for (BrawlerCountCollectionEntity entity : brawlerCounts.values()) {
+            em.merge(entity);
+        }
+        for (BrawlerItemCountCollectionEntity entity : brawlerItemCounts.values()) {
+            em.merge(entity);
+        }
     }
 
     private record BrawlerCountKey(long brawlerBrawlStarsId, TrophyRange trophyRange) {
