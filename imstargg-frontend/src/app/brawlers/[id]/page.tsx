@@ -36,7 +36,6 @@ import {brawlerClassTitle} from "@/lib/brawler-class";
 import {brawlerRarityTitle} from "@/lib/brawler-rarity";
 import {cn, cnWithDefault} from "@/lib/utils";
 import {brawlerBackgroundColor} from "@/lib/brawler";
-import {Temporal} from "@js-temporal/polyfill";
 
 interface SearchParams extends StatisticsSearchParams{
   country?: Country;
@@ -154,7 +153,7 @@ async function StatisticsContent(
     brawlers: Brawler[]
   }>) {
 
-  const date = Temporal.Now.plainDateISO()
+  const date = new Date();
 
   return (
     <div className="flex flex-col gap-4">
@@ -185,7 +184,7 @@ async function StatisticsContent(
 async function PageEventStatistics({brawler, statsParams, date}: Readonly<{
   brawler: Brawler,
   statsParams: StatisticsParams,
-  date: Temporal.PlainDate,
+  date: Date,
 }>) {
 
   return (
@@ -196,7 +195,7 @@ async function PageEventStatistics({brawler, statsParams, date}: Readonly<{
 async function PageBrawlersStatistics({brawler, statsParams, date, brawlers}: Readonly<{
   brawler: Brawler,
   statsParams: StatisticsParams,
-  date: Temporal.PlainDate,
+  date: Date,
   brawlers: Brawler[]
 }>) {
 
@@ -208,7 +207,7 @@ async function PageBrawlersStatistics({brawler, statsParams, date, brawlers}: Re
 async function PageEnemyStatistics({brawler, statsParams, date, brawlers}: Readonly<{
   brawler: Brawler,
   statsParams: StatisticsParams,
-  date: Temporal.PlainDate,
+  date: Date,
   brawlers: Brawler[]
 }>) {
 

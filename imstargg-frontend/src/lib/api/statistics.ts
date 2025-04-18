@@ -9,21 +9,37 @@ import {BattleEventResultStatistics} from "@/model/statistics/BattleEventResultS
 import {BattleEventMode} from "@/model/enums/BattleEventMode";
 import {ApiError, BASE_URL, CacheOptions, ListResponse} from "@/lib/api/api";
 import {BrawlerItemOwnership} from "@/model/statistics/BrawlerItemOwnership";
-import {calculateStartDate, DateRange} from "@/model/enums/DateRange";
-import {Temporal} from "@js-temporal/polyfill";
+import {DateRange, DateRangeValue} from "@/model/enums/DateRange";
+import dayjs from "dayjs";
+
+const calculateDateRange = (date: Date, dateRange: DateRange): {startDate: string, endDate: string} => {
+  const startDate = dayjs(date);
+  const endDate = dayjs(date);
+  const dateFormat = 'YYYY-MM-DD';
+  switch (dateRange) {
+    case DateRangeValue.THREE_DAYS:
+      return {startDate: startDate.subtract(3, 'days').format(dateFormat), endDate: endDate.format(dateFormat)};
+    case DateRangeValue.ONE_WEEK:
+      return {startDate: startDate.subtract(1, 'weeks').format(dateFormat), endDate: endDate.format(dateFormat)};
+    case DateRangeValue.TWO_WEEKS:
+      return {startDate: startDate.subtract(2, 'weeks').format(dateFormat), endDate: endDate.format(dateFormat)};
+    case DateRangeValue.ONE_MONTH:
+      return {startDate: startDate.subtract(1, 'months').format(dateFormat), endDate: endDate.format(dateFormat)};
+  }
+}
 
 export async function fetchGetBattleEventBrawlerResultStatistics(
   eventId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null,
   soloRankTierRange: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result`);
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -56,7 +72,7 @@ interface BattleEventResultStatisticsResponse {
 
 export async function getBattleEventBrawlerResultStatistics(
   eventId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null
@@ -78,17 +94,17 @@ export async function getBattleEventBrawlerResultStatistics(
 export async function fetchGetBattleEventBrawlersResultStatistics(
   eventId: number,
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null,
   soloRankTierRange: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/pair`);
-  const startDate = calculateStartDate(date, dateRange);
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
   url.searchParams.append('brawlerId', brawlerId.toString());
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -110,7 +126,7 @@ export async function fetchGetBattleEventBrawlersResultStatistics(
 export async function getBattleEventBrawlersResultStatistics(
   eventId: number,
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null,
@@ -132,7 +148,7 @@ export async function getBattleEventBrawlersResultStatistics(
 export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
   eventId: number,
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null,
   soloRankTierRange: SoloRankTierRange | null,
@@ -140,9 +156,9 @@ export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/result/enemy`);
   url.searchParams.append('brawlerId', brawlerId.toString());
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -164,7 +180,7 @@ export async function fetchGetBattleEventResultBrawlerEnemyStatistics(
 export async function getBattleEventResultBrawlerEnemyStatistics(
   eventId: number,
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null
@@ -185,15 +201,15 @@ export async function getBattleEventResultBrawlerEnemyStatistics(
 
 export async function fetchGetBattleEventBrawlerRankStatistics(
   eventId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank`);
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   url.searchParams.append('trophyRange', trophyRange);
   if (!options) {
     return await fetch(url);
@@ -209,7 +225,7 @@ export async function fetchGetBattleEventBrawlerRankStatistics(
 
 export async function getBattleEventBrawlerRankStatistics(
   eventId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange
 ): Promise<BrawlerRankStatistics[]> {
@@ -230,16 +246,16 @@ export async function getBattleEventBrawlerRankStatistics(
 export async function fetchGetBattleEventBrawlersRankStatistics(
   eventId: number,
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/events/${eventId}/rank/pair`);
   url.searchParams.append('brawlerId', brawlerId.toString());
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   url.searchParams.append('trophyRange', trophyRange);
   if (!options) {
     return await fetch(url);
@@ -256,7 +272,7 @@ export async function fetchGetBattleEventBrawlersRankStatistics(
 export async function getBattleEventBrawlersRankStatistics(
   eventId: number,
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange
 ): Promise<BrawlersRankStatistics[]> {
@@ -276,16 +292,16 @@ export async function getBattleEventBrawlersRankStatistics(
 
 
 export async function fetchGetBrawlerResultStatistics(
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null,
   soloRankTierRange: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawler/result`);
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -305,7 +321,7 @@ export async function fetchGetBrawlerResultStatistics(
 }
 
 export async function getBrawlerResultStatistics(
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null
@@ -325,16 +341,16 @@ export async function getBrawlerResultStatistics(
 
 export async function fetchGetBrawlerBattleEventResultStatistics(
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null,
   soloRankTierRange: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result`);
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -355,7 +371,7 @@ export async function fetchGetBrawlerBattleEventResultStatistics(
 
 export async function getBrawlerBattleEventResultStatistics(
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null
@@ -390,16 +406,16 @@ export async function getBrawlerBattleEventResultStatistics(
 
 export async function fetchGetBrawlerBrawlersResultStatistics(
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null,
   soloRankTierRange: SoloRankTierRange | null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result/pair`);
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -420,7 +436,7 @@ export async function fetchGetBrawlerBrawlersResultStatistics(
 
 export async function getBrawlerBrawlersResultStatistics(
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null
@@ -441,16 +457,16 @@ export async function getBrawlerBrawlersResultStatistics(
 
 export async function fetchGetBrawlerEnemyResultStatistics(
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null,
   options?: CacheOptions
 ): Promise<Response> {
   const url = new URL(`${BASE_URL}/api/v1/statistics/brawlers/${brawlerId}/result/enemy`);
-  const startDate = calculateStartDate(date, dateRange);
-  url.searchParams.append('endDate', date.toString());
-  url.searchParams.append('startDate', startDate.toString());
+  const {startDate, endDate} = calculateDateRange(date, dateRange);
+  url.searchParams.append('endDate', endDate);
+  url.searchParams.append('startDate', startDate);
   if (trophyRange) {
     url.searchParams.append('trophyRange', trophyRange);
   }
@@ -471,7 +487,7 @@ export async function fetchGetBrawlerEnemyResultStatistics(
 
 export async function getBrawlerEnemyResultStatistics(
   brawlerId: number,
-  date: Temporal.PlainDate,
+  date: Date,
   dateRange: DateRange,
   trophyRange: TrophyRange | null = null,
   soloRankTierRange: SoloRankTierRange | null = null

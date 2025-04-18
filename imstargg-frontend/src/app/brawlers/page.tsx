@@ -7,7 +7,6 @@ import {BrawlerListStatistics} from "@/components/statistics";
 import {searchParamsToStatisticsParams, StatisticsSearchParams} from "@/model/statistics/StatisticsParams";
 import {PageHeader, pageHeaderContainerDefault} from "@/components/page-header";
 import {cn} from "@/lib/utils";
-import {Temporal} from "@js-temporal/polyfill";
 
 export const metadata: Metadata = {
   title: `브롤러`,
@@ -20,7 +19,7 @@ type PageProps = {
 };
 
 export default async function BrawlersPage({ searchParams }: Readonly<PageProps>) {
-  const date = Temporal.Now.plainDateISO();
+  const date = new Date();
   
   const statsParams = searchParamsToStatisticsParams(await searchParams);
 

@@ -32,7 +32,6 @@ import BattleEventMapImage from "@/components/battle-event-map-image";
 import {cn, cnWithDefault} from "@/lib/utils";
 import Image from "next/image";
 import {BrawlStarsIconSrc} from "@/lib/icon";
-import {Temporal} from "@js-temporal/polyfill";
 
 type Props = {
   params: Promise<{
@@ -92,7 +91,7 @@ async function StatisticsContent({ battleEvent, statsParams, brawlers }: Readonl
   statsParams: StatisticsParams,
   brawlers: Brawler[]
 }>) {
-  const date = Temporal.Now.plainDateISO();
+  const date = new Date();
 
   return (
     <div className="flex flex-col sm:flex-row gap-2">
@@ -171,7 +170,7 @@ async function Title({ value }: Readonly<{ value: string }>) {
 async function PageBrawlerStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
-  date: Temporal.PlainDate,
+  date: Date,
   brawlers: Brawler[]
 }>) {
 
@@ -194,7 +193,7 @@ async function PageBrawlerStatistics({ battleEvent, statsParams, date, brawlers 
 async function PageBrawlersStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
-  date: Temporal.PlainDate,
+  date: Date,
   brawlers: Brawler[]
 }>) {
 
@@ -214,7 +213,7 @@ async function PageBrawlersStatistics({ battleEvent, statsParams, date, brawlers
 async function PageBrawlerEnemyStatistics({ battleEvent, statsParams, date, brawlers }: Readonly<{
   battleEvent: BattleEvent,
   statsParams: StatisticsParams,
-  date: Temporal.PlainDate,
+  date: Date,
   brawlers: Brawler[]
 }>) {
 
