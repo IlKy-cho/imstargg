@@ -35,7 +35,6 @@ public class PlayerBrawlerStatisticsJobConfig {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
-    private final EntityManager em;
 
     private final AlertManager alertManager;
 
@@ -43,13 +42,11 @@ public class PlayerBrawlerStatisticsJobConfig {
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
-            EntityManager em,
             AlertManager alertManager
     ) {
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
-        this.em = em;
         this.alertManager = alertManager;
     }
 
@@ -111,6 +108,6 @@ public class PlayerBrawlerStatisticsJobConfig {
     @Bean
     @StepScope
     PlayerBrawlerStatisticsCollector collector() {
-        return new PlayerBrawlerStatisticsCollector(em);
+        return new PlayerBrawlerStatisticsCollector(emf);
     }
 }
