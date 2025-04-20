@@ -12,7 +12,7 @@ interface GadgetListProps {
   brawlerOwnershipRate: BrawlerItemOwnership;
 }
 
-export async function BrawlerGadgetList({gadgets, brawlerOwnershipRate}: GadgetListProps) {
+export async function BrawlerGadgetList({gadgets, brawlerOwnershipRate}: Readonly<GadgetListProps>) {
   return (
     <div className={cnWithDefault("flex flex-col gap-2")}>
       <h2 className="text-xl sm:text-2xl font-bold">가젯</h2>
