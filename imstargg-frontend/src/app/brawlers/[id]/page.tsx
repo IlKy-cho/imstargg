@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import {notFound} from "next/navigation";
 import {getBrawler, getBrawlers} from "@/lib/api/brawler";
 import {
