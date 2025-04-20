@@ -13,7 +13,7 @@ interface StarPowerListProps {
   brawlerOwnershipRate: BrawlerItemOwnership;
 }
 
-export async function BrawlerStarPowerList({starPowers, brawlerOwnershipRate}: StarPowerListProps) {
+export async function BrawlerStarPowerList({starPowers, brawlerOwnershipRate}: Readonly<StarPowerListProps>) {
   return (
     <div className={cnWithDefault("flex flex-col gap-2")}>
       <h2 className="text-xl sm:text-2xl font-bold">스타파워</h2>
@@ -47,4 +47,4 @@ export async function BrawlerStarPowerList({starPowers, brawlerOwnershipRate}: S
 }
 
 const imageUrl = (starPower: StarPower) =>
-  starPower.imageUrl || BrawlStarsIconSrc.STAR_POWER_BASE_EMPTY;
+  starPower.imageUrl ?? BrawlStarsIconSrc.STAR_POWER_BASE_EMPTY;
