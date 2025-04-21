@@ -26,8 +26,6 @@ import {countryOrDefault} from "@/lib/country";
 import {BrawlerGadgetList} from "@/components/gadget";
 import {BrawlerStarPowerList} from "@/components/starpower";
 import {BrawlerGearList} from "@/components/gear";
-import Loading from "@/app/loading";
-import {Suspense} from "react";
 import {PageHeader} from "@/components/page-header";
 import BrawlerProfileImage from "@/components/brawler-profile-image";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
