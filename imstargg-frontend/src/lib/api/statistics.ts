@@ -384,7 +384,7 @@ export async function getBrawlerBattleEventResultStatistics(
   if (response.ok) {
     const data = await response.json() as ListResponse<BattleEventResultStatisticsResponse>;
     return data.content
-      .toSorted((a, b) => b.winRate - a.winRate)
+      .sort((a, b) => b.winRate - a.winRate)
       .map(stat => ({
         event: {
           id: stat.event.id,
