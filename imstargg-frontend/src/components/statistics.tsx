@@ -48,7 +48,6 @@ function BrawlerCell({brawler}: Readonly<{ brawler: Brawler | null }>) {
 
 function EventCell({event}: Readonly<{ event: BattleEvent }>) {
   const modeIconSrc = battleEventModeIconSrc(event.mode);
-  console.log(`mode(${event.mode}) icon: `, modeIconSrc?.src);
   return (
     <div className="flex gap-1">
       <Link href={battleEventHref(event.id)}>

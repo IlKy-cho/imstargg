@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import {notFound} from "next/navigation";
 import {getBrawler, getBrawlers} from "@/lib/api/brawler";
 import {
@@ -161,23 +159,17 @@ async function StatisticsContent(
     <div className="flex flex-col gap-4">
       <div className={cnWithDefault("flex flex-col gap-2")}>
         <Title value="이벤트"/>
-        <Suspense fallback={<Loading/>}>
-          <PageEventStatistics brawler={brawler} statsParams={statsParams} date={date}/>
-        </Suspense>
+        <PageEventStatistics brawler={brawler} statsParams={statsParams} date={date}/>
       </div>
 
       <div className={cnWithDefault("flex flex-col gap-2")}>
         <Title value="브롤러 조합"/>
-        <Suspense fallback={<Loading/>}>
-          <PageBrawlersStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
-        </Suspense>
+        <PageBrawlersStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
       </div>
 
       <div className={cnWithDefault("flex flex-col gap-2")}>
         <Title value="상대 브롤러"/>
-        <Suspense fallback={<Loading/>}>
-          <PageEnemyStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
-        </Suspense>
+        <PageEnemyStatistics brawler={brawler} statsParams={statsParams} date={date} brawlers={brawlers}/>
       </div>
     </div>
   );

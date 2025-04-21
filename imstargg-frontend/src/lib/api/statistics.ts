@@ -390,7 +390,7 @@ export async function getBrawlerBattleEventResultStatistics(
           id: stat.event.id,
           mode: stat.event.mode,
           map: {
-            name: stat.event.mapName,
+            name: stat.event.mapName ?? null,
             imageUrl: stat.event.mapImagePath ? new URL(stat.event.mapImagePath, process.env.NEXT_PUBLIC_IMAGE_BASE_URL).toString() : null
           }
         },

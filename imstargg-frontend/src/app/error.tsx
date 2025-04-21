@@ -5,10 +5,10 @@ import Image from 'next/image';
 import {Button} from "@/components/ui/button";
 import edgarSadPinSrc from '@/../public/icon/brawler/edgar/edgar_sad_pin.png';
 
-export default function Error({error, reset,}: {
+export default function ErrorPage({error, reset,}: Readonly<{
   error: Error & { digest?: string }
   reset: () => void
-}) {
+}>) {
 
   useEffect(() => {
     console.error(error)
