@@ -11,7 +11,8 @@ export default function ErrorPage({error, reset,}: Readonly<{
 }>) {
 
   useEffect(() => {
-    console.error(error)
+    console.error(`Error[${error.name}](${error.digest}): ${error.message})`);
+    console.error(error.stack);
   }, [error]);
 
   return (
