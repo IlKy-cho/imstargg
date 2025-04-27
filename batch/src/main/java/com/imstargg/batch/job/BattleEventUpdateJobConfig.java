@@ -6,6 +6,8 @@ import com.imstargg.core.enums.BattleEventMode;
 import com.imstargg.core.enums.BattleType;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionEntity;
 import com.imstargg.storage.db.core.brawlstars.BattleEventCollectionJpaRepository;
+import com.imstargg.storage.db.core.brawlstars.SoloRankSeasonCollectionEntity;
+import com.imstargg.storage.db.core.brawlstars.SoloRankSeasonCollectionJpaRepository;
 import com.imstargg.storage.db.core.player.BattleEntity;
 import com.imstargg.storage.db.core.player.BattleJpaRepository;
 import com.imstargg.support.alert.AlertCommand;
@@ -26,6 +28,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.time.Clock;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,6 +45,7 @@ class BattleEventUpdateJobConfig {
     private static final String JOB_NAME = "battleEventUpdateJob";
     private static final String STEP_NAME = "battleEventUpdateStep";
 
+    private final Clock clock;
     private final JobRepository jobRepository;
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
@@ -49,21 +53,26 @@ class BattleEventUpdateJobConfig {
     private final AlertManager alertManager;
     private final BattleJpaRepository battleJpaRepository;
     private final BattleEventCollectionJpaRepository battleEventCollectionJpaRepository;
+    private final SoloRankSeasonCollectionJpaRepository soloRankSeasonCollectionJpaRepository;
 
     BattleEventUpdateJobConfig(
+            Clock clock,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
             AlertManager alertManager,
             BattleJpaRepository battleJpaRepository,
-            BattleEventCollectionJpaRepository battleEventCollectionJpaRepository
+            BattleEventCollectionJpaRepository battleEventCollectionJpaRepository,
+            SoloRankSeasonCollectionJpaRepository soloRankSeasonCollectionJpaRepository
     ) {
+        this.clock = clock;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
         this.alertManager = alertManager;
         this.battleJpaRepository = battleJpaRepository;
         this.battleEventCollectionJpaRepository = battleEventCollectionJpaRepository;
+        this.soloRankSeasonCollectionJpaRepository = soloRankSeasonCollectionJpaRepository;
     }
 
     @Bean(JOB_NAME)
@@ -106,6 +115,7 @@ class BattleEventUpdateJobConfig {
                                     }
                             );
 
+                    updateSoloRankedSeason();
                     alertNotExistsBattleEventMode();
                     alertNotExistsBattleType();
 
@@ -137,6 +147,39 @@ class BattleEventUpdateJobConfig {
                             )).build());
                     return entity;
                 });
+    }
+
+    private void updateSoloRankedSeason() {
+        SoloRankSeasonCollectionEntity season = soloRankSeasonCollectionJpaRepository
+                .findFirstByOrderByNumberDescMonthDesc()
+                .orElseGet(() -> soloRankSeasonCollectionJpaRepository.save(
+                        SoloRankSeasonCollectionEntity.createFirst()
+                ));
+
+        if (!season.isLast(clock)) {
+            return;
+        }
+
+        SoloRankSeasonCollectionEntity next = season.next();
+        alertManager.alert(
+                AlertCommand.builder()
+                        .title("[" + JOB_NAME + "] 경쟁전 시즌 지남")
+                        .content(String.format(
+                                """
+                                경쟁전 시즌이 지났습니다.
+                                새로운 시즌을 추가합니다.
+                                지난 시즌: %s
+                                신규 시즌: %s
+                                신규 시즌 시작일: %s
+                                신규 시즌 종료일: %s
+                                """,
+                                season.getNumber() + "-" + season.getMonth(),
+                                next.getNumber() + "-" + next.getMonth(),
+                                next.getStartAt(),
+                                next.getEndAt()
+                        ))
+                        .build()
+        );
     }
 
     private void alertNotExistsBattleEventMode() {

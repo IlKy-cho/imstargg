@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.OffsetDateTime;
 import java.time.temporal.TemporalAdjusters;
@@ -74,6 +75,11 @@ public class SoloRankSeasonCollectionEntity extends BaseEntity {
                 nextStartAt,
                 nextEndAt
         );
+    }
+
+    public boolean isLast(Clock clock) {
+        OffsetDateTime now = OffsetDateTime.now(clock);
+        return now.isAfter(endAt);
     }
 
     public Long getId() {
