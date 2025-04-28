@@ -11,16 +11,13 @@ import java.util.List;
 public class PlayerService {
 
     private final PlayerReader playerReader;
-    private final PlayerFinder playerFinder;
     private final PlayerRenewalExecutor playerRenewalExecutor;
 
     public PlayerService(
             PlayerReader playerReader,
-            PlayerFinder playerFinder,
             PlayerRenewalExecutor playerRenewalExecutor
     ) {
         this.playerReader = playerReader;
-        this.playerFinder = playerFinder;
         this.playerRenewalExecutor = playerRenewalExecutor;
     }
 
@@ -33,16 +30,16 @@ public class PlayerService {
     }
 
     public void renew(BrawlStarsTag tag) {
-        Player player = playerFinder.find(tag)
-                .orElseThrow(() -> new CoreException(CoreErrorType.PLAYER_NOT_FOUND, "playerTag=" + tag));
+        Player player = playerReader.get(tag);
         playerRenewalExecutor.renew(player);
     }
 
     public void renewNew(BrawlStarsTag tag) {
-        if (playerFinder.find(tag).isPresent()) {
-            throw new CoreException(CoreErrorType.PLAYER_ALREADY_EXISTS, "playerTag=" + tag);
+        if (!tag.isValid()) {
+            throw new CoreException(CoreErrorType.BRAWLSTARS_INVALID_TAG, "tag=" + tag);
         }
-        playerRenewalExecutor.renewNew(tag);
+        UnknownPlayer unknownPlayer = playerReader.getUnknown(tag);
+        playerRenewalExecutor.renewNew(unknownPlayer);
     }
 
     public boolean isRenewing(BrawlStarsTag tag) {

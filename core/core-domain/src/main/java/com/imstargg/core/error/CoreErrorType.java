@@ -23,6 +23,7 @@ public enum CoreErrorType {
     BRAWLER_NOT_FOUND(CoreErrorKind.NOT_FOUND, "존재하지 않는 브롤러 입니다.", INFO),
 
     BRAWLSTARS_IN_MAINTENANCE(CoreErrorKind.UNAVAILABLE, "브롤스타즈 서버가 점검중입니다.", INFO),
+    BRAWLSTARS_INVALID_TAG(CoreErrorKind.VALIDATION_FAILED, "잘못된 브롤스타즈 태그입니다.", INFO),
     ;
 
     private final CoreErrorKind kind;
