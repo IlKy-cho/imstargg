@@ -13,8 +13,8 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 
     @Override
     public void handleUncaughtException(Throwable ex, Method method, Object... params) {
-        if (ex instanceof CoreException) {
-            switch (((CoreException) ex).getErrorType().getLevel()) {
+        if (ex instanceof CoreException coreException) {
+            switch (coreException.getErrorType().getLevel()) {
                 case ERROR -> log.error("{} : {}", CoreException.class.getSimpleName(), ex.getMessage(), ex);
                 case WARN -> log.warn("{} : {}", CoreException.class.getSimpleName(), ex.getMessage(), ex);
                 case INFO -> log.info("{} : {}", CoreException.class.getSimpleName(), ex.getMessage(), ex);
