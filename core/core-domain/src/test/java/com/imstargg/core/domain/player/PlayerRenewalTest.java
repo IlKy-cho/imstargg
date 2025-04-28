@@ -3,6 +3,8 @@ package com.imstargg.core.domain.player;
 import com.imstargg.core.domain.BrawlStarsTag;
 import com.imstargg.core.enums.PlayerRenewalStatus;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 import java.time.Clock;
 import java.time.Instant;
@@ -43,8 +45,14 @@ class PlayerRenewalTest {
         assertThat(playerRenewal.available(player, clock)).isFalse();
     }
 
-    @Test
-    void 플레이어_갱신이_진행중인경우_갱신할수_없다() {
+    @ParameterizedTest
+    @EnumSource(
+            value = PlayerRenewalStatus.class,
+            names = {
+                    "PENDING", "EXECUTING"
+            }
+    )
+    void 플레이어_갱신이_진행중인경우_갱신할수_없다(PlayerRenewalStatus playerRenewalStatus) {
         // given
         Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
         Player player = new PlayerFixture()
@@ -52,37 +60,10 @@ class PlayerRenewalTest {
                 .build();
 
         // when
-        var executingPlayerRenewal = new PlayerRenewal(player.tag(), PlayerRenewalStatus.EXECUTING, OffsetDateTime.now(clock));
-        var pendingPlayerRenewal = new PlayerRenewal(player.tag(), PlayerRenewalStatus.PENDING, OffsetDateTime.now(clock));
+        var playerRenewal = new PlayerRenewal(player.tag(), playerRenewalStatus, OffsetDateTime.now(clock));
 
         // then
-        assertThat(executingPlayerRenewal.available(player, clock)).isFalse();
-        assertThat(pendingPlayerRenewal.available(player, clock)).isFalse();
-    }
-
-    @Test
-    void 갱신중_상태이더라도_타임아웃이_초과되면_갱신_실패로_보고_다시시도_할_수_있다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-        Player player = new PlayerFixture()
-                .updatedAt(OffsetDateTime.now(clock).minusSeconds(121))
-                .build();
-
-        // when
-        var executingPlayerRenewal = new PlayerRenewal(
-                player.tag(),
-                PlayerRenewalStatus.EXECUTING,
-                OffsetDateTime.now(clock).minusSeconds(121)
-        );
-        var pendingPlayerRenewal = new PlayerRenewal(
-                player.tag(),
-                PlayerRenewalStatus.PENDING,
-                OffsetDateTime.now(clock).minusSeconds(121)
-        );
-
-        // then
-        assertThat(executingPlayerRenewal.available(player, clock)).isTrue();
-        assertThat(pendingPlayerRenewal.available(player, clock)).isTrue();
+        assertThat(playerRenewal.available(player, clock)).isFalse();
     }
 
     @Test
@@ -157,8 +138,14 @@ class PlayerRenewalTest {
         )).isTrue();
     }
 
-    @Test
-    void 모르는_플레이어의_갱신이_진행중일_경우_갱신할_수_없다() {
+    @ParameterizedTest
+    @EnumSource(
+            value = PlayerRenewalStatus.class,
+            names = {
+                    "PENDING", "EXECUTING"
+            }
+    )
+    void 모르는_플레이어의_갱신이_진행중일_경우_갱신할_수_없다(PlayerRenewalStatus playerRenewalStatus) {
         // given
         Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
         UnknownPlayer unknownPlayer = new UnknownPlayer(
@@ -168,47 +155,14 @@ class PlayerRenewalTest {
         );
 
         // when
-        var executingPlayerRenewal = new PlayerRenewal(
+        var playerRenewal = new PlayerRenewal(
                 unknownPlayer.tag(),
-                PlayerRenewalStatus.EXECUTING,
-                OffsetDateTime.now(clock)
-        );
-        var pendingPlayerRenewal = new PlayerRenewal(
-                unknownPlayer.tag(),
-                PlayerRenewalStatus.PENDING,
+                playerRenewalStatus,
                 OffsetDateTime.now(clock)
         );
 
         // then
-        assertThat(executingPlayerRenewal.available(unknownPlayer, clock)).isFalse();
-        assertThat(pendingPlayerRenewal.available(unknownPlayer, clock)).isFalse();
-    }
-
-    @Test
-    void 모르는_플레이어의_갱신이_진행중일_경우_타임아웃이_초과되면_갱신_실패로_보고_다시시도_할_수_있다() {
-        // given
-        Clock clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
-        UnknownPlayer unknownPlayer = new UnknownPlayer(
-                new BrawlStarsTag("tag"),
-                0,
-                OffsetDateTime.now(clock).minusSeconds(121)
-        );
-
-        // when
-        var executingPlayerRenewal = new PlayerRenewal(
-                unknownPlayer.tag(),
-                PlayerRenewalStatus.EXECUTING,
-                OffsetDateTime.now(clock).minusSeconds(121)
-        );
-        var pendingPlayerRenewal = new PlayerRenewal(
-                unknownPlayer.tag(),
-                PlayerRenewalStatus.PENDING,
-                OffsetDateTime.now(clock).minusSeconds(121)
-        );
-
-        // then
-        assertThat(executingPlayerRenewal.available(unknownPlayer, clock)).isTrue();
-        assertThat(pendingPlayerRenewal.available(unknownPlayer, clock)).isTrue();
+        assertThat(playerRenewal.available(unknownPlayer, clock)).isFalse();
     }
 
 }

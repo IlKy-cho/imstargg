@@ -42,8 +42,7 @@ public class PlayerRenewalExecutor {
         }
 
         if (!playerRenewalRepository.pending(playerRenewal)) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
-                    "갱신 요청 충돌. unknownPlayerTag=" + unknownPlayer.tag());
+            return;
         }
 
         eventPublisher.publish(unknownPlayer.tag());
@@ -58,8 +57,7 @@ public class PlayerRenewalExecutor {
         }
 
         if (!playerRenewalRepository.pending(playerRenewal)) {
-            throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
-                    "갱신 요청 충돌. playerTag=" + player.tag());
+            return;
         }
 
         eventPublisher.publish(player.tag());
