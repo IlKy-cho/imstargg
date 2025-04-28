@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public record BrawlStarsTag(String value) {
 
-    private static final Pattern PATTERN = Pattern.compile("#[A-Z0-9]+");
+    private static final Pattern PATTERN = Pattern.compile("#[A-Z0-9]{6,16}");
 
     public BrawlStarsTag {
         Objects.requireNonNull(value);
