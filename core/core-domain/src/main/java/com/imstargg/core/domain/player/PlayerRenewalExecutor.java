@@ -33,21 +33,20 @@ public class PlayerRenewalExecutor {
         this.eventPublisher = eventPublisher;
     }
 
-    public void renewNew(BrawlStarsTag tag) {
+    public void renewNew(UnknownPlayer unknownPlayer) {
         validateRequestCount();
-        UnknownPlayer unknownPlayer = playerRepository.getUnknown(tag);
         PlayerRenewal playerRenewal = playerRenewalRepository.get(unknownPlayer.tag());
         if (!playerRenewal.available(unknownPlayer, clock)) {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
-                    "갱신이 불가능 합니다. PlayerRenewal=" + playerRenewal + "unknownPlayerTag=" + tag);
+                    "갱신이 불가능 합니다. PlayerRenewal=" + playerRenewal + "unknownPlayerTag=" + unknownPlayer.tag());
         }
 
         if (!playerRenewalRepository.pending(playerRenewal)) {
             throw new CoreException(CoreErrorType.PLAYER_RENEWAL_UNAVAILABLE,
-                    "갱신 요청 충돌. unknownPlayerTag=" + tag);
+                    "갱신 요청 충돌. unknownPlayerTag=" + unknownPlayer.tag());
         }
 
-        eventPublisher.publish(tag);
+        eventPublisher.publish(unknownPlayer.tag());
     }
 
     public void renew(Player player) {

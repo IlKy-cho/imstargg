@@ -24,4 +24,11 @@ public class PlayerReader {
     public List<PlayerBrawler> getBrawlers(Player player) {
         return playerRepository.findBrawlers(player);
     }
+
+    public UnknownPlayer getUnknown(BrawlStarsTag tag) {
+        if (playerRepository.findByTag(tag).isPresent()) {
+            throw new CoreException(CoreErrorType.PLAYER_ALREADY_EXISTS, "playerTag=" + tag);
+        }
+        return playerRepository.getUnknown(tag);
+    }
 }
