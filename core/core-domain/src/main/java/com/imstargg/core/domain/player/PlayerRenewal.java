@@ -14,14 +14,13 @@ public record PlayerRenewal(
 ) {
 
     private static final Duration TERM = Duration.ofSeconds(120);
-    private static final Duration TIMEOUT = Duration.ofSeconds(120);
 
     public boolean available(Player player, Clock clock) {
         if (!isCooldownOver(player, clock)) {
             return false;
         }
 
-        return renewable(clock);
+        return !status.renewing();
     }
 
     public boolean available(UnknownPlayer unknownPlayer, Clock clock) {
@@ -29,7 +28,7 @@ public record PlayerRenewal(
             return false;
         }
 
-        return renewable(clock);
+        return !status.renewing();
     }
 
     private boolean isCooldownOver(Player player, Clock clock) {
@@ -42,10 +41,4 @@ public record PlayerRenewal(
         );
     }
 
-    private boolean renewable(Clock clock) {
-        if (!status.renewing()) {
-            return true;
-        }
-        return OffsetDateTime.now(clock).isAfter(updatedAt.plus(TIMEOUT));
-    }
 }
