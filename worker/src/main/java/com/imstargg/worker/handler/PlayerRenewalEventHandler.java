@@ -4,6 +4,7 @@ import com.imstargg.core.event.PlayerRenewalEvent;
 import com.imstargg.support.alert.AlertCommand;
 import com.imstargg.support.alert.AlertManager;
 import com.imstargg.worker.domain.PlayerRenewalService;
+import com.imstargg.worker.error.WorkerException;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import io.awspring.cloud.sqs.listener.acknowledgement.Acknowledgement;
 import org.slf4j.Logger;
@@ -17,10 +18,16 @@ class PlayerRenewalEventHandler {
 
     private final AlertManager alertManager;
     private final PlayerRenewalService playerRenewalService;
+    private final PlayerRenewalEventHandlerLogger logger;
 
-    public PlayerRenewalEventHandler(AlertManager alertManager, PlayerRenewalService playerRenewalService) {
+    public PlayerRenewalEventHandler(
+            AlertManager alertManager,
+            PlayerRenewalService playerRenewalService,
+            PlayerRenewalEventHandlerLogger logger
+    ) {
         this.alertManager = alertManager;
         this.playerRenewalService = playerRenewalService;
+        this.logger = logger;
     }
 
     @SqsListener(
@@ -29,20 +36,25 @@ class PlayerRenewalEventHandler {
             messageVisibilitySeconds = "10"
     )
     void handlePlayerRenewalEvent(PlayerRenewalEvent event, Acknowledgement acknowledgement) {
-        log.info("플레이어 갱신 이벤트 시작 tag={}", event.tag());
+        logger.logRenewalStart(event);
         try {
             playerRenewalService.renew(event.tag());
-            log.info("플레이어 갱신 완료 tag={}", event.tag());
-        } catch (Exception ex) {
-            log.error("플레이어 갱신 중 예외 발생. tag={}", event.tag(), ex);
+            logger.logRenewalComplete(event);
+        }
+        catch (WorkerException ex) {
+            logger.logWorkerException(ex);
+        }
+        catch (Exception ex) {
+            logger.logException(ex);
             alertManager.alert(AlertCommand.builder()
                     .error()
                     .title("플레이어 갱신 중 예외 발생")
                     .content("- tag=" + event.tag())
                     .ex(ex)
                     .build());
+        } finally {
+            acknowledgement.acknowledgeAsync();
         }
-        acknowledgement.acknowledgeAsync();
     }
 
 }

@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.services.sqs.SqsAsyncClient;
 
+import java.time.Duration;
+
 @Configuration
 @EnableConfigurationProperties(SqsProperties.class)
 class SqsListenerConfig {
@@ -25,6 +27,9 @@ class SqsListenerConfig {
                 .sqsAsyncClient(sqsAsyncClient)
                 .configure(options -> configureContainerOptions(options, sqsProperties))
                 .configure(options -> configureObjectMapper(options, objectMapper))
+                .configure(options -> options
+                        .maxDelayBetweenPolls(Duration.ofSeconds(5))
+                )
                 .build();
     }
 
