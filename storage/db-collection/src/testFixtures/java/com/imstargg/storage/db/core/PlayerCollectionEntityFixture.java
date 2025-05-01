@@ -5,8 +5,12 @@ import com.imstargg.test.java.IntegerIncrementUtil;
 import com.imstargg.test.java.LongIncrementUtil;
 import jakarta.annotation.Nullable;
 
+import java.time.OffsetDateTime;
+
 public class PlayerCollectionEntityFixture {
 
+    @Nullable
+    private Long id;
     private String brawlStarsTag = "#TAG" + LongIncrementUtil.next();
     private String name = "Player" + LongIncrementUtil.next();
     private String nameColor = "nameColor" + LongIncrementUtil.next();
@@ -15,7 +19,7 @@ public class PlayerCollectionEntityFixture {
     private int highestTrophies = IntegerIncrementUtil.next();
     private int expLevel = IntegerIncrementUtil.next();
     private int expPoints = IntegerIncrementUtil.next();
-    private boolean qualifiedFromChampionshipChallenge = false;
+    private boolean qualifiedFromChampionshipChallenge = IntegerIncrementUtil.next() % 2 == 0;
     private int victories3vs3 = IntegerIncrementUtil.next();
     private int soloVictories = IntegerIncrementUtil.next();
     private int duoVictories = IntegerIncrementUtil.next();
@@ -23,6 +27,17 @@ public class PlayerCollectionEntityFixture {
     private int bestTimeAsBigBrawler = IntegerIncrementUtil.next();
     @Nullable
     private String brawlStarsClubTag;
+    @Nullable
+    private OffsetDateTime createdAt;
+    @Nullable
+    private OffsetDateTime updatedAt;
+    @Nullable
+    private Boolean deleted;
+
+    public PlayerCollectionEntityFixture id(@Nullable Long id) {
+        this.id = id;
+        return this;
+    }
 
     public PlayerCollectionEntityFixture brawlStarsTag(String brawlStarsTag) {
         this.brawlStarsTag = brawlStarsTag;
@@ -99,24 +114,45 @@ public class PlayerCollectionEntityFixture {
         return this;
     }
 
+    public PlayerCollectionEntityFixture createdAt(@Nullable OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
+        return this;
+    }
+
+    public PlayerCollectionEntityFixture updatedAt(@Nullable OffsetDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+        return this;
+    }
+
+    public PlayerCollectionEntityFixture deleted(@Nullable Boolean deleted) {
+        this.deleted = deleted;
+        return this;
+    }
+
     public PlayerCollectionEntity build() {
-        return new PlayerCollectionEntity(
-            brawlStarsTag,
-            name,
-            nameColor,
-            iconBrawlStarsId,
-            trophies,
-            highestTrophies,
-            expLevel,
-            expPoints,
-            qualifiedFromChampionshipChallenge,
-            victories3vs3,
-            soloVictories,
-            duoVictories,
-            bestRoboRumbleTime,
-            bestTimeAsBigBrawler,
-            brawlStarsClubTag
+        PlayerCollectionEntity entity = new PlayerCollectionEntity(
+                brawlStarsTag,
+                name,
+                nameColor,
+                iconBrawlStarsId,
+                trophies,
+                highestTrophies,
+                expLevel,
+                expPoints,
+                qualifiedFromChampionshipChallenge,
+                victories3vs3,
+                soloVictories,
+                duoVictories,
+                bestRoboRumbleTime,
+                bestTimeAsBigBrawler,
+                brawlStarsClubTag
         );
+        BaseEntityEditorFixture editorFixture = new BaseEntityEditorFixture(entity);
+        editorFixture.editId(id);
+        editorFixture.editCreatedAt(createdAt);
+        editorFixture.editUpdatedAt(updatedAt);
+        editorFixture.editDeleted(Boolean.TRUE.equals(deleted));
+        return entity;
     }
 
 }
