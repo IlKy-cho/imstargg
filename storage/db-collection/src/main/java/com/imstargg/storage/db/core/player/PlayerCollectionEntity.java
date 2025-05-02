@@ -209,6 +209,22 @@ public class PlayerCollectionEntity extends BaseEntity {
         updateSoloRankTier(battles);
     }
 
+    public List<BattleCollectionEntity> battleUpdated(Clock clock, List<BattleCollectionEntity> battles) {
+        battles = filterBattles(battles);
+        updateLatestBattleTime(battles);
+        updateSoloRankTier(battles);
+        updateStatus(clock);
+        return battles;
+    }
+
+    private List<BattleCollectionEntity> filterBattles(List<BattleCollectionEntity> battles) {
+        return Optional.ofNullable(this.latestBattleTime)
+                .map(latest -> battles.stream()
+                        .filter(battle -> battle.getBattleTime().isAfter(latest))
+                        .toList()
+                ).orElse(battles);
+    }
+
     private void updateLatestBattleTime(List<BattleCollectionEntity> battles) {
         battles.stream()
                 .map(BattleCollectionEntity::getBattleTime)
@@ -373,7 +389,7 @@ public class PlayerCollectionEntity extends BaseEntity {
     }
 
     public List<PlayerBrawlerCollectionEntity> getBrawlers() {
-        return brawlers;
+        return brawlers.stream().toList();
     }
 
     @Nullable
