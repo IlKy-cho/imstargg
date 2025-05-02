@@ -10,4 +10,9 @@ public interface UnknownPlayerCollectionJpaRepository extends JpaRepository<Unkn
 
     @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     Optional<UnknownPlayerCollectionEntity> findVersionedByBrawlStarsTag(String brawlStarsTag);
+
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
+    Optional<UnknownPlayerCollectionEntity> findOptimisticLockByBrawlStarsTag(String brawlStarsTag);
+
+    boolean existsByBrawlStarsTag(String brawlStarsTag);
 }

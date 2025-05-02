@@ -13,5 +13,11 @@ public interface PlayerCollectionJpaRepository extends JpaRepository<PlayerColle
     @EntityGraph(attributePaths = {"brawlers"})
     Optional<PlayerCollectionEntity> findVersionedWithBrawlersByBrawlStarsTag(String brawlStarsTag);
 
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
+    @EntityGraph(attributePaths = {"brawlers"})
+    Optional<PlayerCollectionEntity> findWithOptimisticLockAndBrawlersByBrawlStarsTag(String brawlStarsTag);
+
     Optional<PlayerCollectionEntity> findFirst1ByOrderByIdDesc();
+
+    boolean existsByBrawlStarsTag(String brawlStarsTag);
 }

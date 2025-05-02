@@ -2,7 +2,9 @@ package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerBattleUpdateResult;
 import com.imstargg.batch.job.support.ExceptionLoggingJobExecutionListener;
-import com.imstargg.collection.domain.PlayerUpdaterFactory;
+import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.collection.domain.PlayerBattleUpdateApplier;
+import com.imstargg.collection.domain.PlayerUpdateApplier;
 import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.OptimisticLockException;
@@ -39,20 +41,26 @@ class PlayerUpdateJobConfig {
     private final PlatformTransactionManager txManager;
     private final EntityManagerFactory emf;
 
-    private final PlayerUpdaterFactory playerUpdaterFactory;
+    private final BrawlStarsClient brawlStarsClient;
+    private final PlayerUpdateApplier playerUpdateApplier;
+    private final PlayerBattleUpdateApplier playerBattleUpdateApplier;
 
     PlayerUpdateJobConfig(
             Properties properties,
             JobRepository jobRepository,
             PlatformTransactionManager txManager,
             EntityManagerFactory emf,
-            PlayerUpdaterFactory playerUpdaterFactory
+            BrawlStarsClient brawlStarsClient,
+            PlayerUpdateApplier playerUpdateApplier,
+            PlayerBattleUpdateApplier playerBattleUpdateApplier
     ) {
         this.properties = properties;
         this.jobRepository = jobRepository;
         this.txManager = txManager;
         this.emf = emf;
-        this.playerUpdaterFactory = playerUpdaterFactory;
+        this.brawlStarsClient = brawlStarsClient;
+        this.playerUpdateApplier = playerUpdateApplier;
+        this.playerBattleUpdateApplier = playerBattleUpdateApplier;
     }
 
     @Bean(JOB_NAME)
@@ -104,7 +112,7 @@ class PlayerUpdateJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     PlayerUpdateProcessor processor() {
-        return new PlayerUpdateProcessor(playerUpdaterFactory);
+        return new PlayerUpdateProcessor(brawlStarsClient, playerUpdateApplier, playerBattleUpdateApplier);
     }
 
     @Bean(STEP_NAME + "ItemWriter")

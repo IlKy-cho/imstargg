@@ -6,7 +6,8 @@ import com.imstargg.batch.job.support.IdRangeIncrementer;
 import com.imstargg.batch.job.support.IdRangeJobParameter;
 import com.imstargg.batch.job.support.JpaItemListWriter;
 import com.imstargg.batch.job.support.querydsl.QuerydslPagingItemReader;
-import com.imstargg.collection.domain.PlayerUpdaterFactory;
+import com.imstargg.client.brawlstars.BrawlStarsClient;
+import com.imstargg.collection.domain.PlayerUpdateApplier;
 import com.imstargg.storage.db.core.player.BattleCollectionEntity;
 import com.imstargg.storage.db.core.player.BattleCollectionJpaRepository;
 import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
@@ -54,7 +55,8 @@ public class NewPlayerJobConfig {
     private final TaskExecutor taskExecutor;
 
     private final AlertManager alertManager;
-    private final PlayerUpdaterFactory playerUpdaterFactory;
+    private final BrawlStarsClient brawlStarsClient;
+    private final PlayerUpdateApplier playerUpdateApplier;
     private final BattleCollectionJpaRepository battleCollectionJpaRepository;
 
     NewPlayerJobConfig(
@@ -63,7 +65,8 @@ public class NewPlayerJobConfig {
             EntityManagerFactory emf,
             TaskExecutor taskExecutor,
             AlertManager alertManager,
-            PlayerUpdaterFactory playerUpdaterFactory,
+            BrawlStarsClient brawlStarsClient,
+            PlayerUpdateApplier playerUpdateApplier,
             BattleCollectionJpaRepository battleCollectionJpaRepository
     ) {
         this.jobRepository = jobRepository;
@@ -71,7 +74,8 @@ public class NewPlayerJobConfig {
         this.emf = emf;
         this.taskExecutor = taskExecutor;
         this.alertManager = alertManager;
-        this.playerUpdaterFactory = playerUpdaterFactory;
+        this.brawlStarsClient = brawlStarsClient;
+        this.playerUpdateApplier = playerUpdateApplier;
         this.battleCollectionJpaRepository = battleCollectionJpaRepository;
     }
 
@@ -161,7 +165,7 @@ public class NewPlayerJobConfig {
     @Bean(STEP_NAME + "ItemProcessor")
     @StepScope
     NewPlayerJobItemProcessor processor() {
-        return new NewPlayerJobItemProcessor(playerTagFilter(), playerUpdaterFactory);
+        return new NewPlayerJobItemProcessor(playerTagFilter(), brawlStarsClient, playerUpdateApplier);
     }
 
     @Bean(STEP_NAME + "PlayerTagFilter")
