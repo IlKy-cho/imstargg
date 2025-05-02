@@ -7,23 +7,22 @@ import com.imstargg.worker.domain.PlayerRenewalService;
 import com.imstargg.worker.error.WorkerException;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import io.awspring.cloud.sqs.listener.acknowledgement.Acknowledgement;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
 class PlayerRenewalEventHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(PlayerRenewalEventHandler.class);
+    private static final org.slf4j.Logger log = LoggerFactory.getLogger(PlayerRenewalEventHandler.class);
 
     private final AlertManager alertManager;
     private final PlayerRenewalService playerRenewalService;
-    private final PlayerRenewalEventHandlerLogger logger;
+    private final Logger logger;
 
     public PlayerRenewalEventHandler(
             AlertManager alertManager,
             PlayerRenewalService playerRenewalService,
-            PlayerRenewalEventHandlerLogger logger
+            Logger logger
     ) {
         this.alertManager = alertManager;
         this.playerRenewalService = playerRenewalService;
@@ -57,4 +56,23 @@ class PlayerRenewalEventHandler {
         }
     }
 
+    @Component
+    static class Logger {
+
+        public void logRenewalStart(PlayerRenewalEvent event) {
+            log.info("플레이어 갱신 시작 tag={}", event.tag());
+        }
+
+        public void logRenewalComplete(PlayerRenewalEvent event) {
+            log.info("플레이어 갱신 완료 tag={}", event.tag());
+        }
+
+        public void logWorkerException(Exception ex) {
+            log.warn("{} : {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+        }
+
+        public void logException(Exception ex) {
+            log.error("{} : {}", ex.getClass().getSimpleName(), ex.getMessage(), ex);
+        }
+    }
 }
