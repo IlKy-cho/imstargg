@@ -1,9 +1,10 @@
 package com.imstargg.batch.job;
 
 import com.imstargg.batch.domain.PlayerTagFilter;
+import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
-import com.imstargg.collection.domain.PlayerUpdater;
-import com.imstargg.collection.domain.PlayerUpdaterFactory;
+import com.imstargg.client.brawlstars.response.PlayerResponse;
+import com.imstargg.collection.domain.PlayerUpdateApplier;
 import com.imstargg.storage.db.core.player.BattleCollectionEntity;
 import com.imstargg.storage.db.core.player.BattleCollectionEntityTeamPlayer;
 import com.imstargg.storage.db.core.player.PlayerCollectionEntity;
@@ -20,11 +21,17 @@ public class NewPlayerJobItemProcessor
     private static final Logger log = LoggerFactory.getLogger(NewPlayerJobItemProcessor.class);
 
     private final PlayerTagFilter playerTagFilter;
-    private final PlayerUpdaterFactory playerUpdaterFactory;
+    private final BrawlStarsClient brawlStarsClient;
+    private final PlayerUpdateApplier playerUpdateApplier;
 
-    public NewPlayerJobItemProcessor(PlayerTagFilter playerTagFilter, PlayerUpdaterFactory playerUpdaterFactory) {
+    public NewPlayerJobItemProcessor(
+            PlayerTagFilter playerTagFilter,
+            BrawlStarsClient brawlStarsClient,
+            PlayerUpdateApplier playerUpdateApplier
+    ) {
         this.playerTagFilter = playerTagFilter;
-        this.playerUpdaterFactory = playerUpdaterFactory;
+        this.brawlStarsClient = brawlStarsClient;
+        this.playerUpdateApplier = playerUpdateApplier;
     }
 
     @Override
@@ -33,11 +40,10 @@ public class NewPlayerJobItemProcessor
         List<PlayerCollectionEntity> newPlayers = new ArrayList<>();
 
         for (String newPlayerTag : newPlayerTags) {
-            PlayerCollectionEntity playerEntity = new PlayerCollectionEntity(newPlayerTag);
-            PlayerUpdater playerUpdater = playerUpdaterFactory.create(playerEntity);
             try {
-                playerUpdater.updatePlayer();
-                newPlayers.add(playerUpdater.getPlayerEntity());
+                PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(newPlayerTag);
+                PlayerCollectionEntity playerEntity = playerUpdateApplier.create(playerResponse);
+                newPlayers.add(playerEntity);
             } catch (BrawlStarsClientException.NotFound ex) {
                 log.info("새로운 Player 가 존재하지 않는 것으로 확인되어 스킵. playerTag={}", newPlayerTag);
             }

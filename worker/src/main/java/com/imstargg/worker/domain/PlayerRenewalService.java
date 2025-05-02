@@ -1,57 +1,63 @@
 package com.imstargg.worker.domain;
 
+import com.imstargg.client.brawlstars.BrawlStarsClient;
 import com.imstargg.client.brawlstars.BrawlStarsClientException;
-import com.imstargg.core.enums.PlayerRenewalStatus;
-import com.imstargg.storage.db.core.player.PlayerRenewalCollectionEntity;
+import com.imstargg.client.brawlstars.response.BattleResponse;
+import com.imstargg.client.brawlstars.response.ListResponse;
+import com.imstargg.client.brawlstars.response.PlayerResponse;
 import com.imstargg.worker.error.WorkerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PlayerRenewalService {
 
-    private final PlayerFinder playerFinder;
-    private final PlayerRenewalUpdater playerRenewalUpdater;
-    private final PlayerRenewalReader playerRenewalReader;
-    private final PlayerRenewalProcessor playerRenewalProcessor;
+    private static final Logger log = LoggerFactory.getLogger(PlayerRenewalService.class);
+
+    private final BrawlStarsClient brawlStarsClient;
+    private final PlayerRenewalRepository playerRenewalRepository;
+    private final PlayerRepository playerRepository;
 
     public PlayerRenewalService(
-            PlayerFinder playerFinder,
-            PlayerRenewalUpdater playerRenewalUpdater,
-            PlayerRenewalReader playerRenewalReader,
-            PlayerRenewalProcessor playerRenewalProcessor
+            BrawlStarsClient brawlStarsClient,
+            PlayerRenewalRepository playerRenewalRepository,
+            PlayerRepository playerRepository
     ) {
-        this.playerFinder = playerFinder;
-        this.playerRenewalUpdater = playerRenewalUpdater;
-        this.playerRenewalReader = playerRenewalReader;
-        this.playerRenewalProcessor = playerRenewalProcessor;
+        this.brawlStarsClient = brawlStarsClient;
+        this.playerRenewalRepository = playerRenewalRepository;
+        this.playerRepository = playerRepository;
     }
 
     public void renew(String tag) {
-        PlayerRenewalCollectionEntity playerRenewal = playerRenewalReader.get(tag);
-        if (PlayerRenewalStatus.PENDING != playerRenewal.getStatus()) {
-            throw new WorkerException("플레이어 갱신 상태가 PENDING이 아닙니다. tag=" + tag);
+        if (!playerRenewalRepository.canRenew(tag)) {
+            throw new WorkerException("플레이어 갱신이 불가능합니다. tag=" + tag);
         }
 
         try {
-            playerRenewalUpdater.executing(playerRenewal);
-            playerFinder.findPlayer(tag).ifPresentOrElse(
-                    playerRenewalProcessor::renewPlayer,
-                    () -> playerFinder.findUnknownPlayer(tag).ifPresentOrElse(
-                            playerRenewalProcessor::renewNewPlayer,
-                            () -> {
-                                throw new WorkerException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
-                            }
-                    )
-            );
+            playerRenewalRepository.executing(tag);
+            PlayerResponse playerResponse = brawlStarsClient.getPlayerInformation(tag);
+            ListResponse<BattleResponse> battleListResponse = brawlStarsClient.getPlayerRecentBattles(tag);
 
-            playerRenewalUpdater.complete(playerRenewal);
+            if (playerRepository.existsPlayer(tag)) {
+                log.info("플레이어 갱신 tag={}", tag);
+                playerRepository.update(playerResponse, battleListResponse);
+            } else if (playerRepository.existsUnknownPlayer(tag)) {
+                log.info("신규 플레이어 갱신 tag={}", tag);
+                playerRepository.create(playerResponse, battleListResponse);
+            } else {
+                throw new IllegalStateException("플레이어 정보가 존재하지 않습니다. tag=" + tag);
+            }
+
         } catch (BrawlStarsClientException.InMaintenance e) {
-            playerRenewalUpdater.inMaintenance(playerRenewal);
+            playerRenewalRepository.inMaintenance(tag);
+        } catch (BrawlStarsClientException.NotFound e) {
+            playerRepository.delete(tag);
         } catch (OptimisticLockingFailureException e) {
-            throw new WorkerException("플레이어가 이미 갱신 중입니다.", e);
+            log.info("플레이어 갱신 중 충돌 발생. tag={}", tag);
         } catch (Exception e) {
-            playerRenewalUpdater.failed(playerRenewal);
+            playerRenewalRepository.failed(tag);
             throw e;
         }
     }
