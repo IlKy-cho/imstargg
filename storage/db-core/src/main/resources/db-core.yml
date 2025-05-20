@@ -81,10 +81,12 @@ spring:
 spring:
   config.activate.on-profile: live
 
+storage:
   datasource:
-    hikari:
-      minimum-idle: 20
-      maximum-pool-size: 30
+    core:
+      hikari:
+        minimum-idle: 20
+        maximum-pool-size: 30
 
 ---
 spring:
