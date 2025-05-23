@@ -116,13 +116,13 @@ logging.level:
     orm.jdbc.bind: info
 ---
 spring:
-  config.activate.on-profile: batch
+  config.activate.on-profile: worker
 
   jpa:
     properties:
       hibernate:
         jdbc:
-          batch_size: 30
+          batch_size: 100
           batch_versioned_data: false
         order_inserts: true
         order_updates: true
