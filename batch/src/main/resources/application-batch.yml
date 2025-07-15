@@ -18,20 +18,6 @@ spring:
       initialize-schema: never
       isolation-level-for-create: default
 
-  datasource:
-    hikari:
-      minimum-idle: 0
-      maximum-pool-size: 20
-
-  jpa:
-    properties:
-      hibernate:
-        jdbc:
-          batch_size: 30
-          batch_versioned_data: false
-        order_inserts: true
-        order_updates: true
-
   task:
     execution:
       thread-name-prefix: "batch-async-task-"
